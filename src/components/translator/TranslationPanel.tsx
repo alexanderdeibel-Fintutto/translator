@@ -35,12 +35,24 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const [isTranslating, setIsTranslating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [autoSpeak, setAutoSpeak] = useState(() => {
+    const saved = localStorage.getItem('translator-auto-speak')
+    return saved !== null ? saved === 'true' : true
+  })
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const autoSpeakRef = useRef(autoSpeak)
+  const targetLangRef = useRef(targetLang)
+
+  // Keep refs in sync
+  autoSpeakRef.current = autoSpeak
+  targetLangRef.current = targetLang
 
   const { isListening, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
+  const targetSpeakRef = useRef(targetSpeech.speak)
+  targetSpeakRef.current = targetSpeech.speak
 
   // Show which TTS engine was last used
   const activeTtsEngine = sourceSpeech.ttsEngine || targetSpeech.ttsEngine
@@ -68,6 +80,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     try {
       const result = await translateText(text, sourceLang, targetLang)
       setTranslatedText(result.translatedText)
+
+      // Auto-speak via refs to avoid re-render dependency loop
+      if (autoSpeakRef.current && result.translatedText) {
+        const lang = getLanguageByCode(targetLangRef.current)
+        targetSpeakRef.current(result.translatedText, lang?.speechCode || targetLangRef.current)
+      }
 
       addEntry({
         sourceText: text,
@@ -155,6 +173,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
   }
 
+  const toggleAutoSpeak = () => {
+    setAutoSpeak(prev => {
+      const next = !prev
+      localStorage.setItem('translator-auto-speak', String(next))
+      return next
+    })
+  }
+
   const clearAll = () => {
     setSourceText('')
     setTranslatedText('')
@@ -179,6 +205,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           <ArrowRightLeft className="h-4 w-4" />
         </Button>
         <LanguageSelector value={targetLang} onChange={setTargetLang} label="Nach" />
+        <Button
+          variant={autoSpeak ? 'default' : 'outline'}
+          size="sm"
+          onClick={toggleAutoSpeak}
+          className="mb-0.5 shrink-0 gap-1.5"
+          title={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
+        >
+          {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+          <span className="text-xs">Auto</span>
+        </Button>
       </div>
 
       {/* Translation Cards */}
