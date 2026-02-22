@@ -190,17 +190,40 @@ Apple hat mit iOS 17.4 das Translation Framework eingefuhrt, das on-device Ubers
 
 5. **Keine Enterprise-Features** — Kein Glossar-Management, kein Batch-Processing, keine Nutzungsanalysen.
 
-### 3.4 Wo Apple Translation SINN machen wurde
+### 3.4 iOS 26: Neuer SpeechAnalyzer — Game Changer fur Hybrid-Ansatz
 
-- Als **Offline-Fallback** fur eine native iOS-Guide-App
+Apple hat mit iOS 26 `SpeechAnalyzer` eingefuhrt — ein modulares STT-Framework:
+- **`SpeechTranscriber`** — Roh-Transkription, ideal fur Ubersetzungs-Pipelines
+- **`DictationTranscriber`** — Formatierte Transkription mit Zeichensetzung
+- **`SpeechDetector`** — Sprachaktivitats-Erkennung
+- Lauft komplett on-device, >2x schneller als Drittanbieter-Apps
+- **Rate Limit:** ~1.000 Anfragen/Stunde/Gerat
+
+**Damit ware eine komplett kostenlose On-Device-Pipeline moglich:**
+`SpeechTranscriber → Translation Framework → AVSpeechSynthesizer`
+Latenz: ~2,5 Sekunden fur STT → Ubersetzung → TTS
+
+**Limitierungen:**
+- **Single Target Language per Session** — KANN NICHT gleichzeitig in 8+ Sprachen ubersetzen
+- Kein Simulator-Support (nur physische Gerate)
+- Bekannte Bugs: `LanguageAvailability.status()` meldet `.installed` obwohl Modelle fehlen (Code 16)
+- SwiftUI-Pflicht (vor iOS 26)
+
+### 3.5 Wo Apple Translation SINN machen wurde
+
+- Als **Offline-Fallback** fur eine native iOS-Guide-App (Top-20 Sprachen)
 - Fur **datenschutzsensible Ubersetzungen** ohne Cloud
 - Als **Erganzung** (nicht Ersatz) fur einfache Text-Ubersetzungen
+- **Kosteneinsparung:** Fur die haufigsten 20 Sprachen konnte Apple die API-Kosten komplett eliminieren
 
-### 3.5 Empfehlung
+### 3.6 Empfehlung
 
 **Google Cloud Translation bleibt die richtige Wahl** fur GuideTranslator. Die Kombination aus 130+ Sprachen, REST API, TTS-Integration und Enterprise-Features ist fur den Use Case alternativlos.
 
-**Jedoch:** Ein hybrider Ansatz (Google Cloud fur Live-Ubersetzung + Apple Translation als Offline-Notfall-Modus in einer zukunftigen nativen App) ware eine sinnvolle Erweiterung.
+**Jedoch:** Ein hybrider Ansatz ist empfohlen:
+1. **Google Cloud** als primare Engine (130+ Sprachen, Multi-Target, Enterprise)
+2. **Apple Translation** als kostenloser Offline-Fallback (Top-20 Sprachen, native Guide-App)
+3. **SpeechAnalyzer (iOS 26)** fur On-Device STT als Erganzung/Notfall-Modus
 
 ---
 
@@ -286,15 +309,33 @@ Die App hat keinerlei Offline-Funktionalitat:
 | **Glossare** | Ja (Custom Glossaries) | Nein |
 | **Plattformen** | Web + Integrationen (Zoom, etc.) | Web (nur Kalkulator) |
 
-### 5.2 Was Wordly BESSER macht
+### 5.2 Wordly Technologie-Details
+
+**Processing Pipeline (5-stufig):**
+1. Audio Capture → 2. Deep-Learning ASR (STT) → 3. NMT + LLM Translation → 4. Neural TTS → 5. Streaming-Delivery
+
+**Technische Fakten:**
+- Proprietare Multi-Engine-Architektur (benchmarkt mehrere AI-Engines pro Sprachpaar)
+- REST API v1.10.2 (`api.wordly.ai/reference`), Auth via `x-wordly-api-key`
+- SOC 2 Type 2 + ISO 27001 zertifiziert (neu 2026)
+- Kundendaten werden NICHT fur Modell-Training verwendet
+- Bandbreite: 1 Mbps Publikum, 5 Mbps Input
+- Gegr. 2017 in Los Altos, CA — Inc. 5000 (2025)
+
+**Kunden:** 3.000+ Organisationen, 5 Mio+ Nutzer, 60+ Lander
+**Segmente:** Enterprise, Events, Government, Education, Healthcare, NGOs
+
+### 5.3 Was Wordly BESSER macht
 
 1. **Fertiges Produkt** — Wordly funktioniert. GuideTranslator existiert nicht als Produkt.
-2. **5 Millionen Nutzer** — Bewiesene Skalierbarkeit
-3. **Custom Glossaries** — Fachterminologie anpassbar
-4. **Plattform-Integrationen** — Zoom, Teams, Webex, Event-Plattformen
-5. **Zwei-Wege-Ubersetzung** — Dialog-fahig
+2. **5 Millionen Nutzer** — Bewiesene Skalierbarkeit in 60+ Landern
+3. **Custom Glossaries** — Bis zu 3.000 Fachbegriffe anpassbar
+4. **Plattform-Integrationen** — 20+ native Integrationen (Zoom, Teams, Webex, Cvent, Hopin, etc.)
+5. **Zwei-Wege-Ubersetzung** — Automatische Spracherkennung bei Sprecherwechsel
 6. **QR-Code Setup** — Identisch zu GuideTranslators Konzept (aber implementiert)
-7. **24/7 Verfugbarkeit** — Enterprise-SLA
+7. **24/7 Verfugbarkeit** — Enterprise-SLA, SOC 2 + ISO 27001
+8. **5-in-1 Plattform** — Audio-Ubersetzung + Captions + Transkripte + Zusammenfassungen + Video
+9. **Mobile App** — Spielt Audio auch bei gesperrtem Bildschirm weiter (iOS/Android)
 
 ### 5.3 Wo GuideTranslator sich DIFFERENZIEREN kann
 
@@ -305,15 +346,20 @@ Die App hat keinerlei Offline-Funktionalitat:
 5. **Kreuzfahrt-spezifische Features** — Tour-Pre-Caching, Schiffs-WLAN, Destinationsprofile
 6. **Dreistufige Audioqualitat** — WaveNet/Neural2/Chirp 3 HD Auswahl
 
-### 5.4 Wordlys Schwachen
+### 5.5 Wordlys Schwachen
 
-1. **Kein Offline-Modus** — Kritisch fur Kreuzfahrten
+1. **Kein Offline-Modus** — Komplett cloudbasiert, keine downloadbaren Sprachpakete
 2. **Event-fokussiert** — Nicht fur fortlaufende Tour-Ubersetzung optimiert
-3. **Preismodell** — Pro Stunde/Nutzer = teuer bei 4.000 Passagieren
-4. **60 Sprachen** — Fur globale Kreuzfahrten nicht ausreichend
+3. **Preismodell** — ~$0.08-0.30/Wort, undurchsichtige Preise (Sales-Kontakt erforderlich)
+4. **50+ Sprachen** — Google Cloud bietet 189, Wordly nur 50+
 5. **Keine Kreuzfahrt-Expertise** — Kein Verstandnis fur Shore Excursions, Tender-Ports, etc.
+6. **Glossar-Probleme** — Custom Glossary unzuverlassig, besonders bei Akronymen und Eigennamen ("quite funny interpretations")
+7. **Audio-Aussetzer** — Nutzer berichten "cutting in and out randomly", fehlende Absatze
+8. **Akzent-Schwache** — Probleme mit starken Akzenten, Hintergrundgerauschen
+9. **Support nach Kauf** — Berichte uber "non-existent after the deal was sealed"
+10. **API nicht frei zuganglich** — Allow-List erforderlich, kein Self-Service-Zugang
 
-### 5.5 Strategische Positionierung
+### 5.6 Strategische Positionierung
 
 ```
               Preis
