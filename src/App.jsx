@@ -599,7 +599,8 @@ function Calculator({ onSave, lead, setPage }) {
   const guideChars = c.guideMinsPerExcursion * 900;
   const transChars = guideChars * c.languages;
   const transCost = 0.00002;
-  const ttsCost = c.ttsQuality === "wavenet" ? 0.000004 : c.ttsQuality === "neural2" ? 0.000016 : 0.00003;
+  // Google Cloud TTS Pricing (Feb 2026): WaveNet=$16/1M, Neural2=$16/1M, Chirp3HD=$30/1M
+  const ttsCost = c.ttsQuality === "wavenet" ? 0.000016 : c.ttsQuality === "neural2" ? 0.000016 : 0.00003;
   const apiPerExc = transChars * (transCost + ttsCost);
   const totalApi = totalExcursions * apiPerExc * 0.92;
   let monthlyLic = 0, tier = "";
@@ -661,7 +662,7 @@ function Calculator({ onSave, lead, setPage }) {
           <div style={{ marginTop: 8 }}>
             <span style={{ fontSize: 13, color: T.grayLight, fontWeight: 500, marginBottom: 8, display: "block" }}>Sprachqualität</span>
             <div style={{ display: "flex", gap: 8 }}>
-              {[{ id: "wavenet", l: "WaveNet", s: "Gut" }, { id: "neural2", l: "Neural2", s: "Sehr gut" }, { id: "chirp3", l: "Chirp 3 HD", s: "Premium" }].map(q => (
+              {[{ id: "wavenet", l: "WaveNet", s: "Standard" }, { id: "neural2", l: "Neural2", s: "Professional" }, { id: "chirp3", l: "Chirp 3 HD", s: "Premium" }].map(q => (
                 <button key={q.id} onClick={() => { setC({ ...c, ttsQuality: q.id }); setShowResult(false); }} style={{
                   flex: 1, padding: "10px 8px", borderRadius: 10, cursor: "pointer", textAlign: "center",
                   background: c.ttsQuality === q.id ? `${T.gold}15` : T.navyMid,
