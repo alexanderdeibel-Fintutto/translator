@@ -141,6 +141,13 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [useSupabase, setUseSupabase] = useState(false);
   const [invitePrefill, setInvitePrefill] = useState(null);
+  const [offlineEnabled, setOfflineEnabled] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("gt-offline-mode")) || false; } catch { return false; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem("gt-offline-mode", JSON.stringify(offlineEnabled)); } catch {}
+  }, [offlineEnabled]);
 
   useEffect(() => {
     (async () => {
@@ -154,6 +161,9 @@ export default function App() {
         setLoading(false);
         return;
       }
+      if (path === "/impressum") { setPage("impressum"); setLoading(false); return; }
+      if (path === "/datenschutz") { setPage("datenschutz"); setLoading(false); return; }
+      if (path === "/settings") { setPage("settings"); setLoading(false); return; }
 
       // Check if Supabase is configured
       const hasKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -286,6 +296,15 @@ export default function App() {
     localStorage.removeItem(LS_KEY);
   };
 
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const on = () => setIsOnline(true);
+    const off = () => setIsOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
+  }, []);
+
   if (loading) return (
     <div style={{ background: T.navy, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ color: T.gold, fontFamily: font, fontSize: 24, animation: "pulse 1.5s infinite" }}>GuideTranslator</div>
@@ -320,6 +339,7 @@ export default function App() {
           ...(lead ? [{ label: "Kalkulator", pg: "calculator" }] : []),
           ...(savedCalcs.length ? [{ label: `Kalkulationen (${savedCalcs.length})`, pg: "saved" }] : []),
           ...(lead ? [{ label: "Angebot", pg: "contact" }] : []),
+          { label: "⚙", pg: "settings" },
         ].map(({ label, pg }) => (
           <button key={pg} onClick={() => setPage(pg)} style={{
             background: page === pg ? `${T.gold}20` : "transparent",
@@ -359,11 +379,24 @@ export default function App() {
       ) : (
         <>
           <Nav />
+          {!isOnline && offlineEnabled && (
+            <div style={{ background: `${T.gold}15`, borderBottom: `1px solid ${T.gold}30`, padding: "8px 24px", textAlign: "center", fontSize: 13, color: T.gold }}>
+              Offline-Modus aktiv — Kalkulationen werden lokal gespeichert
+            </div>
+          )}
+          {!isOnline && !offlineEnabled && (
+            <div style={{ background: `${T.red}15`, borderBottom: `1px solid ${T.red}30`, padding: "8px 24px", textAlign: "center", fontSize: 13, color: T.red }}>
+              Keine Internetverbindung — <button onClick={() => setPage("settings")} style={{ background: "transparent", border: "none", color: T.gold, cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Offline-Modus aktivieren</button>
+            </div>
+          )}
           {page === "landing" && <Landing onStart={() => lead ? setPage("calculator") : setPage("register")} lead={lead} setPage={setPage} />}
           {page === "register" && <Register onRegister={handleRegister} setPage={setPage} prefill={invitePrefill} />}
           {page === "calculator" && <Calculator onSave={handleSaveCalc} lead={lead} setPage={setPage} />}
           {page === "saved" && <Saved calcs={savedCalcs} onDelete={handleDeleteCalc} setPage={setPage} lead={lead} />}
           {page === "contact" && <Contact lead={lead} calcs={savedCalcs} setPage={setPage} onSubmit={handleContact} />}
+          {page === "impressum" && <Impressum setPage={setPage} />}
+          {page === "datenschutz" && <Datenschutz setPage={setPage} />}
+          {page === "settings" && <Settings setPage={setPage} lead={lead} onLogout={handleLogout} offlineEnabled={offlineEnabled} setOfflineEnabled={setOfflineEnabled} />}
         </>
       )}
     </div>
@@ -500,8 +533,209 @@ function Landing({ onStart, lead, setPage }) {
       </section>
 
       <footer style={{ padding: "32px 24px", textAlign: "center", borderTop: `1px solid ${T.navyMid}` }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 20, marginBottom: 12, flexWrap: "wrap" }}>
+          <button onClick={() => setPage("impressum")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 13, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}>Impressum</button>
+          <button onClick={() => setPage("datenschutz")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 13, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}>Datenschutz</button>
+          <button onClick={() => setPage("settings")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 13, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}>Einstellungen</button>
+        </div>
         <p style={{ fontSize: 12, color: T.gray }}>© 2026 FinTuttO GmbH — Powered by Google Cloud AI | <a href="https://fintutto.de" style={{ color: T.gold, textDecoration: "none" }}>fintutto.de</a></p>
       </footer>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IMPRESSUM
+// ═══════════════════════════════════════════════════════════════
+function Impressum({ setPage }) {
+  return (
+    <div style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px 80px" }}>
+      <button onClick={() => setPage("landing")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 14, cursor: "pointer", marginBottom: 24 }}>← Zurück</button>
+      <h1 className="fu" style={{ fontFamily: font, fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, marginBottom: 32 }}>Impressum</h1>
+      <div className="fu1" style={{ background: T.navyLight, borderRadius: 20, padding: 32, border: `1px solid ${T.navyMid}`, display: "flex", flexDirection: "column", gap: 24 }}>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Angaben gemäß § 5 TMG</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 15 }}>
+            FinTuttO GmbH<br />
+            Musterstraße 42<br />
+            20095 Hamburg<br />
+            Deutschland
+          </p>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Vertreten durch</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 15 }}>Geschäftsführer: Alexander Deibel</p>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Kontakt</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 15 }}>
+            Telefon: +49 (0) 40 123 456 78<br />
+            E-Mail: info@fintutto.de<br />
+            Web: <a href="https://fintutto.de" style={{ color: T.gold, textDecoration: "none" }}>fintutto.de</a>
+          </p>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Registereintrag</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 15 }}>
+            Eintragung im Handelsregister<br />
+            Registergericht: Amtsgericht Hamburg<br />
+            Registernummer: HRB XXXXX
+          </p>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Umsatzsteuer-ID</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 15 }}>
+            Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG:<br />
+            DE XXXXXXXXX
+          </p>
+        </div>
+        <div>
+          <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>Haftungsausschluss</h3>
+          <p style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 14 }}>
+            Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DATENSCHUTZ (Privacy Policy)
+// ═══════════════════════════════════════════════════════════════
+function Datenschutz({ setPage }) {
+  const Section = ({ title, children }) => (
+    <div style={{ marginBottom: 24 }}>
+      <h3 style={{ fontFamily: font, fontSize: 18, color: T.gold, marginBottom: 8 }}>{title}</h3>
+      <div style={{ color: T.grayLight, lineHeight: 1.8, fontSize: 14 }}>{children}</div>
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px 80px" }}>
+      <button onClick={() => setPage("landing")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 14, cursor: "pointer", marginBottom: 24 }}>← Zurück</button>
+      <h1 className="fu" style={{ fontFamily: font, fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, marginBottom: 32 }}>Datenschutzerklärung</h1>
+      <div className="fu1" style={{ background: T.navyLight, borderRadius: 20, padding: 32, border: `1px solid ${T.navyMid}` }}>
+        <Section title="1. Datenschutz auf einen Blick">
+          <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+        </Section>
+        <Section title="2. Verantwortliche Stelle">
+          <p>
+            FinTuttO GmbH<br />
+            Musterstraße 42<br />
+            20095 Hamburg<br />
+            E-Mail: datenschutz@fintutto.de
+          </p>
+        </Section>
+        <Section title="3. Datenerfassung auf dieser Website">
+          <p><strong style={{ color: T.whiteTrue }}>Wer ist verantwortlich für die Datenerfassung?</strong><br />
+          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (FinTuttO GmbH).</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: T.whiteTrue }}>Wie erfassen wir Ihre Daten?</strong><br />
+          Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen (z.B. über das Registrierungsformular). Andere Daten werden automatisch beim Besuch der Website durch unsere IT-Systeme erfasst (z.B. Browser, Betriebssystem, Uhrzeit des Seitenaufrufs).</p>
+        </Section>
+        <Section title="4. Nutzung von Supabase">
+          <p>Wir nutzen Supabase als Backend-Dienst zur Speicherung von Nutzerdaten und Kalkulationen. Die Daten werden auf Servern in der EU gespeichert. Supabase erfüllt die Anforderungen der DSGVO.</p>
+        </Section>
+        <Section title="5. Lokale Datenspeicherung (Offline-Modus)">
+          <p>Für den Offline-Modus speichern wir Daten lokal in Ihrem Browser (localStorage). Diese Daten verlassen nicht Ihr Gerät und werden nicht an Server übermittelt. Sie können diese Daten jederzeit über die Einstellungen oder durch Löschen Ihrer Browser-Daten entfernen.</p>
+        </Section>
+        <Section title="6. Ihre Rechte">
+          <p>Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit an uns wenden: datenschutz@fintutto.de</p>
+        </Section>
+        <Section title="7. Cookies">
+          <p>Diese Website verwendet keine Tracking-Cookies. Es werden lediglich technisch notwendige lokale Speichermechanismen (localStorage) verwendet, um die Funktionalität der Anwendung zu gewährleisten.</p>
+        </Section>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════════
+function Settings({ setPage, lead, onLogout, offlineEnabled, setOfflineEnabled }) {
+  const [cleared, setCleared] = useState(false);
+
+  const clearLocalData = () => {
+    localStorage.removeItem(LS_KEY);
+    setCleared(true);
+    setTimeout(() => setCleared(false), 2000);
+  };
+
+  const Toggle = ({ label, desc, checked, onChange }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0", borderBottom: `1px solid ${T.navyMid}` }}>
+      <div>
+        <div style={{ fontSize: 15, fontWeight: 500, color: T.whiteTrue }}>{label}</div>
+        <div style={{ fontSize: 13, color: T.grayLight, marginTop: 4 }}>{desc}</div>
+      </div>
+      <button onClick={onChange} style={{
+        width: 48, height: 28, borderRadius: 14, border: "none", cursor: "pointer",
+        background: checked ? T.gold : T.navyMid,
+        position: "relative", transition: "background .2s",
+      }}>
+        <div style={{
+          width: 22, height: 22, borderRadius: "50%", background: T.whiteTrue,
+          position: "absolute", top: 3, left: checked ? 23 : 3,
+          transition: "left .2s", boxShadow: "0 1px 3px rgba(0,0,0,.3)",
+        }} />
+      </button>
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 600, margin: "0 auto", padding: "60px 24px 80px" }}>
+      <button onClick={() => setPage(lead ? "calculator" : "landing")} style={{ background: "transparent", border: "none", color: T.grayLight, fontSize: 14, cursor: "pointer", marginBottom: 24 }}>← Zurück</button>
+      <h1 className="fu" style={{ fontFamily: font, fontSize: "clamp(28px, 4vw, 36px)", fontWeight: 700, marginBottom: 32 }}>
+        <span style={{ color: T.gold }}>Einstellungen</span>
+      </h1>
+
+      <div className="fu1" style={{ background: T.navyLight, borderRadius: 20, padding: 28, border: `1px solid ${T.navyMid}`, marginBottom: 24 }}>
+        <h3 style={{ fontFamily: font, fontSize: 18, marginBottom: 8 }}>Allgemein</h3>
+        <Toggle
+          label="Offline-Modus"
+          desc="Kalkulationen lokal speichern für Nutzung ohne Internet"
+          checked={offlineEnabled}
+          onChange={() => setOfflineEnabled(!offlineEnabled)}
+        />
+      </div>
+
+      {lead && (
+        <div className="fu2" style={{ background: T.navyLight, borderRadius: 20, padding: 28, border: `1px solid ${T.navyMid}`, marginBottom: 24 }}>
+          <h3 style={{ fontFamily: font, fontSize: 18, marginBottom: 16 }}>Profil</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, fontSize: 14 }}>
+            <div><span style={{ color: T.grayLight }}>Name:</span> <strong>{lead.name}</strong></div>
+            <div><span style={{ color: T.grayLight }}>Unternehmen:</span> <strong style={{ color: T.gold }}>{lead.company}</strong></div>
+            <div><span style={{ color: T.grayLight }}>E-Mail:</span> {lead.email}</div>
+            <div><span style={{ color: T.grayLight }}>Position:</span> {lead.role || "—"}</div>
+          </div>
+        </div>
+      )}
+
+      <div className="fu3" style={{ background: T.navyLight, borderRadius: 20, padding: 28, border: `1px solid ${T.navyMid}`, marginBottom: 24 }}>
+        <h3 style={{ fontFamily: font, fontSize: 18, marginBottom: 16 }}>Daten</h3>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <button onClick={clearLocalData} style={{
+            background: cleared ? `${T.green}15` : `${T.red}10`,
+            border: `1px solid ${cleared ? T.green : T.red}30`,
+            color: cleared ? T.green : T.red,
+            padding: "10px 20px", borderRadius: 10, fontSize: 13, cursor: "pointer",
+          }}>{cleared ? "Gelöscht!" : "Lokale Daten löschen"}</button>
+          {lead && (
+            <button onClick={onLogout} style={{
+              background: `${T.red}10`, border: `1px solid ${T.red}30`, color: T.red,
+              padding: "10px 20px", borderRadius: 10, fontSize: 13, cursor: "pointer",
+            }}>Abmelden</button>
+          )}
+        </div>
+      </div>
+
+      <div className="fu4" style={{ background: T.navyLight, borderRadius: 20, padding: 28, border: `1px solid ${T.navyMid}` }}>
+        <h3 style={{ fontFamily: font, fontSize: 18, marginBottom: 16 }}>Rechtliches</h3>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <button onClick={() => setPage("impressum")} style={{ background: T.navyMid, color: T.gold, border: `1px solid ${T.gold}30`, padding: "10px 20px", borderRadius: 10, fontSize: 13, cursor: "pointer" }}>Impressum</button>
+          <button onClick={() => setPage("datenschutz")} style={{ background: T.navyMid, color: T.gold, border: `1px solid ${T.gold}30`, padding: "10px 20px", borderRadius: 10, fontSize: 13, cursor: "pointer" }}>Datenschutz</button>
+        </div>
+      </div>
     </div>
   );
 }
