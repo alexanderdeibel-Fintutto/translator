@@ -31,7 +31,7 @@ export default function DatenschutzPage() {
           ai tour ug (haftungsbeschränkt)<br />
           Kolonie 2<br />
           18317 Saal<br />
-          E-Mail: datenschutz@guidetranslator.de
+          E-Mail: datenschutz@guidetranslator.com
         </p>
       </Section>
 
@@ -99,7 +99,7 @@ export default function DatenschutzPage() {
           Sperrung oder Löschung dieser Daten.
         </p>
         <p>
-          Kontakt: datenschutz@guidetranslator.de
+          Kontakt: datenschutz@guidetranslator.com
         </p>
       </Section>
 

@@ -37,8 +37,8 @@ export default function ImpressumPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
-            E-Mail: info@guidetranslator.de<br />
-            Web: <a href="https://guidetranslator.de" className="text-primary hover:underline">guidetranslator.de</a>
+            E-Mail: info@guidetranslator.com<br />
+            Web: <a href="https://guidetranslator.com" className="text-primary hover:underline">guidetranslator.com</a>
           </p>
         </CardContent>
       </Card>

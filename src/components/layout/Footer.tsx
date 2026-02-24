@@ -16,6 +16,9 @@ export default function Footer() {
             <span>&copy; {new Date().getFullYear()} ai tour ug</span>
           </div>
         </div>
+        <div className="mt-3 text-center text-[11px] text-muted-foreground/60">
+          Ein Projekt von <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.cloud</a>
+        </div>
       </div>
     </footer>
   )
