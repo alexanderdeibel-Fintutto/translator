@@ -136,6 +136,88 @@ export const PHRASE_PACKS: PhrasePack[] = [
       { text: 'Gibt es Rabatte für Kreuzfahrt-Passagiere?', category: 'Shopping' },
     ],
   },
+  {
+    id: 'migrant',
+    name: 'Behörden & Alltag',
+    description: 'Wichtige Sätze für Ämter, Arzt, Wohnung, Arbeit und Alltag in Deutschland',
+    icon: '🏛️',
+    phrases: [
+      // Behörde / Amt
+      { text: 'Ich habe einen Termin.', category: 'Behörde' },
+      { text: 'Wo ist das Ausländeramt?', category: 'Behörde' },
+      { text: 'Ich brauche eine Aufenthaltserlaubnis.', category: 'Behörde' },
+      { text: 'Können Sie mir das Formular erklären?', category: 'Behörde' },
+      { text: 'Welche Dokumente brauche ich?', category: 'Behörde' },
+      { text: 'Wo muss ich unterschreiben?', category: 'Behörde' },
+      { text: 'Ich brauche einen Dolmetscher.', category: 'Behörde' },
+      { text: 'Ich möchte einen Antrag stellen.', category: 'Behörde' },
+      { text: 'Wann bekomme ich einen Bescheid?', category: 'Behörde' },
+      { text: 'Ich verstehe den Brief nicht. Können Sie ihn mir erklären?', category: 'Behörde' },
+      { text: 'Mein Ausweis / Pass', category: 'Behörde' },
+      { text: 'Ich habe eine Duldung / Aufenthaltsgestattung.', category: 'Behörde' },
+
+      // Arzt / Gesundheit
+      { text: 'Ich habe Schmerzen.', category: 'Arzt' },
+      { text: 'Ich brauche einen Arzt.', category: 'Arzt' },
+      { text: 'Wo ist die nächste Notaufnahme?', category: 'Arzt' },
+      { text: 'Ich bin schwanger.', category: 'Arzt' },
+      { text: 'Mein Kind ist krank.', category: 'Arzt' },
+      { text: 'Ich brauche ein Rezept.', category: 'Arzt' },
+      { text: 'Ich bin allergisch gegen...', category: 'Arzt' },
+      { text: 'Ich nehme diese Medikamente.', category: 'Arzt' },
+      { text: 'Ich habe Fieber.', category: 'Arzt' },
+      { text: 'Ich habe Kopfschmerzen / Bauchschmerzen.', category: 'Arzt' },
+      { text: 'Wo ist die nächste Apotheke?', category: 'Arzt' },
+      { text: 'Ich habe meine Krankenversicherungskarte.', category: 'Arzt' },
+      { text: 'Ich brauche einen Zahnarzt.', category: 'Arzt' },
+      { text: 'Ich kann nicht schlafen.', category: 'Arzt' },
+
+      // Wohnung / Unterkunft
+      { text: 'Ich suche eine Wohnung.', category: 'Wohnung' },
+      { text: 'Wie hoch ist die Miete?', category: 'Wohnung' },
+      { text: 'Ab wann ist die Wohnung frei?', category: 'Wohnung' },
+      { text: 'Die Heizung funktioniert nicht.', category: 'Wohnung' },
+      { text: 'Das Wasser funktioniert nicht.', category: 'Wohnung' },
+      { text: 'Ich habe ein Problem in meiner Wohnung.', category: 'Wohnung' },
+      { text: 'Wo kann ich den Vermieter erreichen?', category: 'Wohnung' },
+      { text: 'Wie funktioniert die Mülltrennung?', category: 'Wohnung' },
+
+      // Arbeit / Jobcenter
+      { text: 'Ich suche Arbeit.', category: 'Arbeit' },
+      { text: 'Ich habe einen Termin beim Jobcenter.', category: 'Arbeit' },
+      { text: 'Wird mein Abschluss in Deutschland anerkannt?', category: 'Arbeit' },
+      { text: 'Ich möchte einen Deutschkurs besuchen.', category: 'Arbeit' },
+      { text: 'Ich habe eine Arbeitserlaubnis.', category: 'Arbeit' },
+      { text: 'Wo kann ich einen Integrationskurs machen?', category: 'Arbeit' },
+
+      // Schule / Kita
+      { text: 'Ich möchte mein Kind in der Schule anmelden.', category: 'Schule' },
+      { text: 'Wann beginnt der Unterricht?', category: 'Schule' },
+      { text: 'Mein Kind braucht Nachhilfe.', category: 'Schule' },
+      { text: 'Gibt es einen Elternabend?', category: 'Schule' },
+      { text: 'Ich suche einen Kita-Platz.', category: 'Schule' },
+      { text: 'Was muss mein Kind mitbringen?', category: 'Schule' },
+
+      // Polizei / Recht
+      { text: 'Ich möchte eine Anzeige erstatten.', category: 'Polizei' },
+      { text: 'Ich brauche einen Anwalt.', category: 'Polizei' },
+      { text: 'Ich habe Angst.', category: 'Polizei' },
+      { text: 'Ich wurde bestohlen.', category: 'Polizei' },
+      { text: 'Bitte rufen Sie die Polizei.', category: 'Polizei' },
+
+      // Alltag
+      { text: 'Wo ist der nächste Supermarkt?', category: 'Alltag' },
+      { text: 'Wann fährt der nächste Bus / die nächste Bahn?', category: 'Alltag' },
+      { text: 'Können Sie mir helfen?', category: 'Alltag' },
+      { text: 'Ich lerne Deutsch.', category: 'Alltag' },
+      { text: 'Ich spreche kein Deutsch.', category: 'Alltag' },
+      { text: 'Bitte sprechen Sie langsam.', category: 'Alltag' },
+      { text: 'Wo ist die nächste Bushaltestelle?', category: 'Alltag' },
+      { text: 'Wie viel kostet das?', category: 'Alltag' },
+      { text: 'Ich habe mich verlaufen.', category: 'Alltag' },
+      { text: 'Können Sie das bitte aufschreiben?', category: 'Alltag' },
+    ],
+  },
 ]
 
 /**

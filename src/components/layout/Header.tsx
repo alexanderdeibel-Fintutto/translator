@@ -1,23 +1,29 @@
-import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useOffline } from '@/context/OfflineContext'
-
-const NAV_ITEMS = [
-  { label: 'Übersetzer', path: '/' },
-  { label: 'Live', path: '/live' },
-  { label: 'Info', path: '/info' },
-]
+import { useI18n } from '@/context/I18nContext'
+import { UI_LANGUAGES } from '@/lib/i18n'
 
 export default function Header() {
   const location = useLocation()
   const { networkMode } = useOffline()
+  const { locale, setLocale, t } = useI18n()
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === 'undefined') return false
     return document.documentElement.classList.contains('dark')
   })
+  const [langOpen, setLangOpen] = useState(false)
+  const langRef = useRef<HTMLDivElement>(null)
+
+  const NAV_ITEMS = [
+    { label: t('nav.translator'), path: '/' },
+    { label: t('nav.live'), path: '/live' },
+    { label: t('nav.phrasebook'), path: '/phrasebook' },
+    { label: t('nav.info'), path: '/info' },
+  ]
 
   useEffect(() => {
     if (isDark) {
@@ -33,6 +39,19 @@ export default function Header() {
     if (saved === 'dark') setIsDark(true)
     else if (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) setIsDark(true)
   }, [])
+
+  // Close language dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false)
+      }
+    }
+    if (langOpen) document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [langOpen])
+
+  const currentUiLang = UI_LANGUAGES.find(l => l.code === locale)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -71,19 +90,53 @@ export default function Header() {
               'text-destructive'
             )}
             title={
-              networkMode === 'online' ? 'Online — Cloud-Übersetzung aktiv' :
-              networkMode === 'degraded' ? 'Instabile Verbindung' :
-              'Offline — Nur heruntergeladene Sprachen'
+              networkMode === 'online' ? t('header.online') :
+              networkMode === 'degraded' ? t('header.unstable') :
+              t('header.offline')
             }
           >
             {networkMode === 'online' ? <Wifi className="h-3.5 w-3.5" /> :
              networkMode === 'degraded' ? <Signal className="h-3.5 w-3.5" /> :
              <WifiOff className="h-3.5 w-3.5" />}
             <span className="hidden sm:inline">
-              {networkMode === 'online' ? 'Online' :
-               networkMode === 'degraded' ? 'Instabil' :
-               'Offline'}
+              {networkMode === 'online' ? t('header.online') :
+               networkMode === 'degraded' ? t('header.unstable') :
+               t('header.offline')}
             </span>
+          </div>
+
+          {/* UI Language Selector */}
+          <div className="relative" ref={langRef}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 px-2"
+              onClick={() => setLangOpen(!langOpen)}
+              title={t('header.language')}
+            >
+              <Globe className="h-3.5 w-3.5" />
+              <span className="text-xs">{currentUiLang?.flag}</span>
+            </Button>
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-1 w-48 rounded-lg border border-border bg-background shadow-lg py-1 z-50">
+                {UI_LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setLocale(lang.code as typeof locale)
+                      setLangOpen(false)
+                    }}
+                    className={cn(
+                      'w-full text-left px-3 py-1.5 text-sm flex items-center gap-2 hover:bg-accent transition-colors',
+                      locale === lang.code && 'bg-accent font-medium'
+                    )}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.nativeName}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Settings */}
@@ -91,7 +144,7 @@ export default function Header() {
             <Button
               variant="ghost"
               size="icon"
-              title="Einstellungen"
+              title={t('nav.settings')}
               className={cn(
                 location.pathname === '/settings' && 'bg-accent'
               )}
@@ -105,7 +158,7 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setIsDark(!isDark)}
-            title={isDark ? 'Heller Modus' : 'Dunkler Modus'}
+            title={isDark ? t('header.lightMode') : t('header.darkMode')}
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>

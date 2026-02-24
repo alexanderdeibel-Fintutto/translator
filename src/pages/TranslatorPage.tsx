@@ -33,14 +33,14 @@ export default function TranslatorPage() {
           <span className="gradient-text-translator">Übersetzer</span>
         </h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Texte kostenlos übersetzen, vorlesen lassen und per Spracheingabe diktieren. Über 20 Sprachen verfügbar.
+          Texte kostenlos übersetzen, vorlesen lassen und per Spracheingabe diktieren. 45 Sprachen verfügbar.
         </p>
       </div>
 
       {/* Features Pills */}
       <div className="flex items-center justify-center gap-2 flex-wrap">
         {[
-          { icon: Globe, label: '22 Sprachen' },
+          { icon: Globe, label: '45 Sprachen' },
           { icon: Mic, label: 'Spracheingabe' },
           { icon: Languages, label: 'Sofort-Übersetzung' },
           { icon: Zap, label: 'Kostenlos' },

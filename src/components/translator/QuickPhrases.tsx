@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MessageSquare, Ship, Globe, Mountain } from 'lucide-react'
+import { MessageSquare, Ship, Globe, Mountain, Building2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { getPhrasePacks, type PhrasePack } from '@/lib/offline/phrase-packs'
 
@@ -11,6 +11,7 @@ const PACK_ICONS: Record<string, typeof Globe> = {
   common: Globe,
   mediterranean: Ship,
   nordic: Mountain,
+  migrant: Building2,
 }
 
 export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {

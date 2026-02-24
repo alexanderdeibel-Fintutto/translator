@@ -1,8 +1,9 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2 } from 'lucide-react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
+import { downloadTranscript } from '@/lib/transcript'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -12,6 +13,16 @@ interface SpeakerViewProps {
 }
 
 export default function SpeakerView({ session }: SpeakerViewProps) {
+  const handleDownloadTranscript = () => {
+    downloadTranscript({
+      sessionCode: session.sessionCode,
+      sourceLanguage: session.sourceLanguage,
+      chunks: session.translationHistory,
+      listenerCount: session.listenerCount,
+      languageCount: Object.keys(session.listenersByLanguage).length,
+    })
+  }
+
   return (
     <div className="space-y-4">
       {/* Connection status bar */}
@@ -49,6 +60,18 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               </Button>
             )}
           </div>
+
+          {/* Download Transcript */}
+          {session.translationHistory.length > 0 && (
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              onClick={handleDownloadTranscript}
+            >
+              <Download className="h-4 w-4" />
+              Protokoll herunterladen
+            </Button>
+          )}
 
           <Button
             variant="outline"

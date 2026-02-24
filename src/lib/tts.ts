@@ -12,6 +12,7 @@ export type VoiceQuality = 'neural2' | 'chirp3hd'
 
 // Neural2/WaveNet/Standard voices (current default)
 const VOICE_MAP_NEURAL: Record<string, { languageCode: string; name: string }> = {
+  // European
   'de-DE': { languageCode: 'de-DE', name: 'de-DE-Neural2-C' },
   'en-US': { languageCode: 'en-US', name: 'en-US-Neural2-C' },
   'fr-FR': { languageCode: 'fr-FR', name: 'fr-FR-Neural2-A' },
@@ -23,17 +24,31 @@ const VOICE_MAP_NEURAL: Record<string, { languageCode: string; name: string }> =
   'tr-TR': { languageCode: 'tr-TR', name: 'tr-TR-Standard-A' },
   'ru-RU': { languageCode: 'ru-RU', name: 'ru-RU-Standard-A' },
   'uk-UA': { languageCode: 'uk-UA', name: 'uk-UA-Standard-A' },
+  'el-GR': { languageCode: 'el-GR', name: 'el-GR-Standard-A' },
+  'ro-RO': { languageCode: 'ro-RO', name: 'ro-RO-Standard-A' },
+  'hu-HU': { languageCode: 'hu-HU', name: 'hu-HU-Standard-A' },
+  'cs-CZ': { languageCode: 'cs-CZ', name: 'cs-CZ-Standard-A' },
+  'sv-SE': { languageCode: 'sv-SE', name: 'sv-SE-Standard-A' },
+  'da-DK': { languageCode: 'da-DK', name: 'da-DK-Standard-A' },
+  'bg-BG': { languageCode: 'bg-BG', name: 'bg-BG-Standard-A' },
+  'sk-SK': { languageCode: 'sk-SK', name: 'sk-SK-Standard-A' },
+  'nb-NO': { languageCode: 'nb-NO', name: 'nb-NO-Standard-A' },
+  'fi-FI': { languageCode: 'fi-FI', name: 'fi-FI-Standard-A' },
+  'sr-RS': { languageCode: 'sr-RS', name: 'sr-RS-Standard-A' },
+  // Migration languages
   'ar-SA': { languageCode: 'ar-XA', name: 'ar-XA-Standard-A' },
+  'bn-BD': { languageCode: 'bn-IN', name: 'bn-IN-Standard-A' },
+  // Asia & Pacific
   'zh-CN': { languageCode: 'cmn-CN', name: 'cmn-CN-Standard-A' },
   'ja-JP': { languageCode: 'ja-JP', name: 'ja-JP-Neural2-B' },
   'ko-KR': { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A' },
   'hi-IN': { languageCode: 'hi-IN', name: 'hi-IN-Neural2-A' },
-  'sv-SE': { languageCode: 'sv-SE', name: 'sv-SE-Standard-A' },
-  'da-DK': { languageCode: 'da-DK', name: 'da-DK-Standard-A' },
-  'cs-CZ': { languageCode: 'cs-CZ', name: 'cs-CZ-Standard-A' },
-  'ro-RO': { languageCode: 'ro-RO', name: 'ro-RO-Standard-A' },
-  'el-GR': { languageCode: 'el-GR', name: 'el-GR-Standard-A' },
-  'hu-HU': { languageCode: 'hu-HU', name: 'hu-HU-Standard-A' },
+  'th-TH': { languageCode: 'th-TH', name: 'th-TH-Standard-A' },
+  'vi-VN': { languageCode: 'vi-VN', name: 'vi-VN-Standard-A' },
+  'id-ID': { languageCode: 'id-ID', name: 'id-ID-Standard-A' },
+  'ms-MY': { languageCode: 'ms-MY', name: 'ms-MY-Standard-A' },
+  'fil-PH': { languageCode: 'fil-PH', name: 'fil-PH-Standard-A' },
+  'he-IL': { languageCode: 'he-IL', name: 'he-IL-Standard-A' },
 }
 
 // Chirp 3 HD voices — multi-language, highest quality

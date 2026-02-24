@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from './LanguageSelector'
 import { translateText } from '@/lib/translate'
-import { getLanguageByCode } from '@/lib/languages'
+import { getLanguageByCode, RTL_LANGUAGES } from '@/lib/languages'
+import { applyFormality, supportsFormality, type Formality } from '@/lib/formality'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
@@ -43,6 +44,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   })
   const [hdVoice, setHdVoice] = useState(() => {
     return localStorage.getItem('translator-hd-voice') === 'true'
+  })
+  const [formality, setFormality] = useState<Formality>(() => {
+    return (localStorage.getItem('translator-formality') as Formality) || 'formal'
   })
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -91,19 +95,21 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
     try {
       const result = await translateText(text, sourceLang, targetLang)
-      setTranslatedText(result.translatedText)
+      // Apply formality post-processing (Sie/Du for German, etc.)
+      const finalText = applyFormality(result.translatedText, targetLang, formality)
+      setTranslatedText(finalText)
       setMatchScore(result.match)
       setProvider(result.provider)
 
       // Auto-speak via refs to avoid re-render dependency loop
-      if (autoSpeakRef.current && result.translatedText) {
+      if (autoSpeakRef.current && finalText) {
         const lang = getLanguageByCode(targetLangRef.current)
-        targetSpeakRef.current(result.translatedText, lang?.speechCode || targetLangRef.current)
+        targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
       }
 
       addEntry({
         sourceText: text,
-        translatedText: result.translatedText,
+        translatedText: finalText,
         sourceLang,
         targetLang,
       })
@@ -112,7 +118,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     } finally {
       setIsTranslating(false)
     }
-  }, [sourceLang, targetLang, addEntry])
+  }, [sourceLang, targetLang, formality, addEntry])
 
   useEffect(() => {
     if (debounceRef.current) {
@@ -203,6 +209,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     })
   }
 
+  const toggleFormality = () => {
+    setFormality(prev => {
+      const next: Formality = prev === 'formal' ? 'informal' : 'formal'
+      localStorage.setItem('translator-formality', next)
+      return next
+    })
+  }
+
   const clearAll = () => {
     setSourceText('')
     setTranslatedText('')
@@ -246,6 +260,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
+        {supportsFormality(targetLang) && (
+          <Button
+            variant={formality === 'informal' ? 'default' : 'outline'}
+            size="sm"
+            onClick={toggleFormality}
+            className="mb-0.5 shrink-0 gap-1.5"
+            title={formality === 'formal' ? 'Formell (Sie) — Klicken für Du' : 'Informell (Du) — Klicken für Sie'}
+          >
+            <span className="text-xs">{formality === 'formal' ? 'Sie' : 'Du'}</span>
+          </Button>
+        )}
       </div>
 
       {/* Translation Cards */}
@@ -294,7 +319,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               onChange={e => setSourceText(e.target.value)}
               placeholder="Text eingeben oder einsprechen..."
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
-              dir={sourceLang === 'ar' ? 'rtl' : 'ltr'}
+              dir={RTL_LANGUAGES.has(sourceLang) ? 'rtl' : 'ltr'}
             />
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
@@ -345,7 +370,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             </div>
             <div
               className="w-full min-h-[200px] text-base leading-relaxed"
-              dir={targetLang === 'ar' ? 'rtl' : 'ltr'}
+              dir={RTL_LANGUAGES.has(targetLang) ? 'rtl' : 'ltr'}
             >
               {isTranslating ? (
                 <div className="flex items-center gap-2 text-muted-foreground">
