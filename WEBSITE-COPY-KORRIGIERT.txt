@@ -1,0 +1,935 @@
+================================================================================
+   GUIDETRANSLATOR.COM — KORRIGIERTE WEBSITE-COPY
+   Alle Seiten mit Aenderungen • Realistisch • Ehrlich • Trotzdem stark
+   Stand: Februar 2026
+================================================================================
+
+AENDERUNGSPROTOKOLL (gegenueber Original):
+──────────────────────────────────────────
+[A01] "130+ Sprachen" BLEIBT (Option B: languages.ts wird erweitert, Online)
+[A02] "<1 Cent" → "Ab 1 Cent" (ehrlicher, inkl. Translation-Kosten)
+[A03] "2-4 Sekunden" → "3-6 Sekunden" Latenz
+[A04] "93% Ersparnis" → "Bis zu 80% Ersparnis"
+[A05] "FinTuttO GmbH" → "ai tour ug (haftungsbeschraenkt)" (Betreiber)
+                       → "fintutto.cloud" (Produkt-Dachmarke)
+[A06] app.guidetranslator.com/register → app.guidetranslator.com (kein /register)
+[A07] Enterprise-Preise → Verweis auf sales.guidetranslator.com
+[A08] Alle Plaene → "Kostenlose Beta" + Preise zur Orientierung
+[A09] Testimonial-Platzhalter → ENTFERNT
+[A10] Uebertriebene Zahlen → konservativ korrigiert
+[A11] CTA-Texte → an Beta-Status angepasst
+──────────────────────────────────────────
+PREISCHECK SALES.GUIDETRANSLATOR.COM: Alle Preise stimmen ueberein.
+  Pilot €2.990/Mon, Fleet €9.990/Mon, Armada €19.990/Mon, Custom +€1.500/Schiff
+  API: WaveNet €0,000004/Z, Neural2 €0,000016/Z, Chirp3 €0,00003/Z
+  Translation: €0,00002/Z — Alles korrekt. Keine Aenderungen noetig.
+================================================================================
+
+
+================================================================================
+ SEITE 1: STARTSEITE (/)
+ Meta-Title: GuideTranslator – KI-Uebersetzung fuer Fuehrungen in 130+ Sprachen
+ Meta-Desc: Sprechen Sie eine Sprache, Ihre Gaeste hoeren alle. KI-Echtzeit-
+            Uebersetzung fuer Stadtfuehrungen, Museumstouren und Kreuzfahrt-
+            Ausfluege. Jetzt kostenlos testen.
+ H1: Ihr Guide spricht eine Sprache. Ihre Gaeste hoeren alle.
+================================================================================
+
+--- HERO SECTION ---
+
+Badge: KI-gestuetzte Echtzeit-Uebersetzung — Jetzt in der Beta
+
+H1: Ihr Guide spricht eine Sprache. Ihre Gaeste hoeren alle.
+
+Sub: Uebersetzen Sie Fuehrungen, Touren und Ausfluege live in ueber
+     130 Sprachen — mit KI-Stimmen, die sich natuerlich anhoeren.
+     Ab 1 Cent pro Teilnehmer.
+
+CTA Primaer: [Kostenlos testen] → app.guidetranslator.com
+CTA Sekundaer: [Enterprise-Kalkulator] → sales.guidetranslator.com
+
+Kennzahlen-Leiste:
+• 130+ Sprachen in Echtzeit
+• Ab 1¢ pro Teilnehmer pro Fuehrung
+• 3-6 Sekunden Latenz
+• Bis zu 80% Ersparnis vs. mehrsprachige Guides
+
+
+--- VERTRAUENS-LOGOS ---
+
+"Powered by" / Technologie-Partner:
+Google Cloud AI • Google Text-to-Speech • Google Cloud Translation
+
+Ein Produkt von fintutto.cloud
+
+
+--- PROBLEM SECTION ---
+
+H2: Das Problem: Sprachbarrieren kosten Sie Kunden und Geld
+
+Karte 1: Sprachbarriere
+  Ihre Fuehrung erreicht nur einen Bruchteil Ihres Publikums. Internationale
+  Gaeste verstehen nichts — und buchen beim naechsten Mal woanders.
+
+Karte 2: Hohe Kosten
+  Mehrsprachige Guides kosten €200-500 pro Tag pro Sprache. Bei 8 Sprachen
+  sind das €4.000 pro Ausflug — und Sie decken trotzdem nicht alle ab.
+
+Karte 3: Verfuegbarkeit
+  An exotischen Destinationen gibt es keine Guides fuer Japanisch, Koreanisch
+  oder Hindi. Ihre Gaeste bleiben aussen vor.
+
+Karte 4: Skalierung
+  Jede neue Tour, jedes neue Schiff, jeder neue Standort erfordert neue
+  Guides in allen Sprachen. Der Markt waechst, das Angebot nicht.
+
+
+--- SO FUNKTIONIERT'S (3 Schritte) ---
+
+H2: So funktioniert GuideTranslator
+
+Schritt 1: Guide spricht
+  Ihr Guide fuehrt die Tour wie gewohnt — in seiner Muttersprache. Die App
+  nimmt den Vortrag ueber Mikrofon oder Text-Input auf.
+
+Schritt 2: KI uebersetzt
+  Google Cloud AI uebersetzt in Echtzeit in alle gewuenschten Sprachen.
+  Neural2- und Chirp 3 HD-Stimmen klingen natuerlich und professionell.
+
+Schritt 3: Gaeste hoeren
+  Teilnehmer scannen einen QR-Code, waehlen ihre Sprache und hoeren die
+  Uebersetzung ueber ihr Smartphone — ohne App-Download noetig.
+
+
+--- VERGLEICH ---
+
+H2: Traditionell vs. GuideTranslator
+
+TRADITIONELL:
+✗ 8 Guides × €300/Tag = €2.400 pro Ausflug
+✗ Nur 5-6 Sprachen abgedeckt
+✗ Qualitaet variiert von Guide zu Guide
+✗ Schwer skalierbar auf neue Standorte und Sprachen
+
+MIT GUIDETRANSLATOR:
+✓ 1 Guide + KI = alle 130+ Sprachen
+✓ Standardisierte, konsistente Inhalte
+✓ Sofort verfuegbar an jedem Ort der Welt
+✓ Bis zu 80% Ersparnis gegenueber mehrsprachigen Guides
+
+→ [Ihre Ersparnis berechnen] → sales.guidetranslator.com
+
+
+--- ZIELGRUPPEN-TEASER ---
+
+H2: Die richtige Loesung fuer jeden Anwendungsfall
+
+Karte: Stadtfuehrer & Freelancer
+  Bieten Sie Ihre Tour in jeder Sprache an — ohne Fremdsprachenkenntnisse.
+  Aktuell kostenlos in der Beta.
+  [Mehr erfahren →] /loesungen/stadtfuehrer
+
+Karte: Agenturen & Reiseveranstalter
+  Managen Sie mehrsprachige Touren zentral. Ein Guide, alle Sprachen,
+  volle Kostenkontrolle.
+  [Mehr erfahren →] /loesungen/agenturen
+
+Karte: Kreuzfahrt-Reedereien
+  Enterprise-Loesung fuer Flotten. Shore Excursions in 130+ Sprachen,
+  ab 1 Cent pro Passagier.
+  [Enterprise-Kalkulator →] sales.guidetranslator.com
+
+Karte: Museen, Events & Grossveranstalter
+  Audio-Guides, Konferenzen, Messen — ueberall dort, wo Sprache
+  keine Barriere sein darf.
+  [Mehr erfahren →] /loesungen/enterprise
+
+
+--- CTA SECTION ---
+
+H2: Starten Sie in 2 Minuten. Kostenlos.
+
+Sub: Keine Kreditkarte. Keine Installation. Einfach Sprache waehlen und
+     loslegen. Aktuell in der kostenlosen Beta — alle Features inklusive.
+
+CTA: [Jetzt kostenlos testen] → app.guidetranslator.com
+
+Hinweis: DSGVO-konform • Server in der EU • Ein Produkt von fintutto.cloud
+
+
+--- FAQ ---
+
+H2: Haeufig gestellte Fragen
+
+F: Wie gut ist die Uebersetzungsqualitaet?
+A: GuideTranslator nutzt Google Cloud Translation (Neural Machine Translation)
+   und Google Text-to-Speech mit Neural2- und Chirp 3 HD-Stimmen. Die Qualitaet
+   ist vergleichbar mit professionellen Simultandolmetschern — bei einem
+   Bruchteil der Kosten.
+
+F: Welche Sprachen werden unterstuetzt?
+A: Ueber 130 Sprachen und Dialekte, darunter alle grossen Weltsprachen sowie
+   viele regionale Sprachen wie Katalanisch, Baskisch oder Tagalog. Die
+   Uebersetzung erfolgt ueber Google Cloud AI und ist fuer alle Sprachen
+   online verfuegbar.
+
+F: Brauchen die Teilnehmer eine App?
+A: Nein. Die Teilnehmer scannen einfach einen QR-Code und hoeren die
+   Uebersetzung im Browser ihres Smartphones. Kein Download noetig.
+
+F: Wie hoch ist die Latenz?
+A: 3-6 Sekunden bei Echtzeit-Uebersetzung. Bei vorbereiteten Texten
+   (z.B. standardisierte Tourskripte) kann die Uebersetzung vorab
+   generiert werden — dann gibt es keine Latenz.
+
+F: Ist GuideTranslator DSGVO-konform?
+A: Ja. Alle Daten werden auf EU-Servern verarbeitet. Es werden keine
+   persoenlichen Daten der Teilnehmer gespeichert.
+
+F: Was kostet GuideTranslator?
+A: GuideTranslator befindet sich aktuell in der kostenlosen Beta-Phase.
+   Alle Features sind kostenlos verfuegbar. Wir planen verschiedene
+   Preismodelle fuer unterschiedliche Zielgruppen — von dauerhaft
+   kostenlos fuer Einzelguides bis hin zu Enterprise-Loesungen fuer
+   Kreuzfahrt-Reedereien.
+
+
+================================================================================
+ SEITE 2: LOESUNGEN FUER STADTFUEHRER (/loesungen/stadtfuehrer)
+ Meta-Title: KI-Uebersetzung fuer Stadtfuehrer – Touren in 130+ Sprachen
+ Meta-Desc: Als Stadtfuehrer jede Tour mehrsprachig anbieten. Ohne Fremd-
+            sprachenkenntnisse. KI uebersetzt in Echtzeit. Kostenlose Beta.
+ H1: Ihre Stadtfuehrung. Jede Sprache. Kein Aufwand.
+================================================================================
+
+--- HERO ---
+
+Badge: Fuer selbststaendige Stadtfuehrer & Freelancer
+
+H1: Ihre Stadtfuehrung. Jede Sprache. Kein Aufwand.
+
+Sub: Sie kennen Ihre Stadt wie kein anderer. Jetzt koennen das auch Gaeste
+     aus Japan, Korea, Brasilien und 127 weiteren Laendern erleben —
+     ohne dass Sie ein Wort Fremdsprache sprechen muessen.
+
+CTA: [Kostenlos testen] → app.guidetranslator.com
+
+
+--- PROBLEM ---
+
+H2: Das kennen Sie: Internationale Gaeste, aber nur eine Sprache
+
+Sie bieten grossartige Fuehrungen an — auf Deutsch oder Englisch. Aber:
+
+• Japanische Reisegruppen buchen bei der Konkurrenz mit japanischem Guide
+• Ihr Marketing erreicht nur deutschsprachige Touristen
+• Sie verlieren einen Grossteil der internationalen Nachfrage
+• Mehrsprachige Guides in Ihrer Stadt sind teurer und oft ausgebucht
+
+
+--- LOESUNG ---
+
+H2: Mit GuideTranslator sprechen Sie jede Sprache
+
+So einfach geht's:
+1. Oeffnen Sie app.guidetranslator.com
+2. Laden Sie Ihr Tourskript hoch oder sprechen Sie live
+3. Drucken Sie den QR-Code aus (A4 oder Aufkleber)
+4. Ihre Gaeste scannen, waehlen ihre Sprache und hoeren Ihre Tour
+
+Das Ergebnis:
+• Ihr Tourtext in 130+ Sprachen — sofort verfuegbar
+• Natuerlich klingende KI-Stimmen (Google Neural2 / Chirp 3 HD)
+• Gaeste brauchen nur ihr Smartphone — keine App, kein Download
+• Sie konzentrieren sich aufs Fuehren, die KI aufs Uebersetzen
+
+
+--- PREISE FUER STADTFUEHRER ---
+
+H2: Faire Preise fuer Stadtfuehrer
+
+Hinweis-Banner:
+  KOSTENLOSE BETA: Aktuell sind alle Features kostenlos verfuegbar.
+  Die folgenden Preismodelle gelten ab dem offiziellen Launch
+  und dienen zur Orientierung.
+
+FREE — 0€/Monat (Dauerhaft kostenlos)
+• 50.000 Zeichen/Monat (~5-10 Fuehrungen)
+• 5 Sprachen gleichzeitig
+• WaveNet-Stimmen (gute Qualitaet)
+• QR-Code fuer Teilnehmer
+• 1 Tour-Profil
+→ [Kostenlos testen] → app.guidetranslator.com
+
+GUIDE PRO — 29€/Monat (oder 290€/Jahr — 2 Monate gratis)
+• 500.000 Zeichen/Monat (~50-100 Fuehrungen)
+• 30 Sprachen gleichzeitig
+• Neural2-Stimmen (sehr gute Qualitaet)
+• Eigenes Branding auf QR-Code-Seite
+• 10 Tour-Profile
+• Statistiken: Welche Sprachen werden am meisten genutzt
+• Priority Support
+
+GUIDE PREMIUM — 79€/Monat (oder 790€/Jahr)
+• 2.000.000 Zeichen/Monat (unbegrenzt fuer die meisten Guides)
+• Alle 130+ Sprachen
+• Chirp 3 HD-Stimmen (Premium, natuerlichste Qualitaet)
+• White-Label: Eigenes Logo, eigene Farben
+• Unbegrenzte Tour-Profile
+• Download: Offline-Audio-Dateien fuer jeden Tourpunkt
+• API-Zugang fuer eigene Website/App-Integration
+• Telefon-Support
+
+
+--- RECHENBEISPIEL ---
+
+H2: Was bringt Ihnen GuideTranslator?
+
+Beispiel: Stadtfuehrer in Muenchen, 3 Touren/Woche
+
+Ohne GuideTranslator:
+• Nur deutsche + englische Gaeste
+• ∅ 12 Teilnehmer/Tour × 15€ = 180€/Tour
+• 3 Touren/Woche = 540€/Woche = 2.340€/Monat
+
+Mit GuideTranslator:
+• +Japanisch, Koreanisch, Chinesisch, Spanisch, Franzoesisch...
+• ∅ 18 Teilnehmer/Tour × 15€ = 270€/Tour
+• 3 Touren/Woche = 810€/Woche = 3.510€/Monat
+
+→ Potentieller Mehrumsatz: +1.170€/Monat
+→ Aktuell kostenlos in der Beta — kein Risiko, einfach ausprobieren
+
+
+--- SEO-TEXT ---
+
+H2: Stadtfuehrungen mehrsprachig anbieten — So geht's 2026
+
+Als Stadtfuehrer in Deutschland stehen Sie vor einer spannenden Entwicklung:
+Der internationale Tourismus boomt. Allein 2025 kamen ueber 40 Millionen
+auslaendische Uebernachtungsgaeste nach Deutschland. Viele davon suchen
+authentische Stadtfuehrungen — aber nicht auf Deutsch oder Englisch.
+
+GuideTranslator ermoeglicht es Ihnen, Ihre bestehenden Touren in ueber
+130 Sprachen anzubieten, ohne selbst Fremdsprachen lernen zu muessen. Die
+KI-gestuetzte Echtzeit-Uebersetzung von Google Cloud macht es moeglich.
+
+Ob Walking Tour durch Berlin, Altstadtfuehrung in Muenchen oder Hafenrundgang
+in Hamburg — mit GuideTranslator erreichen Sie jetzt auch die Reisegruppen
+aus Asien, Suedamerika und dem Nahen Osten, die bisher an Ihnen vorbeigebucht
+haben.
+
+
+================================================================================
+ SEITE 3: LOESUNGEN FUER AGENTUREN (/loesungen/agenturen)
+ Meta-Title: Mehrsprachige Touren managen – GuideTranslator fuer Agenturen
+ Meta-Desc: Reise- und Stadtfuehrungsagenturen: Managen Sie mehrsprachige
+            Touren zentral. Ein Guide pro Tour, alle Sprachen automatisch.
+            Jetzt kostenlos in der Beta testen.
+ H1: Eine Agentur. Hunderte Touren. Jede Sprache.
+================================================================================
+
+--- HERO ---
+
+Badge: Fuer Agenturen & Reiseveranstalter
+
+H1: Eine Agentur. Hunderte Touren. Jede Sprache.
+
+Sub: Managen Sie Ihr gesamtes Tour-Portfolio mehrsprachig — ohne fuer jede
+     Sprache eigene Guides zu finden. Ein Guide pro Tour reicht.
+
+CTA: [Demo anfragen] → sales.guidetranslator.com
+CTA Sekundaer: [Preise ansehen] → /preise
+
+
+--- PAIN POINTS ---
+
+H2: Das kostet Sie als Agentur Geld und Nerven
+
+• Guide-Recruiting fuer seltene Sprachen ist ein Albtraum
+• Qualitaetskontrolle ueber mehrere Guides in verschiedenen Sprachen unmoeglich
+• Absagen/Ausfaelle: Ein kranker Guide = ganze Gruppe ohne Uebersetzung
+• Saisonale Schwankungen: Im Sommer brauchen Sie 3x so viele Guides
+• Margen-Druck: Jeder zusaetzliche Guide reduziert Ihren Gewinn
+
+
+--- AGENTUR-FEATURES ---
+
+H2: GuideTranslator fuer Agenturen
+
+Feature 1: Zentrales Tour-Management
+  Verwalten Sie alle Touren, Skripte und Uebersetzungen in einem Dashboard.
+  Aenderungen an einem Tourskript werden automatisch in alle Sprachen
+  uebernommen.
+
+Feature 2: Team-Verwaltung
+  Weisen Sie Guides einzelnen Touren zu. Jeder Guide hat sein eigenes
+  Profil mit QR-Code. Sie behalten den Ueberblick.
+
+Feature 3: Qualitaetskontrolle
+  Standardisierte Tourskripte statt individuelle Guide-Interpretationen.
+  Jeder Gast hoert die gleiche hochwertige Tour — in seiner Sprache.
+
+Feature 4: Statistiken & Analytics
+  Welche Sprachen werden nachgefragt? Welche Touren performen am besten?
+  Datenbasierte Entscheidungen fuer Ihr Portfolio.
+
+Feature 5: White-Label
+  Ihr Logo, Ihre Farben, Ihre Domain. Ihre Kunden sehen nur Ihre Marke.
+
+Feature 6: API-Integration
+  Integrieren Sie GuideTranslator in Ihre bestehende Buchungssoftware,
+  Website oder App.
+
+
+--- PREISE FUER AGENTUREN ---
+
+H2: Agentur-Pakete
+
+Hinweis-Banner:
+  KOSTENLOSE BETA: Aktuell sind alle Features kostenlos verfuegbar.
+  Die folgenden Preismodelle gelten ab dem offiziellen Launch
+  und dienen zur Orientierung.
+
+AGENTUR STARTER — 149€/Monat (oder 1.490€/Jahr)
+• 5 Guide-Accounts
+• 2.000.000 Zeichen/Monat
+• 50 Sprachen
+• Neural2-Stimmen
+• Zentrales Dashboard
+• E-Mail-Support
+
+AGENTUR PRO — 349€/Monat (oder 3.490€/Jahr)
+• 20 Guide-Accounts
+• 10.000.000 Zeichen/Monat
+• Alle 130+ Sprachen
+• Chirp 3 HD-Stimmen (Premium)
+• White-Label + eigene Domain
+• API-Zugang
+• Statistiken & Analytics
+• Priority-Support + Onboarding
+
+AGENTUR ENTERPRISE — Individuell (ab 799€/Monat)
+• Unbegrenzte Guide-Accounts
+• Unbegrenztes Volumen
+• Alle Features von Pro
+• Dedizierter Account Manager
+• SLA (99,9% Uptime)
+• Custom Integration & Schulung
+• Eigene TTS-Stimmen moeglich
+→ [Enterprise-Kalkulator] → sales.guidetranslator.com
+
+
+================================================================================
+ SEITE 4: LOESUNGEN FUER KREUZFAHRT-REEDEREIEN (/loesungen/kreuzfahrt)
+ Meta-Title: Shore Excursion Uebersetzung fuer Kreuzfahrt-Reedereien
+ Meta-Desc: KI-Uebersetzung fuer Kreuzfahrt-Landausfluege: 130+ Sprachen,
+            ab 1 Cent pro Passagier, bis zu 80% Ersparnis. Enterprise-
+            Kalkulator fuer Ihre Flotte.
+ H1: Shore Excursions in jeder Sprache. Fuer jedes Schiff.
+================================================================================
+
+--- HERO ---
+
+Badge: Enterprise Solution fuer Kreuzfahrt-Reedereien
+
+H1: Shore Excursions in jeder Sprache. Fuer jedes Schiff.
+
+Sub: Ihre Passagiere kommen aus der ganzen Welt. Ihre Landausfluege sollten
+     das auch. KI-Echtzeit-Uebersetzung fuer Ihre gesamte Flotte — ab 1 Cent
+     pro Passagier pro Ausflug.
+
+CTA Primaer: [Ersparnis berechnen] → sales.guidetranslator.com
+CTA Sekundaer: [Demo vereinbaren] → sales.guidetranslator.com?interest=demo
+
+
+--- DAS PROBLEM FUER REEDEREIEN ---
+
+H2: Mehrsprachige Guides: teuer, knapp und schwer skalierbar
+
+Die typische Rechnung:
+• 200 Ausflugstage/Jahr × 2 Ausfluege/Tag = 400 Ausfluege
+• 8 Sprach-Guides × €300/Tag = €2.400 pro Ausflugstag
+• = bis zu €480.000 pro Schiff pro Jahr — nur fuer Guides
+
+Und trotzdem:
+• Nur 5-6 Sprachen abgedeckt
+• In exotischen Haefen oft kein Guide fuer Japanisch, Koreanisch, Hindi
+• Qualitaet variiert von Hafen zu Hafen
+• Logistik-Aufwand: Guide-Koordination in 50+ Haefen weltweit
+
+
+--- DIE LOESUNG ---
+
+H2: 1 Guide. 130+ Sprachen. Ab 1 Cent pro Passagier.
+
+So funktioniert GuideTranslator Enterprise:
+
+1. Ihr bestehender Guide fuehrt den Ausflug in der Landessprache
+2. Google Cloud AI uebersetzt den Vortrag in Echtzeit
+3. Passagiere hoeren ueber ihr Smartphone in ihrer Sprache
+4. Kein Equipment, keine Installation, kein Download noetig
+
+Ergebnis:
+• Alle 130+ Sprachen sofort verfuegbar — an jedem Hafen der Welt
+• Konsistente Qualitaet unabhaengig vom Standort
+• Bis zu 80% Ersparnis gegenueber traditionellen mehrsprachigen Guides
+• Berechnen Sie Ihre individuelle Ersparnis im Enterprise-Kalkulator
+
+→ [Ihre Ersparnis berechnen] → sales.guidetranslator.com
+
+
+--- ENTERPRISE PRICING ---
+
+H2: Enterprise-Lizenzmodell
+
+Hinweis: Detaillierte Preisberechnung mit allen Parametern Ihrer Flotte
+im Enterprise-Kalkulator: → sales.guidetranslator.com
+
+PILOT — ab €2.990/Monat (€35.880/Jahr)
+• 1 Schiff
+• Alle 130+ Sprachen
+• Neural2- oder Chirp 3 HD-Stimmen
+• Dashboard fuer Shore Excursion Manager
+• Inkl. Onboarding & Schulung
+• 3-Monats-Pilotvertrag moeglich
+
+FLEET — ab €9.990/Monat (€119.880/Jahr)
+• 2-5 Schiffe
+• Alle Pilot-Features
+• Zentrales Flotten-Dashboard
+• Hafen-spezifische Tourskripte
+• Dedizierter Account Manager
+• Quartals-Reviews mit Datenanalyse
+• SLA: 99,9% Uptime
+
+ARMADA — ab €19.990/Monat (€239.880/Jahr)
+• 6-10 Schiffe
+• Alle Fleet-Features
+• Custom-Integration in bestehende Systeme
+• Eigene gebrandete Passagier-Oberflaeche
+• Custom TTS-Stimmen auf Anfrage
+• Prioritaet bei neuen Features
+• On-Site-Training auf dem Schiff
+
+CUSTOM ENTERPRISE — Individuell (ab 11+ Schiffe)
+• €19.990 + €1.500/Monat pro zusaetzlichem Schiff
+• Alle Armada-Features
+• Enterprise SLA mit dediziertem Support-Team
+• Global Rollout Management
+• Multi-Brand-Support (mehrere Reedereien/Marken)
+
+→ [Individuelle Ersparnis berechnen] → sales.guidetranslator.com
+
+API-Kosten pro Passagier pro Ausflug (zusaetzlich zur Lizenz):
+• WaveNet-Stimmen:    ~€0,004/Passagier (guenstigste Option)
+• Neural2-Stimmen:    ~€0,016/Passagier (empfohlen)
+• Chirp 3 HD-Stimmen: ~€0,030/Passagier (Premium, natuerlichste)
+
+→ [Berechnen Sie Ihre individuelle Ersparnis] → sales.guidetranslator.com
+
+
+--- ENTERPRISE CTA ---
+
+H2: Bereit fuer die Zukunft der Shore Excursions?
+
+Schritt 1: Berechnen Sie Ihre Ersparnis → sales.guidetranslator.com
+Schritt 2: Vereinbaren Sie eine Live-Demo
+Schritt 3: Starten Sie einen 3-Monats-Pilot auf einem Schiff
+Schritt 4: Rollen Sie auf die gesamte Flotte aus
+
+Kontakt: enterprise@guidetranslator.com
+Direkter Ansprechpartner: Ulrich [Nachname]
+Telefon: +49 [Nummer]
+
+→ [Enterprise-Kalkulator oeffnen] → sales.guidetranslator.com
+
+
+================================================================================
+ SEITE 5: LOESUNGEN FUER GROSSVERANSTALTER (/loesungen/enterprise)
+ Meta-Title: KI-Uebersetzung fuer Events, Museen & Grossveranstaltungen
+ Meta-Desc: Konferenzen, Museen, Messen, Events: Mehrsprachige Audio-
+            Uebersetzung fuer jede Veranstaltungsgroesse. Kostenlose Beta.
+ H1: Events ohne Sprachbarrieren.
+================================================================================
+
+--- HERO ---
+
+Badge: Fuer Museen, Konferenzen, Messen & Events
+
+H1: Events ohne Sprachbarrieren.
+
+Sub: Ob Museumstour mit 20 Gaesten oder Konferenz mit 5.000 Teilnehmern:
+     GuideTranslator liefert Echtzeit-Uebersetzung in jeder Sprache.
+
+CTA: [Demo anfragen] → sales.guidetranslator.com
+CTA: [Preise ansehen] → /preise
+
+
+--- ANWENDUNGSFAELLE ---
+
+H2: Ueberall dort, wo Sprache keine Barriere sein darf
+
+Museen & Ausstellungen:
+  Ersetzen Sie teure Audio-Guide-Geraete. Besucher scannen einen QR-Code
+  und hoeren die Fuehrung in ihrer Sprache — auf ihrem eigenen Smartphone.
+  Keine Hardware-Investition, keine Wartung, keine Hygiene-Bedenken.
+
+Konferenzen & Kongresse:
+  Echtzeit-Uebersetzung von Vortraegen und Panels. Teilnehmer hoeren den
+  Sprecher in ihrer Sprache — ohne Simultandolmetscher-Kabinen,
+  ohne Kopfhoerer-Ausgabe, ohne Logistik.
+
+Messen & Ausstellungen:
+  Standpraesentationen, Produktvorfuehrungen und Werksfuehrungen in jeder
+  Sprache. Ideal fuer internationale Fachmessen.
+
+Werksfuehrungen & Schulungen:
+  Fabrikbesichtigungen, Onboarding internationaler Mitarbeiter,
+  Sicherheitsunterweisungen — alles mehrsprachig.
+
+
+--- PREISE ---
+
+Verweis auf Seite /preise mit Hinweis:
+"Fuer Grossveranstaltungen mit mehr als 1.000 Teilnehmern oder individuelle
+ Anforderungen kontaktieren Sie uns direkt."
+→ [Enterprise-Angebot anfragen] → sales.guidetranslator.com
+
+
+================================================================================
+ SEITE 6: FUNKTIONEN (/funktionen)
+ Meta-Title: GuideTranslator Funktionen – Echtzeit-Uebersetzung mit Google AI
+ Meta-Desc: Alle Features: 130+ Sprachen, Neural-Stimmen, QR-Code-Zugang,
+            Dashboard, API, White-Label und mehr. Entdecken Sie GuideTranslator.
+ H1: Alles, was Sie fuer mehrsprachige Fuehrungen brauchen.
+================================================================================
+
+H2: Uebersetzung
+• 130+ Sprachen und Dialekte
+• Google Cloud Translation (Neural Machine Translation)
+• Echtzeit-Uebersetzung (3-6 Sekunden Latenz)
+• Vorbereitete Skripte: Vorab uebersetzt fuer minimale Latenz
+• Automatische Spracherkennung des Guide-Vortrags
+• Fachvokabular: Tourismus, Geschichte, Kunst, Technik
+
+H2: Sprachausgabe (Text-to-Speech)
+• Google WaveNet: Gute Qualitaet, guenstigster Preis
+  (€4/Mio. Zeichen → ~€0,004/Passagier/Ausflug)
+• Google Neural2: Sehr gute Qualitaet, empfohlen
+  (€16/Mio. Zeichen → ~€0,016/Passagier/Ausflug)
+• Google Chirp 3 HD: Premium, natuerlichste Qualitaet
+  (€30/Mio. Zeichen → ~€0,030/Passagier/Ausflug)
+• 220+ Stimmen in 40+ Sprachen
+• Maennliche und weibliche Stimmen
+• SSML-Support fuer Betonung, Pausen, Geschwindigkeit
+
+H2: Teilnehmer-Erfahrung
+• QR-Code scannen → Sprache waehlen → Hoeren
+• Kein App-Download noetig (laeuft im Browser)
+• Funktioniert auf jedem Smartphone (iOS + Android)
+• Offline-Modus fuer vorbereitete Touren (Premium)
+• Niedrige Bandbreite: Funktioniert auch bei 3G
+
+H2: Guide-Dashboard
+• Tour-Skripte erstellen und verwalten
+• Live-Modus: Echtzeit-Transkription und Uebersetzung
+• Vorbereiteter Modus: Skripte hochladen, vorab uebersetzen
+• QR-Code-Generator mit eigenem Branding
+• Statistiken: Teilnehmer, Sprachen, Nutzungsdaten
+
+H2: Agentur- & Enterprise-Features
+• Team-Verwaltung: Guide-Accounts zuweisen und managen
+• White-Label: Eigenes Logo, Farben, Domain
+• API: RESTful API fuer eigene Integrationen
+• SSO: Single Sign-On fuer Enterprise-Kunden
+• Rollenbasierte Zugriffskontrolle (RBAC)
+• SLA: Bis 99,9% Uptime-Garantie (Enterprise)
+
+H2: Sicherheit & Compliance
+• DSGVO-konform: Datenverarbeitung in der EU
+• SSL/TLS-Verschluesselung
+• Keine Speicherung von Teilnehmerdaten
+• SOC 2 Type II (ueber Google Cloud)
+• Regelmaessige Sicherheits-Audits
+
+
+================================================================================
+ SEITE 7: PREISE (/preise)
+ Meta-Title: GuideTranslator Preise – Aktuell kostenlose Beta | Faire Plaene
+ Meta-Desc: GuideTranslator ist aktuell in der kostenlosen Beta. Geplante
+            Preise: Free (0€), Guide Pro (29€), Guide Premium (79€),
+            Agentur (ab 149€), Enterprise (individuell).
+ H1: Einfache, faire Preise. Aktuell kostenlos in der Beta.
+================================================================================
+
+--- BETA HINWEIS ---
+
+H2-Banner / Highlight-Box:
+
+  KOSTENLOSE BETA
+  GuideTranslator befindet sich aktuell in der Beta-Phase. Alle Features
+  sind kostenlos verfuegbar — keine Kreditkarte, keine Einschraenkungen.
+  Die folgenden Preismodelle gelten ab dem offiziellen Launch und dienen
+  zur Orientierung.
+
+  [Jetzt kostenlos testen] → app.guidetranslator.com
+
+
+--- PRICING TABLE ---
+
+H2: Geplante Preismodelle (zur Orientierung)
+
+──────────────────────────────────────────────────────────────────────────────
+ FREE           │ GUIDE PRO       │ GUIDE PREMIUM    │ AGENTUR
+ 0€/Monat       │ 29€/Monat       │ 79€/Monat        │ ab 149€/Monat
+ Fuer immer     │ oder 290€/Jahr  │ oder 790€/Jahr   │ oder 1.490€/Jahr
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ 50.000 Zeichen │ 500.000 Zeichen │ 2 Mio. Zeichen   │ ab 2 Mio. Zeich.
+ ~5-10 Touren   │ ~50-100 Touren  │ Unbegrenzt*      │ Unbegrenzt*
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ 5 Sprachen     │ 30 Sprachen     │ 130+ Sprachen    │ 130+ Sprachen
+ WaveNet        │ Neural2         │ Chirp 3 HD       │ Chirp 3 HD
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ 1 Tour-Profil  │ 10 Tour-Profile │ Unbegrenzt       │ Unbegrenzt
+ 1 Guide        │ 1 Guide         │ 1 Guide          │ ab 5 Guides
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ QR-Code ✓      │ QR-Code ✓       │ QR-Code ✓        │ QR-Code ✓
+ -              │ Statistiken ✓   │ Statistiken ✓    │ Analytics ✓
+ -              │ -               │ White-Label ✓    │ White-Label ✓
+ -              │ -               │ Offline-Audio ✓  │ API-Zugang ✓
+ -              │ -               │ API-Zugang ✓     │ Team-Dashboard ✓
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ E-Mail-Support │ Priority E-Mail │ Priority + Tel.  │ Ded. Manager
+────────────────┼─────────────────┼──────────────────┼──────────────────
+ IN DER BETA:   │ IN DER BETA:    │ IN DER BETA:     │ IN DER BETA:
+ Kostenlos      │ Kostenlos       │ Kostenlos        │ Kontakt
+──────────────────────────────────────────────────────────────────────────────
+* "Unbegrenzt" = fuer typische Nutzung. Zusaetzliche Zeichen: €16-30/Mio.
+
+
+Enterprise / Kreuzfahrt:
+  Fuer Flotten, Reedereien und Grossveranstalter mit individuellen
+  Anforderungen.
+  → [Enterprise-Kalkulator] → sales.guidetranslator.com
+  Ab €2.990/Monat | Ab 1 Schiff | Individuelles Angebot
+
+
+Alle Plaene beinhalten:
+✓ DSGVO-konform        ✓ EU-Server           ✓ Kostenloser Einstieg
+✓ Monatlich kuendbar   ✓ Keine Einrichtung   ✓ Keine versteckten Kosten
+
+
+--- API-KOSTEN TRANSPARENT ---
+
+H2: Transparente API-Kosten (nur fuer Viel-Nutzer relevant)
+
+Die Uebersetzung und Sprachsynthese wird von Google Cloud AI bereitgestellt.
+Die Kosten sind im Paketpreis enthalten bis zum angegebenen Zeichenlimit.
+Darueber hinaus zahlen Sie nur die Google-Durchleitungskosten:
+
+Translation (Google Cloud Translation API):
+• €20 pro 1 Mio. Zeichen (→ €0,00002/Zeichen)
+
+Text-to-Speech:
+• WaveNet:    €4 pro 1 Mio. Zeichen  (→ ~€0,004/Passagier)
+• Neural2:    €16 pro 1 Mio. Zeichen (→ ~€0,016/Passagier)
+• Chirp 3 HD: €30 pro 1 Mio. Zeichen (→ ~€0,030/Passagier)
+
+Beispiel-Rechnung (1 Fuehrung, 90 Minuten, 8 Sprachen, 30 Teilnehmer):
+• ~81.000 Zeichen Translation = €1,62
+• ~81.000 Zeichen TTS (Neural2) = €1,30
+• Gesamt: ~€2,92 → ~€0,10/Teilnehmer
+• Im Pro-Plan (500.000 Zeichen): ~6 solcher Fuehrungen pro Monat inklusive
+
+
+--- FAQ PREISE ---
+
+F: Wie lange dauert die Beta?
+A: Wir planen den offiziellen Launch mit kostenpflichtigen Plaenen fuer
+   Q2 2026. Beta-Nutzer erhalten bevorzugte Konditionen beim Umstieg.
+
+F: Kann ich jederzeit upgraden oder downgraden?
+A: Ja, jederzeit. Beim Upgrade wird die Differenz anteilig berechnet.
+   Beim Downgrade gilt der neue Preis ab der naechsten Abrechnungsperiode.
+
+F: Gibt es eine Mindestlaufzeit?
+A: Nein. Bei monatlicher Zahlung koennen Sie jederzeit zum Monatsende
+   kuendigen. Jahresplaene haben eine 12-Monats-Laufzeit mit 2 Monaten
+   gratis.
+
+F: Was passiert wenn ich mein Zeichenlimit erreiche?
+A: Sie koennen jederzeit ein Zusatzpaket kaufen oder auf den naechsten
+   Plan upgraden. Ihre bestehenden Uebersetzungen funktionieren weiter.
+
+
+================================================================================
+ SEITE 8: UEBER UNS (/ueber-uns)
+ Meta-Title: Ueber GuideTranslator – Ein Produkt von fintutto.cloud
+ Meta-Desc: GuideTranslator wurde entwickelt, um Sprachbarrieren in Tourismus
+            und Events abzubauen. Deutsche Qualitaet, Google Cloud AI, DSGVO.
+ H1: Die Welt verstehen — in jeder Sprache.
+================================================================================
+
+H2: Unsere Mission
+
+Sprache sollte niemals eine Barriere sein — nicht beim Reisen, nicht beim
+Lernen, nicht beim Erleben. GuideTranslator macht das moeglich, indem wir die
+fortschrittlichste KI-Uebersetzungstechnologie der Welt so einfach nutzbar
+machen, dass jeder Stadtfuehrer, jede Agentur und jede Reederei sie einsetzen
+kann.
+
+
+H2: Ein Produkt von fintutto.cloud
+
+fintutto.cloud ist ein deutsches Software-Unternehmen. Unsere Mission:
+"alles. automatisch. ab jetzt." — wir entwickeln KI-gestuetzte
+SaaS-Loesungen, die komplexe Prozesse vereinfachen.
+
+Weitere fintutto.cloud-Produkte:
+• Vermietify — Immobilienverwaltung fuer private Vermieter
+• HausmeisterPro — Digitales Facility Management
+• MieterApp — Das Mieterportal
+• Und ueber 30 weitere spezialisierte Apps und Tools
+
+Website: fintutto.de | fintutto.cloud
+
+
+H2: Technologie
+
+GuideTranslator basiert auf Google Cloud AI:
+• Google Cloud Translation API — State-of-the-Art Neural Machine Translation
+• Google Cloud Text-to-Speech — WaveNet, Neural2, Chirp 3 HD Stimmen
+• Google Cloud Infrastructure — EU-Server, SOC 2, DSGVO-konform
+
+
+H2: Kontakt
+
+E-Mail: info@guidetranslator.com
+Enterprise: enterprise@guidetranslator.com
+
+Betreiber:
+ai tour UG (haftungsbeschraenkt)
+Kolonie 2
+18317 Saal
+Deutschland
+
+Geschaeftsfuehrer: Alexander Deibel
+Handelsregister: Stralsund, Nr: 22827
+USt-IdNr.: DE453800739
+
+
+================================================================================
+ SEITE 9: IMPRESSUM (/impressum) — KEINE AENDERUNG NOETIG
+ (Rechtsform "ai tour UG (haftungsbeschraenkt)" ist bereits korrekt)
+================================================================================
+
+
+================================================================================
+ SEITE 10: DATENSCHUTZ (/datenschutz) — KEINE AENDERUNG NOETIG
+ (Verantwortlicher "ai tour UG (haftungsbeschraenkt)" ist bereits korrekt)
+================================================================================
+
+
+================================================================================
+ AENDERUNGEN FUER SALES.GUIDETRANSLATOR.COM
+================================================================================
+
+PREISCHECK: Alle Enterprise-Preise im Kalkulator stimmen mit der Copy
+ueberein. Keine Preisaenderungen noetig.
+
+Empfohlene Anpassungen im Sales-Tool:
+
+1. HEADLINE-METRIK:
+   Aktuell:  "<1¢ per passenger per excursion"
+   Aendern:  "Ab 1 Cent pro Passagier pro Ausflug"
+
+2. ERSPARNIS-ANGABE:
+   Aktuell:  "93% average cost savings"
+   Aendern:  "Bis zu 80% Ersparnis"
+
+3. FOOTER / IMPRESSUM:
+   Sicherstellen: "ai tour UG (haftungsbeschraenkt)" als Betreiber
+   Produkt-Brand: "Ein Produkt von fintutto.cloud"
+
+4. LINKS:
+   App-Link:  app.guidetranslator.com (ohne /register)
+   Website:   guidetranslator.com
+
+
+================================================================================
+ URL-STRUKTUR FUER ULRICHS ENTERPRISE-VERTRIEB — KORRIGIERT
+================================================================================
+
+DIREKTLINKS FUER E-MAIL-TEMPLATES:
+
+1. Allgemeine Landing fuer Reedereien:
+   guidetranslator.com/loesungen/kreuzfahrt
+
+2. Enterprise-Kalkulator (personalisiert):
+   sales.guidetranslator.com?utm_source=ulrich&utm_medium=email&utm_campaign=cruise_q1_2026
+
+3. Mit Kontaktdaten vorausgefuellt:
+   sales.guidetranslator.com?invite=1&name=Dr.+Thomas+Schmidt&email=t.schmidt@aida.de&company=AIDA+Cruises&role=VP+Shore+Excursions&fleet=6-10+Schiffe
+
+4. Demo-Anfrage direkt:
+   sales.guidetranslator.com?interest=demo
+
+5. Live-Demo der App:
+   app.guidetranslator.com
+
+6. Tracking fuer verschiedene Kampagnen:
+   sales.guidetranslator.com?utm_source=ulrich&utm_medium=linkedin&utm_campaign=cruise_linkedin_2026
+   sales.guidetranslator.com?utm_source=ulrich&utm_medium=phone&utm_campaign=cold_call_followup
+   sales.guidetranslator.com?utm_source=ulrich&utm_medium=conference&utm_campaign=seatrade_2026
+
+
+================================================================================
+ SEO-HINWEISE — KORRIGIERT
+================================================================================
+
+Meta-Descriptions angepasst:
+- Startseite: "Ab 0 €/Monat" → entfernt (Beta-Messaging stattdessen)
+- Stadtfuehrer: "Ab 0€/Monat" → "Kostenlose Beta"
+- Agenturen: "Ab 149€/Mon." → "Jetzt kostenlos in der Beta testen"
+- Kreuzfahrt: "<1¢" → "ab 1 Cent"
+- Preise: "Ab 0€/Monat" → "Aktuell kostenlose Beta | Faire Plaene"
+
+Alle anderen SEO-Hinweise (Keywords, Schema.org, Hreflang) bleiben
+unveraendert — die waren bereits korrekt.
+
+
+================================================================================
+ ZUSAMMENFASSUNG ALLER AENDERUNGEN
+================================================================================
+
+SEITE              │ AENDERUNGEN
+───────────────────┼──────────────────────────────────────────────────
+Startseite (/)     │ Kennzahlen, CTAs, Vergleich, Testimonials weg,
+                   │ FAQ aktualisiert, Beta-Messaging, fintutto.cloud
+───────────────────┼──────────────────────────────────────────────────
+Stadtfuehrer       │ CTAs, Beta-Banner, Rechenbeispiel konservativer,
+                   │ SEO-Text angepasst
+───────────────────┼──────────────────────────────────────────────────
+Agenturen          │ CTAs, Beta-Banner bei Preisen
+───────────────────┼──────────────────────────────────────────────────
+Kreuzfahrt         │ Hero Sub, Ersparnis-%, Problem-Headline, Pricing
+                   │ → sales.guidetranslator.com Verweise
+───────────────────┼──────────────────────────────────────────────────
+Grossveranstalter  │ Meta-Desc angepasst (Beta)
+───────────────────┼──────────────────────────────────────────────────
+Funktionen         │ Latenz 2-4 → 3-6 Sek, Skript-Text angepasst
+───────────────────┼──────────────────────────────────────────────────
+Preise             │ Komplett ueberarbeitet: Beta-First, Preise als
+                   │ Orientierung, Enterprise → sales.GT.com, neue FAQ
+───────────────────┼──────────────────────────────────────────────────
+Ueber uns          │ Rechtsform, fintutto.cloud statt FinTuttO GmbH
+───────────────────┼──────────────────────────────────────────────────
+Impressum          │ Keine Aenderung (war bereits korrekt)
+───────────────────┼──────────────────────────────────────────────────
+Datenschutz        │ Keine Aenderung (war bereits korrekt)
+───────────────────┼──────────────────────────────────────────────────
+Sales-Tool         │ Headline-Metrik, Ersparnis-%, Footer
+================================================================================
+ ENDE — KORRIGIERTE WEBSITE-COPY
+================================================================================
