@@ -52,15 +52,41 @@ export function getModelId(src: string, tgt: string): string | null {
 
 /**
  * Check if a specific model has been downloaded.
+ * First checks IndexedDB metadata, then falls back to checking the Cache API
+ * (Transformers.js caches model files there, but metadata recording can fail).
  */
 export async function isModelDownloaded(modelId: string): Promise<boolean> {
   try {
     const db = await getDB()
     const meta = await db.get('model-metadata', modelId)
-    return !!meta
+    if (meta) return true
   } catch {
-    return false
+    // IndexedDB check failed, continue to Cache API fallback
   }
+
+  // Fallback: check if model files exist in the Transformers.js cache
+  // Transformers.js stores files in a cache named 'transformers-cache'
+  try {
+    const cacheNames = ['transformers-cache', MODEL_CACHE_NAME, 'offline-models-cdn']
+    for (const cacheName of cacheNames) {
+      const cache = await caches.open(cacheName)
+      const keys = await cache.keys()
+      // Model ID like "Xenova/opus-mt-de-en" appears in cached URLs
+      const modelInCache = keys.some(req =>
+        req.url.includes(modelId.replace('/', '/')) ||
+        req.url.includes(encodeURIComponent(modelId))
+      )
+      if (modelInCache) {
+        // Auto-record the metadata so future checks are fast
+        await recordModelDownload(modelId, modelId.includes('whisper') ? 'stt' : 'translation', 0).catch(() => {})
+        return true
+      }
+    }
+  } catch {
+    // Cache API not available
+  }
+
+  return false
 }
 
 /**
@@ -136,8 +162,15 @@ export async function getLanguagePairStatus(): Promise<Array<{
   downloaded: boolean
   sizeEstimateMB: number
 }>> {
-  const downloaded = await getDownloadedModels()
-  const downloadedIds = new Set(downloaded.map(m => m.id))
+  // Check each model using isModelDownloaded() which includes Cache API fallback
+  const uniqueModelIds = [...new Set(Object.values(OPUS_MT_MODELS))]
+  const downloadStatus = new Map<string, boolean>()
+
+  await Promise.all(
+    uniqueModelIds.map(async (modelId) => {
+      downloadStatus.set(modelId, await isModelDownloaded(modelId))
+    })
+  )
 
   const pairs: Array<{
     src: string
@@ -153,7 +186,7 @@ export async function getLanguagePairStatus(): Promise<Array<{
       src,
       tgt,
       modelId,
-      downloaded: downloadedIds.has(modelId),
+      downloaded: downloadStatus.get(modelId) || false,
       sizeEstimateMB: 35, // average Opus-MT ONNX int8 size
     })
   }

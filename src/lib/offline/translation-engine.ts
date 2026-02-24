@@ -23,13 +23,14 @@ async function getPipeline(modelId: string, onProgress?: (progress: number) => v
   const { pipeline } = await getTransformersModule()
 
   const pipe = await pipeline('translation', modelId, {
-    progress_callback: (data: { status: string; progress?: number; loaded?: number; total?: number }) => {
+    progress_callback: (data: { status: string; progress?: number; loaded?: number; total?: number; file?: string }) => {
       if (data.status === 'progress' && data.progress !== undefined && onProgress) {
         onProgress(data.progress)
       }
-      if (data.status === 'done' && data.loaded) {
+      if (data.status === 'done') {
         // Record the download in our metadata DB
-        recordModelDownload(modelId, 'translation', data.loaded).catch(() => {})
+        // Note: data.loaded may be 0 or undefined when loaded from cache
+        recordModelDownload(modelId, 'translation', data.loaded || 0).catch(() => {})
       }
     },
   })

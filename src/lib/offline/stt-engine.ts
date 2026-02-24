@@ -22,8 +22,9 @@ async function getWhisperPipeline(onProgress?: (pct: number) => void) {
         if (data.status === 'progress' && data.progress !== undefined && onProgress) {
           onProgress(data.progress)
         }
-        if (data.status === 'done' && data.loaded) {
-          recordModelDownload(WHISPER_MODEL, 'stt', data.loaded).catch(() => {})
+        if (data.status === 'done') {
+          // Note: data.loaded may be 0 or undefined when loaded from cache
+          recordModelDownload(WHISPER_MODEL, 'stt', data.loaded || 0).catch(() => {})
         }
       },
     })
