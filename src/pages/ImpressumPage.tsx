@@ -14,9 +14,9 @@ export default function ImpressumPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
-            FinTuttO GmbH<br />
-            Musterstraße 42<br />
-            20095 Hamburg<br />
+            ai tour ug (haftungsbeschränkt)<br />
+            Kolonie 2<br />
+            18317 Saal<br />
             Deutschland
           </p>
         </CardContent>
@@ -37,9 +37,8 @@ export default function ImpressumPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
-            Telefon: +49 (0) 40 123 456 78<br />
-            E-Mail: info@fintutto.de<br />
-            Web: <a href="https://fintutto.de" className="text-primary hover:underline">fintutto.de</a>
+            E-Mail: info@guidetranslator.de<br />
+            Web: <a href="https://guidetranslator.de" className="text-primary hover:underline">guidetranslator.de</a>
           </p>
         </CardContent>
       </Card>
@@ -51,8 +50,8 @@ export default function ImpressumPage() {
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
             Eintragung im Handelsregister<br />
-            Registergericht: Amtsgericht Hamburg<br />
-            Registernummer: HRB XXXXX
+            Registergericht: Amtsgericht Stralsund<br />
+            Registernummer: 22827
           </p>
         </CardContent>
       </Card>
@@ -64,7 +63,10 @@ export default function ImpressumPage() {
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
             Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG:<br />
-            DE XXXXXXXXX
+            DE453800739
+          </p>
+          <p className="mt-2">
+            Steuernummer: 081/105/00298
           </p>
         </CardContent>
       </Card>

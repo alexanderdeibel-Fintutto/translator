@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.fintutto.translator',
-  appName: 'Fintutto Translator',
+  appName: 'guidetranslator',
   webDir: 'dist',
   server: {
     // In production, load from bundled files
@@ -26,7 +26,7 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
-    scheme: 'Fintutto Translator',
+    scheme: 'guidetranslator',
   },
   // Android-specific settings
   android: {

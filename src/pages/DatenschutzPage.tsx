@@ -28,17 +28,17 @@ export default function DatenschutzPage() {
 
       <Section title="2. Verantwortliche Stelle">
         <p>
-          FinTuttO GmbH<br />
-          Musterstraße 42<br />
-          20095 Hamburg<br />
-          E-Mail: datenschutz@fintutto.de
+          ai tour ug (haftungsbeschränkt)<br />
+          Kolonie 2<br />
+          18317 Saal<br />
+          E-Mail: datenschutz@guidetranslator.de
         </p>
       </Section>
 
       <Section title="3. Datenerfassung auf dieser Website">
         <p>
           <strong className="text-foreground">Wer ist verantwortlich für die Datenerfassung?</strong><br />
-          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (FinTuttO GmbH).
+          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (ai tour ug (haftungsbeschränkt)).
         </p>
         <p>
           <strong className="text-foreground">Wie erfassen wir Ihre Daten?</strong><br />
@@ -99,7 +99,7 @@ export default function DatenschutzPage() {
           Sperrung oder Löschung dieser Daten.
         </p>
         <p>
-          Kontakt: datenschutz@fintutto.de
+          Kontakt: datenschutz@guidetranslator.de
         </p>
       </Section>
 

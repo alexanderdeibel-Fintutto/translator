@@ -39,7 +39,7 @@ export default function InfoPage() {
     <div className="container py-8 space-y-8">
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          Über <span className="gradient-text-translator">Fintutto Translator</span>
+          Über <span className="gradient-text-translator">guidetranslator</span>
         </h1>
         <p className="text-muted-foreground">
           Der kostenlose Online-Übersetzer für den Alltag, Behördengänge und die Wohnungssuche in Deutschland.
@@ -88,15 +88,15 @@ export default function InfoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Teil des Fintutto-Ökosystems</CardTitle>
+          <CardTitle>Teil des ai tour Ökosystems</CardTitle>
           <CardDescription>
-            Fintutto Translator ist Teil der Fintutto-Plattform für Finanzen, Immobilien und Verwaltung in Deutschland.
+            guidetranslator ist Teil der ai tour Plattform für Finanzen, Immobilien und Verwaltung in Deutschland.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className="p-3 rounded-lg bg-secondary">
-              <strong>Fintutto Portal</strong> - Rechner, Checker & Formulare
+              <strong>ai tour Portal</strong> - Rechner, Checker & Formulare
             </div>
             <div className="p-3 rounded-lg bg-secondary">
               <strong>Vermietify</strong> - Immobilienverwaltung

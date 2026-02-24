@@ -8,12 +8,12 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Languages className="h-4 w-4" />
-            <span>Fintutto Translator</span>
+            <span>guidetranslator</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <Link to="/impressum" className="hover:text-foreground transition-colors">Impressum</Link>
             <Link to="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</Link>
-            <span>&copy; {new Date().getFullYear()} Fintutto</span>
+            <span>&copy; {new Date().getFullYear()} ai tour ug</span>
           </div>
         </div>
       </div>
