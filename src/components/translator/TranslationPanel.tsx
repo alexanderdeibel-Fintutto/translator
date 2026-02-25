@@ -245,7 +245,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   const sourceLangData = getLanguageByCode(sourceLang)
   const targetLangData = getLanguageByCode(targetLang)
-  const showFormalityToggle = supportsFormality(targetLang)
+  const showFormalityToggle = supportsFormality(targetLang) || supportsFormality(sourceLang)
+  const formalityActive = supportsFormality(targetLang) // conversion only works on target
 
   return (
     <div className="space-y-4">
@@ -281,14 +282,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
-        {/* Sie/Du Toggle - only shows when target language supports formality */}
+        {/* Sie/Du Toggle - shows when source or target supports formality */}
         {showFormalityToggle && (
           <Button
             variant={useInformal ? 'default' : 'outline'}
             size="sm"
             onClick={toggleFormality}
-            className="mb-0.5 shrink-0 gap-1.5"
-            title={useInformal ? t('translator.informal') : t('translator.formal')}
+            className={`mb-0.5 shrink-0 gap-1.5 ${!formalityActive ? 'opacity-50' : ''}`}
+            title={!formalityActive
+              ? 'Sie/Du — Zielsprache wechseln zu DE, FR, ES...'
+              : useInformal ? t('translator.informal') : t('translator.formal')}
           >
             {useInformal ? <User className="h-3.5 w-3.5" /> : <UserCheck className="h-3.5 w-3.5" />}
             <span className="text-xs">{useInformal ? t('translator.informal') : t('translator.formal')}</span>
