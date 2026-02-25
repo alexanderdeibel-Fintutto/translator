@@ -221,7 +221,7 @@ export function useLiveSession() {
     isRecording: recognition.isListening,
     startRecording,
     stopRecording,
-    currentTranscript: recognition.transcript,
+    currentTranscript: recognition.interimTranscript,
     translationHistory,
 
     // Listener

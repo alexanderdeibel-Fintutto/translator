@@ -34,6 +34,23 @@ declare global {
 
 export type STTProvider = 'web-speech' | 'apple-speech-analyzer' | 'google-cloud-stt' | 'whisper'
 
+// --- Sentence boundary detection for streaming segmentation ---
+// Detects sentence-ending punctuation (Latin, CJK, Arabic) followed by whitespace or end-of-string
+const SENTENCE_END_RE = /[.!?;\u3002\uFF01\uFF1F\u061F](?:\s+|$)/g
+
+export function detectSentenceBoundary(text: string): { final: string; remainder: string } | null {
+  let lastIndex = -1
+  let match: RegExpExecArray | null
+  SENTENCE_END_RE.lastIndex = 0
+  while ((match = SENTENCE_END_RE.exec(text)) !== null) {
+    lastIndex = match.index + match[0].length
+  }
+  if (lastIndex > 0) {
+    return { final: text.slice(0, lastIndex).trim(), remainder: text.slice(lastIndex).trim() }
+  }
+  return null
+}
+
 export interface STTResult {
   text: string
   isFinal: boolean
@@ -53,6 +70,7 @@ export function createWebSpeechEngine(): STTEngine {
   let recognition: SpeechRecognitionInstance | null = null
   let stream: MediaStream | null = null
   let shouldBeListening = false
+  let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -94,11 +112,36 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.onresult = (event) => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]
-          onResult({
-            text: result[0].transcript,
-            isFinal: result.isFinal,
-            confidence: result[0].confidence,
-          })
+          const text = result[0].transcript
+          const confidence = result[0].confidence
+
+          if (result.isFinal) {
+            // Dedup: if we already synthetically finalized part of this text, emit only the delta
+            if (lastSyntheticFinal && text.startsWith(lastSyntheticFinal)) {
+              const delta = text.slice(lastSyntheticFinal.length).trim()
+              lastSyntheticFinal = ''
+              if (delta) {
+                onResult({ text: delta, isFinal: true, confidence })
+              }
+            } else {
+              lastSyntheticFinal = ''
+              onResult({ text, isFinal: true, confidence })
+            }
+          } else {
+            // Interim result: check for sentence boundaries to emit early finals
+            const boundary = detectSentenceBoundary(text)
+            if (boundary) {
+              // Emit completed sentence(s) as synthetic final
+              onResult({ text: boundary.final, isFinal: true, confidence })
+              lastSyntheticFinal = boundary.final
+              // Emit remainder as interim
+              if (boundary.remainder) {
+                onResult({ text: boundary.remainder, isFinal: false })
+              }
+            } else {
+              onResult({ text, isFinal: false })
+            }
+          }
         }
       }
 
@@ -237,6 +280,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   let onResultCallback: ((result: STTResult) => void) | null = null
   let activeLang = ''
   let actualSampleRate = 16000
+  let emittedFinalText = '' // Tracks text already emitted as isFinal for sentence segmentation
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -285,6 +329,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       onResultCallback = onResult
       activeLang = lang
       audioChunks = []
+      emittedFinalText = ''
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -318,9 +363,35 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         if (!isActive || audioChunks.length === 0) return
         const snapshot = [...audioChunks]
         try {
-          const text = await recognizeChunks(snapshot, activeLang)
-          if (text && onResultCallback) {
-            onResultCallback({ text, isFinal: false })
+          const fullText = await recognizeChunks(snapshot, activeLang)
+          if (!fullText || !onResultCallback) return
+
+          // Extract only the NEW text (beyond what we already finalized)
+          const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
+            ? fullText.slice(emittedFinalText.length).trim()
+            : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
+
+          if (!newText) return
+
+          // Check for sentence boundaries → emit synthetic isFinal
+          const boundary = detectSentenceBoundary(newText)
+          if (boundary) {
+            onResultCallback({ text: boundary.final, isFinal: true })
+            emittedFinalText += (emittedFinalText ? ' ' : '') + boundary.final
+
+            // Trim audio buffer: keep only last ~5 seconds for context
+            const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
+            if (audioChunks.length > keepChunks * 2) {
+              audioChunks = audioChunks.slice(-keepChunks)
+            }
+
+            // Emit remainder as interim
+            if (boundary.remainder) {
+              onResultCallback({ text: boundary.remainder, isFinal: false })
+            }
+          } else {
+            // No sentence boundary yet — emit as interim
+            onResultCallback({ text: newText, isFinal: false })
           }
         } catch (err) {
           // Non-fatal — continue recording
@@ -344,9 +415,15 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         const finalChunks = [...audioChunks]
         const callback = onResultCallback
         const lang = activeLang
+        const alreadyEmitted = emittedFinalText
 
         recognizeChunks(finalChunks, lang).then(text => {
-          if (text) callback({ text, isFinal: true })
+          if (!text) return
+          // Only emit the portion not yet finalized via synthetic finals
+          const remainder = alreadyEmitted && text.startsWith(alreadyEmitted)
+            ? text.slice(alreadyEmitted.length).trim()
+            : text
+          if (remainder) callback({ text: remainder, isFinal: true })
         }).catch(() => {})
       }
 
@@ -356,6 +433,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       audioChunks = []
       onResultCallback = null
       activeLang = ''
+      emittedFinalText = ''
     },
   }
 }

@@ -3,7 +3,7 @@ import { getBestSTTEngine, createGoogleCloudSTTEngine, type STTEngine, type STTR
 
 export function useSpeechRecognition() {
   const [isListening, setIsListening] = useState(false)
-  const [transcript, setTranscript] = useState('')
+  const [interimTranscript, setInterimTranscript] = useState('')
   const [error, setError] = useState<string | null>(null)
   const engineRef = useRef<STTEngine | null>(null)
 
@@ -23,7 +23,11 @@ export function useSpeechRecognition() {
     setIsListening(false)
   }, [getEngine])
 
-  const startListening = useCallback(async (lang: string, onResult: (text: string) => void) => {
+  const startListening = useCallback(async (
+    lang: string,
+    onFinalResult: (text: string) => void,
+    onInterimResult?: (text: string) => void,
+  ) => {
     const engine = getEngine()
 
     if (!engine.isSupported) {
@@ -32,12 +36,15 @@ export function useSpeechRecognition() {
     }
 
     setError(null)
-    setTranscript('')
+    setInterimTranscript('')
 
     const resultHandler = (result: STTResult) => {
-      setTranscript(result.text)
       if (result.isFinal) {
-        onResult(result.text)
+        setInterimTranscript('')
+        onFinalResult(result.text)
+      } else {
+        setInterimTranscript(result.text)
+        onInterimResult?.(result.text)
       }
     }
 
@@ -68,7 +75,7 @@ export function useSpeechRecognition() {
 
   return {
     isListening,
-    transcript,
+    interimTranscript,
     isSupported,
     error,
     startListening,

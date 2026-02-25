@@ -11,6 +11,9 @@ import {
   Loader2,
   UserCheck,
   User,
+  Send,
+  Zap,
+  AlignLeft,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -22,6 +25,13 @@ import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
+
+interface TranslationSegment {
+  id: string
+  sourceText: string
+  translatedText: string
+  isTranslating: boolean
+}
 
 interface TranslationPanelProps {
   initialText?: string
@@ -35,11 +45,18 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
-  const [sourceText, setSourceText] = useState('')
-  const [translatedText, setTranslatedText] = useState('')
+
+  // Segment-based state for speech mode
+  const [segments, setSegments] = useState<TranslationSegment[]>([])
+  const [interimText, setInterimText] = useState('')
+
+  // Stream mode: 'sentence' = auto-segment per sentence, 'paragraph' = accumulate until Send
+  const [streamMode, setStreamMode] = useState<'sentence' | 'paragraph'>(() => {
+    return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
+  })
+
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
-  const [isTranslating, setIsTranslating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [autoSpeak, setAutoSpeak] = useState(() => {
@@ -56,18 +73,28 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const autoSpeakRef = useRef(autoSpeak)
   const targetLangRef = useRef(targetLang)
+  const sourceLangRef = useRef(sourceLang)
   const useInformalRef = useRef(useInformal)
+  const streamModeRef = useRef(streamMode)
+  const prevIsListeningRef = useRef(false)
 
   // Keep refs in sync
   autoSpeakRef.current = autoSpeak
   targetLangRef.current = targetLang
+  sourceLangRef.current = sourceLang
   useInformalRef.current = useInformal
+  streamModeRef.current = streamMode
 
-  const { isListening, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
+  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
   const targetSpeakRef = useRef(targetSpeech.speak)
   targetSpeakRef.current = targetSpeech.speak
+
+  // Derived display values
+  const sourceText = segments.map(s => s.sourceText).join(' ')
+  const translatedText = segments.map(s => s.translatedText).join(' ')
+  const isTranslating = segments.some(s => s.isTranslating)
 
   // Sync HD voice quality to both speech hooks
   useEffect(() => {
@@ -82,37 +109,88 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   // Handle initial text from quick phrases or history
   useEffect(() => {
     if (initialText) {
-      setSourceText(initialText)
+      const id = `seg_${Date.now()}`
+      setSegments([{ id, sourceText: initialText, translatedText: '', isTranslating: false }])
       if (initialSourceLang) setSourceLang(initialSourceLang)
       if (initialTargetLang) setTargetLang(initialTargetLang)
       onInitialTextConsumed?.()
+      // Trigger translation via debounce
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        doTranslateManual(initialText, id)
+      }, 300)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed])
 
-  const doTranslate = useCallback(async (text: string) => {
+  // --- Translation functions ---
+
+  // Translate a single segment (for speech mode)
+  const translateSegment = useCallback(async (segmentId: string, text: string) => {
+    if (!text.trim()) return
+
+    setSegments(prev => prev.map(s =>
+      s.id === segmentId ? { ...s, isTranslating: true } : s
+    ))
+    setError(null)
+
+    try {
+      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
+      let finalText = result.translatedText
+
+      if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
+        finalText = convertToInformal(finalText, targetLangRef.current)
+      }
+
+      setSegments(prev => prev.map(s =>
+        s.id === segmentId ? { ...s, translatedText: finalText, isTranslating: false } : s
+      ))
+      setMatchScore(result.match)
+      setProvider(result.provider)
+
+      // Auto-speak just this segment's translation
+      if (autoSpeakRef.current && finalText) {
+        const lang = getLanguageByCode(targetLangRef.current)
+        targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
+      }
+    } catch (err) {
+      setSegments(prev => prev.map(s =>
+        s.id === segmentId ? { ...s, isTranslating: false } : s
+      ))
+      setError(err instanceof Error ? err.message : 'Translation failed')
+    }
+  }, [])
+
+  // Translate for manual typing (single-segment, with history entry)
+  const doTranslateManual = useCallback(async (text: string, segId?: string) => {
     if (!text.trim()) {
-      setTranslatedText('')
+      setSegments([])
       setError(null)
       return
     }
 
-    setIsTranslating(true)
+    const segmentId = segId || (segments.length === 1 ? segments[0].id : `seg_${Date.now()}`)
+    if (!segId) {
+      setSegments([{ id: segmentId, sourceText: text, translatedText: '', isTranslating: true }])
+    } else {
+      setSegments(prev => prev.map(s => s.id === segmentId ? { ...s, isTranslating: true } : s))
+    }
     setError(null)
 
     try {
-      const result = await translateText(text, sourceLang, targetLang)
+      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
       let finalText = result.translatedText
 
-      // Apply informal conversion if toggle is active
-      if (useInformalRef.current && supportsFormality(targetLang)) {
-        finalText = convertToInformal(finalText, targetLang)
+      if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
+        finalText = convertToInformal(finalText, targetLangRef.current)
       }
 
-      setTranslatedText(finalText)
+      setSegments(prev => prev.map(s =>
+        s.id === segmentId ? { ...s, translatedText: finalText, isTranslating: false } : s
+      ))
       setMatchScore(result.match)
       setProvider(result.provider)
 
-      // Auto-speak via refs to avoid re-render dependency loop
       if (autoSpeakRef.current && finalText) {
         const lang = getLanguageByCode(targetLangRef.current)
         targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
@@ -121,46 +199,80 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       addEntry({
         sourceText: text,
         translatedText: finalText,
-        sourceLang,
-        targetLang,
+        sourceLang: sourceLangRef.current,
+        targetLang: targetLangRef.current,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('translator.translating'))
-    } finally {
-      setIsTranslating(false)
+      setSegments(prev => prev.map(s =>
+        s.id === segmentId ? { ...s, isTranslating: false } : s
+      ))
+      setError(err instanceof Error ? err.message : 'Translation failed')
     }
-  }, [sourceLang, targetLang, addEntry, t])
+  }, [segments, addEntry])
 
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-    }
+  // Manual textarea editing: collapse to single segment, debounce translate
+  const handleManualEdit = useCallback((newText: string) => {
+    const id = segments.length === 1 ? segments[0].id : `seg_manual_${Date.now()}`
+    setSegments([{ id, sourceText: newText, translatedText: segments.length === 1 ? segments[0].translatedText : '', isTranslating: false }])
 
-    if (!sourceText.trim()) {
-      setTranslatedText('')
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (!newText.trim()) {
+      setSegments([])
       setError(null)
       return
     }
-
     debounceRef.current = setTimeout(() => {
-      doTranslate(sourceText)
+      doTranslateManual(newText, id)
     }, 600)
-
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-    }
-  }, [sourceText, doTranslate])
+  }, [segments, doTranslateManual])
 
   const swapLanguages = () => {
     setSourceLang(targetLang)
     setTargetLang(sourceLang)
-    setSourceText(translatedText)
-    setTranslatedText(sourceText)
+    const src = sourceText
+    const tgt = translatedText
+    if (src || tgt) {
+      setSegments([{ id: `seg_swap_${Date.now()}`, sourceText: tgt, translatedText: src, isTranslating: false }])
+    }
   }
 
   const [micWarning, setMicWarning] = useState<string | null>(null)
+
+  // Refs for mic callbacks (to avoid stale closures)
+  const onFinalResultRef = useRef<(text: string) => void>(() => {})
+  const onInterimResultRef = useRef<(text: string) => void>(() => {})
+
+  // Update callback refs based on streamMode
+  useEffect(() => {
+    onFinalResultRef.current = (text: string) => {
+      if (streamModeRef.current === 'sentence') {
+        // Sentence mode: each final result → new segment → translate immediately
+        const id = `seg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
+        setSegments(prev => [...prev, { id, sourceText: text, translatedText: '', isTranslating: false }])
+        setInterimText('')
+        translateSegment(id, text)
+      } else {
+        // Paragraph mode: accumulate into last segment, don't translate yet
+        setSegments(prev => {
+          if (prev.length === 0) {
+            return [{ id: `seg_${Date.now()}`, sourceText: text, translatedText: '', isTranslating: false }]
+          }
+          const last = prev[prev.length - 1]
+          // Only accumulate into the last segment if it hasn't been translated yet
+          if (!last.translatedText && !last.isTranslating) {
+            return [...prev.slice(0, -1), { ...last, sourceText: (last.sourceText + ' ' + text).trim() }]
+          }
+          // Otherwise start a new segment
+          return [...prev, { id: `seg_${Date.now()}`, sourceText: text, translatedText: '', isTranslating: false }]
+        })
+        setInterimText('')
+      }
+    }
+
+    onInterimResultRef.current = (text: string) => {
+      setInterimText(text)
+    }
+  }, [translateSegment])
 
   const handleMicToggle = () => {
     if (!micSupported) {
@@ -173,11 +285,55 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       stopListening()
     } else {
       const lang = getLanguageByCode(sourceLang)
-      startListening(lang?.speechCode || sourceLang, (text) => {
-        setSourceText(prev => prev ? prev + ' ' + text : text)
-      })
+      startListening(
+        lang?.speechCode || sourceLang,
+        (text) => onFinalResultRef.current(text),
+        (text) => onInterimResultRef.current(text),
+      )
     }
   }
+
+  // Send button: force-finalize current audio + translate pending paragraph
+  const handleSend = useCallback(() => {
+    if (streamMode === 'paragraph') {
+      // Find untranslated segments and translate them
+      setSegments(prev => {
+        const toTranslate = prev.filter(s => !s.translatedText && !s.isTranslating && s.sourceText.trim())
+        for (const seg of toTranslate) {
+          translateSegment(seg.id, seg.sourceText)
+        }
+        return prev
+      })
+    }
+
+    // Force-finalize: stop triggers isFinal for pending audio, then restart
+    stopListening()
+    setTimeout(() => {
+      const lang = getLanguageByCode(sourceLangRef.current)
+      startListening(
+        lang?.speechCode || sourceLangRef.current,
+        (text) => onFinalResultRef.current(text),
+        (text) => onInterimResultRef.current(text),
+      )
+    }, 250)
+  }, [streamMode, stopListening, startListening, translateSegment])
+
+  // History entry when recording stops
+  useEffect(() => {
+    if (!isListening && prevIsListeningRef.current && segments.length > 0) {
+      const fullSource = segments.map(s => s.sourceText).join(' ').trim()
+      const fullTarget = segments.map(s => s.translatedText).join(' ').trim()
+      if (fullSource && fullTarget) {
+        addEntry({
+          sourceText: fullSource,
+          translatedText: fullTarget,
+          sourceLang,
+          targetLang,
+        })
+      }
+    }
+    prevIsListeningRef.current = isListening
+  }, [isListening, segments, sourceLang, targetLang, addEntry])
 
   const handleCopy = async () => {
     if (!translatedText) return
@@ -220,17 +376,30 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     })
   }
 
+  const toggleStreamMode = () => {
+    setStreamMode(prev => {
+      const next = prev === 'sentence' ? 'paragraph' : 'sentence'
+      localStorage.setItem('translator-stream-mode', next)
+      return next
+    })
+  }
+
   const toggleFormality = () => {
     setUseInformal(prev => {
       const next = !prev
       localStorage.setItem('translator-informal', String(next))
       // Re-translate with new formality if we have text
-      if (translatedText && next !== prev) {
+      if (translatedText) {
         if (next && supportsFormality(targetLang)) {
-          setTranslatedText(convertToInformal(translatedText, targetLang))
+          setSegments(prev => prev.map(s => ({
+            ...s,
+            translatedText: s.translatedText ? convertToInformal(s.translatedText, targetLang) : '',
+          })))
         } else {
-          // Re-trigger translation to get formal version
-          doTranslate(sourceText)
+          // Re-trigger translation for all segments
+          segments.forEach(s => {
+            if (s.sourceText.trim()) translateSegment(s.id, s.sourceText)
+          })
         }
       }
       return next
@@ -238,8 +407,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   }
 
   const clearAll = () => {
-    setSourceText('')
-    setTranslatedText('')
+    setSegments([])
+    setInterimText('')
     setError(null)
   }
 
@@ -282,6 +451,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
+        {/* Stream mode toggle */}
+        <Button
+          variant={streamMode === 'sentence' ? 'default' : 'outline'}
+          size="sm"
+          onClick={toggleStreamMode}
+          className="mb-0.5 shrink-0 gap-1.5"
+          title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
+        >
+          {streamMode === 'sentence' ? <Zap className="h-3.5 w-3.5" /> : <AlignLeft className="h-3.5 w-3.5" />}
+          <span className="text-xs">{streamMode === 'sentence' ? t('translator.sentence') : t('translator.paragraph')}</span>
+        </Button>
         {/* Sie/Du Toggle - shows when source or target supports formality */}
         {showFormalityToggle && (
           <Button
@@ -318,6 +498,18 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
+                {/* Send button: visible during recording */}
+                {isListening && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleSend}
+                    className="text-primary"
+                    title={t('translator.send')}
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                )}
                 {sourceSpeech.isSupported && sourceText && (
                   <Button
                     variant="ghost"
@@ -342,19 +534,25 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             </div>
             <textarea
               value={sourceText}
-              onChange={e => setSourceText(e.target.value)}
+              onChange={e => handleManualEdit(e.target.value)}
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
+              readOnly={isListening}
             />
+            {/* Interim text display during recording */}
+            {isListening && interimText && (
+              <p className="text-sm text-muted-foreground/60 italic px-1 -mt-2 mb-2">{interimText}...</p>
+            )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
-                {sourceText.length} {t('translator.chars')}
+                {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
               </span>
               {isListening && (
                 <span className="text-xs text-destructive flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   {t('translator.recording')}
+                  {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
                 </span>
               )}
               {(micError || micWarning) && (
@@ -398,17 +596,25 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               className="w-full min-h-[200px] text-base leading-relaxed"
               dir={isRTL(targetLang) ? 'rtl' : 'ltr'}
             >
-              {isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{t('translator.translating')}</span>
-                </div>
-              ) : error ? (
-                <div className="text-destructive text-sm">{error}</div>
-              ) : translatedText ? (
-                <p className="text-foreground">{translatedText}</p>
-              ) : (
+              {segments.length === 0 && !isTranslating ? (
                 <p className="text-muted-foreground/60">{t('translator.result')}</p>
+              ) : error && !translatedText ? (
+                <div className="text-destructive text-sm">{error}</div>
+              ) : (
+                <p className="text-foreground">
+                  {segments.map((seg, i) => (
+                    <span key={seg.id}>
+                      {seg.isTranslating ? (
+                        <span className="inline-flex items-center gap-1 text-muted-foreground">
+                          <Loader2 className="h-3 w-3 animate-spin inline" />
+                        </span>
+                      ) : (
+                        seg.translatedText
+                      )}
+                      {i < segments.length - 1 && seg.translatedText ? ' ' : ''}
+                    </span>
+                  ))}
+                </p>
               )}
             </div>
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
