@@ -164,7 +164,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   const handleMicToggle = () => {
     if (!micSupported) {
-      setMicWarning('Spracheingabe wird nur in Chrome und Edge unterst\u00fctzt. Bitte wechseln Sie den Browser.')
+      setMicWarning('Spracheingabe nicht verfügbar. Bitte prüfen Sie Ihre Browser-Einstellungen und Internetverbindung.')
       setTimeout(() => setMicWarning(null), 5000)
       return
     }
@@ -314,7 +314,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
-                  title={!micSupported ? 'Spracheingabe (nur in Chrome/Edge verf\u00fcgbar)' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
+                  title={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>

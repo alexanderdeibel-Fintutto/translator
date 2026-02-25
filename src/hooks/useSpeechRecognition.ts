@@ -15,10 +15,8 @@ export function useSpeechRecognition() {
     return engineRef.current
   }, [])
 
-  const isSupported = typeof window !== 'undefined' &&
-    ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window ||
-     // Also check for native bridge
-     !!(window as unknown as Record<string, unknown>).fintuttoNative)
+  // Delegate to the selected engine (covers Web Speech, Google Cloud STT, native bridge)
+  const isSupported = getEngine().isSupported
 
   const stopListening = useCallback(() => {
     getEngine().stop()
