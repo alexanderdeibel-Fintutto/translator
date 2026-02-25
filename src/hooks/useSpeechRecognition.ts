@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { getBestSTTEngine, type STTEngine, type STTResult } from '@/lib/stt'
+import { getBestSTTEngine, createGoogleCloudSTTEngine, type STTEngine, type STTResult } from '@/lib/stt'
 
 export function useSpeechRecognition() {
   const [isListening, setIsListening] = useState(false)
@@ -34,19 +34,34 @@ export function useSpeechRecognition() {
     setError(null)
     setTranscript('')
 
-    await engine.start(
-      lang,
-      (result: STTResult) => {
-        setTranscript(result.text)
-        if (result.isFinal) {
-          onResult(result.text)
+    const resultHandler = (result: STTResult) => {
+      setTranscript(result.text)
+      if (result.isFinal) {
+        onResult(result.text)
+      }
+    }
+
+    const errorHandler = (errorMsg: string) => {
+      // Auto-fallback: if Web Speech fails with service-not-allowed, switch to Google Cloud STT
+      if (errorMsg.includes('service-not-allowed') && engineRef.current?.provider === 'web-speech') {
+        const fallback = createGoogleCloudSTTEngine()
+        if (fallback.isSupported) {
+          engineRef.current = fallback
+          // Retry with Google Cloud STT engine
+          fallback.start(lang, resultHandler, (fallbackError: string) => {
+            setError(fallbackError)
+            setIsListening(false)
+          }).then(() => {
+            setIsListening(true)
+          })
+          return
         }
-      },
-      (errorMsg: string) => {
-        setError(errorMsg)
-        setIsListening(false)
-      },
-    )
+      }
+      setError(errorMsg)
+      setIsListening(false)
+    }
+
+    await engine.start(lang, resultHandler, errorHandler)
 
     setIsListening(true)
   }, [getEngine])
