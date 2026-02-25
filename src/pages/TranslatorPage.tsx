@@ -6,8 +6,10 @@ import TranslationPanel from '@/components/translator/TranslationPanel'
 import TranslationHistory from '@/components/translator/TranslationHistory'
 import QuickPhrases from '@/components/translator/QuickPhrases'
 import { useTranslationHistory } from '@/hooks/useTranslationHistory'
+import { useI18n } from '@/context/I18nContext'
 
 export default function TranslatorPage() {
+  const { t } = useI18n()
   const [quickText, setQuickText] = useState('')
   const [sourceLang, setSourceLang] = useState('')
   const [targetLang, setTargetLang] = useState('')
@@ -30,20 +32,20 @@ export default function TranslatorPage() {
       {/* Hero Section */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          <span className="gradient-text-translator">Übersetzer</span>
+          <span className="gradient-text-translator">{t('translator.title')}</span>
         </h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Texte kostenlos übersetzen, vorlesen lassen und per Spracheingabe diktieren. Über 20 Sprachen verfügbar.
+          {t('translator.subtitle')}
         </p>
       </div>
 
       {/* Features Pills */}
       <div className="flex items-center justify-center gap-2 flex-wrap">
         {[
-          { icon: Globe, label: '22 Sprachen' },
-          { icon: Mic, label: 'Spracheingabe' },
-          { icon: Languages, label: 'Sofort-Übersetzung' },
-          { icon: Zap, label: 'Kostenlos' },
+          { icon: Globe, label: t('translator.languages') },
+          { icon: Mic, label: t('translator.speechInput') },
+          { icon: Languages, label: t('translator.instantTranslation') },
+          { icon: Zap, label: t('translator.free') },
         ].map(f => (
           <div
             key={f.label}
@@ -56,7 +58,7 @@ export default function TranslatorPage() {
         <Link to="/live">
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
             <Radio className="h-3 w-3" />
-            Live-Session
+            {t('translator.liveSession')}
           </Button>
         </Link>
       </div>
