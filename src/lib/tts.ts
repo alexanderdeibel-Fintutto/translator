@@ -12,6 +12,7 @@ export type VoiceQuality = 'neural2' | 'chirp3hd'
 
 // Neural2/WaveNet/Standard voices (current default)
 const VOICE_MAP_NEURAL: Record<string, { languageCode: string; name: string }> = {
+  // Existing 22
   'de-DE': { languageCode: 'de-DE', name: 'de-DE-Neural2-C' },
   'en-US': { languageCode: 'en-US', name: 'en-US-Neural2-C' },
   'fr-FR': { languageCode: 'fr-FR', name: 'fr-FR-Neural2-A' },
@@ -34,6 +35,33 @@ const VOICE_MAP_NEURAL: Record<string, { languageCode: string; name: string }> =
   'ro-RO': { languageCode: 'ro-RO', name: 'ro-RO-Standard-A' },
   'el-GR': { languageCode: 'el-GR', name: 'el-GR-Standard-A' },
   'hu-HU': { languageCode: 'hu-HU', name: 'hu-HU-Standard-A' },
+
+  // Migration languages
+  'fa-IR': { languageCode: 'fa-IR', name: 'fa-IR-Standard-A' },
+  'ps-AF': { languageCode: 'ps-AF', name: '' }, // Browser fallback
+  'ku-TR': { languageCode: 'ku-TR', name: '' }, // Browser fallback
+  'ti-ER': { languageCode: 'ti-ER', name: '' }, // Browser fallback
+  'am-ET': { languageCode: 'am-ET', name: 'am-ET-Standard-A' },
+  'so-SO': { languageCode: 'so-SO', name: '' }, // Browser fallback
+  'ur-PK': { languageCode: 'ur-PK', name: 'ur-PK-Standard-A' },
+  'bn-BD': { languageCode: 'bn-BD', name: 'bn-BD-Standard-A' },
+  'sw-KE': { languageCode: 'sw-KE', name: 'sw-KE-Standard-A' },
+  'sq-AL': { languageCode: 'sq-AL', name: '' }, // Browser fallback
+
+  // Tourism languages
+  'hr-HR': { languageCode: 'hr-HR', name: '' }, // Browser fallback
+  'bg-BG': { languageCode: 'bg-BG', name: 'bg-BG-Standard-A' },
+  'sr-RS': { languageCode: 'sr-RS', name: 'sr-RS-Standard-A' },
+  'sk-SK': { languageCode: 'sk-SK', name: 'sk-SK-Standard-A' },
+  'nb-NO': { languageCode: 'nb-NO', name: 'nb-NO-Standard-A' },
+  'fi-FI': { languageCode: 'fi-FI', name: 'fi-FI-Standard-A' },
+  'th-TH': { languageCode: 'th-TH', name: 'th-TH-Standard-A' },
+  'vi-VN': { languageCode: 'vi-VN', name: 'vi-VN-Neural2-A' },
+  'id-ID': { languageCode: 'id-ID', name: 'id-ID-Standard-A' },
+  'ms-MY': { languageCode: 'ms-MY', name: 'ms-MY-Standard-A' },
+  'fil-PH': { languageCode: 'fil-PH', name: 'fil-PH-Standard-A' },
+  'he-IL': { languageCode: 'he-IL', name: 'he-IL-Standard-A' },
+  'ka-GE': { languageCode: 'ka-GE', name: '' }, // Browser fallback
 }
 
 // Chirp 3 HD voices — multi-language, highest quality
@@ -55,6 +83,14 @@ const CHIRP_VOICE_MAP: Record<string, { languageCode: string; name: string }> = 
   'nl-NL': { languageCode: 'nl-NL', name: 'nl-NL-Chirp3-HD-Achernar' },
   'pl-PL': { languageCode: 'pl-PL', name: 'pl-PL-Chirp3-HD-Achernar' },
   'sv-SE': { languageCode: 'sv-SE', name: 'sv-SE-Chirp3-HD-Achernar' },
+  'fa-IR': { languageCode: 'fa-IR', name: 'fa-IR-Chirp3-HD-Achernar' },
+  'he-IL': { languageCode: 'he-IL', name: 'he-IL-Chirp3-HD-Achernar' },
+  'th-TH': { languageCode: 'th-TH', name: 'th-TH-Chirp3-HD-Achernar' },
+  'vi-VN': { languageCode: 'vi-VN', name: 'vi-VN-Chirp3-HD-Achernar' },
+  'id-ID': { languageCode: 'id-ID', name: 'id-ID-Chirp3-HD-Achernar' },
+  'fi-FI': { languageCode: 'fi-FI', name: 'fi-FI-Chirp3-HD-Achernar' },
+  'nb-NO': { languageCode: 'nb-NO', name: 'nb-NO-Chirp3-HD-Achernar' },
+  'bg-BG': { languageCode: 'bg-BG', name: 'bg-BG-Chirp3-HD-Achernar' },
 }
 
 export function isCloudTTSAvailable(): boolean {
