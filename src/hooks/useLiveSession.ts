@@ -47,6 +47,7 @@ export function useLiveSession() {
   const tts = useSpeechSynthesis()
 
   const isTranslatingRef = useRef(false)
+  const pendingTextsRef = useRef<string[]>([])
   const selectedLanguageRef = useRef(selectedLanguage)
   selectedLanguageRef.current = selectedLanguage
   const autoTTSRef = useRef(autoTTS)
@@ -101,50 +102,68 @@ export function useLiveSession() {
     } satisfies SessionInfo)
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
-  // Handle speech recognition results (speaker side)
-  const handleSpeechResult = useCallback(async (text: string) => {
-    if (isTranslatingRef.current || !text.trim()) return
+  // Process a single text through translation fan-out
+  const processTranslation = useCallback(async (text: string) => {
+    // Get unique target languages from connected listeners
+    const targetLangs = Object.keys(presence.listenersByLanguage)
+      .filter(lang => lang !== '_speaker')
+
+    if (targetLangs.length === 0) return
+
+    // Translate to all requested languages in parallel
+    const results = await Promise.all(
+      targetLangs.map(async (targetLang) => {
+        const result = await translateText(text, sourceLanguage, targetLang)
+        return {
+          id: generateChunkId(),
+          sourceText: text,
+          translatedText: result.translatedText,
+          sourceLang: sourceLanguage,
+          targetLanguage: targetLang,
+          isFinal: true,
+          timestamp: Date.now(),
+        } satisfies TranslationChunk
+      })
+    )
+
+    // Broadcast each translation
+    for (const chunk of results) {
+      broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
+    }
+
+    // Add to local history (one entry per source text)
+    if (results.length > 0) {
+      setTranslationHistory(prev => [...prev, results[0]])
+    }
+  }, [sourceLanguage, presence.listenersByLanguage, broadcast])
+
+  // Drain the pending queue one item at a time
+  const drainQueue = useCallback(async () => {
+    if (isTranslatingRef.current) return
+    const next = pendingTextsRef.current.shift()
+    if (!next) return
+
     isTranslatingRef.current = true
-
     try {
-      // Get unique target languages from connected listeners
-      const targetLangs = Object.keys(presence.listenersByLanguage)
-        .filter(lang => lang !== '_speaker')
-
-      if (targetLangs.length === 0) return
-
-      // Translate to all requested languages in parallel
-      const results = await Promise.all(
-        targetLangs.map(async (targetLang) => {
-          const result = await translateText(text, sourceLanguage, targetLang)
-          return {
-            id: generateChunkId(),
-            sourceText: text,
-            translatedText: result.translatedText,
-            sourceLang: sourceLanguage,
-            targetLanguage: targetLang,
-            isFinal: true,
-            timestamp: Date.now(),
-          } satisfies TranslationChunk
-        })
-      )
-
-      // Broadcast each translation
-      for (const chunk of results) {
-        broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
-      }
-
-      // Add to local history (one entry per source text)
-      if (results.length > 0) {
-        setTranslationHistory(prev => [...prev, results[0]])
-      }
+      await processTranslation(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
       setError(err instanceof Error ? err.message : 'Übersetzung fehlgeschlagen')
     } finally {
       isTranslatingRef.current = false
+      // Process next queued item if any
+      if (pendingTextsRef.current.length > 0) {
+        drainQueue()
+      }
     }
-  }, [sourceLanguage, presence.listenersByLanguage, broadcast])
+  }, [processTranslation])
+
+  // Handle speech recognition results (speaker side) — queue-based, never drops
+  const handleSpeechResult = useCallback(async (text: string) => {
+    if (!text.trim()) return
+    pendingTextsRef.current.push(text)
+    drainQueue()
+  }, [drainQueue])
 
   const startRecording = useCallback(() => {
     const lang = getLanguageByCode(sourceLanguage)
@@ -166,6 +185,15 @@ export function useLiveSession() {
       setSessionEnded(true)
     }, 500) // Brief delay so listeners receive the end message
   }, [broadcast, presence, recognition])
+
+  // Detect disconnect during active session and show feedback
+  useEffect(() => {
+    if (role && !broadcast.isConnected && !sessionEnded) {
+      setError('Verbindung unterbrochen — wird automatisch wiederhergestellt...')
+    } else if (role && broadcast.isConnected && error === 'Verbindung unterbrochen — wird automatisch wiederhergestellt...') {
+      setError(null) // Clear disconnect error on reconnect
+    }
+  }, [broadcast.isConnected, role, sessionEnded, error])
 
   // --- LISTENER ---
 
@@ -272,7 +300,7 @@ export function useLiveSession() {
     isRecording: recognition.isListening,
     startRecording,
     stopRecording,
-    currentTranscript: recognition.transcript,
+    currentTranscript: recognition.interimTranscript,
     translationHistory,
 
     // Listener
