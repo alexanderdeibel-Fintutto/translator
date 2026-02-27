@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react'
 import { Wifi, Smartphone } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { generateWifiQRString } from '@/lib/hotspot-relay'
+import { generateWifiQRString } from '@/lib/hotspot-utils'
 
 interface WifiQRCodeProps {
   ssid: string
