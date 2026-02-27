@@ -5,11 +5,13 @@ import {
   createTransports,
   cleanupLocalConnections,
   stopHotspotTransport,
+  startBleTransport,
+  stopBleTransport,
   type TransportPair,
 } from '@/lib/transport/connection-manager'
 
 export interface ConnectionState {
-  mode: 'cloud' | 'local'
+  mode: 'cloud' | 'local' | 'ble'
   serverUrl?: string
   isResolving: boolean
   broadcastTransport: BroadcastTransport | undefined
@@ -32,6 +34,7 @@ export function useConnectionMode() {
 
   const transportPairRef = useRef<TransportPair | null>(null)
   const isHotspotRef = useRef(false)
+  const isBleRef = useRef(false)
 
   // Initialize with a config (called before creating/joining a session)
   const initialize = useCallback(async (config: ConnectionConfig) => {
@@ -47,10 +50,19 @@ export function useConnectionMode() {
         await stopHotspotTransport()
         isHotspotRef.current = false
       }
+      // Stop previous BLE transport if running
+      if (isBleRef.current) {
+        await stopBleTransport()
+        isBleRef.current = false
+      }
 
       let pair: TransportPair
 
-      if (config.mode === 'hotspot') {
+      if (config.mode === 'ble') {
+        // BLE mode — direct GATT transport
+        pair = await autoSelectTransport(config)
+        isBleRef.current = true
+      } else if (config.mode === 'hotspot') {
         // Hotspot mode — start embedded relay on this device
         pair = await autoSelectTransport(config)
         isHotspotRef.current = true
@@ -132,6 +144,9 @@ export function useConnectionMode() {
       }
       if (isHotspotRef.current) {
         stopHotspotTransport()
+      }
+      if (isBleRef.current) {
+        stopBleTransport()
       }
     }
   }, [])

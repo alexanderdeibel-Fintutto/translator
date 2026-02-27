@@ -70,7 +70,11 @@ export function useLiveSession() {
 
     // Initialize connection mode
     if (connectionConfig) {
-      await connection.initialize(connectionConfig)
+      // For BLE speaker mode, inject session code so GATT server can start
+      const config = connectionConfig.mode === 'ble'
+        ? { ...connectionConfig, bleSessionCode: code, bleSourceLanguage: sourceLang }
+        : connectionConfig
+      await connection.initialize(config)
     }
 
     // Subscribe to broadcast channel

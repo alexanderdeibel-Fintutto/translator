@@ -1,7 +1,7 @@
-import { Cloud, Wifi, Smartphone, Loader2 } from 'lucide-react'
+import { Cloud, Wifi, Smartphone, Bluetooth, Loader2 } from 'lucide-react'
 
 interface ConnectionModeIndicatorProps {
-  mode: 'cloud' | 'local'
+  mode: 'cloud' | 'local' | 'ble'
   isConnected: boolean
   isResolving?: boolean
   serverUrl?: string
@@ -21,6 +21,23 @@ export default function ConnectionModeIndicator({
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         <span>Verbindung wird hergestellt...</span>
+      </div>
+    )
+  }
+
+  if (mode === 'ble') {
+    return (
+      <div className="flex items-center gap-2 text-xs">
+        <Bluetooth className="h-3.5 w-3.5" />
+        <span className={isConnected
+          ? 'text-blue-600 dark:text-blue-400'
+          : 'text-amber-600 dark:text-amber-400'
+        }>
+          BLE Direkt
+        </span>
+        {isConnected && (
+          <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+        )}
       </div>
     )
   }

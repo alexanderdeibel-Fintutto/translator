@@ -5,12 +5,18 @@ import type { TranslationChunk, SessionInfo, StatusMessage, PresenceState } from
 
 // --- Connection mode ---
 
-export type ConnectionMode = 'cloud' | 'local' | 'hotspot' | 'auto'
+export type ConnectionMode = 'cloud' | 'local' | 'hotspot' | 'ble' | 'auto'
 
 export interface ConnectionConfig {
   mode: ConnectionMode
   /** Local WebSocket server URL, e.g. ws://192.168.8.1:8765 */
   localServerUrl?: string
+  /** BLE device ID of the speaker's GATT server (listener side only) */
+  bleDeviceId?: string
+  /** Session code for BLE speaker mode (needed to start GATT server) */
+  bleSessionCode?: string
+  /** Source language for BLE speaker mode */
+  bleSourceLanguage?: string
 }
 
 /** State returned when a hotspot + relay is started */
@@ -33,7 +39,7 @@ export interface BroadcastHandlers {
 }
 
 export interface BroadcastTransport {
-  readonly type: 'supabase' | 'local-ws'
+  readonly type: 'supabase' | 'local-ws' | 'ble'
   readonly isConnected: boolean
 
   subscribe(code: string, handlers: BroadcastHandlers): void
@@ -46,7 +52,7 @@ export interface BroadcastTransport {
 // --- Presence transport ---
 
 export interface PresenceTransport {
-  readonly type: 'supabase' | 'local-ws'
+  readonly type: 'supabase' | 'local-ws' | 'ble'
 
   join(code: string, data: PresenceState): void
   updatePresence(data: Partial<PresenceState>): void

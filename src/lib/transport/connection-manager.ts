@@ -22,7 +22,7 @@ const COMMON_ROUTER_IPS = [
 export interface TransportPair {
   broadcast: BroadcastTransport
   presence: PresenceTransport
-  mode: 'cloud' | 'local'
+  mode: 'cloud' | 'local' | 'ble'
   serverUrl?: string
   /** Populated when mode was 'hotspot' — contains WiFi credentials for QR code */
   hotspotInfo?: HotspotInfo
@@ -115,6 +115,52 @@ export async function startHotspotTransport(port = DEFAULT_LOCAL_PORT): Promise<
 }
 
 /**
+ * Create BLE transport pair for the speaker side.
+ * Starts the native GATT server and returns speaker transports.
+ */
+export async function startBleTransport(
+  sessionCode: string,
+  sourceLanguage: string,
+): Promise<TransportPair> {
+  const { startBleServer, BleSpeakerBroadcastTransport, BleSpeakerPresenceTransport } =
+    await import('@/lib/ble-transport')
+
+  await startBleServer(sessionCode, sourceLanguage)
+
+  return {
+    broadcast: new BleSpeakerBroadcastTransport(),
+    presence: new BleSpeakerPresenceTransport(),
+    mode: 'ble',
+  }
+}
+
+/**
+ * Create BLE transport pair for the listener side.
+ * Connects to the speaker's GATT server via BLE device ID.
+ */
+export async function createBleListenerTransports(bleDeviceId: string): Promise<TransportPair> {
+  const { BleBroadcastTransport, BlePresenceTransport } = await import('@/lib/ble-transport')
+
+  return {
+    broadcast: new BleBroadcastTransport(bleDeviceId),
+    presence: new BlePresenceTransport(bleDeviceId),
+    mode: 'ble',
+  }
+}
+
+/**
+ * Stop the BLE GATT server.
+ */
+export async function stopBleTransport(): Promise<void> {
+  try {
+    const { stopBleServer } = await import('@/lib/ble-transport')
+    await stopBleServer()
+  } catch (err) {
+    console.warn('[ConnectionManager] Error stopping BLE transport:', err)
+  }
+}
+
+/**
  * Stop the hotspot and embedded relay server.
  */
 export async function stopHotspotTransport(): Promise<void> {
@@ -140,6 +186,20 @@ export async function autoSelectTransport(
   // Hotspot mode — start embedded relay on this device
   if (config.mode === 'hotspot') {
     return startHotspotTransport()
+  }
+
+  // BLE mode — direct GATT transport (no WiFi needed)
+  if (config.mode === 'ble') {
+    if (config.bleDeviceId) {
+      // Listener side — connect to speaker's GATT server
+      return await createBleListenerTransports(config.bleDeviceId)
+    }
+    if (config.bleSessionCode) {
+      // Speaker side — start GATT server with session code
+      return startBleTransport(config.bleSessionCode, config.bleSourceLanguage || 'de')
+    }
+    // Fallback — no session code yet, return placeholder
+    return createTransports({ mode: 'cloud' })
   }
 
   // Explicit local mode
@@ -212,6 +272,10 @@ export function getSessionUrlWithTransport(
 
   if (transport.mode === 'local' && transport.serverUrl) {
     url.searchParams.set('ws', transport.serverUrl)
+  }
+
+  if (transport.mode === 'ble') {
+    url.searchParams.set('ble', '1')
   }
 
   return url.toString()

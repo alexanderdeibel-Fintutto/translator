@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
 import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-relay'
+import { isBleTransportAvailable } from '@/lib/ble-transport'
 import { useBleScanner } from '@/hooks/useBleDiscovery'
 import type { ConnectionMode } from '@/lib/transport/types'
 
@@ -16,6 +17,7 @@ export default function LiveLandingPage() {
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
 
   const hotspotAvailable = isHotspotSupported()
+  const bleTransportAvailable = isBleTransportAvailable()
 
   // BLE scanning for nearby sessions (listener auto-discovery)
   const bleScanner = useBleScanner()
@@ -40,8 +42,10 @@ export default function LiveLandingPage() {
     })
   }
 
-  const handleJoin = (code: string) => {
-    navigate(`/live/${code}`)
+  const handleJoin = (code: string, bleDeviceId?: string) => {
+    navigate(`/live/${code}`, {
+      state: bleDeviceId ? { bleDeviceId } : undefined,
+    })
   }
 
   // Convert RSSI to signal strength indicator (0-3)
@@ -108,6 +112,19 @@ export default function LiveLandingPage() {
                   Hotspot
                 </button>
               )}
+              {bleTransportAvailable && (
+                <button
+                  onClick={() => setConnectionMode('ble')}
+                  className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                    connectionMode === 'ble'
+                      ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
+                      : 'border-border text-muted-foreground hover:bg-accent'
+                  }`}
+                >
+                  <Bluetooth className="h-4 w-4" />
+                  BLE
+                </button>
+              )}
               <button
                 onClick={() => setConnectionMode('local')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
@@ -134,6 +151,21 @@ export default function LiveLandingPage() {
                 </p>
                 <p className="text-[10px] text-muted-foreground/60">
                   Max. 8-10 Listener, Reichweite ca. 20-30m
+                </p>
+              </div>
+            )}
+
+            {/* BLE direct mode info */}
+            {connectionMode === 'ble' && (
+              <div className="space-y-1.5 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+                <p className="text-xs font-medium text-blue-700 dark:text-blue-400">
+                  Direkte Bluetooth-Verbindung
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  Übersetzungen werden direkt per Bluetooth an Listener gesendet. Kein WLAN, kein Internet nötig.
+                </p>
+                <p className="text-[10px] text-muted-foreground/60">
+                  Max. 5-7 Listener, Reichweite ca. 10-30m
                 </p>
               </div>
             )}
@@ -196,7 +228,7 @@ export default function LiveLandingPage() {
                     return (
                       <button
                         key={session.sessionCode}
-                        onClick={() => handleJoin(session.sessionCode)}
+                        onClick={() => handleJoin(session.sessionCode, session.deviceId)}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 hover:bg-blue-100 dark:hover:bg-blue-950/40 transition-colors text-left"
                       >
                         <Signal className={`h-4 w-4 shrink-0 ${

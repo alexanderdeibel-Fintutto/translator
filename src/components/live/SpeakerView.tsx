@@ -21,8 +21,10 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const { t } = useI18n()
   const sessionStartRef = useRef(Date.now())
 
-  // BLE advertising: auto-start when session is active (any mode, not just hotspot)
-  const { isAdvertising } = useBleAdvertiser(session.sessionCode || null)
+  const isBleMode = session.connectionMode === 'ble'
+
+  // BLE discovery advertising: auto-start when session is active (skip in BLE transport mode — GATT server advertises)
+  const { isAdvertising } = useBleAdvertiser(isBleMode ? null : (session.sessionCode || null))
 
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
@@ -40,7 +42,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     protocol += `Dauer: ${durationMin} Minuten\n`
     protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
     protocol += `Zuhörer: ${session.listenerCount}\n`
-    protocol += `Verbindung: ${session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
+    protocol += `Verbindung: ${session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
     protocol += `\n----------------------------------------\n`
     protocol += `ÜBERSETZUNGEN\n`
     protocol += `----------------------------------------\n\n`
@@ -78,10 +80,10 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
             serverUrl={session.connectionServerUrl}
             isHotspotHost={!!session.hotspotInfo}
           />
-          {isAdvertising && (
+          {(isAdvertising || isBleMode) && (
             <span className="flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
               <Bluetooth className="h-3 w-3" />
-              BLE
+              {isBleMode ? 'GATT' : 'BLE'}
             </span>
           )}
         </div>
@@ -95,8 +97,8 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
         </div>
       )}
 
-      {/* Connection status bar */}
-      {!session.isConnected && !session.isResolvingConnection && (
+      {/* Connection status bar (skip in BLE mode — GATT server is always "connected") */}
+      {!isBleMode && !session.isConnected && !session.isResolvingConnection && (
         <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm">
           <WifiOff className="h-4 w-4 shrink-0" />
           <span>{t('live.disconnected')}</span>
@@ -116,11 +118,21 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
             />
           )}
 
-          {/* Session QR code — listeners scan AFTER connecting to WiFi */}
-          <SessionQRCode
-            code={session.sessionCode}
-            sessionUrl={session.sessionUrl}
-          />
+          {/* Session QR code — listeners scan AFTER connecting to WiFi (not in BLE mode) */}
+          {isBleMode ? (
+            <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-center space-y-2">
+              <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
+              <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
+              <p className="text-xs text-muted-foreground">
+                Listener finden diese Session automatisch per Bluetooth
+              </p>
+            </div>
+          ) : (
+            <SessionQRCode
+              code={session.sessionCode}
+              sessionUrl={session.sessionUrl}
+            />
+          )}
 
           <div className="flex gap-2">
             {session.isRecording ? (
@@ -136,7 +148,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               <Button
                 onClick={session.startRecording}
                 className="flex-1 gap-2"
-                disabled={!session.isConnected}
+                disabled={!isBleMode && !session.isConnected}
               >
                 <Mic className="h-4 w-4" />
                 {t('live.startRecording')}

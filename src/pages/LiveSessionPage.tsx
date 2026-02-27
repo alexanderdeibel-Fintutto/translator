@@ -6,8 +6,8 @@ import ListenerView from '@/components/live/ListenerView'
 import LanguageChips from '@/components/live/LanguageChips'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Wifi, Cloud } from 'lucide-react'
-import type { ConnectionConfig } from '@/lib/transport/types'
+import { Wifi, Cloud, Bluetooth } from 'lucide-react'
+import type { ConnectionConfig, ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveSessionPage() {
   const { code } = useParams<{ code: string }>()
@@ -20,15 +20,30 @@ export default function LiveSessionPage() {
   const state = location.state as {
     role?: string
     sourceLang?: string
-    connectionMode?: 'cloud' | 'local'
+    connectionMode?: ConnectionMode
     localServerUrl?: string
+    /** BLE device ID when joining via BLE discovery */
+    bleDeviceId?: string
   } | null
 
   // Detect local mode from URL query parameter (?ws=...)
   const wsParam = searchParams.get('ws')
+  const bleParam = searchParams.get('ble')
 
   // Build connection config from state or URL params
   const connectionConfig = useMemo((): ConnectionConfig | undefined => {
+    // BLE mode: speaker or listener
+    if (state?.connectionMode === 'ble') {
+      return { mode: 'ble' }
+    }
+    // BLE listener joining via discovery (has bleDeviceId in state)
+    if (state?.bleDeviceId) {
+      return { mode: 'ble', bleDeviceId: state.bleDeviceId }
+    }
+    // BLE from URL param
+    if (bleParam) {
+      return { mode: 'ble' }
+    }
     // Speaker: use state from navigation
     if (state?.connectionMode === 'local' && state?.localServerUrl) {
       return { mode: 'local', localServerUrl: state.localServerUrl }
@@ -42,7 +57,7 @@ export default function LiveSessionPage() {
       return { mode: 'cloud' }
     }
     return undefined
-  }, [state, wsParam])
+  }, [state, wsParam, bleParam])
 
   // Speaker: create session
   useEffect(() => {
@@ -83,7 +98,12 @@ export default function LiveSessionPage() {
         </div>
 
         {/* Show connection mode badge */}
-        {wsParam ? (
+        {state?.bleDeviceId || bleParam ? (
+          <div className="flex items-center justify-center gap-2 text-xs text-blue-600 dark:text-blue-400">
+            <Bluetooth className="h-3.5 w-3.5" />
+            <span>BLE Direkt (Offline)</span>
+          </div>
+        ) : wsParam ? (
           <div className="flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
             <Wifi className="h-3.5 w-3.5" />
             <span>Lokales Netzwerk (Offline-Modus)</span>
