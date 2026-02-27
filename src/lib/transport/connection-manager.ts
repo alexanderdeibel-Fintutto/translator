@@ -4,6 +4,7 @@
 import { getNetworkStatus } from '@/lib/offline/network-status'
 import { SupabaseBroadcastTransport, SupabasePresenceTransport } from './supabase-transport'
 import { LocalBroadcastTransport, LocalPresenceTransport, releaseConnection } from './local-ws-transport'
+import { EncryptedBroadcastTransport } from './encrypted-transport'
 import type { BroadcastTransport, PresenceTransport, ConnectionMode, ConnectionConfig, HotspotInfo } from './types'
 
 // Default relay server port (matches relay-server/server.js)
@@ -26,20 +27,43 @@ export interface TransportPair {
   serverUrl?: string
   /** Populated when mode was 'hotspot' — contains WiFi credentials for QR code */
   hotspotInfo?: HotspotInfo
+  /** Whether E2E encryption is enabled for broadcasts */
+  encrypted?: boolean
+}
+
+export interface CreateTransportsOptions {
+  /** Enable E2E encryption for broadcast messages (AES-256-GCM) */
+  encrypt?: boolean
 }
 
 /**
  * Probe a local WebSocket server to check if it's running.
- * Uses HTTP health endpoint for quick check.
+ * Tries /health on the same port (Node.js relay) first,
+ * then falls back to port+1 (embedded iOS/Android relay).
  */
 export async function probeLocalServer(url: string, timeoutMs = 2000): Promise<boolean> {
+  // Convert ws:// to http:// for health check
+  const httpUrl = url.replace(/^ws(s)?:\/\//, 'http$1://').replace(/\/$/, '')
+
+  // Try same-port first (Node.js relay-server)
+  if (await fetchHealth(httpUrl, timeoutMs)) return true
+
+  // Fallback: port+1 (embedded mobile relay)
   try {
-    // Convert ws:// to http:// for health check
-    const httpUrl = url.replace(/^ws(s)?:\/\//, 'http$1://').replace(/\/$/, '')
+    const parsed = new URL(httpUrl)
+    const nextPort = (parseInt(parsed.port, 10) || 8765) + 1
+    parsed.port = String(nextPort)
+    return await fetchHealth(parsed.origin, timeoutMs)
+  } catch {
+    return false
+  }
+}
+
+async function fetchHealth(baseUrl: string, timeoutMs: number): Promise<boolean> {
+  try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), timeoutMs)
-
-    const response = await fetch(`${httpUrl}/health`, {
+    const response = await fetch(`${baseUrl}/health`, {
       signal: controller.signal,
       mode: 'cors',
     })
@@ -67,23 +91,33 @@ export async function discoverLocalServer(port = DEFAULT_LOCAL_PORT): Promise<st
 
 /**
  * Create the appropriate transport pair based on configuration.
+ * Pass { encrypt: true } to wrap broadcasts with AES-256-GCM encryption.
  */
-export function createTransports(config: ConnectionConfig, hotspotInfo?: HotspotInfo): TransportPair {
+export function createTransports(
+  config: ConnectionConfig,
+  hotspotInfo?: HotspotInfo,
+  options?: CreateTransportsOptions,
+): TransportPair {
+  const wrapBroadcast = (transport: BroadcastTransport): BroadcastTransport =>
+    options?.encrypt ? new EncryptedBroadcastTransport(transport) : transport
+
   if ((config.mode === 'local' || config.mode === 'hotspot') && config.localServerUrl) {
     return {
-      broadcast: new LocalBroadcastTransport(config.localServerUrl),
+      broadcast: wrapBroadcast(new LocalBroadcastTransport(config.localServerUrl)),
       presence: new LocalPresenceTransport(config.localServerUrl),
       mode: 'local',
       serverUrl: config.localServerUrl,
       hotspotInfo,
+      encrypted: options?.encrypt,
     }
   }
 
   // Default: Supabase cloud
   return {
-    broadcast: new SupabaseBroadcastTransport(),
+    broadcast: wrapBroadcast(new SupabaseBroadcastTransport()),
     presence: new SupabasePresenceTransport(),
     mode: 'cloud',
+    encrypted: options?.encrypt,
   }
 }
 
