@@ -1,0 +1,862 @@
+[07.02.26, 02:16:08] Berger Ulrick: Ich denk drüber nach- gestern kam mir wieder was in den Sinn. Wie ist dein Deal Angebot für mich. Umsatzbeteilugung in % wieviel für die Idee?! 😉😀🫶🏻
+[07.02.26, 02:25:47] Alexander Deibel: werbung noch nicht geschaltet und nu auch kein geld mehr dafür. werde mich voll auf die seo-oprimierungkonzentrieren, habe da so viel gold.... aber vor allem ein setup, wo ich NUR MIT CLAude code die apps programmiere, ein riesen datenbank in supabase aufgebaut habe (alle daten über alle apps zentral nur unter meiner kontrtolle, jede renditeberechnung erfolgt nur mit validiertem (von google)-adresse,  usw. usf. sie mit github und vercel hoste (kostenlos), mit strip schon 400 preise / produkte eingerichtet habe, die alle scharf sind, habe gestern und heut die ersten zahlungen selolbst vorgenommen....  ich habe etwa 25 apps, und 100 webpages erstellt, , google analytics eingerichtet und alle webhooks, um jeden kontakt eines users zu verfolgen und ki die nagebote optimieren lasse, 60 formulare erstellt, 22 rechner, 17 checker,  brevo emailmarketing: 150 email templates für die verfolgund von 25 personas mit entsprechender angebotsgenerierung durch ki immer ins zntraum meines universums, soweit bzw.. so teuer wie die jeweillige persona budget hat.  und meine geschwindikeit ver40igfacht oder 500, dabei die kosten um ca. 90% ggü meinem beginn (an credits für diese blöden editoren) jetzt zahle ich250 für claude und 80 für gamma und gabe alles was ich brauche...........ich habe bei den editoren base44 und lovable bestimmt im letzten 40 tagen 2000 euro ausgegebe. alles weggemrgt, gepusht und deployed ;-9
+[07.02.26, 02:26:51] Alexander Deibel: hier mein seo-gold: bescheidboxer.de
+
+buergergeld-sanktion.de
+
+buergergeldbescheid-check.de
+
+diehausverwaltersoftware.de
+
+fintutto.info
+
+fintutto.online
+
+fintutto.org
+
+fintutto.shop
+
+fintutto.site
+
+fintutto.space
+
+fintutto.store
+
+hausmeisterenterprise.de
+
+hausmeistergo.de
+
+kaufnebenkosten-rechner.de
+
+kdu-checker.de
+
+kdu-rechner.de
+
+kosten-der-unterkunft-rechner.de
+
+mehrbedarf-rechner.de
+
+meinezaehlerapp.de
+
+meinimmobilien-portfolio.de
+
+meinnebenkostenabrechnungscheck.de
+
+meinrenditerechner.de
+
+mieterhohung-rechner.de
+
+mietspiegel-finder.de
+
+nebenkostenabrechnung-prufen.de
+
+portfolio-rechner.de
+
+vacationmanager.de
+
+vermitify.de
+
+widerspruchjobcenter.de
+
+zaehlerapp.de
+
+weniger anzeigen
+STRATO Hosting Pro
+3206684	
+afa-rechner-immobilien.de
+
+afa-rechner.eu
+
+anlage-v-ausfuellen.de
+
+deibel.info
+
+diehausmeisterapp.de
+
+diehausverwaltungsoftware.de
+
+fintutto.cloud
+
+fintutto.de
+
+fthausmeister.de
+
+fthausverwaltungsoftware.de
+
+ftmieter.de
+
+kautions-rechner.de
+
+meinafa-rechner.de
+
+meineanlage-v.de
+
+meinemieterapp.de
+
+meinkuendigungsfristcheck.de
+
+meinmieterhoehungscheck.de
+
+meinmietspiegel.de
+
+meinnebenkostencheck.eu
+
+meinnebenkostenrechner.com
+
+meinuebergabeprotokoll.de
+
+mieterhoehung.eu
+
+mieterhohung-berechnen.de
+
+mietvertrag-kuendigung.de
+
+nebenkostenrechner.eu
+
+vermieter-steuern.de
+
+vermietrendite-rechner.de
+[07.02.26, 02:28:29] Berger Ulrick: Na, da wirst du bestimmt in drei Monaten Millionär sein… hast du schon echte Kunden auf dem Portal?
+[07.02.26, 02:31:11] Alexander Deibel: ich bin heute nacht live gegangen, die google-suche wird bis zu vier wochen dauern..... die apps sind alle nicht getestet😱 (dafür habe ich keine zeit und hoffe auf keute wie dich 😉
+[07.02.26, 02:31:44] Berger Ulrick: Ok, so ich frage Brigitte….
+[07.02.26, 02:32:24] Berger Ulrick: Kann ich deine Software auch also fibu für alle Vorgänge nutzen bis zur Steuererklärung?
+[07.02.26, 02:33:22] Alexander Deibel: wonach? ich mach alle in lichgeschwindigkeit, heute habe ich alle web templates, app logos in zwei stunden gemacht. ohne das ich jemand mit schlechter laune begegnet bin. ich lliebe meine maschinen inzwischen....
+[07.02.26, 02:33:54] Berger Ulrick: Dass sie die Haus Buchhaltung von Hitzelrode mit deiner Software macht?!
+[07.02.26, 02:34:48] Alexander Deibel: fintutto.firma ist nich nicht live, wird aber ein klon von sev desk nur für alle vermögensarten und so viele firmen wie du willst, mit voller ki-unterstützung ab scan des beleges, bis zu alles steuererklärungen im dachh raum....
+[07.02.26, 02:36:00] Berger Ulrick: Ok dafür bin ich gern testemonial mit ghe und ZR… gib mir grünes Licht wenn es online ist 🙏🏻
+[07.02.26, 02:38:11] Berger Ulrick: Hierfür bin ich echt stolz auf dich
+[07.02.26, 02:38:29] Alexander Deibel: war bis heute auf vermietung, mieter, hausmeister konzentriert, habe schon ferienvermietung vorbereitet, HEUTE NOCH SCHELL IN 6 STUNDEN DIE ARBEITSLOSEN FERTIG GEMACHT, (NUR CLAUDE IST NOCH DABEI, DEN BESCHÄFTIGE ICH SEIT STUNDEN NUR MIT "WEITER" ALS BEFEHL, WAÄHREND er die ganze app alleie baut für mein universum integriert,
+[07.02.26, 02:38:42] Berger Ulrick: Ich denk drüber nach- gestern kam mir wieder was in den Sinn. Wie ist dein Deal Angebot für mich. Umsatzbeteilugung in % wieviel für die Idee?! 😉😀🫶🏻
+[07.02.26, 02:39:40] Alexander Deibel: schicke dir morgen ein paar links von apps (die fintutto.de domianne hab ich dir ja schon geschickt, dann kannste bißchen rumspielen
+[07.02.26, 02:40:44] Alexander Deibel: https://zaehler.fintutto.cloud/login
+[07.02.26, 02:43:58] Alexander Deibel: oder eben doch schon: firma.fintutto.cloud
+[07.02.26, 02:46:22] Alexander Deibel: vermietify.fintutto.cloud
+[07.02.26, 02:46:30] Berger Ulrick: … und damit könnte ich die fibu der Zeitreisen gmbh machen?
+[07.02.26, 02:48:21] Alexander Deibel: du solltest dami allle kapitalund personengesellschaften machen können
+[07.02.26, 02:48:53] Berger Ulrick: Ok! Ist also doch schon online 😉
+[07.02.26, 02:49:41] Berger Ulrick: ?
+[07.02.26, 02:54:06] Alexander Deibel: meine maschinchen arbeiten alle noch dran und ich kann dir den stand nicht genau sagen aber ist alles über die links erreichbar
+[07.02.26, 02:54:32] Alexander Deibel: die hat ja nienand außer dir
+[07.02.26, 02:55:34] Berger Ulrick: Tipptopp mein lieber. Ich bin zwar in den Ferien, aber ich werde damit mal irgendwie anfangen, wenn ich am Schiff bin und mich langweile. 😉
+[07.02.26, 02:55:55] Berger Ulrick: Magst du mir noch kurz eine Antwort geben bezüglich Deal für mich für meine App Ideen?
+[07.02.26, 02:57:33] Alexander Deibel: ich habe (mit meinem setup!, was ich mir als vollständiger laie erarbeitet habe (claude hat mir erst nach drei wochen udn 15000 eurp gesagt dap ocj daß woran wir seit dreo wochen arbeiten mit base44 gar nicht umsetzen kann, dann bin ich mit allen apps innerhalb von einem tag zu lovable umgezogen und am ende (meine tages . weiß nicht geenauch wann das war( sind allle schon wieder weg von lovable und ich hoste selbst
+[07.02.26, 02:58:42] Alexander Deibel: bitte kauf dir ein abo (zum test - du bekommst natürlich lifetime gratis) aber test erstmal als käufer den ganzen stripe-workflow mit
+[07.02.26, 02:59:05] Alexander Deibel: und die bucungen eerstattet
+[07.02.26, 03:00:24] Alexander Deibel: laß uns gemeinsam die app ausbauen und weiter testen, verbessern, optimieren. ich mach das für nich/uns und. denke daß ich weit genur dabei denke, daß viele davon profitieren wernde,,,,
+[07.02.26, 03:01:30] Alexander Deibel: bei inzwischen bald 20 apps ist inpu wichtig. ich kann die ja einfach meinen maschinchen geben und ide machen das dann so wie wir willen
+[07.02.26, 03:01:57] Berger Ulrick: Ja ich denk mein frühes nutzen kann ja auch nützlich für deine Entwicklung sein und vor allem auch für mich fürs umstellen meine Buchhaltung in Zukunft nicht mehr überfahre Steuerberater machen zu lassen… wenn du mir auch ein bisschen hilfst, damit klarzukommen und somit gleich deine Support Abteilung aufbauen kannst mit all meinen dummen Fragen😉 Am besten lässt du dann die Kalle Erklärungen mir geben, so dass du mir gar nicht selber was erklärst. Du brauchst somit einen Help bot auf
+[07.02.26, 03:09:58] Alexander Deibel: ich habe gerade 5 instanzen von claude code offen, die alle, auf meinem rechner arbeiten. während ich den feierabend eileite, nach dem ersten scguck wein schon ganz schön besoffen bin nach bald 40h und mit dor chtte. die bauen alle ghleichzeitig an verschiedenen apps und brauchen nur alle 15-25 min mal ein kurzes weiter von mit. ich hatte noch vergessen: mit meinem setup hat ein promt in zwei instanzen (eine in code eine im chat) von etwa 400 zeiche gereicht, im chat noch ein paar auswahlantworten gegeben undn dann später als code schon angefangen hat noch meine spezifikatrionen aus claude chat reingeschmissen, jetzt arbeitet er seit knapp vier stunden............ während wir chatten uzdn ich mit dem chat alle preise für die app eongerichtet die domains gesucht, gekauft, gestaltet und veröffnetlicht habe. mal sehen wie lange er noch mit "weiter" zu tun hat, im eigenen auftrag, als vollstrecker meine mit ihm erabeiteten masterplabms..... ich habe etwa 500 dokuemnte erstellt, und eigentrlich keine davon gelesen.... eigentlich die meiste zeit ir cop paste und den richtigen fragen 7 antworten verbracht, undn mir alles weitrere schritt für schritt zur umsetzugn des mastrerplabns f+r jeden code, jede edhe funktion, jede einrichtung eines rpovider-kontos, ungefähr 50 secret key verwale uns. usf. blablabla ich geh schlafne
+[07.02.26, 03:13:13] Alexander Deibel: genau darum gehts. ich will ein angebot machen, mit dem du für 19-49 euro alles gekommst was du brauchst...... und viellleicht 3000 euro (oder eben alle szeuerberater, und sostige saas kosten sparst=, ich habe alleine zwei 39 euro konten bei sev desk und bin für die weiterne zwei, die ich bröuchte zu knausrig, bein mir kriegst du alles, noch dazu voll ki unterstützt, mit zugriff auf ale wichtiegn formulare formschriebne berechnub´gen das ganrem für alle firmen für sagen wir mal untrer 80€
+[07.02.26, 03:14:00] Alexander Deibel: mein claim: alles. automatisch. ab jetzt,
+[07.02.26, 03:17:00] Alexander Deibel: welche appp ideen? (her damit)
+[07.02.26, 03:18:58] Berger Ulrick: Hey Alexander, du hast mich heute gefragt, dass ich dir neue App Ideen liefern soll die du mir dann bauen kannst und diesbezüglich frage ich dich an wie denn unser Deal dann wäre wenn ich dir eine App Idee liefere
+[07.02.26, 03:23:00] Alexander Deibel: einen Help bot; gibts schon für das ganze ecosystem. ich erfasse alle problem/fragen interaktionen und werte diese nach prio automatscihe aus, alsse listen erstenn die automatisch ausgewertet werrden. die app optimiert sich irgendwann oder eigentlich ab sofort von slebst . ich programmiere mien eigene ki, kann ihr sagen was sie machen, wie siereagieren soll, je nach persona, tier (bezahl) und optimiert für crossmakreting über die gerswamte angebotpalette des universiums....ich verfolge das ganze auf meinn dashbord (eine eigen app der 200 die ich gebaut habe) wo ich seh was so passiwert.... automatisch in meine datei zur reduzierung der anfragekosten an antrhopiv/clausd, also die ki n meinem system
+[07.02.26, 03:24:56] Alexander Deibel: alle claudes schuften und schuften, und das für 250€ im monat, ich mß immer wieder an die 30000 und murat denken
+[07.02.26, 03:25:40] Alexander Deibel: ok, das war keine standartware, aber die dinge die ich von ihm wolle mach ich dir jetz in 10min
+[07.02.26, 03:25:43] Berger Ulrick: Ich bin stolz auf dich
+[07.02.26, 03:27:00] Berger Ulrick: Lass doch Claude überlegen, was du mir für einen Deal für die App Idee vorschlagen sollst. Dann Liefer ich dir gerne noch ein paar Ideen. Ich würde mich Mega freuen mit dir an dieser Stelle zusammen zu arbeiten. Voll cool
+[07.02.26, 03:35:08] Berger Ulrick: Alexander, lass doch Claude am besten überlegen und vorschlagen, was du mir für einen Deal vorschlagen sollst, für wenn ich dir App Ideen liefere. Ich würde sehr gerne mit dir auf dieser Ebene zusammenarbeiten. Ich bin schon auf deine Antwort gespannt.
+[07.02.26, 03:31:46] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[07.02.26, 03:34:07] Alexander Deibel: ulrich, ließm deine nachricht nochmal, ich soll dir erarbeiten, was du mir vorschlagen solltest? ich versteh e nicht, komm mal rüber mit ner cololen idee, und dadnn schauen wir wer was macht und bekommt. ist ja noch nichts da, außer nem setup für ne gelddruckmaschine
+[07.02.26, 03:37:49] Berger Ulrick: Alexander! Wir sind zwar Freunde. Aber wie von meiner Mutter gelernt hab, hat bei Geld die Freundschaft auf und du bist tatsächlich der einzige Freund in meinem Leben, bei dem ich dies auch bitterlich erfahren durfte. Gleichwohl habe ich gelernt, dass ich ganz gut auf mich achte und mich um meinen Deal kümmere. Deshalb also komme ich mit meiner Idee erst dann rüber, wenn ich weiß, wie du das Geschäftsmodell an dieser Stelle als CTO sehen würdest. Insofern der Ball liegt bei dir gerne mache ich dir den Vorschlag, dass wir fifty-fifty machen. Du kümmerst dich um die Maschine und ich bin im Fall des Gesicht nach außen und natürlich dein Sparring Partner und weiß erforderlich, auch Finanzierungs co Partner… was denkst du dazu?
+[07.02.26, 03:39:33] Alexander Deibel: na klar, laß uns über alles sprechen, aber mit ner konkreten idee. ich klau die dir schon nicht
+[07.02.26, 03:40:46] Alexander Deibel: vorher ist doch nur sinnloses bla bla
+[07.02.26, 03:43:01] Berger Ulrick: Ok! Ich meld mich … erstmal mit einer Audionachricht albald…
+[07.02.26, 04:52:39] Berger Ulrick: https://open.spotify.com/track/58kpfjAbr3fGqZy0z0M85i?context=spotify:user:31m2zucp4l5foufxvqfsbccjvrey:collection&si=26sXL9bYQm_ePu909qh0vA
+‎[09.02.26, 02:44:46] Berger Ulrick: ‎<Anhang: 00000844-AUDIO-2026-02-09-02-44-46.opus>
+[13.02.26, 04:30:07] Alexander Deibel: https://fintutto.alexanderdeibel.com/
+[13.02.26, 23:42:55] Berger Ulrick: Liebe Alexander, Grüße vom Schaukeln 
+Auf dem Meer…. Ich hab hier leider keine Internetverbindung und die wenigen Stunden, die ich an Land bin und eine hätte möcht ich nicht mit arbeiten am Rechner verbringen. Insofern kann ich jetzt erst nach dem 26. wieder mit der Sache annehmen sobald ich dann in Bali angekommen bin, werde ich mir sicher dafür Zeit nehmen das wollte ich dich kurz wissen lassen. Wie geht es deiner Traumaverarbeitung? Und wie findest du meine Apple Idee?
+[13.02.26, 23:43:01] Berger Ulrick: App Idee?
+[13.02.26, 23:43:15] Berger Ulrick: Während ich auf dem Schiff bin, können wir gerne aber nur über Textnachrichten kommunizieren. Im WhatsApp
+[14.02.26, 10:47:56] Alexander Deibel: das war ne persönlich nachricht an freunde  nix zum arbeiten... mach in ruhe deine ausfahrt  😉
+[14.02.26, 10:48:16] Alexander Deibel: gar nicht, erklär dir gerne warum
+[14.02.26, 10:48:53] Alexander Deibel: interessiert mich
+[14.02.26, 11:50:06] Berger Ulrick: Es interessiert Dich mir zu erklären warum Dir die App Idee gar nicht gefällt?
+[14.02.26, 12:11:53] Alexander Deibel: war nur der vergessene anfang der bezogenen nachricht…
+[14.02.26, 13:28:59] Berger Ulrick: Aha!
+[16.02.26, 01:10:31] Berger Ulrick: All inkl wurde nicht bezahlt. Sollte Alexander es nicht bezahlen haben wir keine Mails mehr.
+[16.02.26, 01:11:02] Berger Ulrick: Hi Alexander! Kannst du bitte umgehend All Inkl bezahlen?!! 🙏🏻🙋🏼‍♂️
+‎[16.02.26, 11:14:12] Alexander Deibel: 👍 ‎<Anhang: 00000857-PHOTO-2026-02-16-11-14-12.jpg>
+[17.02.26, 19:08:45] Alexander Deibel: die war von sebastian dem alten österreichischen hinter Fotzer?
+‎[17.02.26, 21:45:35] Alexander Deibel: ‎<Anhang: 00000859-AUDIO-2026-02-17-21-45-35.opus>
+[17.02.26, 21:45:39] Alexander Deibel: https://luggagex.fintutto.cloud/
+‎[17.02.26, 21:58:13] Alexander Deibel: ‎<Anhang: 00000861-AUDIO-2026-02-17-21-58-13.opus>
+[17.02.26, 22:52:10] Berger Ulrick: Nein, das hat andré mitgeteilt und ist völlig emotionslos zu betrachten, er betreut ja den Account
+[17.02.26, 22:53:28] Alexander Deibel: dann alles gut
+‎[17.02.26, 23:03:25] Berger Ulrick: ‎<Anhang: 00000864-AUDIO-2026-02-17-23-03-25.opus>
+‎[17.02.26, 23:17:39] Berger Ulrick: ‎<Anhang: 00000865-AUDIO-2026-02-17-23-17-39.opus>
+‎[18.02.26, 00:10:09] Berger Ulrick: ‎<Anhang: 00000866-AUDIO-2026-02-18-00-10-09.opus>
+‎[18.02.26, 00:10:29] Berger Ulrick: ‎<Anhang: 00000867-AUDIO-2026-02-18-00-10-29.opus>
+‎[18.02.26, 03:12:42] Alexander Deibel: ‎<Anhang: 00000868-AUDIO-2026-02-18-03-12-42.opus>
+‎[18.02.26, 03:38:24] Alexander Deibel: ‎<Anhang: 00000869-AUDIO-2026-02-18-03-38-24.opus>
+‎[18.02.26, 04:01:17] Alexander Deibel: ‎<Anhang: 00000870-AUDIO-2026-02-18-04-01-17.opus>
+‎[18.02.26, 04:05:51] Alexander Deibel: ‎<Anhang: 00000871-AUDIO-2026-02-18-04-05-51.opus>
+[18.02.26, 06:51:43] Berger Ulrick: So cool 😎💎💎💎
+[18.02.26, 06:51:43] Berger Ulrick: Deine bott Community! Bravo 👍🏻! Dann muss die nur nach und nach echte Menschen mit dazu fischen… wie geht das?
+[18.02.26, 06:51:44] Berger Ulrick: Ja Podcast machen macht Spaß ;-) ich würde ja gern das ganze mit tantra machen 😀
+[18.02.26, 06:51:45] Berger Ulrick: Ja eine App, die die Überschriften scannt und ein summery gibt… mit Output für 3 /5 /10 minutes a day
+[18.02.26, 06:51:46] Berger Ulrick: 🔥🌞🔥🌞🔥🌊💥🌏
+‎[18.02.26, 09:37:05] Berger Ulrick: Gewöhn dich dran ;-) aber ich freu mich schon!!!! ‎<Anhang: 00000877-PHOTO-2026-02-18-09-37-05.jpg>
+‎[18.02.26, 09:54:24] Alexander Deibel: ‎<Anhang: 00000878-AUDIO-2026-02-18-09-54-24.opus>
+‎[18.02.26, 09:54:49] Berger Ulrick: ‎<Anhang: 00000879-AUDIO-2026-02-18-09-54-49.opus>
+[18.02.26, 14:38:08] Alexander Deibel: so, durch:
+[18.02.26, 14:38:09] Alexander Deibel: https://luggagex.fintutto.cloud/
+[18.02.26, 14:38:20] Alexander Deibel: https://luggagex.fintutto.cloud/
+[18.02.26, 23:47:47] Berger Ulrick: 🙏🏻 jetzt geht wieder nur WhatsApp Text Nachrichten die nächsten 3 Tage…
+‎[20.02.26, 14:42:19] Berger Ulrick: ‎<Anhang: 00000884-AUDIO-2026-02-20-14-42-19.opus>
+[20.02.26, 17:43:42] Alexander Deibel: wir sind dabei🚀
+[20.02.26, 18:19:25] Alexander Deibel: konzeptphase abgeschlossen. wir bauen jetzt! fertig bevor du in bali bist 🤪 (oder wann kommste an)
+[20.02.26, 18:20:01] Alexander Deibel: Features
+22 Sprachen - DE, EN, FR, ES, IT, PT, NL, PL, TR, RU, UK, AR, ZH, JA, KO, HI, SV, DA, CS, RO, EL, HU
+Echtzeit-Übersetzung via MyMemory API (debounced, 600ms)
+Spracheingabe - Web Speech API Mikrofon-Diktat
+Sprachausgabe - Text-to-Speech zum Vorlesen
+Sprachen tauschen - Swap-Button
+Kopieren - One-Click Clipboard
+Übersetzungsverlauf - localStorage (letzte 50)
+Schnell-Sätze - Begrüßung, Immobilien, Behörden, Alltag
+Dark Mode - Vollständig unterstützt
+RTL-Support - Arabisch wird rechts-nach-links angezeigt
+Technologie
+React 18 + TypeScript + Vite
+Tailwind CSS + shadcn/ui Patterns
+Web Speech API (SpeechRecognition + SpeechSynthesis)
+MyMemory Translation API (kostenlos, kein API-Key nötig)
+2 Seiten: Übersetzer (/) + Info (/info)
+Dateien (30 Dateien, 1515 Zeilen)
+apps/translator/
+├── src/
+│   ├── components/
+│   │   ├── layout/ (Header, Footer, Layout)
+│   │   ├── translator/ (TranslationPanel, LanguageSelector, QuickPhrases, History)
+│   │   └── ui/ (Button, Card)
+│   ├── hooks/ (useSpeechRecognition, useSpeechSynthesis, useTranslationHistory)
+│   ├── lib/ (languages, translate, utils)
+│   ├── pages/ (TranslatorPage, InfoPage)
+│   └── App.tsx, main.tsx, index.css
+├── package.json, vite.config.ts, tsconfig.json, tailwind.config.js, vercel.json
+└── public/favicon.svg
+[20.02.26, 18:21:00] Alexander Deibel: Die Architektur wäre eine Kombination aus zwei Apple-Frameworks:
+Sprache → Text:
+SpeechAnalyzer (neu ab iOS 26, WWDC25) oder SFSpeechRecognizer (ab iOS 10)
+SpeechAnalyzer ist explizit für Vorträge, Meetings und Langform-Audio gebaut
+Liefert kontinuierlich Partial Results -- genau das, was du brauchst: der Aufnahmekanal bleibt offen
+On-Device, offline-fähig mit requiresOnDeviceRecognition = true
+Text → Übersetzung:
+Translation Framework (TranslationSession, ab iOS 18)
+Komplett on-device, offline, kostenlos, keine API-Keys nötig
+Batch-Translation möglich -- Häppchen für Häppchen übersetzen
+~30 Sprachen unterstützt (DE, EN, FR, IT, ES, PT, JA, KO, ZH, etc.)
+Verteilung an Zuhörer:
+Multipeer Connectivity für die lokale Verteilung (Bluetooth/WiFi, kein Internet nötig)
+Oder alternativ ein einfacher lokaler Server via Network.framework
+2. Das Kernproblem (Ping-Pong) ist lösbar
+Apple's Translate-App arbeitet im Conversation-Mode (Ping-Pong). Aber die Developer-APIs sind davon unabhängig:
+SpeechAnalyzer liefert einen async Stream -- man kann Audio-Buffers kontinuierlich einspeisen und Ergebnisse parallel empfangen
+TranslationSession.translate() ist async -- kann parallel zum laufenden Speech Recognition laufen
+Das heißt: Aufnahme und Übersetzungsauslieferung können gleichzeitig stattfinden -- genau was du beschreibst
+3. App Store Risiko: Guideline 3.2.2(ii)
+Wichtiger Punkt: Apple verbietet die Monetarisierung von eingebauten OS-Fähigkeiten. ABER:
+Unsere App bietet erheblichen Mehrwert über die reine Übersetzung hinaus: Monolog-Modus, Deploy-Button, Multi-Listener-Verteilung, Guide-Workflow
+Es gibt bereits bezahlte Translation-Apps im Store, die Apple's API nutzen
+Solange die App nicht nur ein Wrapper ist, sondern ein eigenständiges Produkt (Guide-Tool), sollte es durchgehen
+4. Einschränkungen, die du kennen musst
+Limitation	Detail
+Kein Glossar	Keine Custom-Vocabulary für Eigennamen/Fachbegriffe -- Apple Black Box
+Single Target pro Session	Für 5 Sprachen gleichzeitig brauchen wir 5 parallele TranslationSession-Instanzen
+Nur Apple-Geräte	Multipeer Connectivity = nur iOS. Android-Zuhörer brauchen Alternativlösung
+Language-Packs download	Nutzer muss Sprachpakete einmalig herunterladen (mit Internet)
+Nur SwiftUI	Translation API ist rein SwiftUI-basiert
+iOS 18+ Minimum	Translation Framework erfordert mindestens iOS 18
+[20.02.26, 18:21:38] Alexander Deibel: "Soll die App nur für iOS (iPhone/iPad) gebaut werden, oder brauchst du auch Android-Support für die Zuhörer-Seite?"="Beides nativ", "Welches Minimum-iOS soll unterstützt werden? Das bestimmt welche APIs wir nutzen können."="iOS 26+", "Wie soll die Verbindung zwischen Guide und Zuhörern hergestellt werden?"="Beides als Option", "Wie soll die Übersetzung bei den Zuhörern ankommen?"="Beides als Option". You can now continue with the user's answers in mind.
+[20.02.26, 18:25:43] Alexander Deibel: hier, das habe ich nebenbei für meine jungs gemacht. ne kopie eine teuren trainings-tracking-app die sie sich nicht leisten wollen, und jetzt kopiere ich noch die coolste trainingsplan-erstellungs-plan-app und alles gute aus den sonstigen besten app rein...... (wir mach auch halbe/halbe....😋):
+[20.02.26, 18:26:13] Alexander Deibel: https://fitness.fintutto.cloud/
+‎[20.02.26, 19:00:48] Alexander Deibel: ‎<Anhang: 00000892-PHOTO-2026-02-20-19-00-48.jpg>
+[20.02.26, 19:01:17] Alexander Deibel: et voila, erster dummy (hat claud lokal auf meinem rechner gebaut)
+‎[20.02.26, 20:56:09] Alexander Deibel: # ‎<Anhang: 00000894-PHOTO-2026-02-20-20-56-09.jpg>
+[20.02.26, 21:02:15] Alexander Deibel: ich höre übersetzung!!!
+[20.02.26, 21:02:20] Alexander Deibel: live
+[20.02.26, 21:03:40] Alexander Deibel: jetz optimiere ich die stimme und habe die beste (teuerste option fewählt): "Google Cloud TTS - natürlichste sprachsugabe
+[20.02.26, 21:04:51] Alexander Deibel: wenns nicht schon so spät wäre würd ich aus spaß fr dich noch meine stimme rein machen zhumindest in deutsch. nur fr dich. dann spreche ich deine deutsce üebrsetzung... (oder später für den premium-bereich 🤣)
+[20.02.26, 21:07:29] Alexander Deibel: mal sehen ob ich heute noch schaffe es zu deployen, das du dir das im web anschauen/ausprobieren kannst......🚀 (ich bin leider schin in stunde 30 meiner schicht).... aber ich habe noch keinen sprit getrunkten!!!🍹
+[20.02.26, 21:08:58] Alexander Deibel: laß uns die schnell für den app-stor fertig machen wenn das wirklich so ist das es immer nur eien geben darf....! du mußt testen, testen, testen.....
+[20.02.26, 21:11:23] Alexander Deibel: und mir kurze präzise bugs und korrektur, ergänzhungs, und verbesserungsvorschläge mitteilen.
+‎[20.02.26, 22:23:20] Alexander Deibel: ‎<Anhang: 00000902-PHOTO-2026-02-20-22-23-20.jpg>
+‎[20.02.26, 22:23:20] Alexander Deibel: ‎<Anhang: 00000903-PHOTO-2026-02-20-22-23-20.jpg>
+‎[20.02.26, 22:23:20] Alexander Deibel: ‎<Anhang: 00000904-PHOTO-2026-02-20-22-23-20.jpg>
+‎[20.02.26, 22:23:20] Alexander Deibel: ‎<Anhang: 00000905-PHOTO-2026-02-20-22-23-20.jpg>
+[20.02.26, 22:27:38] Alexander Deibel: api key konto für AiGuide erstellt, auf rechnung ai tour guide, eingetragen. hiere oben mal für deinen eindruck meine vier screens, besonders interessant ist den 16 claude-code-fenstern, die ich alle merh oder weniger gleichzeitig arbeiten lasse. manche brauchen die ganze zeit hinwendung, und copy-past ins terminal, bis llaes stimmt, oder die datenbank weiter aufbauen. preise genhen vollautomatisch. wenn die apps einmal richtig mit allen keys und sonst secrets gestezt deployed ist, geht dann gleich alles....
+[20.02.26, 22:28:44] Alexander Deibel: FinTutto: alles. automatisch. ab jetzt.
+[20.02.26, 23:06:46] Alexander Deibel: https://cloud.fintutto.de/
+[21.02.26, 01:05:29] Alexander Deibel: ich meinte SPRITZ (aperol)
+[21.02.26, 01:07:37] Alexander Deibel: bin immer noch mit der integration der besseren stimmen von der google api beschäftigt, die bersetzte stimme klingt wie ein raucher dem sie den kehkopf opertiert haben... also die browser-integrierte. warum die sowas einbauen versteh ich nicht... mußt du doch auch erstmal herstellen sowas oder extra massiv reduzieren
+[21.02.26, 01:07:46] Alexander Deibel: naja, ich denke wird morgen
+[21.02.26, 01:08:42] Alexander Deibel: aber wäre ja auch zu krass in 8 stunden, wofür murat 8 monate gebraucht hat
+[21.02.26, 01:09:49] Alexander Deibel: und das vieeeele schöne geld🤑 ... wir haben ganz schön viel zum fenster raus geschmissen. wir beide!
+[21.02.26, 01:52:29] Alexander Deibel: habe heute meine pflanzen bekommen und am nachmittag, nachdem ich mit der übersetzungsapp angefangen habe, die angefangen auszupacken und dabei eine idee gehabt: gedacht, gemacht:
+[21.02.26, 01:52:34] Alexander Deibel: https://zimmerpflanze.fintutto.cloud
+[21.02.26, 01:53:28] Alexander Deibel: ist fast fertig, fehlt noch der scanner für die pflänzen und die weitern 150 pflanzen oder api einbindungen von solchen datenbanken....
+[21.02.26, 01:59:41] Berger Ulrick: Krass!
+[21.02.26, 01:59:47] Berger Ulrick: Congrats…!
+[21.02.26, 02:56:41] Alexander Deibel: https://translator.fintutto.cloud/
+[21.02.26, 02:59:02] Alexander Deibel: habs deploey, weiß nicht ob die google-api (für die stimme life ist) aber mit den kleinen buten im textfeld (mikrofon und lautsprecher ewunschgemäß einstellen (ist noch blöd, muß bei sprecher da mirko ersteinmal aktivieren, dann kannst du auch den hörer beii der transation aktivieren und hörts entweder den browserstimme oder vielleicht doch schon die gute googlestimme
+[21.02.26, 03:01:01] Alexander Deibel: ich weiß nicht ob ichs noch schaffe... aber der zweite spritz ist jetzt auch schon leer und ich bei 36h auf der uhr mit meinen maschinchen und mozart....
+[21.02.26, 03:02:30] Alexander Deibel: google ist drin!
+[21.02.26, 03:03:04] Alexander Deibel: aber du mußt jedes mal die sprache aktivieren, also den lautsprecher. das ist noch nicht flüssig
+[21.02.26, 03:24:02] Alexander Deibel: Gepusht. Das Problem war:
+targetSpeech.speak() setzt isSpeaking = true
+Das erzeugt ein neues targetSpeech-Objekt
+doTranslate hatte targetSpeech als Dependency → wird neu erstellt
+Der Debounce-Effect hängt von doTranslate ab → feuert nach 600ms erneut
+Neue Übersetzung startet → altes Audio wird gestoppt → Loop
+Fix: Auto-Speak verwendet jetzt Refs (autoSpeakRef, targetSpeakRef, targetLangRef) statt direkte State-Werte. Dadurch bleibt doTranslate stabil und der Debounce-Effect wird nicht erneut ausgelöst.
+Die Sprachausgabe sollte jetzt komplett durchlaufen ohne abzubrechen.
+[21.02.26, 03:27:21] Alexander Deibel: ulrich, das fühlt sich alles so surreal an. so als hätte ich den schlüssel gefunden. auch zu mir selbst und irgendwie den code geknackt......🤷
+[21.02.26, 03:28:26] Alexander Deibel: 🚀❤️‍🩹☝️🤟☀️❤️😂🤣😍😇👺💪
+[21.02.26, 03:29:40] Alexander Deibel: 🙏👑💍🐒🦄🐚🍄🌞🌈☀️💥🔥
+[21.02.26, 03:30:48] Alexander Deibel: 😎🤪😤🫠🫥👹🥵🥶🦕🌎
+[21.02.26, 03:31:08] Alexander Deibel: oder ich hab den hacken noch nicht gefunden
+[21.02.26, 03:33:38] Alexander Deibel: mach den bildschild jetzt aus
+[21.02.26, 03:33:51] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[21.02.26, 03:34:55] Alexander Deibel: gute nacht
+[21.02.26, 03:35:02] Alexander Deibel: https://cloud.fintutto.de
+[21.02.26, 06:22:44] Berger Ulrick: Alexander, Ja! Ich freu mich ja so sehr für dich, ich wusste immer du musst an die Regler (die Puppen tanzen lassen) dass es nun die KI ist, istvdochbaich genial! I stel dir vor ich hab vorhin zu Mittag unser Produkt gleich Annemie sehr einflussreich Person auf dem Nicko Tours Schiff „verkauft“ und wolfram ist ja noch bis mai am Schiff und kann alles stehts testen was wir neu machen… ♎️💟
+[21.02.26, 06:24:46] Berger Ulrick: Die Verbindung zwischen den Geräten läuft über mobile Daten oder halt ein Wi-Fi falls in den Raum vorhanden…
+[21.02.26, 06:25:10] Berger Ulrick: Am besten macht man irgendeine Einwahl Logik auf der Receiver App, um sich mit den Guide zu verbinden!
+[21.02.26, 06:26:18] Berger Ulrick: Sexy wär natürlich, wenn der Guide in einer Art pull - Funktion alle Gäste an sich bindet, aber ich glaube, das funktioniert nicht in der Praxis… d.h. der Gast muss pro aktiv sich mit dem Guide verbinden…
+[21.02.26, 06:56:50] Berger Ulrick: So ähnlich mich gefunden habend gefühlt hatte ich im Dezember nach meinem Tantra massage Kurs! Schön sind wir da, Bruder Des Lichts 😎🌞🍻💥♎️💟
+[21.02.26, 06:57:16] Berger Ulrick: Jetzt hab ich auch eine Stunde Internet und sehr mir dein Werk an…
+[21.02.26, 07:26:54] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+[21.02.26, 07:28:22] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+‎[21.02.26, 08:12:36] Berger Ulrick: ‎<Anhang: 00000942-AUDIO-2026-02-21-08-12-36.opus>
+[21.02.26, 08:18:11] Berger Ulrick: Radikal wäre ab iOS 26 dann sind wir mit der Qualität auf der Gewinner Spur… ich würde sagen iOS 26… und der Rest wie schon zuvor geschrieben
+[21.02.26, 08:20:52] Berger Ulrick: Hey du super Programmierer 😉 ich kann solche Details wie auf den Bildern nicht lesen 😉 aber ja detaillierte Infos zu den Bugs bekommst du. Pro Bug eine Nachricht…
+[21.02.26, 08:22:33] Berger Ulrick: Wozu nützt du die?
+[21.02.26, 08:24:12] Berger Ulrick: Und wir machen erstmal nur für iPhone User, oder mit anderer rechnertechnology auf android (was aber eben nur online geht)
+[21.02.26, 08:25:38] Berger Ulrick: Wieviel iPhones könnte man lokal an ein Sender iPhone anbinden (sprich total offline für alle! Ohne extra Hardware)
+[21.02.26, 18:17:00] Alexander Deibel: Die Translator-App (translator.fintutto.cloud) funktioniert bisher nur für Einzelnutzer. Das Ziel: Ein Live-Übersetzungsmodus wie ein digitaler Konferenzdolmetscher — ein Speaker spricht, beliebig viele Listener hören die Übersetzung in ihrer Sprache. Architektur wird vom bestehenden AI-Guide iOS-Modell adaptiert (/home/user/portal/apps/ai-guide/).
+[21.02.26, 18:17:22] Alexander Deibel: meine Entscheidungen:
+
+Listener: Web-URL + native App (später)
+Verbindung: Supabase Realtime (Standard) + lokales WiFi (Fallback)
+Kapazität: Unbegrenzt (MVP, Monetarisierung später)
+[21.02.26, 18:17:54] Alexander Deibel: Architektur & Datenfluss
+Speaker spricht ins Mikrofon
+    ↓
+useSpeechRecognition (existiert)
+    ↓
+Erkannter Text
+    ↓
+translateText() pro Zielsprache (existiert)
+    ↓
+Supabase Realtime Broadcast (Channel: "live-TR-XXXX")
+    ↓
+    ├→ Listener A (fr) → filtert targetLanguage === "fr" → Anzeige + TTS
+    ├→ Listener B (es) → filtert targetLanguage === "es" → Anzeige + TTS
+    └→ Listener C (en) → filtert targetLanguage === "en" → Anzeige + TTS
+Speaker übersetzt in alle angeforderten Sprachen auf seinem Gerät, broadcastet pro Sprache. Listener filtern nur.
+[21.02.26, 18:18:55] Alexander Deibel: ergit ersteinmal folgende flows:
+[21.02.26, 18:18:55] Alexander Deibel: Speaker-Flow
+
+Klickt "Live Session erstellen" → generateSessionCode() → TR-A7K2
+Supabase Channel live-TR-A7K2 subscriben + Presence tracken
+QR-Code + Session-Code + Share-Link anzeigen
+Mikrofon starten → useSpeechRecognition liefert Text
+Für jede angeforderte Zielsprache (aus Presence): translateText() aufrufen
+Jede Übersetzung als TranslationChunk broadcasten
+Listener-Übersicht zeigt wer verbunden ist + welche Sprachen
+[21.02.26, 18:19:21] Alexander Deibel: Listener-Flow (frictionless Onboarding)
+
+QR-Code scannen ODER URL öffnen (translator.fintutto.cloud/live/TR-A7K2) ODER Code eingeben
+Zielsprache wählen (Chips: 🇬🇧 EN, 🇫🇷 FR, 🇪🇸 ES, ...)
+Supabase Channel subscriben + Presence mit targetLanguage tracken
+Empfängt TranslationChunks, filtert nach targetLanguage
+Text wird angezeigt + Auto-TTS liest vor (Google Cloud Neural2)
+Kein Login, kein App-Download, kein Account nötig
+[21.02.26, 18:19:45] Alexander Deibel: Phase 2 (später): Native Listener App + WiFi-Fallback
+
+React Native oder PWA für iOS/Android Listener
+WebRTC DataChannel als WiFi-Fallback (P2P, kein Server)
+Monetarisierung (Free/Pro/Business Tiers)
+[21.02.26, 18:20:30] Alexander Deibel: - schreib dir wenn diese etappe umgesetzt ist und getestet werden kann
+[21.02.26, 18:24:18] Alexander Deibel: sprecher erstmal nur iphon (ab 11) hörer alle plattformen, theoretisch unbegrenzt, mal sehen wie viee wir schaffen (der server ( die verbindung / unserer supapbas...)
+[21.02.26, 18:34:55] Alexander Deibel: ist scho fertig. muß nur noch deployed werde.
+[21.02.26, 18:35:03] Alexander Deibel: sprecher: translator.fintutto.cloud/live
+[21.02.26, 18:35:39] Alexander Deibel: hörer: translator.fintutto.cloud/live/TR-XXXX → Session (QR-Code / Link)
+[21.02.26, 20:04:05] Alexander Deibel: alles erstmal deployed:!!!
+[21.02.26, 20:04:09] Alexander Deibel: hier testen:
+[21.02.26, 20:04:10] Alexander Deibel: https://translator.fintutto.cloud/live
+[21.02.26, 20:04:54] Alexander Deibel: bitte klare einzelne bugs genau benennen
+[21.02.26, 20:05:22] Alexander Deibel: verbesserungen genau beschreiben (was sie sollen und wie sie zu finden sein sollen, bzw. was sie eerreichen sollen)
+[21.02.26, 20:05:44] Alexander Deibel: fragen explizit als solche (zur recherche oder entscheidung) kennzeichnen
+[21.02.26, 20:05:58] Alexander Deibel: ich mach jetzt an den anderen 12 apps weiter 😉
+[21.02.26, 20:08:34] Alexander Deibel: nächste wichtige entschiedungen: preismodell (ein hörer kostenlos - aber mit anmeldung? oder auch noch ohne) ab zwei kosten?, wieviel pro hörer oder/+ minutenpreis (übersetzen und sprechen kostet/pro sprache) ,TIERS (also wieviel inkludiert (hörer/minuten)
+[21.02.26, 20:21:53] Alexander Deibel: Jetzt gehts los: ulrich: geschäftskonzept fertig:
+[21.02.26, 20:21:58] Alexander Deibel: WENIGER ALS 1 CENT PRO PASSAGIER PRO AUSFLUG an API-Kosten
+‎[21.02.26, 20:37:11] Alexander Deibel: Geschaftskonzept-and-Preismodell.pdf • ‎20 Seiten ‎<Anhang: 00000970-Geschaftskonzept-and-Preismodell.pdf>
+[21.02.26, 20:49:29] Alexander Deibel: Die Domain aiguidetranslator.de ist frei.
+
+Bitte wählen Sie aus, zu welchen Konditionen die Domain verwaltet werden soll:
+
+  Sie haben im all-inkl Premium Vertrag bereits alle möglichen Inklusivdomains genutzt.
+
+Als kostenpflichtige Zusatzdomain: 9,90 Euro * pro Jahr, zzgl. 0,00 Euro * einmalig
+[21.02.26, 20:50:14] Alexander Deibel: Sie können die Domain ai-translator.de nicht registrieren, da diese bereits vergeben ist.
+[21.02.26, 20:50:35] Alexander Deibel: Sie können die Domain aitranslator.de nicht registrieren, da diese bereits vergeben ist.
+[21.02.26, 20:51:07] Alexander Deibel: Die Domain guidetranslator.de ist frei.
+
+Bitte wählen Sie aus, zu welchen Konditionen die Domain verwaltet werden soll:
+
+  Sie haben im all-inkl Premium Vertrag bereits alle möglichen Inklusivdomains genutzt.
+
+Als kostenpflichtige Zusatzdomain: 9,90 Euro * pro Jahr, zzgl. 0,00 Euro * einmalig
+
+Beachten Sie bitte folgende Registrierungsbedingungen der zuständigen NIC:
+
+   https://www.denic.de/domainbedingungen
+   https://www.denic.de/domainrichtlinien
+[21.02.26, 20:53:01] Alexander Deibel: hab ich jetzt einfach schon mal im all-ink paket von der ai tour guide ug gemacht.
+[21.02.26, 20:53:04] Alexander Deibel: Die Domain aiguidetranslator.com ist frei.
+
+Bitte wählen Sie aus, zu welchen Konditionen die Domain verwaltet werden soll:
+
+  Sie haben im all-inkl Premium Vertrag bereits alle möglichen Inklusivdomains genutzt.
+
+Als kostenpflichtige Zusatzdomain: 14,90 Euro * pro Jahr, zzgl. 0,00 Euro * einmalig
+[21.02.26, 20:53:24] Alexander Deibel: dei auch
+[21.02.26, 20:54:21] Alexander Deibel: auch noch guidetranlator.de (9,99)
+[21.02.26, 20:54:58] Alexander Deibel: und guidetranslator.com für 14,90
+[21.02.26, 20:57:14] Alexander Deibel: sobald die domains registriert sind, hoste ich den translator (auch) da: unter app.guidetranslator.com - sag dir bescheid wenns soweit ist, bis dahin den link oben benutzen zum testen:
+[21.02.26, 20:57:30] Alexander Deibel: !
+[21.02.26, 21:08:46] Alexander Deibel: ich bau dir jetzt schnell noch ein tool zur lead-generierung (kontakte-werbung-angebote-kommunikaton) damit du sofort loslegen kannst
+[21.02.26, 21:09:00] Alexander Deibel: ABER IHR MÜsst testen testen testen testen testen
+[21.02.26, 22:13:52] Alexander Deibel: so hier dein lead-generatoren-angebots-rechner.... (erster entwurf)... war nach 15min fertig, hab bis jetzt gebraaucht es von meinem rechner live in die welt zu bringen...(daß muß ich noch optimieren)... bin jetzt schon seit 20min dabei diese kack-all ink in die mache zu kriegen, die domainssind da, und ihc wollte dir dein sales-tool gleich dort hosten... dauert noch. aber ich mach schon mal ne website, ja?
+[21.02.26, 22:13:58] Alexander Deibel: https://aiguide-salesfinal.vercel.app/
+[21.02.26, 22:16:52] Alexander Deibel: datenbank schon erstellt, alles live. jetzt mach ich dir erstmal einen lead-link. den du für jeden kunden erstellen kannst, und er direkt in "seinem " angebot/rechner landet (sich nicht anmelden, sondern nur einpasswort vergeben muß - wie findste das? ihr müßt euch jetzt teilen, wolfram die app, du die landingpage (gleich) und deine leadgeneratorenmaschine...ok
+‎[21.02.26, 22:24:29] Alexander Deibel: ‎<Anhang: 00000987-PHOTO-2026-02-21-22-24-29.jpg>
+[21.02.26, 22:25:12] Alexander Deibel: ich hab mich mal angemeldet und ne kalku erstellt und dir ne anfrage mail mit fünf clicks erstell. haste noch nicht bekommen, weils das emailpostfach noch nicht gibt. mach ich jetzt
+[21.02.26, 23:20:38] Alexander Deibel: so hab mich jetzt zwei stunden durch all-ink gekämpt und auch dieses (scheiß-system) gemeistert. jetzt alles unter richtiger (neueu) domain:
+[21.02.26, 23:20:46] Alexander Deibel: https://app.guidetranslator.com/
+[21.02.26, 23:22:42] Alexander Deibel: die postfächer
+[21.02.26, 23:22:49] Alexander Deibel: guidetranslator.com
+Anlegen
+E-Mail-Postfächer:6
+Domain/Postfach	Status	Benutzername	Speicherübersicht	Aktion
+a.deibel@guidetranslator.com
+m07d23ba	0,00 GB	
+enterprice@guidetranslator.com
+m07d23b8	0,00 GB	
+sales@guidetranslator.com
+m07d23bd	0,00 GB	
+in Bearbeitung
+u.berger@guidetranslator.com
+m07d23b9	0,00 GB	
+w.schlegel@guidetranslator.com
+m07d23bc	0,00 GB	
+webmaster@guidetranslator.com
+m07d23bb	0,00 GB
+[21.02.26, 23:23:36] Alexander Deibel: zu einrichten (smtp und imap-server in euren mailkonten:(: in-/Ausgangsserver
+v028972.kasserver.com
+[21.02.26, 23:23:55] Alexander Deibel: PW´s
+[21.02.26, 23:24:16] Alexander Deibel: enterprice
+2o))Z(90gWRP(nzV94Os
+
+
+u.bergerguidetranslator.com
+Z+@p6yBsp6s69O0MC1)M                   sales
+Z_DowsWg5.bm,OEe/6uL
+[21.02.26, 23:24:27] Alexander Deibel: w.schlegel
+Ajiyt+1)qochVD=1gE31
+[22.02.26, 00:20:24] Alexander Deibel: so landing-page fertig (solln wir noch hitzelrode kontaktieren oder was sagste zum design? und zu den fotos?)
+[22.02.26, 00:22:18] Alexander Deibel: https://guidetranslator.de/
+[22.02.26, 00:23:19] Alexander Deibel: Hier zum bearbeiten/korrigieren der website
+Vielleicht probierst ja Wolfram mal diirekt
+Fuzzt einfach:
+Einfach anklicken, ändern. Fertig
+Oder mit strg+Z rückgängig wenn man irgendwas falsch gemacht hat
+
+https://gamma.app/docs/KI-gestutzte-Echtzeit-Ubersetzung-w8jjj488kpsbvlh
+
+
+Man muß nix installieren.
+Sich nur bei game anmelden. (Glaub ich)
+[22.02.26, 00:24:21] Alexander Deibel: jetzt noch dein admin-feauture, dann seid ihr dran
+[22.02.26, 01:17:40] Berger Ulrick: ‎Berger Ulrick hat eine Nachricht fixiert.
+[22.02.26, 01:10:14] Berger Ulrick: Ich versteh ja deine Zeile nur bedingt; Arbeitet du hier immer noch mit der Apple offline translation?
+[22.02.26, 01:11:26] Berger Ulrick: Vorteil!
+[22.02.26, 01:12:08] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+[22.02.26, 01:16:15] Berger Ulrick: So cool 😎
+‎[22.02.26, 01:18:30] Berger Ulrick: Bug 1: Webseite er scheint nicht richtig, wenn man nach rechts scrollen möchte. Wahrscheinlich ist sie noch nicht Mobile Device responsive Design angepasst… ‎<Anhang: 00001006-PHOTO-2026-02-22-01-18-30.jpg>
+[22.02.26, 01:20:25] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+[22.02.26, 01:20:36] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+[22.02.26, 01:21:38] Berger Ulrick: Translation ist working and speaking 😍
+[22.02.26, 01:22:03] Berger Ulrick: Ist das nun offline am device von Apple?
+‎[22.02.26, 01:23:00] Alexander Deibel: url_struktur für ulrichs 💪powersale🚀.pdf • ‎5 Seiten ‎<Anhang: 00001011-url_struktur für ulrichs 💪powersale🚀.pdf>
+[22.02.26, 01:23:08] Alexander Deibel: oh. guten morgen
+[22.02.26, 01:24:12] Alexander Deibel: probierts doch zusammen aus
+[22.02.26, 01:49:56] Alexander Deibel: https://guidetranslator.de/
+[22.02.26, 01:50:17] Alexander Deibel: website komplett fertig: bitte kontrolle/korrektur/anmerkungen
+[22.02.26, 01:53:10] Alexander Deibel: mach jetzt schnell noch die ganze itour.guide (erstmal) site für die ai tour UG neu, mit dem neuen produkt https://guidetranslator.de/ und allen anderen: SmartGuide (Hardware Transmitter), itour City Guide (Audio-Stadtführungen), Smart Streaming Solutions / Voicetra, River Guide (Flusskreuzfahrt). was hälts davon (ist doch so, das der das alles gehört?). sag kurz go
+[22.02.26, 02:03:53] Alexander Deibel: hallo... kein schnelle go?
+[22.02.26, 02:05:37] Alexander Deibel: gut dann mach ich mir erstmal was zu essen, hab gleich nach dem aufstehen angefangen 17.30, also erste 8,5 stundenschicht hinter mir. mal was essen...
+[22.02.26, 02:06:29] Alexander Deibel: du darfst auch ruhig zu lila, oder zu bunt, oder noch bunter sagen.
+[22.02.26, 02:06:44] Alexander Deibel: admin hat noch probleme
+[22.02.26, 02:08:11] Alexander Deibel: na: geht endlich los: Ich starte jetzt mit der Implementierung. Erst den Branch einrichten, dann den Form-Bug (bei der eingabe im calkulator springt der cursor nach jeder eingabe irgendwohin) fixen und das Admin-Panel bauen.
+[22.02.26, 02:08:46] Alexander Deibel: Now let me build the Admin panel. This is the big one — contact management, invite links, email templates, and activity tracking:
+na los
+[22.02.26, 02:09:21] Berger Ulrick: Go!
+[22.02.26, 02:09:48] Berger Ulrick: Meine Frage ist ob du Wien Apple Translation Technologie nutzt?
+[22.02.26, 02:23:54] Alexander Deibel: was ist das?
+‎[22.02.26, 02:25:14] Alexander Deibel: ‎<Anhang: 00001026-PHOTO-2026-02-22-02-25-14.jpg>
+[22.02.26, 02:26:05] Alexander Deibel: lies doch erst mal. ich schicke dir nur das nötigste (und bischen was zum stand/fortgang): https://gamma.app/docs/Geschaftskonzept-and-Preismodell-2rs3x0wylpjeoi0?following_id=jge9yt63d8o5v9i&follow_on_start=true
+‎[22.02.26, 02:29:00] Berger Ulrick: ‎<Anhang: 00001028-AUDIO-2026-02-22-02-29-00.opus>
+‎[22.02.26, 02:30:04] Alexander Deibel: ‎<Anhang: 00001029-AUDIO-2026-02-22-02-30-03.opus>
+‎[22.02.26, 02:30:12] Alexander Deibel: ‎<Anhang: 00001030-PHOTO-2026-02-22-02-30-12.jpg>
+‎[22.02.26, 02:30:30] Alexander Deibel: ‎<Anhang: 00001031-PHOTO-2026-02-22-02-30-30.jpg>
+‎[22.02.26, 02:30:53] Alexander Deibel: ‎<Anhang: 00001032-PHOTO-2026-02-22-02-30-52.jpg>
+‎[22.02.26, 02:31:21] Alexander Deibel: ‎<Anhang: 00001033-PHOTO-2026-02-22-02-31-20.jpg>
+‎[22.02.26, 02:31:41] Alexander Deibel: ‎<Anhang: 00001034-PHOTO-2026-02-22-02-31-41.jpg>
+‎[22.02.26, 02:31:56] Alexander Deibel: ‎<Anhang: 00001035-PHOTO-2026-02-22-02-31-56.jpg>
+‎[22.02.26, 02:32:21] Alexander Deibel: ‎<Anhang: 00001036-AUDIO-2026-02-22-02-32-21.opus>
+‎[22.02.26, 02:32:29] Alexander Deibel: ‎<Anhang: 00001037-AUDIO-2026-02-22-02-32-29.opus>
+‎[22.02.26, 02:36:19] Alexander Deibel: ‎<Anhang: 00001038-PHOTO-2026-02-22-02-36-19.jpg>
+[22.02.26, 02:37:45] Alexander Deibel: guck mal, ich bin heut 17:30 Uhr aufgestanden und hab mich nicht angezogen, weil ich heute das erste Mal eigentlich zwei Nächte hintereinander schlafen wollte…. Jetzt sitze ich hier 9 Stunden später immer noch im Bademantel, was ich sonst nie mache. Im Gegensatz zu dir.🤣
+‎[22.02.26, 02:38:39] Alexander Deibel: ‎<Anhang: 00001040-PHOTO-2026-02-22-02-38-39.jpg>
+‎[22.02.26, 02:38:53] Alexander Deibel: ‎<Anhang: 00001041-PHOTO-2026-02-22-02-38-53.jpg>
+‎[22.02.26, 02:39:11] Alexander Deibel: ‎<Anhang: 00001042-PHOTO-2026-02-22-02-39-11.jpg>
+‎[22.02.26, 02:39:50] Alexander Deibel: ‎<Anhang: 00001043-PHOTO-2026-02-22-02-39-50.jpg>
+‎[22.02.26, 02:40:22] Alexander Deibel: ‎<Anhang: 00001044-PHOTO-2026-02-22-02-40-22.jpg>
+‎[22.02.26, 02:40:36] Alexander Deibel: ‎<Anhang: 00001045-PHOTO-2026-02-22-02-40-36.jpg>
+‎[22.02.26, 02:50:25] Alexander Deibel: ‎<Anhang: 00001046-AUDIO-2026-02-22-02-50-25.opus>
+[22.02.26, 03:09:53] Alexander Deibel: so fertig mit essen, schweißausbruch (erstes essen seit 30 stunden) - aber ohne dusche weiter, mit meine pfirsich-prosecco-aperol-spritz in die zweite schicht
+[22.02.26, 03:10:09] Alexander Deibel: erstmal schnell die ai tour UG website
+[22.02.26, 03:15:55] Alexander Deibel: auch noch zu apple: wichtiger ist doch ob´s fuzzt??? oder woran hängst du? - wenn scheiße dann können wir ja schauen ob wir damit improvven könnten, aber erstmal ist doch gut! ne?
+[22.02.26, 03:44:36] Berger Ulrick: Alexander! In der it hab ich gelernt deduktiv und Schritt für Schritt vorzugehen… also: wenn wir nicht sagen können, dass das Apple Standard ist, dann ist das schonmal schlecht! Und wenn wir online sein müssen auch nicht gut… zusätzlich Google einbinden für Voice ist auch ein Schritt mehr…. Einfach bleiben ist der Schlüssel 💫 und offline die Grundlage! Das wesentliche scenario ist einsprachige Führung und aussenden über Funk ! Don‘t forget!!! Wir brauchen nur die App die ständig inkrementel die übersetzen Audios liefert! ….
+[22.02.26, 03:45:08] Berger Ulrick: Wir müssen sprechen… geht bei mir ab in so ca. 4 /5 Stunden … bei dir?
+[22.02.26, 04:51:42] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[22.02.26, 04:52:37] Alexander Deibel: fertig: https://aitour-g1pfhc4.gamma.site/aitour
+[22.02.26, 04:53:15] Alexander Deibel: wenn du mir das GO gibst, hoste cih die und seo-optimiere die gleich und mach alles klar fr die analytic (clicks)
+‎[22.02.26, 04:54:43] Alexander Deibel: RE-2026-174.pdf • ‎1 Seite ‎<Anhang: 00001055-RE-2026-174.pdf>
+[22.02.26, 04:56:16] Alexander Deibel: in der gesamtschau kannst wieder stolz sein auf dein unternehmen, und auch wenn es mir jetzt (zum glück?) zur hälfte gehört?
+[22.02.26, 04:57:31] Alexander Deibel: https://gamma.app/docs/Uber-uns-xrs12i7qerg56gs
+[22.02.26, 04:58:18] Alexander Deibel: wir zwei beide. jetzt schon so lange verbunden. und jetz kommt alles zusammen? allles was wir angesammelt haben die letzten jahre/monate/wochen.....
+[22.02.26, 05:01:03] Berger Ulrick: Ja, sieht so aus 😉🙋🏼‍♂️
+[22.02.26, 05:01:39] Berger Ulrick: Bitte warte doch mit dem veröffentlichen bis zum 27.2. da bin ich dannnwenigswns nicht mehr Geschäftsführer von der Smart Streaming… ok?
+[22.02.26, 05:11:38] Berger Ulrick: Veröffentlichung von der Webseite…
+[22.02.26, 05:16:29] Alexander Deibel: jederzeit, solange ich wach bin
+‎[22.02.26, 05:16:52] Berger Ulrick: ‎<Anhang: 00001063-PHOTO-2026-02-22-05-16-52.jpg>
+[22.02.26, 05:20:48] Berger Ulrick: Muss ich mir erst anschauen … Können, dann geb ich dir gern Bescheid…
+[22.02.26, 06:34:13] Berger Ulrick: Lass uns mal die App wie folgt nennen ;-) : „SprachDarwin“ Liebe Grüße aus Darwin
+‎[22.02.26, 06:34:27] Berger Ulrick: ‎<Anhang: 00001066-PHOTO-2026-02-22-06-34-27.jpg>
+‎[22.02.26, 06:34:41] Berger Ulrick: ‎<Anhang: 00001067-PHOTO-2026-02-22-06-34-41.jpg>
+[22.02.26, 06:58:28] Alexander Deibel: so: hier unter richtiger adresse gehostet, mit admin zugnag. (kommt gleich):
+[22.02.26, 06:59:11] Alexander Deibel: https://sales.guidetranslator.com/
+[22.02.26, 06:59:35] Alexander Deibel: und wenn du magst auch hier:
+‎[22.02.26, 07:07:55] Alexander Deibel: prost ihr zeei ‎<Anhang: 00001071-PHOTO-2026-02-22-07-07-55.jpg>
+[22.02.26, 06:59:39] Alexander Deibel: https://sales.guidinggroup.com/
+[22.02.26, 07:00:12] Alexander Deibel: wo seid ihr denn? schick mal google-pams-link
+[22.02.26, 07:00:59] Alexander Deibel: na mach mal, du faulenzer, biertrinker
+[22.02.26, 07:01:21] Alexander Deibel: ich ahsse darwin
+[22.02.26, 07:01:46] Alexander Deibel: naja, ich hasse niemadn, aber ich schätze darmin nicht sehr, zumindest für sein spätwerk
+[22.02.26, 07:02:26] Alexander Deibel: wieso überhaupt - darwin
+[22.02.26, 07:03:19] Alexander Deibel: na wann denn? erst wenn du ausgetrunken hast?
+[22.02.26, 08:06:46] Berger Ulrick: Sorry das mit dem Anruf muss leider doch noch warten… Ich Versuchs sobald ich am Schiff bin…
+[22.02.26, 12:12:18] Alexander Deibel: endlich fertig: dein AdminDashboird für die salesmaschine, app.guidetranslator.com/admin
+[22.02.26, 12:12:42] Alexander Deibel: pw: guidetranslator2026
+‎[22.02.26, 12:14:36] Alexander Deibel: mit vollständigen coversationtracking-seite: (du siehst schon meine anfrage von vorhin ‎<Anhang: 00001082-PHOTO-2026-02-22-12-14-36.jpg>
+[22.02.26, 12:18:52] Alexander Deibel: drei email-templates: ersteinladung / nachfass / demo-einladung mit dem persönlichen link für den von dir erstellten lead-contact: kopierbar in deinen email-client, aber ich verbinde noch einen damit das direkt aus der app geht.
+‎[22.02.26, 12:18:57] Alexander Deibel: ‎<Anhang: 00001084-PHOTO-2026-02-22-12-18-57.jpg>
+[22.02.26, 12:23:11] Alexander Deibel: die email tauchen in deinen mailprogramm als entwurf auf, rechte maustaste: senden. raus isse. hab alle drei mal an dich los geschickt
+[22.02.26, 12:29:11] Alexander Deibel: Ulrich: Du hast jetzt ALLES was du brauchst (und schon immer wolltest, oder nicht vorstellen konntest), eine funktionierende app, ein vollständiges Geschäftskonzept & preismodell, ein vollständige landingpage, sowie eine salesmaschine(/angebotsrechner mit einem Admin-Dashbord für die Lead-Verfolgung, inkl 3-Emailtemplates....... alles von mir und claude alleine gemacht in exact 43 stunden. wat sagst dazu?  🤓
+[22.02.26, 12:29:28] Alexander Deibel: JETZT BIST DU DRAN
+[22.02.26, 12:30:15] Alexander Deibel: 1. mit wolfram und gästen die app testen
+[22.02.26, 12:30:33] Alexander Deibel: 2. wolfram soll ddie landingpage kontrollieren
+[22.02.26, 12:33:46] Alexander Deibel: 3. du erstellst leads in deinem admin-dashboard, und versendes mails, so viele du kannst. (ich erstelle dir ggf. weitere templates dafür) bzw. du korrigierts die noch, wenn du magst - ist ja immer nur ein entwurf den du dann in mail noch vor dem versenden anpassen kannst (oder willst du die mails gerne direkt aus dem dashbord versenden (aber dann hast du sie ggf. nicht gleich in deinen mails
+[22.02.26, 12:34:58] Alexander Deibel: 4. wir bringen die app weiter und improoven die ganze zeit (wer kann noch testen?)
+[22.02.26, 12:35:40] Alexander Deibel: wir sind in zwei jahren millionäre
+[22.02.26, 12:39:04] Alexander Deibel: reine arbeitszeit von 43 stunden: -12 Stunden schlaf, 5 stunden kinder/hauhalt, also etwa 25 reine arbeitsstunden
+‎[22.02.26, 13:38:19] Alexander Deibel: RE-2026-175.pdf • ‎2 Seiten ‎<Anhang: 00001094-RE-2026-175.pdf>
+[22.02.26, 15:31:10] Alexander Deibel: ka
+[22.02.26, 21:58:41] Alexander Deibel: ne ihr müßt TESTE, bevor irgednetwas SCHLECHT ist ULRICH 🤫
+[22.02.26, 23:19:46] Alexander Deibel: naja: wo auch immer du bist: hab mich mich nochmal (mit dem hintergund deiner fragen) einer umfassenden kritischen revision des app-standes /-architektur und speziellem wettbewerbervergleich mit wordly gewidmet. wis sind auf alle fälle auf dem richtigen weg. ich gehe jetzt sofot die kritischen prunkte an, preise sind inder app und im sales schon korrigiert.
+[22.02.26, 23:19:55] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[22.02.26, 23:20:47] Alexander Deibel: wann wolltes du mich mal anrufen?🕰️ ich bin noch ne stunde max wach
+[23.02.26, 01:18:59] Berger Ulrick: Hey guten Morgen , hab’s vergeigt gestern mit den Telefonat. Der Tag verlief anders als geplant… jetzt wieder 2 Tage an Bord ohne Internet, (außer zum Glück WhatsApp Text nachrichten ) aber: ich Versuchs heute an meinem Abend ( dein Morgen) eine Verbindung zu haben, dann können wir klönen…
+[23.02.26, 01:23:32] Alexander Deibel: ja, schade, daß du es an meinem langen arbeitstag nocht geschafft hast (bin in stunde 32)
+[23.02.26, 01:23:35] Alexander Deibel: Der Plan steht. Ich habe jede Funktion, jeden Bug, jede Sicherheitslücke und jedes Performance-Problem inventarisiert.
+[23.02.26, 01:24:26] Alexander Deibel: das konzept für offline steht auch
+[23.02.26, 01:25:33] Berger Ulrick: Schön, bist du an meinen „killerkriterium Hinweisen“ dran: 1. offline!!! 2. Apple qualitie!!! 3. und so wenig wie möglich zusätzliche Dienste!!!! am besten gar keine-Und wenn sowieso nur offline!!!) 4. (ist glaub untergegangen aber enorm wichtig auch als usp): die Taste zum drücken wenn der guide aktiv die übersetzung beschleunigen will. (Sobald ein satzteil fertig ist;?drücken = Übersetzungsdienst. Wird aktiviert … das sind die Punkte! Wegen offline braucht es dann auch die App im Store u nicht den Browser glaub ich… so das wären die improvement Schritte beside dem Testen… testen können wolfram und ich am 26.2. in bali (evtl. Schon am 25.2.)
+[23.02.26, 01:26:43] Alexander Deibel: da
+[23.02.26, 01:26:58] Berger Ulrick: Krass mein Lieber! Bleib gesund ♎️ u meld dich wenn Du wieder wach bist 🥇
+[23.02.26, 01:27:01] Alexander Deibel: schick dir gleich analyse und konzept
+[23.02.26, 01:27:18] Alexander Deibel: app-stor beim 3 update bereits mit vorbereitet
+[23.02.26, 01:27:54] Berger Ulrick: Du bist echt der Hammer! … ich eile jetzt zum frühstücken
+[23.02.26, 01:28:07] Berger Ulrick: Die schließen in 3 min..
+[23.02.26, 01:29:45] Berger Ulrick: ‎Diese Nachricht wurde gelöscht.
+[23.02.26, 01:32:05] Berger Ulrick: Alexander!!!!! Gut Ding will Weile haben 😉🤪🐊🪼🙋🏼‍♂️
+[23.02.26, 01:35:33] Alexander Deibel: sorry, aber son salat kann ich jetzt nicht mehr verarbeiten. erinnerst du dich wie ich dich gebeten hatte mir was mitzuteilen... ich mach uns morgen slack auf, wie whats-app nur mit themen... also dein hinweis ist nur mit apple wide bei mir angekommen - sorry, bitte präzierser werden, und immer nur ein thema in jede nachricht
+[23.02.26, 01:35:49] Alexander Deibel: bullshit
+[23.02.26, 01:36:11] Alexander Deibel: raketen sind am schnellsten und kommen am weitesten
+[23.02.26, 01:36:34] Alexander Deibel: (im gegen satz zu fuß, mit dem fahrrad oder dem schiff)
+[23.02.26, 01:36:45] Alexander Deibel: ich hab schon gemerkt das du noch nicht richtig dabei bist
+[23.02.26, 01:42:13] Berger Ulrick: Ich gondle gerade mit 15 Knoten über die Weltmeere… und wer schnell arbeitet übersieht eben auch mal was, und wenn du ganz ohne dass wir zuvor sprechen loslegst, kann es schon sein dass eben du Sachen nicht ganz so abgestimmt in deine maga Pipeline haust und dann aber trotzdem nochmal von vorne anfangen musst im Zweifel, und dann warst du eben trotz deine Speed nicht schneller als das langsamste Mitglied. 🙌🏻also ich bin gespannt und freu mich auf die Ergebnisse…! 💟
+[23.02.26, 01:42:45] Berger Ulrick: Worauf beziehst du dich hier? 1.,2.,3.,4.?
+[23.02.26, 02:19:10] Alexander Deibel: naja, verstehe, das die neue geschwidnikeit ein bißchen schnell ist fr dich, anderhalb jahre machst du da dran rum. aber deshalb schreib mir jetzt nicht sowas: "und wer schnell arbeitet übersieht eben auch mal was, und wenn du ganz ohne dass wir zuvor sprechen loslegst, kann es schon sein dass eben du Sachen nicht ganz so abgestimmt" - nur weil doch im schneckenhaus wohnst. ich habe heut den ganzen tzag OHNE wirkliches input von dir gearbeitet und mag jetzt nicht so schmarn hören. außerdem muß ich nie von vorn anfangen, ich mach einfahc immer weiter. du machst irgendwas naders
+[23.02.26, 02:19:35] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[23.02.26, 02:21:05] Alexander Deibel: hauptsächlich 4., aber die ganze mail ist wirr
+[23.02.26, 02:21:25] Alexander Deibel: eben, du hast doch so viel zeit ????
+[23.02.26, 02:22:06] Berger Ulrick: Ja, es ist echt zum kotzen dass ich so viele Tage an Bord bin und nicht vernünftig connected 🥴
+[23.02.26, 02:22:27] Berger Ulrick: Wirr? 😵‍💫😉
+[23.02.26, 02:22:32] Alexander Deibel: https://gamma.app/docs/Offline-First-Translation-PWA-piirxzl54v7fbts
+[23.02.26, 02:24:33] Berger Ulrick: Du und trotzdem kann ich bis jetzt nur interpretieren und deuten, ob wir jetzt nur die Apple offline Technologie nützen oder doch eine andere. Wie ist es denn nun konkret?
+[23.02.26, 02:25:02] Alexander Deibel: lies doch mal was!!!!!!!
+[23.02.26, 02:26:07] Alexander Deibel: ich bin seit 40 min ander umsetzung dran, entscheidungen alleine getroffen, denn wer schläft kann nicht sprechen 😉
+[23.02.26, 02:27:33] Berger Ulrick: … würde ich ja gern machen lieber Alexander nur kann ich das eben nicht öffnen. Es geht nur WhatsApp…
+‎[23.02.26, 02:28:36] Alexander Deibel: Offline-First-Translation-PWA.pdf • ‎12 Seiten ‎<Anhang: 00001131-Offline-First-Translation-PWA.pdf>
+[23.02.26, 02:28:39] Alexander Deibel: sag doch was
+[23.02.26, 02:32:37] Berger Ulrick: D.h. auch, dass ich kein PDF öffnen kann.
+[23.02.26, 02:32:49] Berger Ulrick: Lies doch mal alles😉
+[23.02.26, 02:33:14] Berger Ulrick: Nur WhatsApp Textnachrichten wenn du zum Beispiel den Inhalt des PDF raus kopierst und direkt in das Textfeld von WhatsApp dann kann ich es lesen
+[23.02.26, 02:35:44] Berger Ulrick: Ja, und wenn ich dann endlich einmal für 8 Stunden an Land bin, will ich natürlich auch diese Zeit nicht mit arbeiten verwenden, sondern mit entdecken der Orte weswegen ich ja auf dieser Reise bin… es ist Mega lästig die Sache mit dem nicht online sein. Unglaublich….🤯
+[23.02.26, 02:36:48] Alexander Deibel: das geht mit diesem dokument nicht, das ist eine von gamm für dich zusammengefaßte technische amnalyse und konzept. die technische analyse/konzept habe ich als txt, aber die bracuh ich dir ncihgt schicken, dannn weißt du genau so viel wie vorher. ich wollte es auch für dich leicht (verständlich) damit aufbereiten und kriegst nur als link oder pdf oder noch größere dateien raue.
+[23.02.26, 02:37:25] Alexander Deibel: oder warte
+[23.02.26, 02:37:36] Berger Ulrick: Falls das heute Nachmittag oder abends bei mir klappt mit dem Internetzugang über einen Fahrgast, dann werde ich’s mir auf jeden Fall anschauen aber ja du hast recht diese ganzen technischen Informationen die sind mir nur bruchstückhaft zugänglich
+[23.02.26, 02:40:25] Alexander Deibel: dan ist das updae eh schon deployed 😉 und kannst direkt testen (vieleicht auch offlich, wobei man dafür ja die app auf dem handy braucht und die müssen wir ja dann als nächstes erst noch machen). testen testen testen, und die page kontroliieren,
+[23.02.26, 02:41:09] Alexander Deibel: dein admin-dasbord für die salesmaschine habe ich dir noch ordentlich aufgerüsselt. damit kannst du bal alleine hjuunderte leads gleichzeitig managen.....
+[23.02.26, 02:41:49] Berger Ulrick: Du bist so krass Alexander 🥇🥇🥇💟♎️
+[23.02.26, 02:41:59] Alexander Deibel: nur leidser habe ich ein sicherheitslücke behoben (mit dem passwort, war hardvercodet und damit ausklesbar, komme aber momentan noch nicht wieder rein
+[23.02.26, 02:53:52] Berger Ulrick: Apple translate or not? Yes: o  no: o don’t know: o
+[23.02.26, 03:03:58] Alexander Deibel: hier: zusammenfassung für dich und deine fragen: (die bei mir angekommen sind und das konzept einfach von claude für dich ereklärt: Ulrich, warum wir NICHT einfach Apple Translate nutzen
+=====================================================
+
+Ich versteh dich total. Apple Translate ist eingebaut, funktioniert mit den EarPods, klingt erstmal perfekt. Aber:
+
+APPLE TRANSLATE – WAS ES KANN:
+Du sprichst rein, es übersetzt. Punkt. Für zwei Leute, die sich kurz was sagen wollen, reicht das. Wie ein besseres Wörterbuch.
+
+WARUM DAS FÜR UNS NICHT REICHT:
+- Apple funktioniert nur auf iPhones. Dein Kumpel mit Samsung? Ausgeschlossen.
+- Wir haben keine Kontrolle. Apple ändert was? Pech gehabt.
+- Keine fertigen Reise-Sätze. Keine Kreuzfahrt-Phrasen wie "Wo legt das Schiff an?" in 22 Sprachen auf Knopfdruck.
+- Keine Live-Sessions, wo zwei Handys gleichzeitig übersetzen.
+- Kein Verlauf, kein Merken von Übersetzungen, die du schon mal gebraucht hast.
+
+WAS UNSERE APP ANDERS MACHT:
+Wir bauen EINEN Code und daraus wird eine iPhone-App UND eine Android-App. Das spart 60% Zeit und Geld. Offline funktioniert sie trotzdem – wir laden kleine KI-Übersetzer aufs Handy, genau wie Spotify Songs runterlädt. Kein Internet im Hafen von Neapel? Kein Problem.
+
+Stell dir vor: Apple Translate ist ein Taschenrechner. Wir bauen Excel. Gleiche Grundfunktion, aber unendlich mehr Möglichkeiten, die wir selbst steuern.
+
+Zwei native Apps einzeln bauen = 6 Monate. Unsere Lösung = 6 Wochen. Gleiche Qualität, volle Kontrolle.
+[23.02.26, 03:04:28] Alexander Deibel: 6 wochen sind bei mir 6 stunden
+angefangen habe ich mit 8 monaten (seine konventionelle entwicklunszeitrechnung) zu 18 tagen tatsächlcihem stand... jetzt weiß er daß wir schneller geworden sind 😉 aber wenn wir dran beiben ist die noch die woche im store. aber ne du mußt ja erstmal im internet in balin ankommen
+[23.02.26, 03:05:10] Alexander Deibel: nein!
+[23.02.26, 03:07:15] Alexander Deibel: soweit sind wir schon: Was gebaut wurde:
+Feature	Details
+IndexedDB Foundation	idb Package, 4 Stores: translation-cache, tts-audio, model-metadata, phrase-packs
+Persistent Translation Cache	30-Tage TTL, IndexedDB-backed, 10.000 Einträge max
+Network Status	Heartbeat-basiert, 3 Modi: online/degraded/offline, React Context
+Offline Translation	Transformers.js + Opus-MT ONNX (~35MB/Paar), 20+ Sprachpaare, English-Pivot
+6-Level Cascade	Memory → IndexedDB → Google → MyMemory → LibreTranslate → Opus-MT
+TTS Audio Cache	Einmal online gehört → immer offline in Cloud-Qualität
+Whisper STT	Offline Spracherkennung via Transformers.js (~40MB)
+Settings Page	Model Downloads mit Progress, Storage-Anzeige, Cache Management
+Header Indicator	Wifi/WifiOff Icons, Online/Instabil/Offline Status
+Service Worker	Runtime-Caching für WASM, HuggingFace Models, Google APIs
+Cruise Phrase Packs	3 Packs (Basis, Mittelmeer, Nordland), kategorisiert
+Provider Badges	Offline (violet), Cache (cyan) im TranslationPanel (seit 2,5h)
+[23.02.26, 03:11:52] Alexander Deibel: lies das trotzdem. oder versuchs dochmal runterzuladen. irgednwann ists vielleicht da?
+[23.02.26, 03:19:14] Alexander Deibel: hab heute tagsüber (in meiner freizeit vom guidetranslator 4 neue apps für mein oekosystem gebaut 😉 meine alten stecken immer ncoh im biild, ich will die dann testen in dem ich die steuerklarung für semlow mit vermietiefy mache (damit auch alle daten rein kriegen muß und dabei die app gut mache) und mit fintutto alle anderen (ai tour guide, deibel&partern, meine private) aber dafr brauche ich eh ne woche, bis jetzt.
+[23.02.26, 03:54:32] Alexander Deibel: So mega update fertig:
+
+Alle 12 Schritte des Plans komplett implementiert und gepusht.
+Zusammenfassung — kompletter Offline-First + App-Store-Ready Plan
+2 Commits auf claude/translator-app-fintutto-emGj4:
+Commit 1: Offline-First Mode (24 Dateien, 13 neu)
+Feature	Technologie
+IndexedDB Fundament	idb@8.0.3 — 4 Stores
+Persistent Translation Cache	30-Tage TTL, 10K Einträge
+Network Status	Heartbeat, online/degraded/offline
+Offline Translation	@huggingface/transformers + Opus-MT ONNX
+6-Level Translation Cascade	Memory → IDB → Google → MyMemory → Libre → Opus-MT
+TTS Audio Cache	Einmal online → immer offline
+Whisper STT	Offline Spracherkennung
+Settings Page	Downloads, Storage, Cache Management
+Cruise Phrase Packs	3 Packs, ~100 Phrasen
+Service Worker Upgrade	WASM + Model Runtime Caching
+Commit 2: Capacitor (76 Dateien)
+Feature	Details
+iOS Xcode Projekt	com.fintutto.translator
+Android Gradle Projekt	Mit allen Icons + Splash Screens
+Plugins	StatusBar, SplashScreen, Keyboard, Haptics
+Build Scripts	npm run build:native, cap:ios, cap:android
+[23.02.26, 03:55:34] Alexander Deibel: Morgen deployement 
+Ich mach jetzt Feierabend (stunde 35)
+[23.02.26, 03:56:15] Alexander Deibel: morgen dann dann die:
+nächsten Schritte für App Store Release:
+
+App-Icons erstellen (1024x1024 Master)
+npx cap open ios → Xcode → Team/Signing einstellen → Archive
+npx cap open android → Android Studio → Signed APK/AAB
+[23.02.26, 03:58:37] Alexander Deibel: das sind zwei völlig neuen tools 😎 für mich, aber auch die werde ich meistern, auf gehts: (ist eh der nächste schritt für viel meiner apps) vielleicht dauerts ein bißchen länger, vor allem account und so dauert immer ewig und alles richtig zu connecten....
+‎[23.02.26, 03:59:59] Alexander Deibel: RE-2026-176 (1).pdf • ‎2 Seiten ‎<Anhang: 00001155-RE-2026-176 (1).pdf>
+[23.02.26, 04:01:35] Alexander Deibel: dafür berechne ich dann nur den halben stundensatz 😅
+[23.02.26, 06:20:32] Berger Ulrick: Danke für diese wertvolle Detailformation. Dann bleibt mir nur zu hoffen, dass du und da bin ich mir sicher auf das richtige Pferd gesetzt hast, hast du Übersetzung Lösung betrifft. Ist sie Open Source?
+[23.02.26, 06:21:50] Berger Ulrick: Wir sind jetzt heute noch und morgen den ganzen Tag auf See. Dann übermorgen an Land. Mit Internet und echter Tour. Zwischen 10-12 Uhr Singapur time… Danach gibt’s bug Bericht.
+[23.02.26, 06:22:07] Berger Ulrick: Du kannst also getrost erstmal 24 Stunden schlafen 😉✨🌊
+[23.02.26, 06:25:54] Berger Ulrick: Gibt’s etwas was ich auf meinem Gerät (iPhone)  tun muss oder downlaoden damit die offline Funktion in ganzer Linie funktioniert? Wenn möglich bereite du das in den Stunden vor unserem Einsatz so vor dass wir nicht gleich im ersten oder dritten Schritt aufgeben müssen… vielleicht ein amwendungstest von dir mit 2 Handys. Es muss offline gehen! Denn wir sind auf einer Inseltour ohne Internet! Zuvor am Hafen haben wir Netz zum aktivierenden Downloaden. …
+[23.02.26, 06:27:55] Berger Ulrick: Noch ein Hinweis zur Apple Welt! Wirklich schade ist in diesem Fall, dass wir die von mir gedachte „One and Only“ iPhone App one to many Translate - Vortrags (guide) Lösung nicht bauen und nicht im App Store veröffentlichen… dann wird es jemand anders tun und damit Geld verdienen… Vielleicht wollen wir das parallel auch tun? Ich weiß, die Idee ist doof aber was denkst du dazu?
+[23.02.26, 17:51:49] Alexander Deibel: offline läuft erstmal nur lokal bei mir, eben offline. oder dann wenn die app zu downloaden ist (zb im store). …
+[23.02.26, 17:52:42] Alexander Deibel: ich versucje was anderes, damit ihr offline testen könnt. bevor wir die apps für die storrs wrappen
+[23.02.26, 17:53:31] Alexander Deibel: guten morgen übrigends, istv1730 und ich hab 12h gwschlafen
+[23.02.26, 19:19:46] Alexander Deibel: App Store (dauert Wochen!)
+Apple Review: 1-7 Tage
+Google Play Review: 1-3 Tage
+Braucht Developer Accounts ($99/Jahr Apple, $25 einmalig Google) - alles machen?
+[23.02.26, 19:27:06] Alexander Deibel: gut, jetzt haben wir die offline-test-lösung ferrtig konzipert, damit kannst du (wenns fertig und deploeyd ist) dir die pakete runterladen und dann offline gehen und die übersetzung testen: - **Offline Translation**: On-device translation via Transformers.js + Opus-MT ONNX (~35MB/language pair)
+- **6-Level Translation Cascade**: Memory → IndexedDB (30d) → Google → MyMemory → LibreTranslate → Opus-MT
+- **TTS Audio Cache**: Once heard online → always offline in cloud quality
+- **Whisper STT**: Offline speech recognition (~40MB), all browsers
+- **Settings Page**: Model downloads, storage management, cache controls
+- **Cruise Phrase Packs**: 3 packs (Basis, Mittelmeer, Nordland)
+- **Capacitor 8**: iOS + Android native projects
+- **Service Worker Upgrade**: Runtime caching for WASM and ML models
+[23.02.26, 19:27:37] Alexander Deibel: wir bauen das jetzt, ich sag bescheid wenns deployed ist, ja?`
+[24.02.26, 00:24:29] Alexander Deibel: so, mein lieber. ver3. (OFFLINE!!!) ist gebaut! was wir haben: - **Offline Translation**: On-device translation via Transformers.js + Opus-MT ONNX (~35MB/language pair)
+- **6-Level Translation Cascade**: Memory → IndexedDB (30d) → Google → MyMemory → LibreTranslate → Opus-MT
+- **TTS Audio Cache**: Once heard online → always offline in cloud quality
+- **Whisper STT**: Offline speech recognition (~40MB), all browsers
+- **Settings Page**: Model downloads, storage management, cache controls
+- **Cruise Phrase Packs**: 3 packs (Basis, Mittelmeer, Nordland)
+- **Capacitor 8**: iOS + Android native projects
+- **Service Worker Upgrade**: Runtime caching for WASM and ML models
+[24.02.26, 00:24:59] Alexander Deibel: ich mach mich jetzt ans deployment
+[24.02.26, 00:25:06] Alexander Deibel: dann müßt ihr testen:
+[24.02.26, 00:25:26] Alexander Deibel: - [ ] Download language pair in Settings (e.g. DE→EN)
+- [ ] Go offline → translate → violet "Offline" badge
+- [ ] Speak text online, go offline, speak again → cached audio
+- [ ] Build: `cd translator-standalone && npm run build`
+[24.02.26, 01:16:21] Alexander Deibel: et voila: vers. 3b (Offline+new build fr speed-improovment) online: 🚀
+[24.02.26, 01:16:31] Alexander Deibel: https://app.guidetranslator.com/settings
+[24.02.26, 01:39:13] Alexander Deibel: so, und hier deine testanleitung:
+‎[24.02.26, 01:39:21] Alexander Deibel: appguidetranslatorcom-V3b-Testanleitung-fur-Ulrich.pdf • ‎20 Seiten ‎<Anhang: 00001175-appguidetranslatorcom-V3b-Testanleitung-fur-Ulrich.pdf>
+[24.02.26, 01:40:46] Alexander Deibel: jetzt brauhe ich dein go für die beiden appsore accounts und die erstellung der wrapped apps mit Xcode und Android Studio
+[24.02.26, 01:41:10] Alexander Deibel: dann sind die nächste woche drin, wenn ihr getestet habt😉
+[24.02.26, 01:42:34] Alexander Deibel: du kannst das auch einfach an weiter helfer/tester weiterleiten
+[24.02.26, 01:43:12] Alexander Deibel: das mach ich mal so lange 😉
+‎[24.02.26, 01:52:29] Alexander Deibel: RE-2026-177.pdf • ‎2 Seiten ‎<Anhang: 00001180-RE-2026-177.pdf>
+‎[24.02.26, 02:19:50] Alexander Deibel: Analyse-App-Store-Translation-Apps-and-Eure-Strategie.pdf • ‎19 Seiten ‎<Anhang: 00001181-Analyse-App-Store-Translation-Apps-and-Eure-Strategie.pdf>
+[24.02.26, 02:20:51] Alexander Deibel: so, du hast dich immer noch nicht gemeldet... aber du schläfst ja vielleicht, oder schwimmst mit den Delfinen
+[24.02.26, 02:21:07] Alexander Deibel: dann mach ich jetzt erstmal mit meinen andere 15 apps weiter 😉
+[24.02.26, 02:38:44] Alexander Deibel: oder erstmal so was, für dich 😉
+‎[24.02.26, 02:38:59] Alexander Deibel: Dringende-Nachricht-an-Ulrich.pdf • ‎6 Seiten ‎<Anhang: 00001185-Dringende-Nachricht-an-Ulrich.pdf>
+‎[24.02.26, 04:07:58] Berger Ulrick: ‎<Anhang: 00001186-AUDIO-2026-02-24-04-07-58.opus>
+[24.02.26, 04:22:05] Berger Ulrick: Bon giorno
+[24.02.26, 04:22:42] Berger Ulrick: Klar! Ja!
+[24.02.26, 04:25:09] Berger Ulrick: Wir testen Morgen und übermorgen …
+[24.02.26, 04:26:48] Berger Ulrick: Hab ich keine… aber wenn du über die diversen freelance Plattformen dir ein test Team aufbaust, tust du bestimmt das allerrichtigste für die Entwicklung!!!
+[24.02.26, 04:29:13] Berger Ulrick: Coole Analyse, schade gibts das schon … Hirnhaut du den Mitbewerber gefunden… da weißt du ja dann was wir besser machen müssen ;-)
+[24.02.26, 04:29:37] Berger Ulrick: Viel Spaß!
+[24.02.26, 04:46:44] Alexander Deibel: oh ulrich erwacht: ich war fleißig, am guidetranslator, und nicht anden anderen apps. schau mal:
+‎[24.02.26, 04:48:23] Alexander Deibel: appguidetranslatorcom-V3b-Testprotokoll.pdf • ‎7 Seiten ‎<Anhang: 00001194-appguidetranslatorcom-V3b-Testprotokoll.pdf>
+[24.02.26, 04:48:43] Alexander Deibel: ich habe selber alles mauell getestet
+[24.02.26, 04:49:24] Alexander Deibel: und gleich sind wir ferig und du kriegst die summary vom update zu Vers.4
+‎[24.02.26, 04:51:59] Alexander Deibel: ‎<Anhang: 00001197-AUDIO-2026-02-24-04-51-59.opus>
+[24.02.26, 04:53:23] Alexander Deibel: so fertig
+‎[24.02.26, 04:55:15] Berger Ulrick: ‎<Anhang: 00001199-AUDIO-2026-02-24-04-55-15.opus>
+‎[24.02.26, 04:56:09] Alexander Deibel: appguidetranslatorcom-V4-Update-Summary.pdf • ‎7 Seiten ‎<Anhang: 00001200-appguidetranslatorcom-V4-Update-Summary.pdf>
+[24.02.26, 04:56:46] Alexander Deibel: v3b ist online
+[24.02.26, 04:57:12] Alexander Deibel: immer der gleiche link (ändert sich nie)
+[24.02.26, 04:57:33] Alexander Deibel: version 4 ist fertig, aber nicht deploeyd, (online)
+[24.02.26, 04:57:45] Alexander Deibel: das mach ich jetzt
+[24.02.26, 04:59:41] Alexander Deibel: findest dirrt immer die letzt (deployete version), wenn ich sage fertig, dann haben wir fertig gebaut, damm uß ich noch deployen, und die alte ist noch online. wenn ich dann sage deploey, oder ist online/live. dann ist unter der gleichen adresse die neuste version verfügbar. nur ggf. den browser neu laden
+[24.02.26, 05:00:02] Alexander Deibel: wie du offline testest steht im testprotokoll
+[24.02.26, 05:00:55] Alexander Deibel: wenn du langsames internet hast, dann fange rechtzeitig vorher an dir die / oder besser erstmal nur das gewnschte spachpaket runterzuladen.... kannst sofort am frhstückstisch machen
+[24.02.26, 05:01:06] Alexander Deibel: app.guidetranlator.com
+[24.02.26, 05:01:49] Alexander Deibel: rechts oben auf einstellungen gehen: dort findest du die sprachpakete zum download
+‎[24.02.26, 05:05:07] Berger Ulrick: 🥴 ‎<Anhang: 00001210-PHOTO-2026-02-24-05-05-07.jpg>
+[24.02.26, 05:05:59] Alexander Deibel: https://app.guidetranslator.com/
+‎[24.02.26, 05:06:18] Alexander Deibel: ‎<Anhang: 00001212-PHOTO-2026-02-24-05-06-18.jpg>
+[24.02.26, 05:08:46] Alexander Deibel: bei mir gehen alle browser: safari, chrome, firefox, opera
+[24.02.26, 05:10:44] Berger Ulrick: Klar! Ich bin draußen in der echten Welt 😉🥴
+[24.02.26, 05:11:15] Berger Ulrick: Spaß beiseite… das Netz ist einfach schwisse
+[24.02.26, 05:22:24] Berger Ulrick: Der nächste Hafen (morgen früh) soll Internet haben… 🤞🏻
+[24.02.26, 05:22:39] Berger Ulrick: Hoffentlich/sicher funktioniert es dort!
+[24.02.26, 05:23:00] Berger Ulrick: Das Fehler Protokoll pdf ist schön für mich zu lesen…
+[24.02.26, 05:23:32] Berger Ulrick: Danke dafür, dann bin ich an deinen improvement Schritten angeschlossen…
+[24.02.26, 05:23:39] Alexander Deibel: ma damm lies mal das update protokoll
+[24.02.26, 05:25:01] Berger Ulrick: Hab ich schon! Mega cool!
+[24.02.26, 05:25:19] Berger Ulrick: Hast du dir schon Gedanken gemacht über den Zusatz Button für den Guide „übersetze jetzt“ ?!!
+‎[24.02.26, 05:27:47] Berger Ulrick: ‎<Anhang: 00001223-AUDIO-2026-02-24-05-27-47.opus>
+‎[24.02.26, 05:35:35] Berger Ulrick: ‎<Anhang: 00001224-AUDIO-2026-02-24-05-35-35.opus>
+‎[24.02.26, 05:41:14] Berger Ulrick: Hi A! Dieser Link hier aus dem e-Mail hat soeben funktioniert… ‎<Anhang: 00001225-PHOTO-2026-02-24-05-41-14.jpg>
+[24.02.26, 05:46:37] Berger Ulrick: Bin drin Alexander Juhuu! Und hab auch schon zwei Sprachen heruntergeladen. Und hier der erste Verbesserungsvorschlag:
+‎[24.02.26, 05:46:49] Berger Ulrick: ‎<Anhang: 00001227-PHOTO-2026-02-24-05-46-49.jpg>
+[24.02.26, 05:47:56] Berger Ulrick: Selbst nachdem das Paket erfolgreich heruntergeladen wurde, heißt der Button immer noch „ laden“: der sollte, nachdem das Paket erfolgreich herab geladen ist, Anders heißen. Eventuell sogar löschen mit der Löschfunktion oder auch was anderes als don’t know. Aber so, wenn er weiter laden heißt, ist es keine Bestätigung der erfolgreich durchgeführten Operation und somit eine Verständnis Fehlerquelle für den Anwender…
+[24.02.26, 05:50:44] Berger Ulrick: Den 3. Punkt verstehe ich nicht! Was muss ich tun? Nochmal online gehen? Als Sprecher?
+[24.02.26, 05:54:29] Berger Ulrick: 2. wo finde ich den violetten offline batch von dem hier die Rede ist?
+[24.02.26, 05:55:59] Alexander Deibel: meld dich bitte für die testung bei slack an, hab dir nene ienladungslink gesendet, sonst find ich das nicht mehr und du auch nicht
+[24.02.26, 05:56:34] Alexander Deibel: hab dich heirmit eingeladen: 
+ulrich.b@gmx.ch
+[24.02.26, 05:57:42] Alexander Deibel: man, du mußt offline gehen, dann wird der violet. LIEES ERST
+[24.02.26, 05:58:30] Berger Ulrick: Ok bin dort schon drin, Tickets also dort anlegen, ok?
+[24.02.26, 06:00:43] Berger Ulrick: Ah, Ich Verstand es so dass  ich muss in dem Browser den offline Button finden…
+[24.02.26, 06:01:27] Berger Ulrick: Ich schalte also jetzt nur mein wifi ab, aber dann bin ich voraussichtlich nicht mehr in der Lage wieder online zu gehen ;-) … ich teste …
+‎[24.02.26, 06:27:24] Alexander Deibel: appguidetranslatorcom-V4b-UpDATESUMMARY.pdf • ‎4 Seiten ‎<Anhang: 00001237-appguidetranslatorcom-V4b-UpDATESUMMARY.pdf>
+[24.02.26, 06:28:11] Alexander Deibel: neues update👆
+[24.02.26, 06:29:09] Alexander Deibel: ich habe 4 noch nicht deployed, mach ich jetzt, wenn du gerade testest kann es sein das es bald mal kruz zusammenbricht,, wenn der neue build fertig ist und live geht
+[24.02.26, 06:29:19] Alexander Deibel: nicht wundern also
+[24.02.26, 06:29:23] Alexander Deibel: sag bescheid wenn durch
+[24.02.26, 06:48:04] Alexander Deibel: nein: meine vrowser sind im selben internet wie deine... (nur das netzt selbst veilleicht langsamer....)
+[24.02.26, 06:48:13] Alexander Deibel: ich bin nicht in einer anderen welt
+[24.02.26, 06:48:26] Alexander Deibel: zumindest nicht wenn ihc im broowser arbeite;-9
+[24.02.26, 06:48:43] Alexander Deibel: dasn ist dann live
+[24.02.26, 07:06:45] Alexander Deibel: jetzts ists grad weg. build defect, dauert nen moment - aber offlibe geht natürlich
+[24.02.26, 08:45:34] Berger Ulrick: Liebe Alexander! Mein Internet ist jetzt wieder weg und ich habe die offline Variante also getestet. Und er zeigt mir an, dass keine Pakete downgeloadet sind. Obwohl ich das ja habe. Und obwohl auch im Browser angezeigt wird, dass mein Speicher ca.  900 Mb hat, was genau denn downgeloadet Datenpaket von Deutschland Englisch sowie der Offline Whisper Lösung entspricht. Ich kann dir die Screenshots morgen schicken. Dann gern den bug auch in den neuen Kommunikationstool. Leider bin ich nicht sehr weit gekommen heute…
+[24.02.26, 08:46:28] Berger Ulrick: Ich habe auch die Browser Lösung bei mir auf den Homebildschirm gelegt, aber leider öffnet sich die Seite nur neu. Wenn ich auch im Internet bin, ist klar. Die offline Lösung funktioniert erst als App wirklich ganz offline….
+[24.02.26, 08:53:29] Alexander Deibel: Also hat offline bei dir gar nichts funktioniert. Hast du mit dem Handy oder mit dem Computer getestet? Hast du online was gehört?
+[24.02.26, 08:54:10] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+[24.02.26, 08:55:08] Alexander Deibel: Bitte erkläre mir doch nicht was wann funktioniert, sondern genau was wo bei dir funktioniert und was wo genau bei dir nicht funktioniert. Das wäre hilfreich
+[24.02.26, 09:00:53] Alexander Deibel: so deployment endlich durch, mußte nochmal zurck, code ändern, beim mergen gabs probleme. build 4b jetzt live. (siehste am impressum)
+‎[24.02.26, 09:10:31] Alexander Deibel: RE-2026-178.pdf • ‎2 Seiten ‎<Anhang: 00001253-RE-2026-178.pdf>
+‎[24.02.26, 11:52:06] Alexander Deibel: appguidetranslatorcom-V3b-UlrichsBugs-Analyse.pdf • ‎5 Seiten ‎<Anhang: 00001254-appguidetranslatorcom-V3b-UlrichsBugs-Analyse.pdf>
+[24.02.26, 11:52:32] Alexander Deibel: neuigkeiten. machen uns dran jetzt, hab auch noch sachen gefunden
+[24.02.26, 12:40:18] Berger Ulrick: Handy u ja hatte online was gehört,
+‎[24.02.26, 12:48:02] Alexander Deibel: appguidetranslatorcom-V5.0-UpdateSummary.pdf • ‎5 Seiten ‎<Anhang: 00001257-appguidetranslatorcom-V5.0-UpdateSummary.pdf>
+[24.02.26, 12:48:16] Alexander Deibel: deploye gleich
+[24.02.26, 12:50:21] Alexander Deibel: was richtiges gehört, gut schlecht passabel, geil (was hast du denn gehört, ein klitze klein bißchen mehr und präzieseres feedback zur app (VERSION 4!!!!! wäre nett.... du hast noch gar nchts dazu gesagt. man ulrich, was machst du denn da ie ganze zeit auf dem schiff?
+[24.02.26, 12:53:01] Berger Ulrick: Ich hab kein Internet :-) ich kann die Seite gar nicht öffnen, wie ich ja schrieb, ohne Internet… (auch die offline Variante im Browser braucht Internet, um geöffnet zu werden…) Wir können also erst morgen weitermachen, wenn ich wieder Internet habe….
+[24.02.26, 12:55:50] Berger Ulrick: Ich höre mir mein Unternehmer coaching von Bodo Schäfer an. Spiele Schach, esse Eis, schlafe, schaue aufs Meer und erfreue mich wenn das Schiff geruhsam schaukelt. Versuche erfolglos die  ki Lösung zu testen und erfolglos das Einreise Formular auszufüllen 🥰… Mach dein Ding- ich komm dann später dazu sobald ich dazu kommen kann 😉
+[24.02.26, 12:57:05] Berger Ulrick: … und vielleicht gehe ich heut Abend ins Kino 🎦
+[24.02.26, 12:57:44] Berger Ulrick: … jetzt erstmal Abendessen 🙋🏼‍♂️
+[24.02.26, 13:01:21] Alexander Deibel: ah, so... (die ersten etwas ausführlicheren nachricht, danke für die zeit die du dir dafür genommen hast.... ich habe vers. 5 jetzt deployed. und höre jetzt auf. bis du einsteigst. (die app-stor frage hast du mir auch nicht beantwortet (accounts erstellen, und die app fr die appsores vorbereiten? egal... schau aufs meer. ich mach jetzt was anderes
+[24.02.26, 13:02:31] Alexander Deibel: ich habe dir so viele dokumente geschickt, du keine zwei narichten dazu geschriebn, ich weiß nichtmal ob du die gelesen hast.
+[24.02.26, 13:05:28] Berger Ulrick: Doch ich hatte dir Feuer frei geschrieben. Du hattest allerdings zweimal gefragt und ich hab nur einmal geantwortet, weil ich dachte mir, dass es genügt…. Dein zweites Mal war eine Erinnerung an die Antwort vom ersten Mal. Als ich es dann gelesen hatte, habe ich dir geantwortet. Feuerfrei für den Store na klar.!
+[24.02.26, 13:06:14] Berger Ulrick: Genau ich hab sie nicht lesen können, weil ich sie nicht runterladen kann… zumindest die letzten seit dem Moment, wo ich heute kein Internet mehr habe… Die anderen habe ich gelesen und dir eine schöne Antwort gegeben fand ich Mega cool, schrieb ich, dass ich informiert bin in die Prozesse, die da so laufen.
+[24.02.26, 13:06:38] Berger Ulrick: Ich bin im übrigen immer so krass müde hier. Ich weiß nicht ob’s am Schiff liegt oder an der Wärme.??? wirklich komatös müde
+[24.02.26, 13:07:27] Berger Ulrick: Es wird wirklich Zeit, dass ich hier runterkomme… Aber morgen haben wir wohl was schönes vor und Treffen auf Drachentiere auf einer Naturschutz Insel…
+[24.02.26, 13:08:36] Berger Ulrick: Ja und ich hab sogar auch deine Rechnungen hier und da geöffnet und angesehen und frag mich wie du die denn  Bezahlen willst?
+[24.02.26, 13:12:08] Berger Ulrick: Vielleicht liegt meine Müdigkeit auch am hoch übertriebenen Eiscreme Konsum 🥳😉🤪🫠
+[24.02.26, 13:13:00] Berger Ulrick: Das Eis ist sowas von oberwahnsinns Mega 😋
+‎[24.02.26, 13:13:48] Alexander Deibel: Dringende-Nachricht 2 -an-Bord.pdf • ‎4 Seiten ‎<Anhang: 00001273-Dringende-Nachricht 2 -an-Bord.pdf>
+‎[24.02.26, 13:14:01] Alexander Deibel: Rechnungs Nr. RE-2026-179.pdf • ‎2 Seiten ‎<Anhang: 00001274-Rechnungs Nr. RE-2026-179.pdf>
+[24.02.26, 13:18:58] Berger Ulrick: … aber ich glaub es ist die Klimaanlagen Luft und der stahlcontainer in dem man steckt …
+[24.02.26, 13:19:34] Berger Ulrick: Deine pdf‘s kann ich dann morgen öffnen…
+[24.02.26, 13:19:41] Alexander Deibel: wenn du endlicjh anfangen wrdest dein dashbord zu testen, dazu hats du nur ein einziges mal cool geschrieben, aber ich glaube nioch nie angeguckt... interssiert dich alles nicgt, guckst lieber aufs meer. man urlich.: fanhg endlich an deine ganzen lead/kontakte der letzten jahre einzuladen, ggf. dir ein weiter eigene template dafr gestalten (ich glaube der link auf die landingpage www.guidetranslator.com ist noch nicht drin, und du kannst dir ja unterschiedliche mache fr unterschiedlich nahe/oder ferne kontakte, und allen die app zeigen und in den die leadmschine zu schcken und damit automatisch angebote zu erzeugen, die du dann nur noch in deinem dashbord beobachtest, und verfolgst mit automatischen mails zum follow up usw. die adressen kannst du da alle reintragen schon mal.
+[24.02.26, 13:22:26] Berger Ulrick: Ja wenn ich dann Internet und Zeit habe mache ich das gern… Nerv mich nicht 😉 und dazu muss auch noch das Produkt da sein und funktionieren ehe ich in den Verkauf gehe… aber das kann ja wirklich schnell gehen ;-) ich hoff es klappt mit testen die nächsten 2 Tage…
+[24.02.26, 13:23:00] Berger Ulrick: Magst mir noch eine Antwort auf meine audio Nachricht zur Webseite geben?
+[24.02.26, 13:24:48] Alexander Deibel: du bist krass: Nerv mich nicht 😉 |  wenn du dann zeit hast????????  das produkt ist da! du nimmst es znur nicht zur kenntnis, und nicht nur das produkt sondern noch zwei weitere apps. testen, optimieren, fertig, los
+[24.02.26, 13:25:01] Alexander Deibel: welche?
+[24.02.26, 13:25:18] Alexander Deibel: schreib bitte
+[24.02.26, 13:25:52] Berger Ulrick: Und für den Verkauf brauchen wir dann erst mal eine ovs (optimale Verkaufsstrategie) die kommt dann in den nächsten Wochen dran gemeinsam mit dem Kurs von Bodo Schäfer gemeinsamen Absprachen entwickelt zu werden 😉 und wenn die dann steht und wenn du dazu dann das System, dann können wir loslegen😉
+‎[24.02.26, 13:26:41] Berger Ulrick: ‎<Anhang: 00001284-AUDIO-2026-02-24-13-26-41.opus>
+[24.02.26, 13:27:14] Berger Ulrick: Ich hab sie dir gerade noch mal geschickt… werde jetzt nicht für dich transkribiert😉 habe keine ki Antwort, die mir dabei hilft…
+‎[24.02.26, 13:28:31] Berger Ulrick: ‎<Anhang: 00001286-AUDIO-2026-02-24-13-28-31.opus>
+[24.02.26, 13:28:31] Berger Ulrick: Und hier nochmal zur Koffer App
+[13:31, 24.2.2026] Berger Ulrick: ch habe Ferien, und anderes Programm, du nervst 😉! Wenn ich morgen um 10:00 Uhr in den Tender steige und dann am Ufer ankommen, weiß ich nicht mal ob ich genügend Zeit habe meine neue eSIM zu installiert und mit der ich dann auch morgen den ganzen Tag kein Internet hätte dann bis in einer Reisegruppe unterwegs und dürfen nicht ohne dem guide rumlaufen… d.h. also wenn ich dann Internet und Zeit habe… :-) aber ab dem 27.2. Bin ich dann bei Chaca und dann kann ich mir bestimmt ein Stündchen pro Tag einrichten, dass wir mit der App weiterkommen🤞🏻🙌🏻💪🏻💪🏻💪🏻
+[13:34, 24.2.2026] Berger Ulrick: du bist krass: Nerv mich nicht  |  wenn du dann zeit hast????????  das produkt ist da! du nimmst es znur nicht zur kenntnis, und nicht nur das produkt sondern noch zwei weitere apps. testen, optimieren, fertig, los
+Zwei weitere Apps? Welche meinst du?
+[14:41, 24.2.2026] Alexander Deibel: Ich habe Ferien, und anderes Programm, du nervst ! Wenn ich morgen um 10:00 Uhr in den Tender steige und dann am Ufer ankommen, weiß ich nicht mal ob ich genügend Zeit habe meine neue eSIM zu installiert und mit der ich dann auch morgen den ganzen Tag kein Internet hätte dann bis in einer Reisegruppe unterwegs und dürfen nicht ohne dem guide rumlaufen… d.h. also wenn ich dann Internet und Zeit habe… :-) aber ab dem 27.2. Bin ich dann bei Chaca und dann kann ich mir bestimmt ein Stündchen pro Tag einrichten, dass wir mit der App weiterkommen
+fuck you
+[14:41, 24.2.2026] Alexander Deibel: Zwei weitere Apps? Welche meinst du?
+sales and admin
