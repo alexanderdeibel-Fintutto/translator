@@ -21,6 +21,8 @@ export default function Header() {
   const NAV_ITEMS = [
     { label: t('nav.translator'), path: '/' },
     { label: t('nav.live'), path: '/live' },
+    { label: t('nav.conversation'), path: '/conversation' },
+    { label: t('nav.camera'), path: '/camera' },
     { label: t('nav.phrasebook'), path: '/phrasebook' },
     { label: t('nav.info'), path: '/info' },
   ]

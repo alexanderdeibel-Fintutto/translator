@@ -4,7 +4,7 @@
 
 import { getCachedTTSAudio, cacheTTSAudio } from './offline/tts-cache'
 
-const API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+const API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || ''
 const API_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 const API_URL_BETA = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'
 

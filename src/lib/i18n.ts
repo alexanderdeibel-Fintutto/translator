@@ -26,6 +26,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
     // Header & Navigation
     'nav.translator': '\u00dcbersetzer',
     'nav.live': 'Live',
+    'nav.conversation': 'Gespr\u00e4ch',
+    'nav.camera': 'Kamera',
     'nav.phrasebook': 'Phrasebook',
     'nav.info': 'Info',
     'nav.settings': 'Einstellungen',
@@ -98,6 +100,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   en: {
     'nav.translator': 'Translator',
     'nav.live': 'Live',
+    'nav.conversation': 'Talk',
+    'nav.camera': 'Camera',
     'nav.phrasebook': 'Phrasebook',
     'nav.info': 'Info',
     'nav.settings': 'Settings',
@@ -156,6 +160,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   ar: {
     'nav.translator': '\u0627\u0644\u0645\u062a\u0631\u062c\u0645',
     'nav.live': '\u0645\u0628\u0627\u0634\u0631',
+    'nav.conversation': '\u0645\u062d\u0627\u062f\u062b\u0629',
+    'nav.camera': '\u0643\u0627\u0645\u064a\u0631\u0627',
     'nav.phrasebook': '\u0643\u062a\u0627\u0628 \u0627\u0644\u0639\u0628\u0627\u0631\u0627\u062a',
     'nav.info': '\u0645\u0639\u0644\u0648\u0645\u0627\u062a',
     'nav.settings': '\u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a',
@@ -214,6 +220,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   tr: {
     'nav.translator': '\u00c7evirmen',
     'nav.live': 'Canl\u0131',
+    'nav.conversation': 'Sohbet',
+    'nav.camera': 'Kamera',
     'nav.phrasebook': 'S\u00f6zl\u00fck',
     'nav.info': 'Bilgi',
     'nav.settings': 'Ayarlar',
@@ -272,6 +280,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   fa: {
     'nav.translator': '\u0645\u062a\u0631\u062c\u0645',
     'nav.live': '\u0632\u0646\u062f\u0647',
+    'nav.conversation': '\u06af\u0641\u062a\u06af\u0648',
+    'nav.camera': '\u062f\u0648\u0631\u0628\u06cc\u0646',
     'nav.phrasebook': '\u06a9\u062a\u0627\u0628 \u0639\u0628\u0627\u0631\u0627\u062a',
     'nav.info': '\u0627\u0637\u0644\u0627\u0639\u0627\u062a',
     'nav.settings': '\u062a\u0646\u0638\u06cc\u0645\u0627\u062a',
@@ -330,6 +340,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   uk: {
     'nav.translator': '\u041f\u0435\u0440\u0435\u043a\u043b\u0430\u0434\u0430\u0447',
     'nav.live': '\u041d\u0430\u0436\u0438\u0432\u043e',
+    'nav.conversation': '\u0420\u043e\u0437\u043c\u043e\u0432\u0430',
+    'nav.camera': '\u041a\u0430\u043c\u0435\u0440\u0430',
     'nav.phrasebook': '\u0420\u043e\u0437\u043c\u043e\u0432\u043d\u0438\u043a',
     'nav.info': '\u0406\u043d\u0444\u043e',
     'nav.settings': '\u041d\u0430\u043b\u0430\u0448\u0442\u0443\u0432\u0430\u043d\u043d\u044f',
@@ -388,6 +400,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   ru: {
     'nav.translator': '\u041f\u0435\u0440\u0435\u0432\u043e\u0434\u0447\u0438\u043a',
     'nav.live': '\u041f\u0440\u044f\u043c\u043e\u0439 \u044d\u0444\u0438\u0440',
+    'nav.conversation': '\u0411\u0435\u0441\u0435\u0434\u0430',
+    'nav.camera': '\u041a\u0430\u043c\u0435\u0440\u0430',
     'nav.phrasebook': '\u0420\u0430\u0437\u0433\u043e\u0432\u043e\u0440\u043d\u0438\u043a',
     'nav.info': '\u0418\u043d\u0444\u043e',
     'nav.settings': '\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438',
@@ -446,6 +460,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   fr: {
     'nav.translator': 'Traducteur',
     'nav.live': 'En direct',
+    'nav.conversation': 'Dialogue',
+    'nav.camera': 'Cam\u00e9ra',
     'nav.phrasebook': 'Lexique',
     'nav.info': 'Info',
     'nav.settings': 'Param\u00e8tres',
@@ -504,6 +520,8 @@ const translations: Record<UILanguage, TranslationStrings> = {
   es: {
     'nav.translator': 'Traductor',
     'nav.live': 'En vivo',
+    'nav.conversation': 'Di\u00e1logo',
+    'nav.camera': 'C\u00e1mara',
     'nav.phrasebook': 'Frases',
     'nav.info': 'Info',
     'nav.settings': 'Ajustes',

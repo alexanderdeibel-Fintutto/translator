@@ -4,7 +4,7 @@ import { getCachedTranslation, cacheTranslation } from './offline/translation-ca
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
 
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || ''
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'

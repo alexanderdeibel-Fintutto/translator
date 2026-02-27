@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from './LanguageSelector'
 import { translateText } from '@/lib/translate'
+import { detectLanguage } from '@/lib/detect-language'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
@@ -35,6 +36,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
+  const [autoDetect, setAutoDetect] = useState(false)
+  const [detectedLang, setDetectedLang] = useState<string | null>(null)
   const [sourceText, setSourceText] = useState('')
   const [translatedText, setTranslatedText] = useState('')
   const [matchScore, setMatchScore] = useState<number | null>(null)
@@ -93,14 +96,27 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     if (!text.trim()) {
       setTranslatedText('')
       setError(null)
+      setDetectedLang(null)
       return
     }
 
     setIsTranslating(true)
     setError(null)
 
+    // Auto-detect source language if enabled
+    let effectiveSourceLang = sourceLang
+    if (autoDetect) {
+      const detected = detectLanguage(text)
+      if (detected && detected.confidence > 0.3) {
+        effectiveSourceLang = detected.language
+        setDetectedLang(detected.language)
+      } else {
+        setDetectedLang(null)
+      }
+    }
+
     try {
-      const result = await translateText(text, sourceLang, targetLang)
+      const result = await translateText(text, effectiveSourceLang, targetLang)
       let finalText = result.translatedText
 
       // Apply informal conversion if toggle is active
@@ -121,7 +137,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       addEntry({
         sourceText: text,
         translatedText: finalText,
-        sourceLang,
+        sourceLang: effectiveSourceLang,
         targetLang,
       })
     } catch (err) {
@@ -129,7 +145,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     } finally {
       setIsTranslating(false)
     }
-  }, [sourceLang, targetLang, addEntry, t])
+  }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
   useEffect(() => {
     if (debounceRef.current) {
@@ -252,7 +268,23 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     <div className="space-y-4">
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
-        <LanguageSelector value={sourceLang} onChange={setSourceLang} label={t('translator.from')} />
+        <div className="flex items-end gap-1.5">
+          <LanguageSelector value={sourceLang} onChange={(v) => { setSourceLang(v); setAutoDetect(false); setDetectedLang(null) }} label={t('translator.from')} />
+          <Button
+            variant={autoDetect ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
+            className="mb-0.5 shrink-0 text-xs"
+            title="Sprache automatisch erkennen"
+          >
+            {t('translator.auto')}
+          </Button>
+          {autoDetect && detectedLang && (
+            <span className="mb-1 text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 font-medium">
+              {getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name || detectedLang}
+            </span>
+          )}
+        </div>
         <Button
           variant="outline"
           size="icon"
@@ -306,7 +338,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted-foreground">
-                {sourceLangData?.flag} {sourceLangData?.name}
+                {autoDetect && detectedLang
+                  ? <>{getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name} <span className="text-[10px] opacity-60">(auto)</span></>
+                  : <>{sourceLangData?.flag} {sourceLangData?.name}</>
+                }
               </span>
               <div className="flex items-center gap-1">
                 <Button
