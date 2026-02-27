@@ -5,12 +5,23 @@ import type { TranslationChunk, SessionInfo, StatusMessage, PresenceState } from
 
 // --- Connection mode ---
 
-export type ConnectionMode = 'cloud' | 'local' | 'auto'
+export type ConnectionMode = 'cloud' | 'local' | 'hotspot' | 'auto'
 
 export interface ConnectionConfig {
   mode: ConnectionMode
   /** Local WebSocket server URL, e.g. ws://192.168.8.1:8765 */
   localServerUrl?: string
+}
+
+/** State returned when a hotspot + relay is started */
+export interface HotspotInfo {
+  ssid: string
+  password: string
+  serverUrl: string
+  gatewayIp: string
+  port: number
+  /** iOS: user must manually enable Personal Hotspot */
+  manualHotspotRequired?: boolean
 }
 
 // --- Broadcast transport ---

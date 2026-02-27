@@ -4,7 +4,7 @@
 import { getNetworkStatus } from '@/lib/offline/network-status'
 import { SupabaseBroadcastTransport, SupabasePresenceTransport } from './supabase-transport'
 import { LocalBroadcastTransport, LocalPresenceTransport, releaseConnection } from './local-ws-transport'
-import type { BroadcastTransport, PresenceTransport, ConnectionMode, ConnectionConfig } from './types'
+import type { BroadcastTransport, PresenceTransport, ConnectionMode, ConnectionConfig, HotspotInfo } from './types'
 
 // Default relay server port (matches relay-server/server.js)
 const DEFAULT_LOCAL_PORT = 8765
@@ -24,6 +24,8 @@ export interface TransportPair {
   presence: PresenceTransport
   mode: 'cloud' | 'local'
   serverUrl?: string
+  /** Populated when mode was 'hotspot' — contains WiFi credentials for QR code */
+  hotspotInfo?: HotspotInfo
 }
 
 /**
@@ -66,13 +68,14 @@ export async function discoverLocalServer(port = DEFAULT_LOCAL_PORT): Promise<st
 /**
  * Create the appropriate transport pair based on configuration.
  */
-export function createTransports(config: ConnectionConfig): TransportPair {
-  if (config.mode === 'local' && config.localServerUrl) {
+export function createTransports(config: ConnectionConfig, hotspotInfo?: HotspotInfo): TransportPair {
+  if ((config.mode === 'local' || config.mode === 'hotspot') && config.localServerUrl) {
     return {
       broadcast: new LocalBroadcastTransport(config.localServerUrl),
       presence: new LocalPresenceTransport(config.localServerUrl),
       mode: 'local',
       serverUrl: config.localServerUrl,
+      hotspotInfo,
     }
   }
 
@@ -81,6 +84,45 @@ export function createTransports(config: ConnectionConfig): TransportPair {
     broadcast: new SupabaseBroadcastTransport(),
     presence: new SupabasePresenceTransport(),
     mode: 'cloud',
+  }
+}
+
+/**
+ * Start a hotspot + embedded relay server on this device.
+ * Android: Creates LocalOnlyHotspot programmatically.
+ * iOS: Starts relay only; user must enable Personal Hotspot manually.
+ *
+ * Returns a TransportPair connected to the embedded relay, plus hotspot credentials.
+ */
+export async function startHotspotTransport(port = DEFAULT_LOCAL_PORT): Promise<TransportPair> {
+  const { default: HotspotRelay } = await import('@/lib/hotspot-relay')
+
+  const result = await HotspotRelay.startHotspot({ port })
+
+  const hotspotInfo: HotspotInfo = {
+    ssid: result.ssid,
+    password: result.password,
+    serverUrl: result.serverUrl,
+    gatewayIp: result.gatewayIp,
+    port: result.port,
+    manualHotspotRequired: result.manualHotspotRequired,
+  }
+
+  return createTransports(
+    { mode: 'hotspot', localServerUrl: result.serverUrl },
+    hotspotInfo,
+  )
+}
+
+/**
+ * Stop the hotspot and embedded relay server.
+ */
+export async function stopHotspotTransport(): Promise<void> {
+  try {
+    const { default: HotspotRelay } = await import('@/lib/hotspot-relay')
+    await HotspotRelay.stopHotspot()
+  } catch (err) {
+    console.warn('[ConnectionManager] Error stopping hotspot:', err)
   }
 }
 
@@ -94,6 +136,11 @@ export async function autoSelectTransport(
   config: ConnectionConfig
 ): Promise<TransportPair> {
   const network = getNetworkStatus()
+
+  // Hotspot mode — start embedded relay on this device
+  if (config.mode === 'hotspot') {
+    return startHotspotTransport()
+  }
 
   // Explicit local mode
   if (config.mode === 'local') {

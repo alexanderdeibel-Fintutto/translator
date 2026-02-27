@@ -6,6 +6,7 @@ export type {
   PresenceTransport,
   ClientMessage,
   ServerMessage,
+  HotspotInfo,
 } from './types'
 
 export { SupabaseBroadcastTransport, SupabasePresenceTransport } from './supabase-transport'
@@ -13,6 +14,8 @@ export { LocalBroadcastTransport, LocalPresenceTransport } from './local-ws-tran
 export {
   createTransports,
   autoSelectTransport,
+  startHotspotTransport,
+  stopHotspotTransport,
   probeLocalServer,
   discoverLocalServer,
   getSessionUrlWithTransport,

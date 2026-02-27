@@ -47,5 +47,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Die App nutzt das lokale Netzwerk um Live-Übersetzungen an verbundene Geräte zu senden.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_guidetranslator._tcp</string>
+	</array>
 </dict>
 </plist>

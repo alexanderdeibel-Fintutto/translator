@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { ConnectionConfig, BroadcastTransport, PresenceTransport } from '@/lib/transport/types'
+import type { ConnectionConfig, BroadcastTransport, PresenceTransport, HotspotInfo } from '@/lib/transport/types'
 import {
   autoSelectTransport,
   createTransports,
   cleanupLocalConnections,
+  stopHotspotTransport,
   type TransportPair,
 } from '@/lib/transport/connection-manager'
 
@@ -13,10 +14,12 @@ export interface ConnectionState {
   isResolving: boolean
   broadcastTransport: BroadcastTransport | undefined
   presenceTransport: PresenceTransport | undefined
+  /** Populated when in hotspot mode — contains WiFi credentials for QR code */
+  hotspotInfo?: HotspotInfo
 }
 
 /**
- * Hook to manage the connection mode (cloud vs local).
+ * Hook to manage the connection mode (cloud vs local vs hotspot).
  * Creates and provides the appropriate transport instances.
  */
 export function useConnectionMode() {
@@ -28,20 +31,30 @@ export function useConnectionMode() {
   })
 
   const transportPairRef = useRef<TransportPair | null>(null)
+  const isHotspotRef = useRef(false)
 
   // Initialize with a config (called before creating/joining a session)
   const initialize = useCallback(async (config: ConnectionConfig) => {
     setState(prev => ({ ...prev, isResolving: true }))
 
     try {
-      // Clean up previous local connections
+      // Clean up previous connections
       if (transportPairRef.current?.serverUrl) {
         cleanupLocalConnections(transportPairRef.current.serverUrl)
+      }
+      // Stop previous hotspot if running
+      if (isHotspotRef.current) {
+        await stopHotspotTransport()
+        isHotspotRef.current = false
       }
 
       let pair: TransportPair
 
-      if (config.mode === 'auto') {
+      if (config.mode === 'hotspot') {
+        // Hotspot mode — start embedded relay on this device
+        pair = await autoSelectTransport(config)
+        isHotspotRef.current = true
+      } else if (config.mode === 'auto') {
         pair = await autoSelectTransport(config)
       } else {
         pair = createTransports(config)
@@ -55,6 +68,7 @@ export function useConnectionMode() {
         isResolving: false,
         broadcastTransport: pair.broadcast,
         presenceTransport: pair.presence,
+        hotspotInfo: pair.hotspotInfo,
       })
 
       return pair
@@ -115,6 +129,9 @@ export function useConnectionMode() {
     return () => {
       if (transportPairRef.current?.serverUrl) {
         cleanupLocalConnections(transportPairRef.current.serverUrl)
+      }
+      if (isHotspotRef.current) {
+        stopHotspotTransport()
       }
     }
   }, [])

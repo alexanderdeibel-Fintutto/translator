@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones, Wifi, Cloud } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud, Smartphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
+import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-relay'
 import type { ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveLandingPage() {
@@ -12,6 +13,8 @@ export default function LiveLandingPage() {
   const [sourceLang, setSourceLang] = useState('de')
   const [connectionMode, setConnectionMode] = useState<ConnectionMode>('cloud')
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
+
+  const hotspotAvailable = isHotspotSupported()
 
   const handleCreate = () => {
     navigate('/live/new', {
@@ -59,7 +62,7 @@ export default function LiveLandingPage() {
           {/* Connection mode selection */}
           <div className="space-y-2">
             <p className="text-sm font-medium">Verbindung</p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setConnectionMode('cloud')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
@@ -71,6 +74,19 @@ export default function LiveLandingPage() {
                 <Cloud className="h-4 w-4" />
                 Cloud
               </button>
+              {hotspotAvailable && (
+                <button
+                  onClick={() => setConnectionMode('hotspot')}
+                  className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                    connectionMode === 'hotspot'
+                      ? 'border-sky-600 bg-sky-50 text-sky-700 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800'
+                      : 'border-border text-muted-foreground hover:bg-accent'
+                  }`}
+                >
+                  <Smartphone className="h-4 w-4" />
+                  Hotspot
+                </button>
+              )}
               <button
                 onClick={() => setConnectionMode('local')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
@@ -80,10 +96,28 @@ export default function LiveLandingPage() {
                 }`}
               >
                 <Wifi className="h-4 w-4" />
-                Lokal (Offline)
+                Router
               </button>
             </div>
 
+            {/* Hotspot mode info */}
+            {connectionMode === 'hotspot' && (
+              <div className="space-y-1.5 p-3 rounded-lg bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-800">
+                <p className="text-xs font-medium text-sky-700 dark:text-sky-400">
+                  Dein Handy wird zum WLAN-Hotspot
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  {canCreateHotspotProgrammatically()
+                    ? 'Der Hotspot wird automatisch erstellt. Listener scannen einen QR-Code um sich zu verbinden. Kein Internet nötig.'
+                    : 'Bitte aktiviere den Persönlichen Hotspot in den Einstellungen. Der Relay-Server startet automatisch auf deinem Gerät.'}
+                </p>
+                <p className="text-[10px] text-muted-foreground/60">
+                  Max. 8-10 Listener, Reichweite ca. 20-30m
+                </p>
+              </div>
+            )}
+
+            {/* Local router mode */}
             {connectionMode === 'local' && (
               <div className="space-y-1.5">
                 <label className="text-xs text-muted-foreground">

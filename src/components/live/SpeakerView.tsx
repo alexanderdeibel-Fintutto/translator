@@ -2,6 +2,7 @@ import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download } from 'lucide-reac
 import { useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
+import WifiQRCode from './WifiQRCode'
 import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
@@ -18,6 +19,8 @@ interface SpeakerViewProps {
 export default function SpeakerView({ session }: SpeakerViewProps) {
   const { t } = useI18n()
   const sessionStartRef = useRef(Date.now())
+
+  const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
   const downloadProtocol = useCallback(() => {
     const now = new Date()
@@ -68,8 +71,17 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           isConnected={session.isConnected}
           isResolving={session.isResolvingConnection}
           serverUrl={session.connectionServerUrl}
+          isHotspotHost={!!session.hotspotInfo}
         />
       </div>
+
+      {/* iOS manual hotspot instruction */}
+      {session.hotspotInfo?.manualHotspotRequired && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm">
+          <WifiOff className="h-4 w-4 shrink-0" />
+          <span>Bitte aktiviere den <strong>Persönlichen Hotspot</strong> in den Einstellungen</span>
+        </div>
+      )}
 
       {/* Connection status bar */}
       {!session.isConnected && !session.isResolvingConnection && (
@@ -81,9 +93,22 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Left: QR + Controls */}
+        {/* Left: QR Codes + Controls */}
         <div className="space-y-4">
-          <SessionQRCode code={session.sessionCode} sessionUrl={session.sessionUrl} />
+          {/* WiFi QR code (hotspot mode only) — shown FIRST so listeners connect to WiFi */}
+          {hasHotspot && (
+            <WifiQRCode
+              ssid={session.hotspotInfo!.ssid}
+              password={session.hotspotInfo!.password}
+              step={1}
+            />
+          )}
+
+          {/* Session QR code — listeners scan AFTER connecting to WiFi */}
+          <SessionQRCode
+            code={session.sessionCode}
+            sessionUrl={session.sessionUrl}
+          />
 
           <div className="flex gap-2">
             {session.isRecording ? (

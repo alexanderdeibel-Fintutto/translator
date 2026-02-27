@@ -256,6 +256,9 @@ export function useLiveSession() {
     switchToCloud: connection.switchToCloud,
     switchToLocal: connection.switchToLocal,
 
+    // Hotspot info (WiFi credentials for QR code, populated in hotspot mode)
+    hotspotInfo: connection.hotspotInfo,
+
     // Session URL (includes local WS params when in local mode)
     sessionUrl,
 
