@@ -24,3 +24,4 @@ export {
   getSessionUrlWithTransport,
   parseSessionUrl,
 } from './connection-manager'
+export { encrypt, decrypt, isE2ESupported, clearKeyCache } from './crypto'

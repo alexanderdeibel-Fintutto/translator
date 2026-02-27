@@ -9,7 +9,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +33,8 @@ public class EmbeddedRelayServer extends WebSocketServer {
     private final Map<String, Session> sessions = new HashMap<>();
     private final Map<WebSocket, String> clientSessions = new HashMap<>(); // ws → sessionCode
     private final Map<WebSocket, JSONObject> clientPresence = new HashMap<>(); // ws → presenceData
+    private HealthHttpServer healthServer;
+    private final long startTime = System.currentTimeMillis();
 
     public EmbeddedRelayServer(int port) {
         super(new InetSocketAddress("0.0.0.0", port));
@@ -293,6 +298,20 @@ public class EmbeddedRelayServer extends WebSocketServer {
     @Override
     public void onStart() {
         Log.i(TAG, "Embedded relay server started on port " + getPort());
+        startHealthEndpoint();
+    }
+
+    public void stopAll() {
+        if (healthServer != null) {
+            healthServer.shutdown();
+            healthServer = null;
+        }
+    }
+
+    private void startHealthEndpoint() {
+        int healthPort = getPort() + 1;
+        healthServer = new HealthHttpServer(healthPort);
+        healthServer.start();
     }
 
     /**
@@ -303,13 +322,81 @@ public class EmbeddedRelayServer extends WebSocketServer {
         stats.put("status", "ok");
         stats.put("server", "guidetranslator-relay");
         stats.put("version", "1.0.0-embedded");
+        stats.put("uptime", (System.currentTimeMillis() - startTime) / 1000);
         stats.put("sessions", sessions.size());
 
         int totalClients = 0;
         for (Session s : sessions.values()) {
             totalClients += s.clients.size();
         }
-        stats.put("totalClients", totalClients);
+        stats.put("clients", totalClients);
         return stats;
+    }
+
+    /**
+     * Simple HTTP server on port+1 that responds to any request with health JSON.
+     */
+    private class HealthHttpServer extends Thread {
+        private final int port;
+        private ServerSocket serverSocket;
+        private volatile boolean running = true;
+
+        HealthHttpServer(int port) {
+            super("HealthHttpServer");
+            this.port = port;
+            setDaemon(true);
+        }
+
+        void shutdown() {
+            running = false;
+            try {
+                if (serverSocket != null) serverSocket.close();
+            } catch (Exception ignored) {}
+        }
+
+        @Override
+        public void run() {
+            try {
+                serverSocket = new ServerSocket(port);
+                serverSocket.setReuseAddress(true);
+                Log.i(TAG, "Health endpoint ready on port " + port);
+
+                while (running) {
+                    try {
+                        Socket client = serverSocket.accept();
+                        handleClient(client);
+                    } catch (Exception e) {
+                        if (running) Log.w(TAG, "Health endpoint accept error", e);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Health endpoint failed to start on port " + port, e);
+            }
+        }
+
+        private void handleClient(Socket client) {
+            try {
+                // Read minimal request data (we respond to any request)
+                client.setSoTimeout(2000);
+                byte[] buf = new byte[512];
+                client.getInputStream().read(buf);
+
+                String body = getStats().toString();
+                String response = "HTTP/1.1 200 OK\r\n" +
+                    "Content-Type: application/json\r\n" +
+                    "Content-Length: " + body.length() + "\r\n" +
+                    "Connection: close\r\n" +
+                    "Access-Control-Allow-Origin: *\r\n" +
+                    "\r\n" + body;
+
+                OutputStream out = client.getOutputStream();
+                out.write(response.getBytes("UTF-8"));
+                out.flush();
+            } catch (Exception e) {
+                Log.w(TAG, "Health endpoint response error", e);
+            } finally {
+                try { client.close(); } catch (Exception ignored) {}
+            }
+        }
     }
 }

@@ -8,7 +8,8 @@ import StorageIndicator from '@/components/settings/StorageIndicator'
 import { getLanguagePairStatus } from '@/lib/offline/model-manager'
 import { getCacheStats, clearTranslationCache } from '@/lib/offline/translation-cache'
 import { getTTSCacheStats, clearTTSCache } from '@/lib/offline/tts-cache'
-import { isWhisperAvailable, preloadWhisper } from '@/lib/offline/stt-engine'
+// Dynamic import to avoid mixed static/dynamic import warning (stt.ts imports dynamically)
+const sttEngine = () => import('@/lib/offline/stt-engine')
 import { checkOfflineSupport, isIOSSafariNotStandalone } from '@/lib/offline/storage-manager'
 
 export default function SettingsPage() {
@@ -30,6 +31,7 @@ export default function SettingsPage() {
   }, [])
 
   async function loadData() {
+    const { isWhisperAvailable } = await sttEngine()
     const [pairs, cacheStats, ttsStats, whisper] = await Promise.all([
       getLanguagePairStatus(),
       getCacheStats(),
@@ -61,6 +63,7 @@ export default function SettingsPage() {
     setWhisperDownloading(true)
     setWhisperProgress(0)
     try {
+      const { preloadWhisper } = await sttEngine()
       await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
       setWhisperReady(true)
     } catch (err) {
