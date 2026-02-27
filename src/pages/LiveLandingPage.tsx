@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones, Wifi, Cloud, Smartphone } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
 import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-relay'
+import { useBleScanner } from '@/hooks/useBleDiscovery'
 import type { ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveLandingPage() {
@@ -15,6 +16,18 @@ export default function LiveLandingPage() {
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
 
   const hotspotAvailable = isHotspotSupported()
+
+  // BLE scanning for nearby sessions (listener auto-discovery)
+  const bleScanner = useBleScanner()
+
+  // Auto-start BLE scanning on mount (for native platforms)
+  useEffect(() => {
+    if (bleScanner.isAvailable && !bleScanner.isScanning) {
+      bleScanner.startScan()
+    }
+    return () => bleScanner.stopScan()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bleScanner.isAvailable])
 
   const handleCreate = () => {
     navigate('/live/new', {
@@ -29,6 +42,14 @@ export default function LiveLandingPage() {
 
   const handleJoin = (code: string) => {
     navigate(`/live/${code}`)
+  }
+
+  // Convert RSSI to signal strength indicator (0-3)
+  const rssiToStrength = (rssi: number): number => {
+    if (rssi >= -50) return 3  // Excellent
+    if (rssi >= -70) return 2  // Good
+    if (rssi >= -85) return 1  // Fair
+    return 0                    // Weak
   }
 
   return (
@@ -157,6 +178,56 @@ export default function LiveLandingPage() {
           <p className="text-sm text-muted-foreground">
             Scanne den QR-Code des Speakers oder gib den Session-Code ein.
           </p>
+
+          {/* BLE discovered sessions */}
+          {bleScanner.sessions.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                  Sessions in der Nähe
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                {bleScanner.sessions
+                  .sort((a, b) => b.rssi - a.rssi)
+                  .map((session) => {
+                    const strength = rssiToStrength(session.rssi)
+                    return (
+                      <button
+                        key={session.sessionCode}
+                        onClick={() => handleJoin(session.sessionCode)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 hover:bg-blue-100 dark:hover:bg-blue-950/40 transition-colors text-left"
+                      >
+                        <Signal className={`h-4 w-4 shrink-0 ${
+                          strength >= 2
+                            ? 'text-emerald-500'
+                            : strength >= 1
+                              ? 'text-amber-500'
+                              : 'text-red-400'
+                        }`} />
+                        <div className="flex-1 min-w-0">
+                          <span className="font-mono font-bold text-sm">
+                            {session.sessionCode}
+                          </span>
+                        </div>
+                        <span className="text-xs text-primary font-medium">
+                          Beitreten
+                        </span>
+                      </button>
+                    )
+                  })}
+              </div>
+            </div>
+          )}
+
+          {/* BLE scanning indicator */}
+          {bleScanner.isScanning && bleScanner.sessions.length === 0 && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
+              <Bluetooth className="h-3 w-3 animate-pulse" />
+              <span>Suche nach Sessions in der Nähe...</span>
+            </div>
+          )}
 
           <SessionCodeInput onJoin={handleJoin} />
         </Card>

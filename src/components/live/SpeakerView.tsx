@@ -1,4 +1,4 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download } from 'lucide-react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth } from 'lucide-react'
 import { useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
@@ -8,6 +8,7 @@ import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
+import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -19,6 +20,9 @@ interface SpeakerViewProps {
 export default function SpeakerView({ session }: SpeakerViewProps) {
   const { t } = useI18n()
   const sessionStartRef = useRef(Date.now())
+
+  // BLE advertising: auto-start when session is active (any mode, not just hotspot)
+  const { isAdvertising } = useBleAdvertiser(session.sessionCode || null)
 
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
@@ -66,13 +70,21 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     <div className="space-y-4">
       {/* Connection mode indicator */}
       <div className="flex items-center justify-between px-1">
-        <ConnectionModeIndicator
-          mode={session.connectionMode}
-          isConnected={session.isConnected}
-          isResolving={session.isResolvingConnection}
-          serverUrl={session.connectionServerUrl}
-          isHotspotHost={!!session.hotspotInfo}
-        />
+        <div className="flex items-center gap-3">
+          <ConnectionModeIndicator
+            mode={session.connectionMode}
+            isConnected={session.isConnected}
+            isResolving={session.isResolvingConnection}
+            serverUrl={session.connectionServerUrl}
+            isHotspotHost={!!session.hotspotInfo}
+          />
+          {isAdvertising && (
+            <span className="flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
+              <Bluetooth className="h-3 w-3" />
+              BLE
+            </span>
+          )}
+        </div>
       </div>
 
       {/* iOS manual hotspot instruction */}
