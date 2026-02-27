@@ -47,5 +47,20 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Die App nutzt das lokale Netzwerk um Live-Übersetzungen an verbundene Geräte zu senden.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_guidetranslator._tcp</string>
+	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Die App nutzt Bluetooth um aktive Übersetzungs-Sessions in der Nähe zu finden.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Die App nutzt Bluetooth um die Übersetzungs-Session für Listener sichtbar zu machen.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+	</array>
 </dict>
 </plist>

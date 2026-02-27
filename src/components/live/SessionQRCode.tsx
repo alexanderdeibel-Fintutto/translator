@@ -3,15 +3,18 @@ import { QRCodeSVG } from 'qrcode.react'
 import { Copy, Check, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { getSessionUrl } from '@/lib/session'
 
 interface SessionQRCodeProps {
   code: string
+  /** Full session URL (includes ?ws= param for local mode) */
+  sessionUrl?: string
 }
 
-export default function SessionQRCode({ code }: SessionQRCodeProps) {
+export default function SessionQRCode({ code, sessionUrl }: SessionQRCodeProps) {
   const [copied, setCopied] = useState(false)
-  const url = getSessionUrl(code)
+
+  // Use provided URL or build default
+  const url = sessionUrl || `${window.location.origin}/live/${code}`
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url)

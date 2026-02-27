@@ -1,94 +1,31 @@
-import { useState, useCallback, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
-import { getChannelName } from '@/lib/session'
-import type { RealtimeChannel } from '@supabase/supabase-js'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import type { BroadcastTransport, BroadcastHandlers } from '@/lib/transport/types'
+import { SupabaseBroadcastTransport } from '@/lib/transport/supabase-transport'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
 
 type TranslationHandler = (chunk: TranslationChunk) => void
 type SessionInfoHandler = (info: SessionInfo) => void
 type StatusHandler = (status: StatusMessage) => void
 
-const MAX_RETRIES = 5
-const BASE_DELAY = 2000
-
-export function useBroadcast() {
+export function useBroadcast(externalTransport?: BroadcastTransport) {
   const [isConnected, setIsConnected] = useState(false)
-  const channelRef = useRef<RealtimeChannel | null>(null)
-  const retriesRef = useRef(0)
-  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const subscribeArgsRef = useRef<{
-    code: string
-    onTranslation?: TranslationHandler
-    onSessionInfo?: SessionInfoHandler
-    onStatus?: StatusHandler
-  } | null>(null)
+  const transportRef = useRef<BroadcastTransport | null>(null)
+  const cleanupRef = useRef<(() => void) | null>(null)
 
-  const clearRetryTimer = () => {
-    if (retryTimerRef.current) {
-      clearTimeout(retryTimerRef.current)
-      retryTimerRef.current = null
+  // Use external transport or create default Supabase transport
+  const getTransport = useCallback((): BroadcastTransport => {
+    if (externalTransport) return externalTransport
+    if (!transportRef.current) {
+      transportRef.current = new SupabaseBroadcastTransport()
     }
-  }
+    return transportRef.current
+  }, [externalTransport])
 
-  const doSubscribe = useCallback((
-    code: string,
-    onTranslation?: TranslationHandler,
-    onSessionInfo?: SessionInfoHandler,
-    onStatus?: StatusHandler,
-  ) => {
-    // Clean up existing channel
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current)
-      channelRef.current = null
+  // Clean up connection listener on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.()
     }
-
-    const channel = supabase.channel(getChannelName(code))
-
-    if (onTranslation) {
-      channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
-        onTranslation(payload as TranslationChunk)
-      })
-    }
-
-    if (onSessionInfo) {
-      channel.on('broadcast', { event: 'session_info' }, ({ payload }) => {
-        onSessionInfo(payload as SessionInfo)
-      })
-    }
-
-    if (onStatus) {
-      channel.on('broadcast', { event: 'status' }, ({ payload }) => {
-        onStatus(payload as StatusMessage)
-      })
-    }
-
-    channel.subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        setIsConnected(true)
-        retriesRef.current = 0
-      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-        setIsConnected(false)
-        // Auto-reconnect with exponential backoff
-        if (retriesRef.current < MAX_RETRIES && subscribeArgsRef.current) {
-          const delay = BASE_DELAY * Math.pow(2, retriesRef.current)
-          retriesRef.current++
-          console.warn(`[Broadcast] Connection lost, retrying in ${delay}ms (attempt ${retriesRef.current}/${MAX_RETRIES})`)
-          clearRetryTimer()
-          retryTimerRef.current = setTimeout(() => {
-            const args = subscribeArgsRef.current
-            if (args) {
-              doSubscribe(args.code, args.onTranslation, args.onSessionInfo, args.onStatus)
-            }
-          }, delay)
-        } else {
-          console.error('[Broadcast] Max reconnection attempts reached')
-        }
-      } else if (status === 'CLOSED') {
-        setIsConnected(false)
-      }
-    })
-
-    channelRef.current = channel
   }, [])
 
   const subscribe = useCallback((
@@ -97,37 +34,49 @@ export function useBroadcast() {
     onSessionInfo?: SessionInfoHandler,
     onStatus?: StatusHandler,
   ) => {
-    // Store args for reconnection
-    subscribeArgsRef.current = { code, onTranslation, onSessionInfo, onStatus }
-    retriesRef.current = 0
-    clearRetryTimer()
-    doSubscribe(code, onTranslation, onSessionInfo, onStatus)
-  }, [doSubscribe])
+    // Clean up previous
+    cleanupRef.current?.()
+
+    const transport = getTransport()
+
+    // Listen for connection changes
+    cleanupRef.current = transport.onConnectionChange((connected) => {
+      setIsConnected(connected)
+    })
+
+    const handlers: BroadcastHandlers = {
+      onTranslation,
+      onSessionInfo,
+      onStatus,
+    }
+
+    transport.subscribe(code, handlers)
+  }, [getTransport])
 
   const broadcast = useCallback((event: string, payload: Record<string, unknown>) => {
-    if (!channelRef.current) return
-    channelRef.current.send({
-      type: 'broadcast',
-      event,
-      payload,
-    })
-  }, [])
+    const transport = externalTransport || transportRef.current
+    transport?.broadcast(event, payload)
+  }, [externalTransport])
 
   const unsubscribe = useCallback(() => {
-    clearRetryTimer()
-    subscribeArgsRef.current = null
-    retriesRef.current = 0
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current)
-      channelRef.current = null
+    cleanupRef.current?.()
+    cleanupRef.current = null
+
+    const transport = externalTransport || transportRef.current
+    transport?.unsubscribe()
+
+    if (!externalTransport) {
+      transportRef.current = null
     }
     setIsConnected(false)
-  }, [])
+  }, [externalTransport])
 
   return {
     isConnected,
     subscribe,
     broadcast,
     unsubscribe,
+    /** The active transport type ('supabase' or 'local-ws') */
+    transportType: (externalTransport || transportRef.current)?.type ?? 'supabase',
   }
 }
