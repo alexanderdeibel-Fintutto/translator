@@ -1,29 +1,64 @@
-import { useEffect, useState } from 'react'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
+import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveSession } from '@/hooks/useLiveSession'
 import SpeakerView from '@/components/live/SpeakerView'
 import ListenerView from '@/components/live/ListenerView'
 import LanguageChips from '@/components/live/LanguageChips'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Wifi, Cloud } from 'lucide-react'
+import type { ConnectionConfig } from '@/lib/transport/types'
 
 export default function LiveSessionPage() {
   const { code } = useParams<{ code: string }>()
+  const [searchParams] = useSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
   const session = useLiveSession()
   const [listenerLang, setListenerLang] = useState('en')
 
-  const state = location.state as { role?: string; sourceLang?: string } | null
+  const state = location.state as {
+    role?: string
+    sourceLang?: string
+    connectionMode?: 'cloud' | 'local'
+    localServerUrl?: string
+  } | null
+
+  // Detect local mode from URL query parameter (?ws=...)
+  const wsParam = searchParams.get('ws')
+
+  // Build connection config from state or URL params
+  const connectionConfig = useMemo((): ConnectionConfig | undefined => {
+    // Speaker: use state from navigation
+    if (state?.connectionMode === 'local' && state?.localServerUrl) {
+      return { mode: 'local', localServerUrl: state.localServerUrl }
+    }
+    // Listener: detect from URL ?ws= parameter
+    if (wsParam) {
+      return { mode: 'local', localServerUrl: wsParam }
+    }
+    // Default: cloud
+    if (state?.connectionMode === 'cloud') {
+      return { mode: 'cloud' }
+    }
+    return undefined
+  }, [state, wsParam])
 
   // Speaker: create session
   useEffect(() => {
     if (code === 'new' && state?.role === 'speaker' && !session.role) {
-      const newCode = session.createSession(state.sourceLang || 'de')
-      // Replace URL with actual code
-      navigate(`/live/${newCode}`, { replace: true, state: { role: 'speaker' } })
+      const doCreate = async () => {
+        const newCode = await session.createSession(
+          state.sourceLang || 'de',
+          connectionConfig,
+        )
+        if (newCode) {
+          navigate(`/live/${newCode}`, { replace: true, state: { role: 'speaker' } })
+        }
+      }
+      doCreate()
     }
-  }, [code, state, session, navigate])
+  }, [code, state, session, navigate, connectionConfig])
 
   // Already in a session — show the right view
   if (session.role === 'speaker') {
@@ -37,7 +72,7 @@ export default function LiveSessionPage() {
   // Not yet joined — show language selection for listener
   if (code && code !== 'new') {
     const handleJoin = () => {
-      session.joinSession(code, listenerLang)
+      session.joinSession(code, listenerLang, connectionConfig)
     }
 
     return (
@@ -46,6 +81,19 @@ export default function LiveSessionPage() {
           <p className="text-sm text-muted-foreground">Session beitreten</p>
           <p className="text-2xl font-mono font-bold tracking-widest">{code}</p>
         </div>
+
+        {/* Show connection mode badge */}
+        {wsParam ? (
+          <div className="flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
+            <Wifi className="h-3.5 w-3.5" />
+            <span>Lokales Netzwerk (Offline-Modus)</span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <Cloud className="h-3.5 w-3.5" />
+            <span>Cloud-Verbindung</span>
+          </div>
+        )}
 
         <Card className="p-6 space-y-4">
           <p className="font-medium">In welcher Sprache möchtest du hören?</p>

@@ -1,17 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
+import type { ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveLandingPage() {
   const navigate = useNavigate()
   const [sourceLang, setSourceLang] = useState('de')
+  const [connectionMode, setConnectionMode] = useState<ConnectionMode>('cloud')
+  const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
 
   const handleCreate = () => {
-    navigate('/live/new', { state: { role: 'speaker', sourceLang } })
+    navigate('/live/new', {
+      state: {
+        role: 'speaker',
+        sourceLang,
+        connectionMode,
+        localServerUrl: connectionMode === 'local' ? localServerUrl : undefined,
+      },
+    })
   }
 
   const handleJoin = (code: string) => {
@@ -45,6 +55,53 @@ export default function LiveLandingPage() {
           </p>
 
           <LanguageSelector value={sourceLang} onChange={setSourceLang} label="Ich spreche" />
+
+          {/* Connection mode selection */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Verbindung</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConnectionMode('cloud')}
+                className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                  connectionMode === 'cloud'
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border text-muted-foreground hover:bg-accent'
+                }`}
+              >
+                <Cloud className="h-4 w-4" />
+                Cloud
+              </button>
+              <button
+                onClick={() => setConnectionMode('local')}
+                className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                  connectionMode === 'local'
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border text-muted-foreground hover:bg-accent'
+                }`}
+              >
+                <Wifi className="h-4 w-4" />
+                Lokal (Offline)
+              </button>
+            </div>
+
+            {connectionMode === 'local' && (
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">
+                  Relay-Server Adresse
+                </label>
+                <input
+                  type="text"
+                  value={localServerUrl}
+                  onChange={(e) => setLocalServerUrl(e.target.value)}
+                  className="w-full px-3 py-1.5 rounded-md border bg-background text-sm font-mono"
+                  placeholder="ws://192.168.8.1:8765"
+                />
+                <p className="text-[10px] text-muted-foreground/60">
+                  Adresse des Relay-Servers auf dem portablen WiFi-Router
+                </p>
+              </div>
+            )}
+          </div>
 
           <Button onClick={handleCreate} className="w-full">
             Session starten

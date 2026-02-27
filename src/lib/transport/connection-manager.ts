@@ -1,0 +1,186 @@
+// Connection manager — detects available transports and manages switching
+// Priority: local WebSocket (if configured/available) > Supabase (if online)
+
+import { getNetworkStatus } from '@/lib/offline/network-status'
+import { SupabaseBroadcastTransport, SupabasePresenceTransport } from './supabase-transport'
+import { LocalBroadcastTransport, LocalPresenceTransport, releaseConnection } from './local-ws-transport'
+import type { BroadcastTransport, PresenceTransport, ConnectionMode, ConnectionConfig } from './types'
+
+// Default relay server port (matches relay-server/server.js)
+const DEFAULT_LOCAL_PORT = 8765
+
+// Common router gateway IPs to probe
+const COMMON_ROUTER_IPS = [
+  '192.168.8.1',   // GL.iNet default
+  '192.168.1.1',   // Most common router IP
+  '192.168.0.1',   // Alternative common
+  '10.0.0.1',      // Some hotspots
+  '172.20.10.1',   // iOS Personal Hotspot
+  '192.168.43.1',  // Android Hotspot
+]
+
+export interface TransportPair {
+  broadcast: BroadcastTransport
+  presence: PresenceTransport
+  mode: 'cloud' | 'local'
+  serverUrl?: string
+}
+
+/**
+ * Probe a local WebSocket server to check if it's running.
+ * Uses HTTP health endpoint for quick check.
+ */
+export async function probeLocalServer(url: string, timeoutMs = 2000): Promise<boolean> {
+  try {
+    // Convert ws:// to http:// for health check
+    const httpUrl = url.replace(/^ws(s)?:\/\//, 'http$1://').replace(/\/$/, '')
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+    const response = await fetch(`${httpUrl}/health`, {
+      signal: controller.signal,
+      mode: 'cors',
+    })
+    clearTimeout(timeout)
+    return response.ok
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Auto-discover a local relay server on the network.
+ * Probes common router IPs in parallel.
+ */
+export async function discoverLocalServer(port = DEFAULT_LOCAL_PORT): Promise<string | null> {
+  const probes = COMMON_ROUTER_IPS.map(async (ip) => {
+    const url = `ws://${ip}:${port}`
+    const found = await probeLocalServer(url, 1500)
+    return found ? url : null
+  })
+
+  const results = await Promise.all(probes)
+  return results.find(url => url !== null) ?? null
+}
+
+/**
+ * Create the appropriate transport pair based on configuration.
+ */
+export function createTransports(config: ConnectionConfig): TransportPair {
+  if (config.mode === 'local' && config.localServerUrl) {
+    return {
+      broadcast: new LocalBroadcastTransport(config.localServerUrl),
+      presence: new LocalPresenceTransport(config.localServerUrl),
+      mode: 'local',
+      serverUrl: config.localServerUrl,
+    }
+  }
+
+  // Default: Supabase cloud
+  return {
+    broadcast: new SupabaseBroadcastTransport(),
+    presence: new SupabasePresenceTransport(),
+    mode: 'cloud',
+  }
+}
+
+/**
+ * Auto-select the best transport:
+ * 1. If localServerUrl is provided, use it
+ * 2. If offline, try to discover local server
+ * 3. If online, use Supabase
+ */
+export async function autoSelectTransport(
+  config: ConnectionConfig
+): Promise<TransportPair> {
+  const network = getNetworkStatus()
+
+  // Explicit local mode
+  if (config.mode === 'local') {
+    let serverUrl = config.localServerUrl
+
+    if (!serverUrl) {
+      // Try to discover
+      serverUrl = await discoverLocalServer() ?? undefined
+    }
+
+    if (serverUrl) {
+      const reachable = await probeLocalServer(serverUrl)
+      if (reachable) {
+        return createTransports({ mode: 'local', localServerUrl: serverUrl })
+      }
+    }
+
+    // Local requested but not available — still try, will reconnect
+    if (serverUrl) {
+      return createTransports({ mode: 'local', localServerUrl: serverUrl })
+    }
+  }
+
+  // Auto mode
+  if (config.mode === 'auto') {
+    // If offline, try local discovery
+    if (network.isOffline) {
+      const serverUrl = config.localServerUrl || await discoverLocalServer()
+      if (serverUrl) {
+        return createTransports({ mode: 'local', localServerUrl: serverUrl })
+      }
+    }
+
+    // If local server URL is configured, check if reachable
+    if (config.localServerUrl) {
+      const reachable = await probeLocalServer(config.localServerUrl)
+      if (reachable) {
+        return createTransports({ mode: 'local', localServerUrl: config.localServerUrl })
+      }
+    }
+  }
+
+  // Default: cloud
+  return createTransports({ mode: 'cloud' })
+}
+
+/**
+ * Clean up all local connections.
+ */
+export function cleanupLocalConnections(serverUrl?: string): void {
+  if (serverUrl) {
+    releaseConnection(serverUrl)
+  }
+}
+
+/**
+ * Build the session URL for QR code.
+ * For local mode, includes the WebSocket server URL as a parameter.
+ */
+export function getSessionUrlWithTransport(
+  code: string,
+  transport: TransportPair
+): string {
+  const base = typeof window !== 'undefined'
+    ? window.location.origin
+    : 'https://translator.fintutto.cloud'
+
+  const url = new URL(`${base}/live/${code}`)
+
+  if (transport.mode === 'local' && transport.serverUrl) {
+    url.searchParams.set('ws', transport.serverUrl)
+  }
+
+  return url.toString()
+}
+
+/**
+ * Parse a session URL to extract transport config.
+ */
+export function parseSessionUrl(url: string): { code: string; localServerUrl?: string } {
+  try {
+    const parsed = new URL(url)
+    const pathMatch = parsed.pathname.match(/\/live\/([A-Z0-9-]+)/i)
+    const code = pathMatch?.[1] ?? ''
+    const ws = parsed.searchParams.get('ws') ?? undefined
+    return { code, localServerUrl: ws }
+  } catch {
+    return { code: '' }
+  }
+}

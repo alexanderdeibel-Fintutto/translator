@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
+import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import type { useLiveSession } from '@/hooks/useLiveSession'
@@ -32,6 +33,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     protocol += `Dauer: ${durationMin} Minuten\n`
     protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
     protocol += `Zuhörer: ${session.listenerCount}\n`
+    protocol += `Verbindung: ${session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
     protocol += `\n----------------------------------------\n`
     protocol += `ÜBERSETZUNGEN\n`
     protocol += `----------------------------------------\n\n`
@@ -55,12 +57,22 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.txt`
     a.click()
     URL.revokeObjectURL(url)
-  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount])
+  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, session.connectionMode])
 
   return (
     <div className="space-y-4">
+      {/* Connection mode indicator */}
+      <div className="flex items-center justify-between px-1">
+        <ConnectionModeIndicator
+          mode={session.connectionMode}
+          isConnected={session.isConnected}
+          isResolving={session.isResolvingConnection}
+          serverUrl={session.connectionServerUrl}
+        />
+      </div>
+
       {/* Connection status bar */}
-      {!session.isConnected && (
+      {!session.isConnected && !session.isResolvingConnection && (
         <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm">
           <WifiOff className="h-4 w-4 shrink-0" />
           <span>{t('live.disconnected')}</span>
@@ -71,7 +83,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left: QR + Controls */}
         <div className="space-y-4">
-          <SessionQRCode code={session.sessionCode} />
+          <SessionQRCode code={session.sessionCode} sessionUrl={session.sessionUrl} />
 
           <div className="flex gap-2">
             {session.isRecording ? (

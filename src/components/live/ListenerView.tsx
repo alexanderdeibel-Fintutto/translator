@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageChips from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
+import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
@@ -29,8 +30,18 @@ export default function ListenerView({ session }: ListenerViewProps) {
 
   return (
     <div className="space-y-4">
+      {/* Connection mode indicator */}
+      <div className="px-1">
+        <ConnectionModeIndicator
+          mode={session.connectionMode}
+          isConnected={session.isConnected}
+          isResolving={session.isResolvingConnection}
+          serverUrl={session.connectionServerUrl}
+        />
+      </div>
+
       {/* Connection status bar */}
-      {!session.isConnected && (
+      {!session.isConnected && !session.isResolvingConnection && (
         <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm">
           <WifiOff className="h-4 w-4 shrink-0" />
           <span>Verbindung unterbrochen — Versuche erneut zu verbinden...</span>
