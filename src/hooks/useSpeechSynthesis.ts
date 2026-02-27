@@ -67,7 +67,10 @@ export function useSpeechSynthesis() {
         return
       }
 
-      window.speechSynthesis.cancel()
+      // Only cancel if something is actually playing (avoids interfering with queued speech)
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel()
+      }
       setTtsEngine('browser')
 
       if (isFallback) {
@@ -113,6 +116,12 @@ export function useSpeechSynthesis() {
 
   const speak = useCallback((text: string, lang: string) => {
     if (!text.trim()) return
+
+    // Limit queue to 3 items to avoid audio backlog in rapid sentence mode
+    // Drop oldest pending items (keep currently playing + newest)
+    if (queueRef.current.length >= 3) {
+      queueRef.current = queueRef.current.slice(-2)
+    }
 
     // Add to queue
     queueRef.current.push({ text, lang })

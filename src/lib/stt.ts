@@ -291,34 +291,42 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   async function recognizeChunks(chunks: Float32Array[], lang: string): Promise<string> {
     if (chunks.length === 0) return ''
 
-    const response = await fetch(`${STT_API_URL}?key=${STT_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        config: {
-          encoding: 'LINEAR16',
-          sampleRateHertz: actualSampleRate,
-          languageCode: mapSTTLanguageCode(lang),
-          enableAutomaticPunctuation: true,
-        },
-        audio: { content: pcmToBase64Linear16(chunks) },
-      }),
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000) // 8s timeout
 
-    if (!response.ok) {
-      throw new Error(`Google STT ${response.status}`)
-    }
+    try {
+      const response = await fetch(`${STT_API_URL}?key=${STT_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          config: {
+            encoding: 'LINEAR16',
+            sampleRateHertz: actualSampleRate,
+            languageCode: mapSTTLanguageCode(lang),
+            enableAutomaticPunctuation: true,
+          },
+          audio: { content: pcmToBase64Linear16(chunks) },
+        }),
+        signal: controller.signal,
+      })
 
-    const data = await response.json()
-    if (data.results && data.results.length > 0) {
-      return data.results
-        .map((r: { alternatives?: { transcript?: string }[] }) =>
-          r.alternatives?.[0]?.transcript || ''
-        )
-        .join(' ')
-        .trim()
+      if (!response.ok) {
+        throw new Error(`Google STT ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (data.results && data.results.length > 0) {
+        return data.results
+          .map((r: { alternatives?: { transcript?: string }[] }) =>
+            r.alternatives?.[0]?.transcript || ''
+          )
+          .join(' ')
+          .trim()
+      }
+      return ''
+    } finally {
+      clearTimeout(timeout)
     }
-    return ''
   }
 
   return {
@@ -348,9 +356,16 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       const source = audioContext.createMediaStreamSource(stream)
       processor = audioContext.createScriptProcessor(4096, 1, 1)
 
+      // Hard limit: keep max ~30 seconds of audio to prevent memory issues
+      const maxBufferChunks = Math.ceil((30 * actualSampleRate) / 4096)
+
       processor.onaudioprocess = (e) => {
         if (!isActive) return
         audioChunks.push(new Float32Array(e.inputBuffer.getChannelData(0)))
+        // Enforce hard memory limit — discard oldest chunks beyond 30s
+        if (audioChunks.length > maxBufferChunks) {
+          audioChunks.splice(0, audioChunks.length - maxBufferChunks)
+        }
       }
 
       source.connect(processor)
@@ -361,7 +376,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
 
       sendInterval = setInterval(async () => {
         if (!isActive || audioChunks.length === 0) return
-        const snapshot = [...audioChunks]
+        // Cap audio sent per request to ~15 seconds max to limit payload size
+        const maxSendChunks = Math.ceil((15 * actualSampleRate) / 4096)
+        const sendFrom = Math.max(0, audioChunks.length - maxSendChunks)
+        const snapshot = audioChunks.slice(sendFrom)
         try {
           const fullText = await recognizeChunks(snapshot, activeLang)
           if (!fullText || !onResultCallback) return
