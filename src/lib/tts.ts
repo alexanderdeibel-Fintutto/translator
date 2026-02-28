@@ -3,8 +3,7 @@
 // Audio responses are cached in IndexedDB for offline playback
 
 import { getCachedTTSAudio, cacheTTSAudio } from './offline/tts-cache'
-
-const API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+import { getGoogleApiKey } from './api-key'
 const API_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 const API_URL_BETA = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'
 
@@ -94,7 +93,7 @@ const CHIRP_VOICE_MAP: Record<string, { languageCode: string; name: string }> = 
 }
 
 export function isCloudTTSAvailable(): boolean {
-  return !!API_KEY
+  return !!getGoogleApiKey()
 }
 
 function getVoiceConfig(speechCode: string, quality: VoiceQuality = 'neural2') {
@@ -138,7 +137,7 @@ export async function speakWithCloudTTS(
     // Cache read failed — continue to API
   }
 
-  if (!API_KEY) {
+  if (!getGoogleApiKey()) {
     throw new Error('Google Cloud TTS API key not configured')
   }
 
@@ -158,7 +157,7 @@ export async function speakWithCloudTTS(
     },
   }
 
-  const response = await fetch(`${apiUrl}?key=${API_KEY}`, {
+  const response = await fetch(`${apiUrl}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

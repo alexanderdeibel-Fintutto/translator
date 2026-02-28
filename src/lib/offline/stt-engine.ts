@@ -1,6 +1,7 @@
 // Offline Speech-to-Text engine using Whisper via Transformers.js
 // Works fully offline once the model is downloaded (~40MB)
 // Non-streaming: records audio, then transcribes in one pass
+// Uses AudioWorklet (modern) with ScriptProcessorNode fallback (legacy)
 
 import type { STTEngine, STTResult } from '../stt'
 import { isModelDownloaded, recordModelDownload } from './model-manager'
@@ -23,7 +24,6 @@ async function getWhisperPipeline(onProgress?: (pct: number) => void) {
           onProgress(data.progress)
         }
         if (data.status === 'done') {
-          // Note: data.loaded may be 0 or undefined when loaded from cache
           recordModelDownload(WHISPER_MODEL, 'stt', data.loaded || 0).catch(() => {})
         }
       },
@@ -49,16 +49,27 @@ export async function preloadWhisper(onProgress?: (pct: number) => void): Promis
 }
 
 /**
+ * Check if AudioWorklet is available (modern browsers).
+ */
+function supportsAudioWorklet(): boolean {
+  return typeof AudioContext !== 'undefined' &&
+    typeof AudioWorkletNode !== 'undefined'
+}
+
+/**
  * Create an offline STT engine using Whisper.
  * Records audio from the microphone, then transcribes on stop.
+ * Uses AudioWorklet when available, falls back to ScriptProcessorNode.
  */
 export function createWhisperSTTEngine(): STTEngine {
   let stream: MediaStream | null = null
   let audioContext: AudioContext | null = null
-  let recorder: ScriptProcessorNode | null = null
+  let workletNode: AudioWorkletNode | null = null
+  let legacyRecorder: ScriptProcessorNode | null = null
   let audioChunks: Float32Array[] = []
   let onResultCallback: ((result: STTResult) => void) | null = null
   let isActive = false
+  let transcribeInterval: ReturnType<typeof setInterval> | null = null
 
   return {
     provider: 'whisper' as STTEngine['provider'],
@@ -91,24 +102,46 @@ export function createWhisperSTTEngine(): STTEngine {
       // Set up audio recording
       audioContext = new AudioContext({ sampleRate: 16000 })
       const source = audioContext.createMediaStreamSource(stream)
-      recorder = audioContext.createScriptProcessor(4096, 1, 1)
       audioChunks = []
+      isActive = true
 
-      recorder.onaudioprocess = (e) => {
-        if (!isActive) return
-        const data = e.inputBuffer.getChannelData(0)
-        audioChunks.push(new Float32Array(data))
+      // Try AudioWorklet (modern), fall back to ScriptProcessorNode
+      if (supportsAudioWorklet()) {
+        try {
+          await audioContext.audioWorklet.addModule('/audio-capture-worklet.js')
+          workletNode = new AudioWorkletNode(audioContext, 'audio-capture-processor')
+          workletNode.port.onmessage = (e) => {
+            if (isActive && e.data instanceof Float32Array) {
+              audioChunks.push(new Float32Array(e.data))
+            }
+          }
+          source.connect(workletNode)
+          workletNode.connect(audioContext.destination)
+        } catch {
+          // AudioWorklet failed (e.g. insecure context), fall back
+          console.warn('[STT] AudioWorklet failed, falling back to ScriptProcessorNode')
+          setupLegacyRecorder(source)
+        }
+      } else {
+        setupLegacyRecorder(source)
       }
 
-      source.connect(recorder)
-      recorder.connect(audioContext.destination)
-      isActive = true
+      function setupLegacyRecorder(src: MediaStreamAudioSourceNode) {
+        legacyRecorder = audioContext!.createScriptProcessor(4096, 1, 1)
+        legacyRecorder.onaudioprocess = (e) => {
+          if (!isActive) return
+          const data = e.inputBuffer.getChannelData(0)
+          audioChunks.push(new Float32Array(data))
+        }
+        src.connect(legacyRecorder)
+        legacyRecorder.connect(audioContext!.destination)
+      }
 
       // Show interim "listening" result
       onResult({ text: '...', isFinal: false })
 
       // Auto-transcribe every 5 seconds for interim results
-      const transcribeInterval = setInterval(async () => {
+      transcribeInterval = setInterval(async () => {
         if (!isActive || audioChunks.length === 0) return
         try {
           const audio = mergeAudioChunks(audioChunks)
@@ -121,18 +154,15 @@ export function createWhisperSTTEngine(): STTEngine {
           // Transcription failed — silently continue recording
         }
       }, 5000)
-
-      // Store interval for cleanup
-      ;(recorder as unknown as Record<string, unknown>)._transcribeInterval = transcribeInterval
     },
 
     stop() {
       isActive = false
 
       // Clear interval
-      if (recorder) {
-        const interval = (recorder as unknown as Record<string, unknown>)._transcribeInterval as ReturnType<typeof setInterval>
-        if (interval) clearInterval(interval)
+      if (transcribeInterval) {
+        clearInterval(transcribeInterval)
+        transcribeInterval = null
       }
 
       // Final transcription
@@ -149,11 +179,19 @@ export function createWhisperSTTEngine(): STTEngine {
         }).catch(() => {})
       }
 
-      // Cleanup
-      if (recorder) {
-        recorder.disconnect()
-        recorder = null
+      // Cleanup AudioWorklet
+      if (workletNode) {
+        workletNode.port.postMessage('stop')
+        workletNode.disconnect()
+        workletNode = null
       }
+
+      // Cleanup legacy ScriptProcessorNode
+      if (legacyRecorder) {
+        legacyRecorder.disconnect()
+        legacyRecorder = null
+      }
+
       if (audioContext) {
         audioContext.close().catch(() => {})
         audioContext = null

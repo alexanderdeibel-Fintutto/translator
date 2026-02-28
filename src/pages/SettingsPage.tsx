@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Download, Trash2, Wifi, WifiOff, Mic, Loader2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
@@ -8,10 +8,14 @@ import StorageIndicator from '@/components/settings/StorageIndicator'
 import { getLanguagePairStatus } from '@/lib/offline/model-manager'
 import { getCacheStats, clearTranslationCache } from '@/lib/offline/translation-cache'
 import { getTTSCacheStats, clearTTSCache } from '@/lib/offline/tts-cache'
-import { isWhisperAvailable, preloadWhisper } from '@/lib/offline/stt-engine'
+// Dynamic import to avoid mixed static/dynamic import warning (stt.ts imports dynamically)
+const sttEngine = () => import('@/lib/offline/stt-engine')
 import { checkOfflineSupport, isIOSSafariNotStandalone } from '@/lib/offline/storage-manager'
+import { getGoogleApiKey, setGoogleApiKey, hasGoogleApiKey } from '@/lib/api-key'
+import { useI18n } from '@/context/I18nContext'
 
 export default function SettingsPage() {
+  const { t } = useI18n()
   const { networkMode, isPersistent, storageUsed, storagePercent, requestPersistence, refreshModels } = useOffline()
 
   const [languagePairs, setLanguagePairs] = useState<Awaited<ReturnType<typeof getLanguagePairStatus>>>([])
@@ -22,14 +26,20 @@ export default function SettingsPage() {
   const [whisperProgress, setWhisperProgress] = useState(0)
   const [offlineSupport, setOfflineSupport] = useState<ReturnType<typeof checkOfflineSupport> | null>(null)
   const [showSafariHint, setShowSafariHint] = useState(false)
+  const [apiKey, setApiKey] = useState('')
+  const [showApiKey, setShowApiKey] = useState(false)
+  const [apiKeySaved, setApiKeySaved] = useState(false)
+  const apiKeyInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadData()
     setOfflineSupport(checkOfflineSupport())
     setShowSafariHint(isIOSSafariNotStandalone())
+    setApiKey(getGoogleApiKey())
   }, [])
 
   async function loadData() {
+    const { isWhisperAvailable } = await sttEngine()
     const [pairs, cacheStats, ttsStats, whisper] = await Promise.all([
       getLanguagePairStatus(),
       getCacheStats(),
@@ -57,10 +67,17 @@ export default function SettingsPage() {
     await loadData()
   }
 
+  const handleSaveApiKey = () => {
+    setGoogleApiKey(apiKey)
+    setApiKeySaved(true)
+    setTimeout(() => setApiKeySaved(false), 2000)
+  }
+
   const handleDownloadWhisper = async () => {
     setWhisperDownloading(true)
     setWhisperProgress(0)
     try {
+      const { preloadWhisper } = await sttEngine()
       await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
       setWhisperReady(true)
     } catch (err) {
@@ -81,8 +98,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold">Einstellungen</h1>
-        <p className="text-muted-foreground text-sm mt-1">Offline-Modus, Sprachpakete und Speicher verwalten</p>
+        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('settings.subtitle')}</p>
       </div>
 
       {/* Safari Homescreen Hint */}
@@ -104,7 +121,7 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             {networkMode === 'offline' ? <WifiOff className="h-4 w-4 text-destructive" /> : <Wifi className="h-4 w-4 text-emerald-600" />}
-            Netzwerk
+            {t('settings.network')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -115,9 +132,9 @@ export default function SettingsPage() {
               'bg-destructive'
             }`} />
             <span className="text-sm">
-              {networkMode === 'online' ? 'Online — Cloud-Übersetzung aktiv' :
-               networkMode === 'degraded' ? 'Instabile Verbindung — Offline-Modus bereit' :
-               'Offline — Nur heruntergeladene Sprachen verfügbar'}
+              {networkMode === 'online' ? t('settings.networkOnline') :
+               networkMode === 'degraded' ? t('settings.networkDegraded') :
+               t('settings.networkOffline')}
             </span>
           </div>
           {offlineSupport && (
@@ -141,7 +158,7 @@ export default function SettingsPage() {
       {/* Storage */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Speicher</CardTitle>
+          <CardTitle className="text-base">{t('settings.storage')}</CardTitle>
         </CardHeader>
         <CardContent>
           <StorageIndicator
@@ -153,17 +170,61 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* API Key */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Key className="h-4 w-4" />
+            Google Cloud API-Key
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            {t('settings.apiKeyDesc')}
+          </p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                ref={apiKeyInputRef}
+                type={showApiKey ? 'text' : 'password'}
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                placeholder="AIza..."
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm pr-10 font-mono"
+              />
+              <button
+                type="button"
+                onClick={() => setShowApiKey(!showApiKey)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            <Button size="sm" onClick={handleSaveApiKey} className="gap-1.5 shrink-0">
+              {apiKeySaved ? <Check className="h-3.5 w-3.5" /> : <Key className="h-3.5 w-3.5" />}
+              {apiKeySaved ? t('settings.apiKeySaved') : t('settings.apiKeySave')}
+            </Button>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className={`h-2 w-2 rounded-full ${hasGoogleApiKey() ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`} />
+            <span className="text-muted-foreground">
+              {hasGoogleApiKey() ? t('settings.apiKeyActive') : t('settings.apiKeyInactive')}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Offline Translation Models */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Offline-Sprachen
+            {t('settings.offlineLangs')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Lade Sprachpakete herunter, um auch ohne Internet übersetzen zu können (~35 MB pro Paar).
+            {t('settings.offlineLangsDesc')}
           </p>
           {Object.entries(groupedPairs).map(([group, pairs]) => (
             <div key={group}>
@@ -191,18 +252,17 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Mic className="h-4 w-4" />
-            Offline-Spracheingabe (Whisper)
+            {t('settings.whisper')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-3">
-            Whisper ermöglicht Spracherkennung ohne Internet (~40 MB).
-            Funktioniert in allen Browsern.
+            {t('settings.whisperDesc')}
           </p>
           {whisperReady ? (
             <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Whisper-Modell bereit
+              {t('settings.whisperReady')}
             </div>
           ) : whisperDownloading ? (
             <div className="flex items-center gap-3">
@@ -220,7 +280,7 @@ export default function SettingsPage() {
           ) : (
             <Button variant="outline" size="sm" onClick={handleDownloadWhisper} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />
-              Whisper herunterladen (~40 MB)
+              {t('settings.whisperDownload')}
             </Button>
           )}
         </CardContent>
@@ -231,14 +291,14 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Trash2 className="h-4 w-4" />
-            Cache verwalten
+            {t('settings.cache')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm">Übersetzungs-Cache</div>
-              <div className="text-xs text-muted-foreground">{translationCacheCount} Einträge (30 Tage)</div>
+              <div className="text-sm">{t('settings.translationCache')}</div>
+              <div className="text-xs text-muted-foreground">{translationCacheCount} {t('settings.entries')} (30d)</div>
             </div>
             <Button
               variant="outline"
@@ -246,13 +306,13 @@ export default function SettingsPage() {
               onClick={handleClearTranslationCache}
               disabled={translationCacheCount === 0}
             >
-              Leeren
+              {t('settings.clear')}
             </Button>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm">TTS Audio-Cache</div>
-              <div className="text-xs text-muted-foreground">{ttsCacheCount} Audio-Clips</div>
+              <div className="text-sm">{t('settings.ttsCache')}</div>
+              <div className="text-xs text-muted-foreground">{ttsCacheCount} {t('settings.audioClips')}</div>
             </div>
             <Button
               variant="outline"
@@ -260,7 +320,7 @@ export default function SettingsPage() {
               onClick={handleClearTTSCache}
               disabled={ttsCacheCount === 0}
             >
-              Leeren
+              {t('settings.clear')}
             </Button>
           </div>
         </CardContent>

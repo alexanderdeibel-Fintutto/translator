@@ -1,20 +1,23 @@
 import { useState, useCallback } from 'react'
-import { Volume2, Loader2, BookOpen } from 'lucide-react'
+import { Volume2, Loader2, BookOpen, Languages } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getMigrantPhrases } from '@/lib/offline/phrase-packs'
 import { translateText } from '@/lib/translate'
 import { getLanguageByCode, isRTL, LANGUAGES } from '@/lib/languages'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 
 // Target languages commonly needed by migrants
 const MIGRANT_LANGUAGES = ['ar', 'fa', 'ps', 'ku', 'ti', 'am', 'so', 'ur', 'bn', 'sw', 'sq', 'tr', 'ru', 'uk', 'en', 'fr']
 
 export default function PhrasebookPage() {
+  const { t } = useI18n()
   const [targetLang, setTargetLang] = useState('ar')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState<string | null>(null)
+  const [batchProgress, setBatchProgress] = useState<{ done: number; total: number } | null>(null)
   const tts = useSpeechSynthesis()
 
   const pack = getMigrantPhrases()
@@ -49,6 +52,30 @@ export default function PhrasebookPage() {
     }
   }, [targetLang, translations, tts])
 
+  const handleBatchTranslate = useCallback(async () => {
+    const untranslated = filteredPhrases.filter(p => !translations[`${p.text}:${targetLang}`])
+    if (untranslated.length === 0) return
+
+    setBatchProgress({ done: 0, total: untranslated.length })
+    // Translate in batches of 3 to avoid rate limiting
+    for (let i = 0; i < untranslated.length; i += 3) {
+      const batch = untranslated.slice(i, i + 3)
+      const results = await Promise.allSettled(
+        batch.map(p => translateText(p.text, 'de', targetLang))
+      )
+      const updates: Record<string, string> = {}
+      results.forEach((r, idx) => {
+        if (r.status === 'fulfilled') {
+          updates[`${batch[idx].text}:${targetLang}`] = r.value.translatedText
+        }
+      })
+      setTranslations(prev => ({ ...prev, ...updates }))
+      setBatchProgress({ done: Math.min(i + 3, untranslated.length), total: untranslated.length })
+    }
+    setBatchProgress(null)
+  }, [filteredPhrases, translations, targetLang])
+
+  const untranslatedCount = filteredPhrases.filter(p => !translations[`${p.text}:${targetLang}`]).length
   const targetLangData = getLanguageByCode(targetLang)
   const availableLangs = MIGRANT_LANGUAGES.map(c => LANGUAGES.find(l => l.code === c)).filter(Boolean)
 
@@ -57,10 +84,10 @@ export default function PhrasebookPage() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          <span className="gradient-text-translator">Phrasebook</span>
+          <span className="gradient-text-translator">{t('phrasebook.title')}</span>
         </h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Wichtige Saetze fuer Behoerden, Arzt, Wohnung, Arbeit, Schule, Polizei und Alltag. Phrase antippen zum Uebersetzen und Vorlesen.
+          {t('phrasebook.subtitle')}
         </p>
       </div>
 
@@ -90,7 +117,7 @@ export default function PhrasebookPage() {
             !activeCategory ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground hover:bg-accent/50'
           }`}
         >
-          Alle
+          {t('phrasebook.all')}
         </button>
         {categories.map(cat => (
           <button
@@ -104,6 +131,31 @@ export default function PhrasebookPage() {
           </button>
         ))}
       </div>
+
+      {/* Batch translate */}
+      {untranslatedCount > 0 && (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleBatchTranslate}
+            disabled={batchProgress !== null || !!loading}
+            className="gap-2"
+          >
+            {batchProgress ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                {batchProgress.done}/{batchProgress.total}
+              </>
+            ) : (
+              <>
+                <Languages className="h-3.5 w-3.5" />
+                {t('phrasebook.translateAll')} ({untranslatedCount})
+              </>
+            )}
+          </Button>
+        </div>
+      )}
 
       {/* Phrase cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -151,7 +203,7 @@ export default function PhrasebookPage() {
       {filteredPhrases.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p>Keine Phrasen in dieser Kategorie.</p>
+          <p>{t('phrasebook.empty')}</p>
         </div>
       )}
     </div>

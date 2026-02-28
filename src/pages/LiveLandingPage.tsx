@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-relay'
-import { isBleTransportAvailable } from '@/lib/ble-transport'
+import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-utils'
+import { isBleTransportAvailable } from '@/lib/ble-utils'
 import { useBleScanner } from '@/hooks/useBleDiscovery'
 import type { ConnectionMode } from '@/lib/transport/types'
 
@@ -99,32 +99,36 @@ export default function LiveLandingPage() {
                 <Cloud className="h-4 w-4" />
                 Cloud
               </button>
-              {hotspotAvailable && (
-                <button
-                  onClick={() => setConnectionMode('hotspot')}
-                  className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
-                    connectionMode === 'hotspot'
+              <button
+                onClick={() => hotspotAvailable && setConnectionMode('hotspot')}
+                disabled={!hotspotAvailable}
+                title={!hotspotAvailable ? 'Nur auf Mobilgeräten verfügbar' : undefined}
+                className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                  !hotspotAvailable
+                    ? 'border-border text-muted-foreground/40 cursor-not-allowed'
+                    : connectionMode === 'hotspot'
                       ? 'border-sky-600 bg-sky-50 text-sky-700 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800'
                       : 'border-border text-muted-foreground hover:bg-accent'
-                  }`}
-                >
-                  <Smartphone className="h-4 w-4" />
-                  Hotspot
-                </button>
-              )}
-              {bleTransportAvailable && (
-                <button
-                  onClick={() => setConnectionMode('ble')}
-                  className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
-                    connectionMode === 'ble'
+                }`}
+              >
+                <Smartphone className="h-4 w-4" />
+                Hotspot
+              </button>
+              <button
+                onClick={() => bleTransportAvailable && setConnectionMode('ble')}
+                disabled={!bleTransportAvailable}
+                title={!bleTransportAvailable ? 'Nur auf Mobilgeräten verfügbar' : undefined}
+                className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
+                  !bleTransportAvailable
+                    ? 'border-border text-muted-foreground/40 cursor-not-allowed'
+                    : connectionMode === 'ble'
                       ? 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
                       : 'border-border text-muted-foreground hover:bg-accent'
-                  }`}
-                >
-                  <Bluetooth className="h-4 w-4" />
-                  BLE
-                </button>
-              )}
+                }`}
+              >
+                <Bluetooth className="h-4 w-4" />
+                BLE
+              </button>
               <button
                 onClick={() => setConnectionMode('local')}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${

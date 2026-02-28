@@ -11,17 +11,25 @@ import {
   Loader2,
   UserCheck,
   User,
+ claude/offline-speaker-listener-nhgmf
+  ThumbsUp,
+  ThumbsDown,
+  Share2,
+
   Send,
   Zap,
   AlignLeft,
+ main
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from './LanguageSelector'
 import { translateText } from '@/lib/translate'
+import { detectLanguage } from '@/lib/detect-language'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
@@ -45,6 +53,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
+ claude/offline-speaker-listener-nhgmf
+  const [autoDetect, setAutoDetect] = useState(false)
+  const [detectedLang, setDetectedLang] = useState<string | null>(null)
+  const [sourceText, setSourceText] = useState('')
+  const [translatedText, setTranslatedText] = useState('')
+
 
   // Segment-based state for speech mode
   const [segments, setSegments] = useState<TranslationSegment[]>([])
@@ -55,10 +69,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
+ main
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   const [autoSpeak, setAutoSpeak] = useState(() => {
     const saved = localStorage.getItem('translator-auto-speak')
     return saved !== null ? saved === 'true' : true
@@ -166,6 +182,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     if (!text.trim()) {
       setSegments([])
       setError(null)
+      setDetectedLang(null)
       return
     }
 
@@ -177,8 +194,24 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
     setError(null)
 
+    // Auto-detect source language if enabled
+    let effectiveSourceLang = sourceLang
+    if (autoDetect) {
+      const detected = detectLanguage(text)
+      if (detected && detected.confidence > 0.3) {
+        effectiveSourceLang = detected.language
+        setDetectedLang(detected.language)
+      } else {
+        setDetectedLang(null)
+      }
+    }
+
     try {
+ claude/offline-speaker-listener-nhgmf
+      const result = await translateText(text, effectiveSourceLang, targetLang)
+
       const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
+ main
       let finalText = result.translatedText
 
       if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
@@ -190,6 +223,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       ))
       setMatchScore(result.match)
       setProvider(result.provider)
+      setFeedback(null)
 
       if (autoSpeakRef.current && finalText) {
         const lang = getLanguageByCode(targetLangRef.current)
@@ -199,6 +233,22 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       addEntry({
         sourceText: text,
         translatedText: finalText,
+ claude/offline-speaker-listener-nhgmf
+        sourceLang: effectiveSourceLang,
+        targetLang,
+      })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      const errorMap: Record<string, string> = {
+        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
+        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
+      }
+      setError(errorMap[msg] || msg || t('error.unknown'))
+    } finally {
+      setIsTranslating(false)
+    }
+  }, [sourceLang, targetLang, autoDetect, addEntry, t])
+
         sourceLang: sourceLangRef.current,
         targetLang: targetLangRef.current,
       })
@@ -209,6 +259,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setError(err instanceof Error ? err.message : 'Translation failed')
     }
   }, [segments, addEntry])
+ main
 
   // Manual textarea editing: collapse to single segment, debounce translate
   const handleManualEdit = useCallback((newText: string) => {
@@ -342,6 +393,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleShare = async () => {
+    if (!translatedText || !navigator.share) return
+    try {
+      await navigator.share({
+        text: `${sourceText}\n\n→ ${translatedText}`,
+      })
+    } catch {
+      // user cancelled share dialog
+    }
+  }
+
   const handleSpeakSource = () => {
     if (sourceSpeech.isSpeaking) {
       sourceSpeech.stop()
@@ -412,6 +474,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+  // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
+  useKeyboardShortcuts({
+    'ctrl+enter': () => { if (sourceText.trim()) doTranslate(sourceText) },
+    'escape': clearAll,
+    'ctrl+shift+s': swapLanguages,
+  })
+
   const sourceLangData = getLanguageByCode(sourceLang)
   const targetLangData = getLanguageByCode(targetLang)
   const showFormalityToggle = supportsFormality(targetLang) || supportsFormality(sourceLang)
@@ -421,7 +490,23 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     <div className="space-y-4">
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
-        <LanguageSelector value={sourceLang} onChange={setSourceLang} label={t('translator.from')} />
+        <div className="flex items-end gap-1.5">
+          <LanguageSelector value={sourceLang} onChange={(v) => { setSourceLang(v); setAutoDetect(false); setDetectedLang(null) }} label={t('translator.from')} />
+          <Button
+            variant={autoDetect ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
+            className="mb-0.5 shrink-0 text-xs"
+            title="Sprache automatisch erkennen"
+          >
+            {t('translator.auto')}
+          </Button>
+          {autoDetect && detectedLang && (
+            <span className="mb-1 text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 font-medium">
+              {getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name || detectedLang}
+            </span>
+          )}
+        </div>
         <Button
           variant="outline"
           size="icon"
@@ -486,7 +571,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted-foreground">
-                {sourceLangData?.flag} {sourceLangData?.name}
+                {autoDetect && detectedLang
+                  ? <>{getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name} <span className="text-[10px] opacity-60">(auto)</span></>
+                  : <>{sourceLangData?.flag} {sourceLangData?.name}</>
+                }
               </span>
               <div className="flex items-center gap-1">
                 <Button
@@ -538,7 +626,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
+ claude/offline-speaker-listener-nhgmf
+              aria-label={t('translator.placeholder')}
+
               readOnly={isListening}
+ main
             />
             {/* Interim text display during recording */}
             {isListening && interimText && (
@@ -546,7 +638,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
+ claude/offline-speaker-listener-nhgmf
+                {sourceText.length} {t('translator.chars')}
+                {sourceText.length === 0 && (
+                  <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
+                )}
+
                 {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
+ main
               </span>
               {isListening && (
                 <span className="text-xs text-destructive flex items-center gap-1">
@@ -590,11 +689,23 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
                   </Button>
                 )}
+                {translatedText && typeof navigator.share === 'function' && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleShare}
+                    title="Teilen"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </div>
             <div
               className="w-full min-h-[200px] text-base leading-relaxed"
               dir={isRTL(targetLang) ? 'rtl' : 'ltr'}
+              aria-live="polite"
+              aria-label={t('translator.result')}
             >
               {segments.length === 0 && !isTranslating ? (
                 <p className="text-muted-foreground/60">{t('translator.result')}</p>
@@ -622,6 +733,24 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 {translatedText.length} {t('translator.chars')}
               </span>
               <div className="flex items-center gap-2">
+                {translatedText && (
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
+                      className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      title="Gute Übersetzung"
+                    >
+                      <ThumbsUp className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
+                      className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      title="Schlechte Übersetzung"
+                    >
+                      <ThumbsDown className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
                 {provider && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     provider === 'google' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :

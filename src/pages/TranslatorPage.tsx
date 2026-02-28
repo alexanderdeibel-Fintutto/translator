@@ -1,4 +1,4 @@
-import { Languages, Mic, Globe, Zap, Radio } from 'lucide-react'
+import { Languages, Mic, Globe, Zap, Radio, MessageCircle, Camera } from 'lucide-react'
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -59,6 +59,18 @@ export default function TranslatorPage() {
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
             <Radio className="h-3 w-3" />
             {t('translator.liveSession')}
+          </Button>
+        </Link>
+        <Link to="/conversation">
+          <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
+            <MessageCircle className="h-3 w-3" />
+            {t('nav.conversation')}
+          </Button>
+        </Link>
+        <Link to="/camera">
+          <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
+            <Camera className="h-3 w-3" />
+            {t('nav.camera')}
           </Button>
         </Link>
       </div>

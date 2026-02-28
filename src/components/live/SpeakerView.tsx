@@ -1,5 +1,5 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth } from 'lucide-react'
-import { useRef, useCallback } from 'react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+import { useRef, useCallback, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
@@ -9,6 +9,7 @@ import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
+import { getLatencyHistory, getAverageLatency, type LatencyReport } from '@/lib/latency'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -28,45 +29,99 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
-  const downloadProtocol = useCallback(() => {
+  const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
+
+  // Poll latency stats while recording
+  useEffect(() => {
+    if (!session.isRecording) return
+    const interval = setInterval(() => {
+      const history = getLatencyHistory()
+      const last = history.length > 0 ? history[history.length - 1] : null
+      const avg = getAverageLatency()
+      setLatency({ last, avg })
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [session.isRecording])
+
+  const getProtocolMeta = useCallback(() => {
     const now = new Date()
     const durationMs = Date.now() - sessionStartRef.current
     const durationMin = Math.round(durationMs / 60000)
     const sourceLangData = getLanguageByCode(session.sourceLanguage)
+    const connectionLabel = session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'
+    return { now, durationMin, sourceLangData, connectionLabel }
+  }, [session.sourceLanguage, session.connectionMode])
 
-    let protocol = `========================================\n`
-    protocol += `GUIDETRANSLATOR - SESSION-PROTOKOLL\n`
-    protocol += `========================================\n\n`
-    protocol += `Session-Code: ${session.sessionCode}\n`
-    protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
-    protocol += `Dauer: ${durationMin} Minuten\n`
-    protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
-    protocol += `Zuhörer: ${session.listenerCount}\n`
-    protocol += `Verbindung: ${session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
-    protocol += `\n----------------------------------------\n`
-    protocol += `ÜBERSETZUNGEN\n`
-    protocol += `----------------------------------------\n\n`
+  const downloadProtocol = useCallback((format: 'txt' | 'md') => {
+    const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
+    setExportMenuOpen(false)
 
-    for (const chunk of session.translationHistory) {
-      const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
-      const targetLangData = getLanguageByCode(chunk.targetLanguage)
-      protocol += `[${time}]\n`
-      protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
-      protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+    let protocol: string
+    let mimeType: string
+    let ext: string
+
+    if (format === 'md') {
+      // Markdown format
+      mimeType = 'text/markdown;charset=utf-8'
+      ext = 'md'
+      protocol = `# guidetranslator — Session-Protokoll\n\n`
+      protocol += `| Feld | Wert |\n|------|------|\n`
+      protocol += `| Session | \`${session.sessionCode}\` |\n`
+      protocol += `| Datum | ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')} |\n`
+      protocol += `| Dauer | ${durationMin} Min |\n`
+      protocol += `| Sprache | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
+      protocol += `| Zuhörer | ${session.listenerCount} |\n`
+      protocol += `| Verbindung | ${connectionLabel} |\n\n`
+      protocol += `---\n\n## Übersetzungen\n\n`
+
+      for (const chunk of session.translationHistory) {
+        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        const targetLangData = getLanguageByCode(chunk.targetLanguage)
+        protocol += `**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`
+        protocol += `> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`
+        protocol += `> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`
+      }
+
+      protocol += `---\n\n*Erstellt mit [guidetranslator](https://guidetranslator.com)*\n`
+    } else {
+      // Plain text format
+      mimeType = 'text/plain;charset=utf-8'
+      ext = 'txt'
+      protocol = `========================================\n`
+      protocol += `GUIDETRANSLATOR - SESSION-PROTOKOLL\n`
+      protocol += `========================================\n\n`
+      protocol += `Session-Code: ${session.sessionCode}\n`
+      protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
+      protocol += `Dauer: ${durationMin} Minuten\n`
+      protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
+      protocol += `Zuhörer: ${session.listenerCount}\n`
+      protocol += `Verbindung: ${connectionLabel}\n`
+      protocol += `\n----------------------------------------\n`
+      protocol += `ÜBERSETZUNGEN\n`
+      protocol += `----------------------------------------\n\n`
+
+      for (const chunk of session.translationHistory) {
+        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
+        const targetLangData = getLanguageByCode(chunk.targetLanguage)
+        protocol += `[${time}]\n`
+        protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
+        protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+      }
+
+      protocol += `----------------------------------------\n`
+      protocol += `Ende des Protokolls\n`
+      protocol += `Erstellt mit guidetranslator.com\n`
     }
 
-    protocol += `----------------------------------------\n`
-    protocol += `Ende des Protokolls\n`
-    protocol += `Erstellt mit guidetranslator.com\n`
-
-    const blob = new Blob([protocol], { type: 'text/plain;charset=utf-8' })
+    const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.txt`
+    a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
     URL.revokeObjectURL(url)
-  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, session.connectionMode])
+  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
 
   return (
     <div className="space-y-4">
@@ -158,14 +213,34 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
           {/* Download Protocol Button - appears after first translation */}
           {session.translationHistory.length > 0 && (
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={downloadProtocol}
-            >
-              <Download className="h-4 w-4" />
-              {t('live.downloadProtocol')}
-            </Button>
+            <div className="relative">
+              <Button
+                variant="outline"
+                className="w-full gap-2"
+                onClick={() => setExportMenuOpen(!exportMenuOpen)}
+              >
+                <Download className="h-4 w-4" />
+                {t('live.downloadProtocol')}
+              </Button>
+              {exportMenuOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 overflow-hidden">
+                  <button
+                    onClick={() => downloadProtocol('txt')}
+                    className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Text (.txt)
+                  </button>
+                  <button
+                    onClick={() => downloadProtocol('md')}
+                    className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    Markdown (.md)
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           <Button
@@ -193,6 +268,26 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
                 <span className="text-sm text-muted-foreground/60 truncate ml-2">
                   {session.currentTranscript}
                 </span>
+              )}
+            </div>
+          )}
+
+          {/* Pipeline latency stats */}
+          {session.isRecording && latency.last && (
+            <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-muted/50 rounded-lg text-[11px] font-mono text-muted-foreground">
+              <Activity className="h-3 w-3 shrink-0" />
+              <span title="Speech-to-Text">STT {latency.last.sttMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Translation">Translate {latency.last.translateMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Total pipeline" className="font-semibold text-foreground/70">
+                Σ {latency.last.totalMs.toFixed(0)}ms
+              </span>
+              {latency.avg && (
+                <>
+                  <span className="text-muted-foreground/30">|</span>
+                  <span title="Durchschnitt">ø {latency.avg.totalMs.toFixed(0)}ms</span>
+                </>
               )}
             </div>
           )}

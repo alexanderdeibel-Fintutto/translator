@@ -12,18 +12,48 @@ export default defineConfig({
       manifest: {
         name: 'guidetranslator',
         short_name: 'guidetranslator',
-        description: 'Kostenloser Übersetzer mit Spracheingabe, Sprachausgabe und Live-Übersetzung',
+        description: 'Kostenloser Übersetzer mit Spracheingabe, HD-Sprachausgabe, Live-Sessions, Kamera-OCR und Offline-Modus. 32+ Sprachen.',
         theme_color: '#0369a1',
         background_color: '#ffffff',
         display: 'standalone',
+        orientation: 'any',
         scope: '/',
         start_url: '/',
+        categories: ['utilities', 'education', 'productivity'],
+        lang: 'de',
+        dir: 'ltr',
         icons: [
           {
             src: '/favicon.svg',
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any maskable',
+          },
+        ],
+        shortcuts: [
+          {
+            name: 'Live-Session starten',
+            short_name: 'Live',
+            url: '/live',
+            description: 'Echtzeit-Übersetzung für Zuhörer starten',
+          },
+          {
+            name: 'Konversation',
+            short_name: 'Gespräch',
+            url: '/conversation',
+            description: 'Face-to-Face Übersetzung für zwei Personen',
+          },
+          {
+            name: 'Kamera-Übersetzer',
+            short_name: 'Kamera',
+            url: '/camera',
+            description: 'Text im Bild erkennen und übersetzen',
+          },
+          {
+            name: 'Phrasebook',
+            short_name: 'Phrasen',
+            url: '/phrasebook',
+            description: 'Wichtige Sätze für Alltag und Behörden',
           },
         ],
       },
@@ -134,6 +164,16 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'transformers': ['@huggingface/transformers'],
+          'onnx': ['onnxruntime-web'],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
