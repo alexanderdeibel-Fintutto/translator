@@ -52,7 +52,7 @@ export default function InfoPage() {
           <Card key={key} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="h-10 w-10 rounded-lg gradient-translator flex items-center justify-center mb-2">
-                <Icon className="h-5 w-5 text-white" />
+                <Icon className="h-5 w-5 text-white" aria-hidden="true" />
               </div>
               <CardTitle className="text-base">{t(`info.feature${key}Title`)}</CardTitle>
               <CardDescription>{t(`info.feature${key}Desc`)}</CardDescription>

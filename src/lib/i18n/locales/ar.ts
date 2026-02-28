@@ -357,6 +357,26 @@ const strings: Record<string, string> = {
   'phrases.cat.school': 'المدرسة',
   'phrases.cat.police': 'الشرطة',
   'phrases.cat.daily': 'الحياة اليومية',
+
+  // Language names
+  'lang.de': 'ألمانية', 'lang.en': 'إنجليزية', 'lang.fr': 'فرنسية', 'lang.es': 'إسبانية',
+  'lang.it': 'إيطالية', 'lang.pt': 'برتغالية', 'lang.nl': 'هولندية', 'lang.pl': 'بولندية',
+  'lang.tr': 'تركية', 'lang.ru': 'روسية', 'lang.uk': 'أوكرانية', 'lang.ar': 'عربية',
+  'lang.zh': 'صينية', 'lang.ja': 'يابانية', 'lang.ko': 'كورية', 'lang.hi': 'هندية',
+  'lang.sv': 'سويدية', 'lang.da': 'دنماركية', 'lang.cs': 'تشيكية', 'lang.ro': 'رومانية',
+  'lang.el': 'يونانية', 'lang.hu': 'مجرية', 'lang.fa': 'فارسية/دارية', 'lang.ps': 'بشتو',
+  'lang.ku': 'كردية', 'lang.ti': 'تيغرينية', 'lang.am': 'أمهرية', 'lang.so': 'صومالية',
+  'lang.ur': 'أردية', 'lang.bn': 'بنغالية', 'lang.sw': 'سواحيلية', 'lang.sq': 'ألبانية',
+  'lang.hr': 'كرواتية', 'lang.bg': 'بلغارية', 'lang.sr': 'صربية', 'lang.sk': 'سلوفاكية',
+  'lang.no': 'نرويجية', 'lang.fi': 'فنلندية', 'lang.th': 'تايلندية', 'lang.vi': 'فيتنامية',
+  'lang.id': 'إندونيسية', 'lang.ms': 'ملايوية', 'lang.fil': 'فلبينية', 'lang.he': 'عبرية',
+  'lang.ka': 'جورجية',
+
+  // Provider / TTS / PWA
+  'provider.google': 'Google', 'provider.offline': 'غير متصل', 'provider.cache': 'ذاكرة مؤقتة',
+  'provider.libre': 'LibreTranslate', 'provider.myMemory': 'MyMemory',
+  'tts.cloud': '☁ سحابي', 'tts.browser': '🖥 المتصفح',
+  'pwa.ok': 'موافق', 'pwa.dismiss': 'إغلاق',
 }
 
 export default strings

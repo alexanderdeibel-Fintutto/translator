@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="container">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Languages className="h-4 w-4" />
+            <Languages className="h-4 w-4" aria-hidden="true" />
             <span>guidetranslator</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">

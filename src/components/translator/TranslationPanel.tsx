@@ -587,17 +587,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     onClick={handleSpeakSource}
                     aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
-                    {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" aria-hidden="true" /> : <Volume2 className="h-4 w-4" aria-hidden="true" />}
                   </Button>
                 )}
                 {activeTtsEngine && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${activeTtsEngine === 'cloud' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}`}>
-                    {activeTtsEngine === 'cloud' ? '\u2601 Cloud' : '\uD83D\uDDA5 Browser'}
+                    {t(activeTtsEngine === 'cloud' ? 'tts.cloud' : 'tts.browser')}
                   </span>
                 )}
                 {sourceText && (
                   <Button variant="ghost" size="icon" onClick={clearAll} aria-label={t('translator.delete')}>
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
               </div>
@@ -738,10 +738,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     provider === 'cache' ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' :
                     'bg-muted text-muted-foreground'
                   }`}>
-                    {provider === 'google' ? 'Google' :
-                     provider === 'offline' ? 'Offline' :
-                     provider === 'cache' ? 'Cache' :
-                     provider === 'libre' ? 'LibreTranslate' : 'MyMemory'}
+                    {t('provider.' + (provider === 'libre' ? 'libre' : provider === 'mymemory' ? 'myMemory' : provider || 'google'))}
                   </span>
                 )}
                 {matchScore !== null && matchScore > 0 && translatedText && (

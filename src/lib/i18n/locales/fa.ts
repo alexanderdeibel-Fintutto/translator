@@ -357,6 +357,26 @@ const strings: Record<string, string> = {
   'phrases.cat.school': 'مدرسه',
   'phrases.cat.police': 'پلیس',
   'phrases.cat.daily': 'زندگی روزمره',
+
+  // Language names
+  'lang.de': 'آلمانی', 'lang.en': 'انگلیسی', 'lang.fr': 'فرانسوی', 'lang.es': 'اسپانیایی',
+  'lang.it': 'ایتالیایی', 'lang.pt': 'پرتغالی', 'lang.nl': 'هلندی', 'lang.pl': 'لهستانی',
+  'lang.tr': 'ترکی', 'lang.ru': 'روسی', 'lang.uk': 'اوکراینی', 'lang.ar': 'عربی',
+  'lang.zh': 'چینی', 'lang.ja': 'ژاپنی', 'lang.ko': 'کره‌ای', 'lang.hi': 'هندی',
+  'lang.sv': 'سوئدی', 'lang.da': 'دانمارکی', 'lang.cs': 'چکی', 'lang.ro': 'رومانیایی',
+  'lang.el': 'یونانی', 'lang.hu': 'مجارستانی', 'lang.fa': 'فارسی/دری', 'lang.ps': 'پشتو',
+  'lang.ku': 'کردی', 'lang.ti': 'تیگرینیا', 'lang.am': 'آمهری', 'lang.so': 'سومالیایی',
+  'lang.ur': 'اردو', 'lang.bn': 'بنگالی', 'lang.sw': 'سواحیلی', 'lang.sq': 'آلبانیایی',
+  'lang.hr': 'کرواتی', 'lang.bg': 'بلغاری', 'lang.sr': 'صربی', 'lang.sk': 'اسلواکی',
+  'lang.no': 'نروژی', 'lang.fi': 'فنلاندی', 'lang.th': 'تایلندی', 'lang.vi': 'ویتنامی',
+  'lang.id': 'اندونزیایی', 'lang.ms': 'مالایی', 'lang.fil': 'فیلیپینی', 'lang.he': 'عبری',
+  'lang.ka': 'گرجی',
+
+  // Provider / TTS / PWA
+  'provider.google': 'Google', 'provider.offline': 'آفلاین', 'provider.cache': 'حافظه پنهان',
+  'provider.libre': 'LibreTranslate', 'provider.myMemory': 'MyMemory',
+  'tts.cloud': '☁ ابری', 'tts.browser': '🖥 مرورگر',
+  'pwa.ok': 'تأیید', 'pwa.dismiss': 'بستن',
 }
 
 export default strings

@@ -51,25 +51,25 @@ export default function TranslatorPage() {
             key={f.label}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-medium"
           >
-            <f.icon className="h-3 w-3" />
+            <f.icon className="h-3 w-3" aria-hidden="true" />
             {f.label}
           </div>
         ))}
         <Link to="/live">
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
-            <Radio className="h-3 w-3" />
+            <Radio className="h-3 w-3" aria-hidden="true" />
             {t('translator.liveSession')}
           </Button>
         </Link>
         <Link to="/conversation">
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
-            <MessageCircle className="h-3 w-3" />
+            <MessageCircle className="h-3 w-3" aria-hidden="true" />
             {t('nav.conversation')}
           </Button>
         </Link>
         <Link to="/camera">
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
-            <Camera className="h-3 w-3" />
+            <Camera className="h-3 w-3" aria-hidden="true" />
             {t('nav.camera')}
           </Button>
         </Link>

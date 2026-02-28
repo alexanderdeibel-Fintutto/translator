@@ -221,7 +221,7 @@ export default function LiveLandingPage() {
           {bleScanner.sessions.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                 <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
                   {t('liveLanding.nearbySessions')}
                 </p>

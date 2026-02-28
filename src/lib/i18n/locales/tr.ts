@@ -357,6 +357,26 @@ const strings: Record<string, string> = {
   'phrases.cat.school': 'Okul',
   'phrases.cat.police': 'Polis',
   'phrases.cat.daily': 'Günlük Yaşam',
+
+  // Language names
+  'lang.de': 'Almanca', 'lang.en': 'İngilizce', 'lang.fr': 'Fransızca', 'lang.es': 'İspanyolca',
+  'lang.it': 'İtalyanca', 'lang.pt': 'Portekizce', 'lang.nl': 'Hollandaca', 'lang.pl': 'Lehçe',
+  'lang.tr': 'Türkçe', 'lang.ru': 'Rusça', 'lang.uk': 'Ukraynaca', 'lang.ar': 'Arapça',
+  'lang.zh': 'Çince', 'lang.ja': 'Japonca', 'lang.ko': 'Korece', 'lang.hi': 'Hintçe',
+  'lang.sv': 'İsveççe', 'lang.da': 'Danca', 'lang.cs': 'Çekçe', 'lang.ro': 'Romence',
+  'lang.el': 'Yunanca', 'lang.hu': 'Macarca', 'lang.fa': 'Farsça/Darice', 'lang.ps': 'Peştuca',
+  'lang.ku': 'Kürtçe', 'lang.ti': 'Tigrinya', 'lang.am': 'Amharca', 'lang.so': 'Somalice',
+  'lang.ur': 'Urduca', 'lang.bn': 'Bengalce', 'lang.sw': 'Svahilice', 'lang.sq': 'Arnavutça',
+  'lang.hr': 'Hırvatça', 'lang.bg': 'Bulgarca', 'lang.sr': 'Sırpça', 'lang.sk': 'Slovakça',
+  'lang.no': 'Norveççe', 'lang.fi': 'Fince', 'lang.th': 'Tayca', 'lang.vi': 'Vietnamca',
+  'lang.id': 'Endonezce', 'lang.ms': 'Malayca', 'lang.fil': 'Filipince', 'lang.he': 'İbranice',
+  'lang.ka': 'Gürcüce',
+
+  // Provider / TTS / PWA
+  'provider.google': 'Google', 'provider.offline': 'Çevrimdışı', 'provider.cache': 'Önbellek',
+  'provider.libre': 'LibreTranslate', 'provider.myMemory': 'MyMemory',
+  'tts.cloud': '☁ Bulut', 'tts.browser': '🖥 Tarayıcı',
+  'pwa.ok': 'Tamam', 'pwa.dismiss': 'Kapat',
 }
 
 export default strings

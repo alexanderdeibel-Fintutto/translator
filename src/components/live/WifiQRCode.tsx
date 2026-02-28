@@ -25,7 +25,7 @@ export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps
       <div className="flex flex-col items-center gap-3">
         {/* Step indicator */}
         <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400">
-          <Wifi className="h-4 w-4" />
+          <Wifi className="h-4 w-4" aria-hidden="true" />
           <span className="text-sm font-medium">
             {t('live.wifiStep').replace('{step}', String(step))}
           </span>
@@ -45,7 +45,7 @@ export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps
         {/* Instructions */}
         <div className="text-center space-y-2 max-w-[260px]">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Smartphone className="h-3.5 w-3.5 shrink-0" />
+            <Smartphone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span>{t('live.wifiScanInstruction')}</span>
           </div>
           <p className="text-[10px] text-muted-foreground/60">

@@ -357,6 +357,26 @@ const strings: Record<string, string> = {
   'phrases.cat.school': 'Escuela',
   'phrases.cat.police': 'Policía',
   'phrases.cat.daily': 'Vida diaria',
+
+  // Language names
+  'lang.de': 'Alemán', 'lang.en': 'Inglés', 'lang.fr': 'Francés', 'lang.es': 'Español',
+  'lang.it': 'Italiano', 'lang.pt': 'Portugués', 'lang.nl': 'Neerlandés', 'lang.pl': 'Polaco',
+  'lang.tr': 'Turco', 'lang.ru': 'Ruso', 'lang.uk': 'Ucraniano', 'lang.ar': 'Árabe',
+  'lang.zh': 'Chino', 'lang.ja': 'Japonés', 'lang.ko': 'Coreano', 'lang.hi': 'Hindi',
+  'lang.sv': 'Sueco', 'lang.da': 'Danés', 'lang.cs': 'Checo', 'lang.ro': 'Rumano',
+  'lang.el': 'Griego', 'lang.hu': 'Húngaro', 'lang.fa': 'Farsi/Dari', 'lang.ps': 'Pastún',
+  'lang.ku': 'Kurdo', 'lang.ti': 'Tigriña', 'lang.am': 'Amárico', 'lang.so': 'Somalí',
+  'lang.ur': 'Urdu', 'lang.bn': 'Bengalí', 'lang.sw': 'Suajili', 'lang.sq': 'Albanés',
+  'lang.hr': 'Croata', 'lang.bg': 'Búlgaro', 'lang.sr': 'Serbio', 'lang.sk': 'Eslovaco',
+  'lang.no': 'Noruego', 'lang.fi': 'Finés', 'lang.th': 'Tailandés', 'lang.vi': 'Vietnamita',
+  'lang.id': 'Indonesio', 'lang.ms': 'Malayo', 'lang.fil': 'Filipino', 'lang.he': 'Hebreo',
+  'lang.ka': 'Georgiano',
+
+  // Provider / TTS / PWA
+  'provider.google': 'Google', 'provider.offline': 'Sin conexión', 'provider.cache': 'Caché',
+  'provider.libre': 'LibreTranslate', 'provider.myMemory': 'MyMemory',
+  'tts.cloud': '☁ Nube', 'tts.browser': '🖥 Navegador',
+  'pwa.ok': 'OK', 'pwa.dismiss': 'Cerrar',
 }
 
 export default strings

@@ -22,7 +22,7 @@ export default function ConnectionModeIndicator({
   if (isResolving) {
     return (
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
         <span>{t('live.connecting')}</span>
       </div>
     )
@@ -31,7 +31,7 @@ export default function ConnectionModeIndicator({
   if (mode === 'ble') {
     return (
       <div className="flex items-center gap-2 text-xs">
-        <Bluetooth className="h-3.5 w-3.5" />
+        <Bluetooth className="h-3.5 w-3.5" aria-hidden="true" />
         <span className={isConnected
           ? 'text-blue-600 dark:text-blue-400'
           : 'text-amber-600 dark:text-amber-400'
@@ -51,7 +51,7 @@ export default function ConnectionModeIndicator({
 
     return (
       <div className="flex items-center gap-2 text-xs">
-        <Icon className="h-3.5 w-3.5" />
+        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
         <span className={isConnected
           ? isHotspotHost
             ? 'text-sky-600 dark:text-sky-400'
@@ -76,7 +76,7 @@ export default function ConnectionModeIndicator({
 
   return (
     <div className="flex items-center gap-2 text-xs">
-      <Cloud className="h-3.5 w-3.5" />
+      <Cloud className="h-3.5 w-3.5" aria-hidden="true" />
       <span className={isConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
         {t('live.modeCloud')}
       </span>

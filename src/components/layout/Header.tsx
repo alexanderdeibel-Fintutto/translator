@@ -84,7 +84,7 @@ export default function Header() {
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? t('header.menuClose') : t('header.menuOpen')}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </Button>
 
           {mobileMenuOpen && (

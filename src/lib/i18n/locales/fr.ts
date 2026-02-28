@@ -357,6 +357,26 @@ const strings: Record<string, string> = {
   'phrases.cat.school': 'École',
   'phrases.cat.police': 'Police',
   'phrases.cat.daily': 'Vie quotidienne',
+
+  // Language names
+  'lang.de': 'Allemand', 'lang.en': 'Anglais', 'lang.fr': 'Français', 'lang.es': 'Espagnol',
+  'lang.it': 'Italien', 'lang.pt': 'Portugais', 'lang.nl': 'Néerlandais', 'lang.pl': 'Polonais',
+  'lang.tr': 'Turc', 'lang.ru': 'Russe', 'lang.uk': 'Ukrainien', 'lang.ar': 'Arabe',
+  'lang.zh': 'Chinois', 'lang.ja': 'Japonais', 'lang.ko': 'Coréen', 'lang.hi': 'Hindi',
+  'lang.sv': 'Suédois', 'lang.da': 'Danois', 'lang.cs': 'Tchèque', 'lang.ro': 'Roumain',
+  'lang.el': 'Grec', 'lang.hu': 'Hongrois', 'lang.fa': 'Farsi/Dari', 'lang.ps': 'Pachto',
+  'lang.ku': 'Kurde', 'lang.ti': 'Tigrinya', 'lang.am': 'Amharique', 'lang.so': 'Somali',
+  'lang.ur': 'Ourdou', 'lang.bn': 'Bengali', 'lang.sw': 'Swahili', 'lang.sq': 'Albanais',
+  'lang.hr': 'Croate', 'lang.bg': 'Bulgare', 'lang.sr': 'Serbe', 'lang.sk': 'Slovaque',
+  'lang.no': 'Norvégien', 'lang.fi': 'Finnois', 'lang.th': 'Thaï', 'lang.vi': 'Vietnamien',
+  'lang.id': 'Indonésien', 'lang.ms': 'Malais', 'lang.fil': 'Philippin', 'lang.he': 'Hébreu',
+  'lang.ka': 'Géorgien',
+
+  // Provider / TTS / PWA
+  'provider.google': 'Google', 'provider.offline': 'Hors ligne', 'provider.cache': 'Cache',
+  'provider.libre': 'LibreTranslate', 'provider.myMemory': 'MyMemory',
+  'tts.cloud': '☁ Cloud', 'tts.browser': '🖥 Navigateur',
+  'pwa.ok': 'OK', 'pwa.dismiss': 'Fermer',
 }
 
 export default strings

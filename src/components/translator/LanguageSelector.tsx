@@ -121,7 +121,7 @@ export default function LanguageSelector({ value, onChange, label }: LanguageSel
               >
                 <span className="text-lg">{lang.flag}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium">{lang.name}</div>
+                  <div className="text-sm font-medium">{t('lang.' + lang.code)}</div>
                   <div className="text-xs text-muted-foreground">{lang.nativeName}</div>
                 </div>
                 {lang.code === value && (
