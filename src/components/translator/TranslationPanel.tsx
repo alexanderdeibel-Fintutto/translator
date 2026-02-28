@@ -23,6 +23,7 @@ import { detectLanguage } from '@/lib/detect-language'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
@@ -275,6 +276,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+  // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
+  useKeyboardShortcuts({
+    'ctrl+enter': () => { if (sourceText.trim()) doTranslate(sourceText) },
+    'escape': clearAll,
+    'ctrl+shift+s': swapLanguages,
+  })
+
   const sourceLangData = getLanguageByCode(sourceLang)
   const targetLangData = getLanguageByCode(targetLang)
   const showFormalityToggle = supportsFormality(targetLang) || supportsFormality(sourceLang)
@@ -402,6 +410,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
                 {sourceText.length} {t('translator.chars')}
+                {sourceText.length === 0 && (
+                  <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
+                )}
               </span>
               {isListening && (
                 <span className="text-xs text-destructive flex items-center gap-1">
