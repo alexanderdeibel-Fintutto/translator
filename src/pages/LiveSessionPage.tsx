@@ -1,11 +1,12 @@
 import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 import { useLiveSession } from '@/hooks/useLiveSession'
 import LanguageChips from '@/components/live/LanguageChips'
 
 const LoadingSpinner = (
   <div className="flex items-center justify-center min-h-[200px]">
-    <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
   </div>
 )
 

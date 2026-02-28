@@ -8,6 +8,8 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useI18n } from '@/context/I18nContext'
 
+const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
+
 interface Message {
   id: string
   speaker: 'top' | 'bottom'
@@ -183,7 +185,7 @@ export default function ConversationPage() {
               const isOwnMessage = msg.speaker === 'top'
               const originalDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
-              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+              const time = shortTimeFormat.format(new Date(msg.timestamp))
 
               return (
                 <div
@@ -264,7 +266,7 @@ export default function ConversationPage() {
               const isOwnMessage = msg.speaker === 'bottom'
               const originalDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
-              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+              const time = shortTimeFormat.format(new Date(msg.timestamp))
 
               return (
                 <div
