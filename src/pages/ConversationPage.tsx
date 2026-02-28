@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { Mic, MicOff, ArrowUpDown, Volume2, VolumeX, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LanguageSelector from '@/components/translator/LanguageSelector'
@@ -108,6 +108,12 @@ export default function ConversationPage() {
   const topLangData = getLanguageByCode(topLang)
   const bottomLangData = getLanguageByCode(bottomLang)
 
+  // Auto-scroll conversation to bottom
+  const scrollRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [messages])
+
   return (
     <div className="container py-4 space-y-3 max-w-2xl mx-auto">
       {/* Header */}
@@ -139,7 +145,7 @@ export default function ConversationPage() {
       </div>
 
       {/* Conversation area — split screen */}
-      <div className="grid grid-rows-2 gap-3 min-h-[60vh]">
+      <div className="grid grid-rows-[1fr_auto_1fr] gap-2 min-h-[60vh]">
         {/* Top person (rotated 180° for face-to-face) */}
         <div
           className={`relative rounded-xl border-2 p-4 flex flex-col transition-colors ${
@@ -149,49 +155,68 @@ export default function ConversationPage() {
           }`}
           style={{ transform: 'rotate(180deg)' }}
         >
-          <div className="flex items-center justify-between mb-2">
+          {/* Mic button (at visual top for rotated user) */}
+          <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-muted-foreground">
               {topLangData?.flag} {topLangData?.name}
             </span>
-          </div>
-
-          {/* Messages for this side */}
-          <div className="flex-1 overflow-y-auto space-y-2 mb-3">
-            {messages.filter(m => m.speaker === 'top').slice(-3).map(msg => (
-              <div key={msg.id} className="space-y-0.5">
-                <p className="text-xs text-muted-foreground" dir={isRTL(topLang) ? 'rtl' : 'ltr'}>{msg.original}</p>
-                <p className="text-base font-medium" dir={isRTL(bottomLang) ? 'rtl' : 'ltr'}>{msg.translated}</p>
-              </div>
-            ))}
-            {/* Messages from bottom person (show translation for top) */}
-            {messages.filter(m => m.speaker === 'bottom').slice(-3).map(msg => (
-              <div key={msg.id} className="space-y-0.5 pl-4 border-l-2 border-muted">
-                <p className="text-base font-medium" dir={isRTL(topLang) ? 'rtl' : 'ltr'}>{msg.translated}</p>
-                <p className="text-xs text-muted-foreground" dir={isRTL(bottomLang) ? 'rtl' : 'ltr'}>{msg.original}</p>
-              </div>
-            ))}
-            {activeSide === 'top' && currentTranscript && (
-              <p className="text-sm italic text-muted-foreground/60">{currentTranscript}...</p>
-            )}
-          </div>
-
-          {/* Mic button */}
-          <div className="flex justify-center">
             <Button
-              size="lg"
+              size="sm"
               variant={activeSide === 'top' ? 'destructive' : 'default'}
               onClick={activeSide === 'top' ? stopAll : startTop}
               disabled={activeSide === 'bottom' || isTranslating}
-              className="gap-2 rounded-full px-8"
+              className="gap-1.5 rounded-full"
             >
-              {activeSide === 'top' ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+              {activeSide === 'top' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
               {activeSide === 'top' ? 'Stop' : 'Sprechen'}
             </Button>
+          </div>
+
+          {/* Chronological messages for top person's view */}
+          <div className="flex-1 overflow-y-auto space-y-2">
+            {messages.slice(-6).map(msg => {
+              const isOwnMessage = msg.speaker === 'top'
+              const displayLang = isOwnMessage ? topLang : topLang
+              const originalDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
+              const translatedDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
+              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+
+              return (
+                <div
+                  key={msg.id}
+                  className={`rounded-lg p-2.5 space-y-0.5 ${
+                    isOwnMessage
+                      ? 'bg-primary/10 ml-6'
+                      : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <span>{isOwnMessage ? (topLangData?.flag || '') : (bottomLangData?.flag || '')}</span>
+                    <span>{isOwnMessage ? 'Du' : 'Gegenüber'}</span>
+                    <span className="ml-auto">{time}</span>
+                  </div>
+                  {isOwnMessage ? (
+                    <>
+                      <p className="text-sm" dir={originalDir}>{msg.original}</p>
+                      <p className="text-xs text-muted-foreground" dir={translatedDir}>→ {msg.translated}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-medium" dir={translatedDir}>{msg.translated}</p>
+                      <p className="text-xs text-muted-foreground" dir={originalDir}>({msg.original})</p>
+                    </>
+                  )}
+                </div>
+              )
+            })}
+            {activeSide === 'top' && currentTranscript && (
+              <p className="text-sm italic text-muted-foreground/60 ml-6">{currentTranscript}...</p>
+            )}
           </div>
         </div>
 
         {/* Divider */}
-        <div className="relative -my-1.5 flex items-center justify-center z-10">
+        <div className="relative flex items-center justify-center z-10 py-1">
           <div className="absolute inset-x-0 border-t border-dashed border-border" />
           {messages.length > 0 && (
             <button
@@ -212,44 +237,61 @@ export default function ConversationPage() {
               : 'border-border'
           }`}
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-muted-foreground">
               {bottomLangData?.flag} {bottomLangData?.name}
             </span>
-          </div>
-
-          {/* Messages for this side */}
-          <div className="flex-1 overflow-y-auto space-y-2 mb-3">
-            {/* Messages from top person (show translation for bottom) */}
-            {messages.filter(m => m.speaker === 'top').slice(-3).map(msg => (
-              <div key={msg.id} className="space-y-0.5 pl-4 border-l-2 border-muted">
-                <p className="text-base font-medium" dir={isRTL(bottomLang) ? 'rtl' : 'ltr'}>{msg.translated}</p>
-                <p className="text-xs text-muted-foreground" dir={isRTL(topLang) ? 'rtl' : 'ltr'}>{msg.original}</p>
-              </div>
-            ))}
-            {messages.filter(m => m.speaker === 'bottom').slice(-3).map(msg => (
-              <div key={msg.id} className="space-y-0.5">
-                <p className="text-xs text-muted-foreground" dir={isRTL(bottomLang) ? 'rtl' : 'ltr'}>{msg.original}</p>
-                <p className="text-base font-medium" dir={isRTL(topLang) ? 'rtl' : 'ltr'}>{msg.translated}</p>
-              </div>
-            ))}
-            {activeSide === 'bottom' && currentTranscript && (
-              <p className="text-sm italic text-muted-foreground/60">{currentTranscript}...</p>
-            )}
-          </div>
-
-          {/* Mic button */}
-          <div className="flex justify-center">
             <Button
-              size="lg"
+              size="sm"
               variant={activeSide === 'bottom' ? 'destructive' : 'default'}
               onClick={activeSide === 'bottom' ? stopAll : startBottom}
               disabled={activeSide === 'top' || isTranslating}
-              className="gap-2 rounded-full px-8"
+              className="gap-1.5 rounded-full"
             >
-              {activeSide === 'bottom' ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
               {activeSide === 'bottom' ? 'Stop' : 'Sprechen'}
             </Button>
+          </div>
+
+          {/* Chronological messages for bottom person's view */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-2">
+            {messages.slice(-6).map(msg => {
+              const isOwnMessage = msg.speaker === 'bottom'
+              const originalDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
+              const translatedDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
+              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+
+              return (
+                <div
+                  key={msg.id}
+                  className={`rounded-lg p-2.5 space-y-0.5 ${
+                    isOwnMessage
+                      ? 'bg-primary/10 ml-6'
+                      : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <span>{isOwnMessage ? (bottomLangData?.flag || '') : (topLangData?.flag || '')}</span>
+                    <span>{isOwnMessage ? 'Du' : 'Gegenüber'}</span>
+                    <span className="ml-auto">{time}</span>
+                  </div>
+                  {isOwnMessage ? (
+                    <>
+                      <p className="text-sm" dir={originalDir}>{msg.original}</p>
+                      <p className="text-xs text-muted-foreground" dir={translatedDir}>→ {msg.translated}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-medium" dir={translatedDir}>{msg.translated}</p>
+                      <p className="text-xs text-muted-foreground" dir={originalDir}>({msg.original})</p>
+                    </>
+                  )}
+                </div>
+              )
+            })}
+            {activeSide === 'bottom' && currentTranscript && (
+              <p className="text-sm italic text-muted-foreground/60 ml-6">{currentTranscript}...</p>
+            )}
           </div>
         </div>
       </div>

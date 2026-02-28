@@ -1,5 +1,5 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText } from 'lucide-react'
-import { useRef, useCallback, useState } from 'react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+import { useRef, useCallback, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
@@ -9,6 +9,7 @@ import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
+import { getLatencyHistory, getAverageLatency, type LatencyReport } from '@/lib/latency'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -29,6 +30,19 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
+
+  // Poll latency stats while recording
+  useEffect(() => {
+    if (!session.isRecording) return
+    const interval = setInterval(() => {
+      const history = getLatencyHistory()
+      const last = history.length > 0 ? history[history.length - 1] : null
+      const avg = getAverageLatency()
+      setLatency({ last, avg })
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [session.isRecording])
 
   const getProtocolMeta = useCallback(() => {
     const now = new Date()
@@ -254,6 +268,26 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
                 <span className="text-sm text-muted-foreground/60 truncate ml-2">
                   {session.currentTranscript}
                 </span>
+              )}
+            </div>
+          )}
+
+          {/* Pipeline latency stats */}
+          {session.isRecording && latency.last && (
+            <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-muted/50 rounded-lg text-[11px] font-mono text-muted-foreground">
+              <Activity className="h-3 w-3 shrink-0" />
+              <span title="Speech-to-Text">STT {latency.last.sttMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Translation">Translate {latency.last.translateMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Total pipeline" className="font-semibold text-foreground/70">
+                Σ {latency.last.totalMs.toFixed(0)}ms
+              </span>
+              {latency.avg && (
+                <>
+                  <span className="text-muted-foreground/30">|</span>
+                  <span title="Durchschnitt">ø {latency.avg.totalMs.toFixed(0)}ms</span>
+                </>
               )}
             </div>
           )}

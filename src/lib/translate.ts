@@ -73,6 +73,10 @@ async function translateWithGoogle(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
+  if (!GOOGLE_API_KEY) {
+    throw new Error('Google API key not configured')
+  }
+
   const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${GOOGLE_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
