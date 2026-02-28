@@ -48,10 +48,10 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
                     ? 'bg-accent text-accent-foreground font-medium'
                     : 'text-muted-foreground hover:bg-accent/50'
                 }`}
-                title={pack.description}
+                title={t(pack.description)}
               >
                 <Icon className="h-3 w-3" />
-                {pack.name}
+                {t(pack.name)}
               </button>
             )
           })}
@@ -61,7 +61,7 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
         <div className="space-y-3">
           {Object.entries(grouped).map(([category, phrases]) => (
             <div key={category}>
-              <h4 className="text-xs font-medium text-muted-foreground mb-1.5">{category}</h4>
+              <h4 className="text-xs font-medium text-muted-foreground mb-1.5">{t(category)}</h4>
               <div className="flex flex-wrap gap-1.5">
                 {phrases.map(phrase => (
                   <button

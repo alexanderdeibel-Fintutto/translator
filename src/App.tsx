@@ -23,7 +23,7 @@ const CameraTranslatePage = lazy(() => import('@/pages/CameraTranslatePage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 if (import.meta.env.DEV) {
-  console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 gesetzt' : '\u2717 fehlt')
+  console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
 }
 
 function PageLoader() {
