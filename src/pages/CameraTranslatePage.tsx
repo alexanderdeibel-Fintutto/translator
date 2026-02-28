@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Camera, Image, Loader2, ArrowRightLeft, Copy, Check, Volume2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -22,12 +22,22 @@ export default function CameraTranslatePage() {
   const [copied, setCopied] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>()
   const tts = useSpeechSynthesis()
+
+  // Revoke old object URLs on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const extractTextFromImage = useCallback(async (file: File): Promise<string> => {
     const apiKey = getGoogleApiKey()
     if (!apiKey) {
-      throw new Error('Kamera-Übersetzung benötigt einen Google Cloud API-Key. Bitte in den Einstellungen konfigurieren.')
+      throw new Error('CAMERA_NO_API_KEY')
     }
 
     // Convert file to base64
@@ -46,19 +56,20 @@ export default function CameraTranslatePage() {
     })
 
     if (!response.ok) {
-      throw new Error('Texterkennung fehlgeschlagen')
+      throw new Error('CAMERA_OCR_FAILED')
     }
 
     const data = await response.json()
     const text = data.responses?.[0]?.fullTextAnnotation?.text
     if (!text) {
-      throw new Error('Kein Text im Bild erkannt')
+      throw new Error('CAMERA_NO_TEXT')
     }
     return text.trim()
   }, [])
 
   const handleImageCapture = useCallback(async (file: File) => {
-    // Show preview
+    // Revoke previous object URL to prevent memory leak
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
     const url = URL.createObjectURL(file)
     setPreviewUrl(url)
     setError(null)
@@ -80,6 +91,9 @@ export default function CameraTranslatePage() {
       const errorMap: Record<string, string> = {
         OFFLINE_NO_MODEL: t('error.offlineNoModel'),
         ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
+        CAMERA_NO_API_KEY: t('error.cameraNoApiKey'),
+        CAMERA_OCR_FAILED: t('error.cameraOcrFailed'),
+        CAMERA_NO_TEXT: t('error.cameraNoText'),
       }
       setError(errorMap[msg] || msg || t('error.unknown'))
     } finally {
@@ -102,9 +116,14 @@ export default function CameraTranslatePage() {
 
   const handleCopy = async () => {
     if (!translatedText) return
-    await navigator.clipboard.writeText(translatedText)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(translatedText)
+      setCopied(true)
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard API not available (insecure context)
+    }
   }
 
   const handleSpeak = () => {
@@ -158,20 +177,17 @@ export default function CameraTranslatePage() {
           onChange={handleFileChange}
           className="hidden"
         />
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
         <Button
           size="lg"
           variant="outline"
-          onClick={() => {
-            // Open file picker without capture (for gallery)
-            const input = document.createElement('input')
-            input.type = 'file'
-            input.accept = 'image/*'
-            input.onchange = (e) => {
-              const file = (e.target as HTMLInputElement).files?.[0]
-              if (file) handleImageCapture(file)
-            }
-            input.click()
-          }}
+          onClick={() => galleryInputRef.current?.click()}
           className="gap-2"
           disabled={isExtracting || isTranslating}
         >

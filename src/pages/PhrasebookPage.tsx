@@ -6,11 +6,13 @@ import { getMigrantPhrases } from '@/lib/offline/phrase-packs'
 import { translateText } from '@/lib/translate'
 import { getLanguageByCode, isRTL, LANGUAGES } from '@/lib/languages'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 
 // Target languages commonly needed by migrants
 const MIGRANT_LANGUAGES = ['ar', 'fa', 'ps', 'ku', 'ti', 'am', 'so', 'ur', 'bn', 'sw', 'sq', 'tr', 'ru', 'uk', 'en', 'fr']
 
 export default function PhrasebookPage() {
+  const { t } = useI18n()
   const [targetLang, setTargetLang] = useState('ar')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [translations, setTranslations] = useState<Record<string, string>>({})
@@ -82,10 +84,10 @@ export default function PhrasebookPage() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          <span className="gradient-text-translator">Phrasebook</span>
+          <span className="gradient-text-translator">{t('phrasebook.title')}</span>
         </h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Wichtige Saetze fuer Behoerden, Arzt, Wohnung, Arbeit, Schule, Polizei und Alltag. Phrase antippen zum Uebersetzen und Vorlesen.
+          {t('phrasebook.subtitle')}
         </p>
       </div>
 
@@ -115,7 +117,7 @@ export default function PhrasebookPage() {
             !activeCategory ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground hover:bg-accent/50'
           }`}
         >
-          Alle
+          {t('phrasebook.all')}
         </button>
         {categories.map(cat => (
           <button
@@ -148,7 +150,7 @@ export default function PhrasebookPage() {
             ) : (
               <>
                 <Languages className="h-3.5 w-3.5" />
-                Alle übersetzen ({untranslatedCount})
+                {t('phrasebook.translateAll')} ({untranslatedCount})
               </>
             )}
           </Button>
@@ -201,7 +203,7 @@ export default function PhrasebookPage() {
       {filteredPhrases.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p>Keine Phrasen in dieser Kategorie.</p>
+          <p>{t('phrasebook.empty')}</p>
         </div>
       )}
     </div>
