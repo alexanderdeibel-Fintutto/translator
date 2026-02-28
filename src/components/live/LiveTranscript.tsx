@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Card } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 import type { TranslationChunk } from '@/lib/session'
 import { getLanguageByCode } from '@/lib/languages'
 
@@ -10,6 +11,7 @@ interface LiveTranscriptProps {
 }
 
 export default function LiveTranscript({ chunks, currentText, isListener }: LiveTranscriptProps) {
+  const { t } = useI18n()
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,8 +26,8 @@ export default function LiveTranscript({ chunks, currentText, isListener }: Live
         {chunks.length === 0 && !currentText && (
           <p className="text-muted-foreground text-center py-8">
             {isListener
-              ? 'Warte auf Übersetzungen vom Speaker...'
-              : 'Starte die Aufnahme, um zu übersetzen...'}
+              ? t('live.waitingForSpeaker')
+              : t('live.startToTranslate')}
           </p>
         )}
 
@@ -34,7 +36,7 @@ export default function LiveTranscript({ chunks, currentText, isListener }: Live
           return (
             <div key={chunk.id} className="space-y-1">
               <p className="text-xs text-muted-foreground">
-                {langData?.flag} {new Date(chunk.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                {langData?.flag} {new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </p>
               {!isListener && (
                 <p className="text-sm text-muted-foreground">{chunk.sourceText}</p>

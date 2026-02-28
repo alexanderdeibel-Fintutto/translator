@@ -65,6 +65,18 @@ const de: TranslationStrings = {
   'translator.formal': 'Sie',
   'translator.informal': 'Du',
   'translator.shortcutHint': 'Ctrl+Enter = sofort · Esc = löschen',
+  'translator.micUnavailable': 'Spracheingabe nicht verfügbar. Bitte prüfen Sie Ihre Browser-Einstellungen und Internetverbindung.',
+  'translator.autoDetect': 'Sprache automatisch erkennen',
+  'translator.autoSpeakOn': 'Auto-Vorlesen aktiv',
+  'translator.autoSpeakOff': 'Auto-Vorlesen aus',
+  'translator.hdVoiceOn': 'HD-Stimme aktiv (Chirp 3 HD)',
+  'translator.sdVoice': 'Standard-Stimme (Neural2)',
+  'translator.formalityHint': 'Formalität — Zielsprache wechseln zu DE, FR, ES...',
+  'translator.micNotAvailable': 'Spracheingabe nicht verfügbar',
+  'translator.stopRecording': 'Aufnahme stoppen',
+  'translator.share': 'Teilen',
+  'translator.goodTranslation': 'Gute Übersetzung',
+  'translator.badTranslation': 'Schlechte Übersetzung',
 
   'translator.sentence': 'Satz',
   'translator.paragraph': 'Absatz',
@@ -97,6 +109,10 @@ const de: TranslationStrings = {
   'live.recording': 'Live-Aufnahme',
   'live.disconnected': 'Verbindung unterbrochen \u2014 Versuche erneut zu verbinden...',
   'live.downloadProtocol': 'Protokoll herunterladen',
+  'live.listenersConnected': 'Listener verbunden',
+  'live.waitingForListeners': 'Warte auf Listener... Teile den QR-Code oder Link.',
+  'live.waitingForSpeaker': 'Warte auf Übersetzungen vom Speaker...',
+  'live.startToTranslate': 'Starte die Aufnahme, um zu übersetzen...',
 
   // Conversation
   'conversation.title': 'Konversation',
@@ -106,6 +122,9 @@ const de: TranslationStrings = {
   'conversation.other': 'Gegenüber',
   'conversation.restart': 'Neu starten',
   'conversation.translating': 'Wird übersetzt...',
+  'conversation.stop': 'Stop',
+  'conversation.person1': 'Person 1',
+  'conversation.person2': 'Person 2',
 
   // Camera
   'camera.title': 'Kamera-Übersetzer',
@@ -161,6 +180,9 @@ const de: TranslationStrings = {
   'settings.safariHintText': 'Füge diese App zum Home-Bildschirm hinzu, damit deine Offline-Daten nicht nach 7 Tagen gelöscht werden. Tippe auf',
   'settings.safariHintShare': 'Teilen ↑',
   'settings.safariHintHome': 'Zum Home-Bildschirm',
+  'settings.ready': 'Bereit',
+  'settings.deleteLanguagePack': 'Sprachpaket löschen',
+  'settings.downloadPack': 'Laden',
 
   // Live Landing
   'liveLanding.title': 'Live-Modus',
@@ -239,9 +261,18 @@ const de: TranslationStrings = {
   'info.feature12Title': 'Kostenlos & Open Source',
   'info.feature12Desc': 'Keine Kosten pro Zuhörer oder Minute. PWA-Installation für schnellen Offline-Zugriff.',
 
+  // Layout
+  'layout.skipToContent': 'Zum Inhalt springen',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Startseite',
+  'header.menuClose': 'Navigation schließen',
+  'header.menuOpen': 'Navigation öffnen',
+
   // Footer
   'footer.imprint': 'Impressum',
   'footer.privacy': 'Datenschutz',
+  'footer.projectBy': 'Ein Projekt von',
 
   // Listener view
   'live.sessionEnded': 'Session beendet',

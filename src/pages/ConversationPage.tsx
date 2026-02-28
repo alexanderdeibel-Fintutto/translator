@@ -131,18 +131,18 @@ export default function ConversationPage() {
 
       {/* Language bar */}
       <div className="flex items-end justify-center gap-3">
-        <LanguageSelector value={topLang} onChange={setTopLang} label="Person 1" />
+        <LanguageSelector value={topLang} onChange={setTopLang} label={t('conversation.person1')} />
         <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0" aria-label={t('translator.swap')}>
           <ArrowUpDown className="h-4 w-4" />
         </Button>
-        <LanguageSelector value={bottomLang} onChange={setBottomLang} label="Person 2" />
+        <LanguageSelector value={bottomLang} onChange={setBottomLang} label={t('conversation.person2')} />
         <Button
           variant={autoSpeak ? 'default' : 'outline'}
           size="sm"
           onClick={() => setAutoSpeak(!autoSpeak)}
           className="mb-0.5 shrink-0 gap-1.5"
           aria-pressed={autoSpeak}
-          aria-label={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
+          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -173,7 +173,7 @@ export default function ConversationPage() {
               className="gap-1.5 rounded-full"
             >
               {activeSide === 'top' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
-              {activeSide === 'top' ? 'Stop' : t('conversation.speak')}
+              {activeSide === 'top' ? t('conversation.stop') : t('conversation.speak')}
             </Button>
           </div>
 
@@ -254,7 +254,7 @@ export default function ConversationPage() {
               className="gap-1.5 rounded-full"
             >
               {activeSide === 'bottom' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
-              {activeSide === 'bottom' ? 'Stop' : t('conversation.speak')}
+              {activeSide === 'bottom' ? t('conversation.stop') : t('conversation.speak')}
             </Button>
           </div>
 
