@@ -241,6 +241,29 @@ const strings: Record<string, string> = {
   'live.hotspotInstruction': 'Please enable Personal Hotspot in your device settings',
   'live.bleAutoDiscovery': 'Listeners find this session automatically via Bluetooth',
 
+  // Storage indicator
+  'settings.persistentActive': 'Persistent storage active — data won\'t be deleted',
+  'settings.persistentInactive': 'Data may be deleted by the browser.',
+  'settings.enableProtection': 'Enable protection',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Step {step}: Connect WiFi',
+  'live.network': 'Network',
+  'live.wifiScanInstruction': 'Listeners scan this QR code with the camera app',
+  'live.wifiAutoConnect': 'iOS 11+ and Android 10+ connect automatically',
+  'live.shareTitle': 'guidetranslator Live Translation',
+  'live.shareText': 'Join my live translation',
+  'live.sessionCodeLabel': 'Session Code',
+  'live.qrInstruction': 'Listeners scan the QR code or open the link in the browser',
+  'live.copied': 'Copied!',
+  'live.copyLink': 'Copy link',
+  'live.share': 'Share',
+  'live.connecting': 'Connecting...',
+  'live.modeBle': 'BLE Direct',
+  'live.modeHotspot': 'Hotspot Mode',
+  'live.modeLocal': 'Local Network',
+  'live.modeCloud': 'Cloud',
+
   // Error boundary
   'error.errorBoundaryTitle': 'Something went wrong',
   'error.errorBoundaryDesc': 'An unexpected error occurred. Please reload the page.',

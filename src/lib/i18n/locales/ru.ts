@@ -263,6 +263,29 @@ const strings: Record<string, string> = {
   'settings.ready': 'Готово',
   'settings.deleteLanguagePack': 'Удалить языковой пакет',
   'settings.downloadPack': 'Скачать',
+
+  // Storage indicator
+  'settings.persistentActive': 'Постоянное хранилище активно — данные не будут удалены',
+  'settings.persistentInactive': 'Данные могут быть удалены браузером.',
+  'settings.enableProtection': 'Включить защиту',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Шаг {step}: Подключение WiFi',
+  'live.network': 'Сеть',
+  'live.wifiScanInstruction': 'Слушатели сканируют этот QR-код камерой',
+  'live.wifiAutoConnect': 'iOS 11+ и Android 10+ подключаются автоматически',
+  'live.shareTitle': 'guidetranslator Живой перевод',
+  'live.shareText': 'Присоединяйтесь к моему живому переводу',
+  'live.sessionCodeLabel': 'Код сессии',
+  'live.qrInstruction': 'Слушатели сканируют QR-код или открывают ссылку в браузере',
+  'live.copied': 'Скопировано!',
+  'live.copyLink': 'Копировать ссылку',
+  'live.share': 'Поделиться',
+  'live.connecting': 'Подключение...',
+  'live.modeBle': 'BLE Напрямую',
+  'live.modeHotspot': 'Режим Hotspot',
+  'live.modeLocal': 'Локальная сеть',
+  'live.modeCloud': 'Облако',
 }
 
 export default strings

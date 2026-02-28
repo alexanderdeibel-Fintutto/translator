@@ -263,6 +263,29 @@ const strings: Record<string, string> = {
   'settings.ready': 'آماده',
   'settings.deleteLanguagePack': 'حذف بسته زبان',
   'settings.downloadPack': 'دانلود',
+
+  // Storage indicator
+  'settings.persistentActive': 'ذخیره‌سازی دائمی فعال — داده‌ها حذف نخواهند شد',
+  'settings.persistentInactive': 'داده‌ها ممکن است توسط مرورگر حذف شوند.',
+  'settings.enableProtection': 'فعال‌سازی محافظت',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'مرحله {step}: اتصال WiFi',
+  'live.network': 'شبکه',
+  'live.wifiScanInstruction': 'شنوندگان این کد QR را با برنامه دوربین اسکن می‌کنند',
+  'live.wifiAutoConnect': 'iOS 11+ و Android 10+ به‌صورت خودکار متصل می‌شوند',
+  'live.shareTitle': 'guidetranslator ترجمه زنده',
+  'live.shareText': 'به ترجمه زنده من بپیوندید',
+  'live.sessionCodeLabel': 'کد جلسه',
+  'live.qrInstruction': 'شنوندگان کد QR را اسکن کنند یا لینک را در مرورگر باز کنند',
+  'live.copied': 'کپی شد!',
+  'live.copyLink': 'کپی لینک',
+  'live.share': 'اشتراک‌گذاری',
+  'live.connecting': 'در حال اتصال...',
+  'live.modeBle': 'BLE مستقیم',
+  'live.modeHotspot': 'حالت هات‌اسپات',
+  'live.modeLocal': 'شبکه محلی',
+  'live.modeCloud': 'ابری',
 }
 
 export default strings

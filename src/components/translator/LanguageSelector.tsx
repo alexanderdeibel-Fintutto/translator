@@ -2,6 +2,7 @@ import { ChevronDown, Search } from 'lucide-react'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { LANGUAGES, type Language } from '@/lib/languages'
 import { cn } from '@/lib/utils'
+import { useI18n } from '@/context/I18nContext'
 
 interface LanguageSelectorProps {
   value: string
@@ -10,6 +11,7 @@ interface LanguageSelectorProps {
 }
 
 export default function LanguageSelector({ value, onChange, label }: LanguageSelectorProps) {
+  const { t } = useI18n()
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
@@ -94,11 +96,11 @@ export default function LanguageSelector({ value, onChange, label }: LanguageSel
               <input
                 ref={searchRef}
                 type="text"
-                placeholder="Sprache suchen..."
+                placeholder={t('translator.searchLang')}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-full pl-8 pr-3 py-1.5 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                aria-label="Sprache suchen"
+                aria-label={t('translator.searchLang')}
               />
             </div>
           </div>
@@ -129,7 +131,7 @@ export default function LanguageSelector({ value, onChange, label }: LanguageSel
             ))}
             {filtered.length === 0 && (
               <div className="px-3 py-4 text-sm text-muted-foreground text-center">
-                Keine Sprache gefunden
+                {t('translator.noLangFound')}
               </div>
             )}
           </div>

@@ -263,6 +263,29 @@ const strings: Record<string, string> = {
   'settings.ready': 'Готово',
   'settings.deleteLanguagePack': 'Видалити мовний пакет',
   'settings.downloadPack': 'Завантажити',
+
+  // Storage indicator
+  'settings.persistentActive': 'Постійне сховище активне — дані не будуть видалені',
+  'settings.persistentInactive': 'Дані можуть бути видалені браузером.',
+  'settings.enableProtection': 'Увімкнути захист',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Крок {step}: Підключення WiFi',
+  'live.network': 'Мережа',
+  'live.wifiScanInstruction': 'Слухачі сканують цей QR-код камерою',
+  'live.wifiAutoConnect': 'iOS 11+ та Android 10+ підключаються автоматично',
+  'live.shareTitle': 'guidetranslator Живий переклад',
+  'live.shareText': 'Приєднуйтесь до мого живого перекладу',
+  'live.sessionCodeLabel': 'Код сесії',
+  'live.qrInstruction': 'Слухачі сканують QR-код або відкривають посилання в браузері',
+  'live.copied': 'Скопійовано!',
+  'live.copyLink': 'Копіювати посилання',
+  'live.share': 'Поділитися',
+  'live.connecting': 'Підключення...',
+  'live.modeBle': 'BLE Напряму',
+  'live.modeHotspot': 'Режим Hotspot',
+  'live.modeLocal': 'Локальна мережа',
+  'live.modeCloud': 'Хмара',
 }
 
 export default strings

@@ -263,6 +263,29 @@ const strings: Record<string, string> = {
   'settings.ready': 'Hazır',
   'settings.deleteLanguagePack': 'Dil paketini sil',
   'settings.downloadPack': 'İndir',
+
+  // Storage indicator
+  'settings.persistentActive': 'Kalıcı depolama aktif — veriler silinmeyecek',
+  'settings.persistentInactive': 'Veriler tarayıcı tarafından silinebilir.',
+  'settings.enableProtection': 'Korumayı etkinleştir',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Adım {step}: WiFi bağlantısı',
+  'live.network': 'Ağ',
+  'live.wifiScanInstruction': 'Dinleyiciler bu QR kodu kamera uygulamasıyla tarıyor',
+  'live.wifiAutoConnect': 'iOS 11+ ve Android 10+ otomatik bağlanır',
+  'live.shareTitle': 'guidetranslator Canlı Çeviri',
+  'live.shareText': 'Canlı çevirime katıl',
+  'live.sessionCodeLabel': 'Oturum Kodu',
+  'live.qrInstruction': 'Dinleyiciler QR kodu tarar veya bağlantıyı tarayıcıda açar',
+  'live.copied': 'Kopyalandı!',
+  'live.copyLink': 'Bağlantıyı kopyala',
+  'live.share': 'Paylaş',
+  'live.connecting': 'Bağlanıyor...',
+  'live.modeBle': 'BLE Direkt',
+  'live.modeHotspot': 'Hotspot Modu',
+  'live.modeLocal': 'Yerel Ağ',
+  'live.modeCloud': 'Bulut',
 }
 
 export default strings

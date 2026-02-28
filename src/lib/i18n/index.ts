@@ -299,6 +299,29 @@ const de: TranslationStrings = {
   'live.hotspotInstruction': 'Bitte aktiviere den Persönlichen Hotspot in den Einstellungen',
   'live.bleAutoDiscovery': 'Listener finden diese Session automatisch per Bluetooth',
 
+  // Storage indicator
+  'settings.persistentActive': 'Persistent Storage aktiv — Daten werden nicht gelöscht',
+  'settings.persistentInactive': 'Daten können vom Browser gelöscht werden.',
+  'settings.enableProtection': 'Schutz aktivieren',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Schritt {step}: WLAN verbinden',
+  'live.network': 'Netzwerk',
+  'live.wifiScanInstruction': 'Listener scannen diesen QR-Code mit der Kamera-App',
+  'live.wifiAutoConnect': 'iOS 11+ und Android 10+ verbinden automatisch',
+  'live.shareTitle': 'guidetranslator Live-Übersetzung',
+  'live.shareText': 'Tritt meiner Live-Übersetzung bei',
+  'live.sessionCodeLabel': 'Session-Code',
+  'live.qrInstruction': 'Listener scannen den QR-Code oder öffnen den Link im Browser',
+  'live.copied': 'Kopiert!',
+  'live.copyLink': 'Link kopieren',
+  'live.share': 'Teilen',
+  'live.connecting': 'Verbindung wird hergestellt...',
+  'live.modeBle': 'BLE Direkt',
+  'live.modeHotspot': 'Hotspot-Modus',
+  'live.modeLocal': 'Lokales Netzwerk',
+  'live.modeCloud': 'Cloud',
+
   // Error boundary
   'error.errorBoundaryTitle': 'Etwas ist schiefgelaufen',
   'error.errorBoundaryDesc': 'Ein unerwarteter Fehler ist aufgetreten. Bitte lade die Seite neu.',

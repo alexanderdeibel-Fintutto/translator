@@ -263,6 +263,29 @@ const strings: Record<string, string> = {
   'settings.ready': 'Listo',
   'settings.deleteLanguagePack': 'Eliminar paquete de idioma',
   'settings.downloadPack': 'Descargar',
+
+  // Storage indicator
+  'settings.persistentActive': 'Almacenamiento persistente activo — los datos no se eliminarán',
+  'settings.persistentInactive': 'Los datos pueden ser eliminados por el navegador.',
+  'settings.enableProtection': 'Activar protección',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Paso {step}: Conectar WiFi',
+  'live.network': 'Red',
+  'live.wifiScanInstruction': 'Los oyentes escanean este código QR con la cámara',
+  'live.wifiAutoConnect': 'iOS 11+ y Android 10+ se conectan automáticamente',
+  'live.shareTitle': 'guidetranslator Traducción en vivo',
+  'live.shareText': 'Únete a mi traducción en vivo',
+  'live.sessionCodeLabel': 'Código de sesión',
+  'live.qrInstruction': 'Los oyentes escanean el código QR o abren el enlace en el navegador',
+  'live.copied': '¡Copiado!',
+  'live.copyLink': 'Copiar enlace',
+  'live.share': 'Compartir',
+  'live.connecting': 'Conectando...',
+  'live.modeBle': 'BLE Directo',
+  'live.modeHotspot': 'Modo Hotspot',
+  'live.modeLocal': 'Red local',
+  'live.modeCloud': 'Nube',
 }
 
 export default strings

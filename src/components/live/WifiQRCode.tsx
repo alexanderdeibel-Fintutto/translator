@@ -2,6 +2,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { Wifi, Smartphone } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { generateWifiQRString } from '@/lib/hotspot-utils'
+import { useI18n } from '@/context/I18nContext'
 
 interface WifiQRCodeProps {
   ssid: string
@@ -16,6 +17,7 @@ interface WifiQRCodeProps {
  * shows a "Join network?" prompt — no manual WiFi settings needed.
  */
 export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps) {
+  const { t } = useI18n()
   const wifiString = generateWifiQRString(ssid, password)
 
   return (
@@ -25,7 +27,7 @@ export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps
         <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400">
           <Wifi className="h-4 w-4" />
           <span className="text-sm font-medium">
-            Schritt {step}: WLAN verbinden
+            {t('live.wifiStep').replace('{step}', String(step))}
           </span>
         </div>
 
@@ -36,7 +38,7 @@ export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps
 
         {/* Network info */}
         <div className="text-center space-y-1">
-          <p className="text-xs text-muted-foreground">Netzwerk</p>
+          <p className="text-xs text-muted-foreground">{t('live.network')}</p>
           <p className="font-mono font-bold text-sm">{ssid}</p>
         </div>
 
@@ -44,10 +46,10 @@ export default function WifiQRCode({ ssid, password, step = 1 }: WifiQRCodeProps
         <div className="text-center space-y-2 max-w-[260px]">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Smartphone className="h-3.5 w-3.5 shrink-0" />
-            <span>Listener scannen diesen QR-Code mit der Kamera-App</span>
+            <span>{t('live.wifiScanInstruction')}</span>
           </div>
           <p className="text-[10px] text-muted-foreground/60">
-            iOS 11+ und Android 10+ verbinden automatisch
+            {t('live.wifiAutoConnect')}
           </p>
         </div>
       </div>
