@@ -5,6 +5,7 @@ import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
 import { translateText } from '@/lib/translate'
+import { markSTTEnd, markTranslateStart, markTranslateEnd, markBroadcast } from '@/lib/latency'
 import { getLanguageByCode } from '@/lib/languages'
 import { generateSessionCode } from '@/lib/session'
 import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
@@ -105,6 +106,7 @@ export function useLiveSession() {
   const handleSpeechResult = useCallback(async (text: string) => {
     if (isTranslatingRef.current || !text.trim()) return
     isTranslatingRef.current = true
+    markSTTEnd()
 
     try {
       // Get unique target languages from connected listeners
@@ -114,6 +116,7 @@ export function useLiveSession() {
       if (targetLangs.length === 0) return
 
       // Translate to all requested languages in parallel
+      markTranslateStart()
       const results = await Promise.all(
         targetLangs.map(async (targetLang) => {
           const result = await translateText(text, sourceLanguage, targetLang)
@@ -128,11 +131,13 @@ export function useLiveSession() {
           } satisfies TranslationChunk
         })
       )
+      markTranslateEnd()
 
       // Broadcast each translation
       for (const chunk of results) {
         broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
       }
+      markBroadcast()
 
       // Add to local history (one entry per source text)
       if (results.length > 0) {
@@ -148,6 +153,7 @@ export function useLiveSession() {
 
   const startRecording = useCallback(() => {
     const lang = getLanguageByCode(sourceLanguage)
+    // markSTTStart is called per-utterance via handleSpeechResult flow
     recognition.startListening(lang?.speechCode || sourceLanguage, handleSpeechResult)
   }, [sourceLanguage, recognition, handleSpeechResult])
 

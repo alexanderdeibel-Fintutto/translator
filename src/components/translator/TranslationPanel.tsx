@@ -11,6 +11,8 @@ import {
   Loader2,
   UserCheck,
   User,
+  ThumbsUp,
+  ThumbsDown,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -45,6 +47,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const [isTranslating, setIsTranslating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   const [autoSpeak, setAutoSpeak] = useState(() => {
     const saved = localStorage.getItem('translator-auto-speak')
     return saved !== null ? saved === 'true' : true
@@ -127,6 +130,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setTranslatedText(finalText)
       setMatchScore(result.match)
       setProvider(result.provider)
+      setFeedback(null)
 
       // Auto-speak via refs to avoid re-render dependency loop
       if (autoSpeakRef.current && finalText) {
@@ -451,6 +455,24 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 {translatedText.length} {t('translator.chars')}
               </span>
               <div className="flex items-center gap-2">
+                {translatedText && (
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
+                      className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      title="Gute Übersetzung"
+                    >
+                      <ThumbsUp className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
+                      className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      title="Schlechte Übersetzung"
+                    >
+                      <ThumbsDown className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
                 {provider && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     provider === 'google' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
