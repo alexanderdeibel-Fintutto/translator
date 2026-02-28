@@ -13,6 +13,7 @@ import {
   User,
   ThumbsUp,
   ThumbsDown,
+  Share2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -206,6 +207,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleShare = async () => {
+    if (!translatedText || !navigator.share) return
+    try {
+      await navigator.share({
+        text: `${sourceText}\n\n→ ${translatedText}`,
+      })
+    } catch {
+      // user cancelled share dialog
+    }
+  }
+
   const handleSpeakSource = () => {
     if (sourceSpeech.isSpeaking) {
       sourceSpeech.stop()
@@ -385,6 +397,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
+              aria-label={t('translator.placeholder')}
             />
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
@@ -431,11 +444,23 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
                   </Button>
                 )}
+                {translatedText && typeof navigator.share === 'function' && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleShare}
+                    title="Teilen"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </div>
             <div
               className="w-full min-h-[200px] text-base leading-relaxed"
               dir={isRTL(targetLang) ? 'rtl' : 'ltr'}
+              aria-live="polite"
+              aria-label={t('translator.result')}
             >
               {isTranslating ? (
                 <div className="flex items-center gap-2 text-muted-foreground">

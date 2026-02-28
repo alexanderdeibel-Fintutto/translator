@@ -48,7 +48,7 @@ export default function Header() {
   }, [location.pathname])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
       <div className="container flex h-14 items-center gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <div className="h-8 w-8 rounded-lg gradient-translator flex items-center justify-center">
@@ -58,7 +58,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1 ml-4">
+        <nav className="hidden md:flex items-center gap-1 ml-4" aria-label="Hauptnavigation">
           {NAV_ITEMS.map(item => (
             <Link
               key={item.path}
@@ -88,7 +88,7 @@ export default function Header() {
 
           {mobileMenuOpen && (
             <div className="absolute top-14 left-0 right-0 bg-background border-b border-border shadow-lg z-50 animate-in slide-in-from-top-2 duration-200">
-              <nav className="container py-2 flex flex-col">
+              <nav className="container py-2 flex flex-col" aria-label="Mobile Navigation">
                 {NAV_ITEMS.map(item => (
                   <Link
                     key={item.path}
