@@ -18,6 +18,9 @@ export interface TranslationResult {
 const cache = new Map<string, { result: TranslationResult; timestamp: number }>()
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
+// In-flight request dedup: concurrent identical requests share a single promise
+const inflight = new Map<string, Promise<TranslationResult>>()
+
 // Circuit breaker state per provider
 interface CircuitState {
   failCount: number
@@ -216,6 +219,26 @@ export async function translateText(
   if (memCached && Date.now() - memCached.timestamp < CACHE_TTL) {
     return memCached.result
   }
+
+  // 1b. Deduplicate concurrent identical requests
+  const existing = inflight.get(cacheKey)
+  if (existing) return existing
+
+  const promise = translateTextInner(text, sourceLang, targetLang, cacheKey)
+  inflight.set(cacheKey, promise)
+  try {
+    return await promise
+  } finally {
+    inflight.delete(cacheKey)
+  }
+}
+
+async function translateTextInner(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+  cacheKey: string,
+): Promise<TranslationResult> {
 
   // 2. IndexedDB persistent cache (30-day TTL)
   try {
