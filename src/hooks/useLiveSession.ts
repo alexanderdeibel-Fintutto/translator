@@ -91,11 +91,11 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
-    // Translate to all requested languages in parallel
-    const results = await Promise.all(
+    // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+    const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
-        return {
+        const chunk: TranslationChunk = {
           id: generateChunkId(),
           sourceText: text,
           translatedText: result.translatedText,
@@ -103,11 +103,16 @@ export function useLiveSession() {
           targetLanguage: targetLang,
           isFinal: true,
           timestamp: Date.now(),
-        } satisfies TranslationChunk
+        }
+        return chunk
       })
     )
 
-    // Broadcast each translation
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
+      .map(r => r.value)
+
+    // Broadcast each successful translation
     for (const chunk of results) {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }

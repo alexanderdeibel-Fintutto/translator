@@ -118,6 +118,27 @@ function getVoiceConfig(speechCode: string, quality: VoiceQuality = 'neural2') {
   return { config: { languageCode: speechCode, name: '' }, useBeta: false }
 }
 
+// Prefetch audio into cache without playing — returns silently on error
+const prefetchInFlight = new Set<string>()
+
+export function prefetchCloudTTS(
+  text: string,
+  speechCode: string,
+  quality: VoiceQuality = 'neural2',
+): void {
+  const key = `${text}|${speechCode}|${quality}`
+  if (prefetchInFlight.has(key)) return
+  prefetchInFlight.add(key)
+
+  speakWithCloudTTS(text, speechCode, quality)
+    .then(audio => {
+      // Audio is now cached in IndexedDB — dispose the element
+      URL.revokeObjectURL(audio.src)
+    })
+    .catch(() => {})
+    .finally(() => prefetchInFlight.delete(key))
+}
+
 export async function speakWithCloudTTS(
   text: string,
   speechCode: string,
