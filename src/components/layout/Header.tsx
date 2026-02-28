@@ -6,15 +6,14 @@ import { cn } from '@/lib/utils'
 import { useOffline } from '@/context/OfflineContext'
 import { useI18n } from '@/context/I18nContext'
 import { UI_LANGUAGES, type UILanguage } from '@/lib/i18n'
+import { useTheme } from '@/hooks/useTheme'
 
 export default function Header() {
   const location = useLocation()
   const { networkMode } = useOffline()
   const { t, uiLang, setUILang } = useI18n()
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return document.documentElement.classList.contains('dark')
-  })
+  const { theme, toggle: toggleTheme } = useTheme()
+  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
@@ -28,21 +27,6 @@ export default function Header() {
     { label: t('nav.phrasebook'), path: '/phrasebook' },
     { label: t('nav.info'), path: '/info' },
   ]
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
-  }, [isDark])
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved === 'dark') setIsDark(true)
-    else if (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) setIsDark(true)
-  }, [])
 
   // Close menus on outside click
   useEffect(() => {
@@ -213,7 +197,7 @@ export default function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsDark(!isDark)}
+            onClick={toggleTheme}
             title={isDark ? t('theme.light') : t('theme.dark')}
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

@@ -3,8 +3,7 @@
 import { getCachedTranslation, cacheTranslation } from './offline/translation-cache'
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
-
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || ''
+import { getGoogleApiKey } from './api-key'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'
@@ -73,11 +72,11 @@ async function translateWithGoogle(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  if (!GOOGLE_API_KEY) {
+  if (!getGoogleApiKey()) {
     throw new Error('Google API key not configured')
   }
 
-  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${GOOGLE_API_KEY}`, {
+  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

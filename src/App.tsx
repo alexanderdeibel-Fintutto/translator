@@ -15,9 +15,11 @@ import DatenschutzPage from '@/pages/DatenschutzPage'
 import PhrasebookPage from '@/pages/PhrasebookPage'
 import ConversationPage from '@/pages/ConversationPage'
 import CameraTranslatePage from '@/pages/CameraTranslatePage'
+import NotFoundPage from '@/pages/NotFoundPage'
+import { hasGoogleApiKey } from '@/lib/api-key'
 
 if (import.meta.env.DEV) {
-  console.log('[Translator] Cloud TTS API Key:', import.meta.env.VITE_GOOGLE_TTS_API_KEY ? '\u2713 gesetzt' : '\u2717 fehlt')
+  console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 gesetzt' : '\u2717 fehlt')
 }
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
                 <Route path="impressum" element={<ImpressumPage />} />
                 <Route path="datenschutz" element={<DatenschutzPage />} />
                 <Route path="phrasebook" element={<PhrasebookPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
             <Toaster position="top-right" richColors />

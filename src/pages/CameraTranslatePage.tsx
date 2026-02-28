@@ -7,6 +7,7 @@ import { translateText } from '@/lib/translate'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useI18n } from '@/context/I18nContext'
+import { getGoogleApiKey } from '@/lib/api-key'
 
 export default function CameraTranslatePage() {
   const { t } = useI18n()
@@ -24,7 +25,7 @@ export default function CameraTranslatePage() {
   const tts = useSpeechSynthesis()
 
   const extractTextFromImage = useCallback(async (file: File): Promise<string> => {
-    const apiKey = import.meta.env.VITE_GOOGLE_TTS_API_KEY
+    const apiKey = getGoogleApiKey()
     if (!apiKey) {
       throw new Error('Kamera-Übersetzung benötigt einen Google Cloud API-Key. Bitte in den Einstellungen konfigurieren.')
     }

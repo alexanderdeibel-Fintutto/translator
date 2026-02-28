@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Download, Trash2, Wifi, WifiOff, Mic, Loader2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
@@ -11,6 +11,7 @@ import { getTTSCacheStats, clearTTSCache } from '@/lib/offline/tts-cache'
 // Dynamic import to avoid mixed static/dynamic import warning (stt.ts imports dynamically)
 const sttEngine = () => import('@/lib/offline/stt-engine')
 import { checkOfflineSupport, isIOSSafariNotStandalone } from '@/lib/offline/storage-manager'
+import { getGoogleApiKey, setGoogleApiKey, hasGoogleApiKey } from '@/lib/api-key'
 
 export default function SettingsPage() {
   const { networkMode, isPersistent, storageUsed, storagePercent, requestPersistence, refreshModels } = useOffline()
@@ -23,11 +24,16 @@ export default function SettingsPage() {
   const [whisperProgress, setWhisperProgress] = useState(0)
   const [offlineSupport, setOfflineSupport] = useState<ReturnType<typeof checkOfflineSupport> | null>(null)
   const [showSafariHint, setShowSafariHint] = useState(false)
+  const [apiKey, setApiKey] = useState('')
+  const [showApiKey, setShowApiKey] = useState(false)
+  const [apiKeySaved, setApiKeySaved] = useState(false)
+  const apiKeyInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadData()
     setOfflineSupport(checkOfflineSupport())
     setShowSafariHint(isIOSSafariNotStandalone())
+    setApiKey(getGoogleApiKey())
   }, [])
 
   async function loadData() {
@@ -57,6 +63,12 @@ export default function SettingsPage() {
   const handleClearTTSCache = async () => {
     await clearTTSCache()
     await loadData()
+  }
+
+  const handleSaveApiKey = () => {
+    setGoogleApiKey(apiKey)
+    setApiKeySaved(true)
+    setTimeout(() => setApiKeySaved(false), 2000)
   }
 
   const handleDownloadWhisper = async () => {
@@ -153,6 +165,51 @@ export default function SettingsPage() {
             isPersistent={isPersistent}
             onRequestPersistence={requestPersistence}
           />
+        </CardContent>
+      </Card>
+
+      {/* API Key */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Key className="h-4 w-4" />
+            Google Cloud API-Key
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Für Cloud-Übersetzung, TTS (Neural2/Chirp) und Kamera-OCR.
+            Ohne Key werden kostenlose Alternativen genutzt.
+          </p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                ref={apiKeyInputRef}
+                type={showApiKey ? 'text' : 'password'}
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                placeholder="AIza..."
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm pr-10 font-mono"
+              />
+              <button
+                type="button"
+                onClick={() => setShowApiKey(!showApiKey)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            <Button size="sm" onClick={handleSaveApiKey} className="gap-1.5 shrink-0">
+              {apiKeySaved ? <Check className="h-3.5 w-3.5" /> : <Key className="h-3.5 w-3.5" />}
+              {apiKeySaved ? 'Gespeichert' : 'Speichern'}
+            </Button>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className={`h-2 w-2 rounded-full ${hasGoogleApiKey() ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`} />
+            <span className="text-muted-foreground">
+              {hasGoogleApiKey() ? 'API-Key konfiguriert — Cloud-Features aktiv' : 'Kein API-Key — nur kostenlose Provider'}
+            </span>
+          </div>
         </CardContent>
       </Card>
 

@@ -176,7 +176,6 @@ export default function ConversationPage() {
           <div className="flex-1 overflow-y-auto space-y-2">
             {messages.slice(-6).map(msg => {
               const isOwnMessage = msg.speaker === 'top'
-              const displayLang = isOwnMessage ? topLang : topLang
               const originalDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
               const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
