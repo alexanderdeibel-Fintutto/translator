@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MessageSquare, Ship, Globe, Mountain } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 import { getPhrasePacks, type PhrasePack } from '@/lib/offline/phrase-packs'
 
 interface QuickPhrasesProps {
@@ -14,6 +15,7 @@ const PACK_ICONS: Record<string, typeof Globe> = {
 }
 
 export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
+  const { t } = useI18n()
   const packs = getPhrasePacks()
   const [activePackId, setActivePackId] = useState(packs[0]?.id || 'common')
 
@@ -30,8 +32,8 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          Häufige Sätze
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          {t('phrases.title')}
         </CardTitle>
         {/* Pack selector tabs */}
         <div className="flex gap-1 mt-2">

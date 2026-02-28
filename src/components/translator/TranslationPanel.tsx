@@ -303,7 +303,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   const handleMicToggle = () => {
     if (!micSupported) {
-      setMicWarning('Spracheingabe nicht verfügbar. Bitte prüfen Sie Ihre Browser-Einstellungen und Internetverbindung.')
+      setMicWarning(t('translator.micUnavailable'))
       setTimeout(() => setMicWarning(null), 5000)
       return
     }
@@ -474,7 +474,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
             className="mb-0.5 shrink-0 text-xs"
             aria-pressed={autoDetect}
-            aria-label="Sprache automatisch erkennen"
+            aria-label={t('translator.autoDetect')}
           >
             {t('translator.auto')}
           </Button>
@@ -500,7 +500,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
           aria-pressed={autoSpeak}
-          aria-label={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
+          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -511,7 +511,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
           aria-pressed={hdVoice}
-          aria-label={hdVoice ? 'HD-Stimme aktiv (Chirp 3 HD)' : 'Standard-Stimme (Neural2)'}
+          aria-label={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
@@ -536,7 +536,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             className={`mb-0.5 shrink-0 gap-1.5 ${!formalityActive ? 'opacity-50' : ''}`}
             aria-pressed={useInformal}
             aria-label={!formalityActive
-              ? 'Sie/Du — Zielsprache wechseln zu DE, FR, ES...'
+              ? t('translator.formalityHint')
               : useInformal ? t('translator.informal') : t('translator.formal')}
           >
             {useInformal ? <User className="h-3.5 w-3.5" /> : <UserCheck className="h-3.5 w-3.5" />}
@@ -564,7 +564,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
                   aria-pressed={isListening}
-                  aria-label={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
+                  aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
@@ -672,7 +672,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleShare}
-                    aria-label="Teilen"
+                    aria-label={t('translator.share')}
                   >
                     <Share2 className="h-4 w-4" />
                   </Button>
@@ -716,7 +716,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <button
                       onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
                       className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      aria-label="Gute Übersetzung"
+                      aria-label={t('translator.goodTranslation')}
                       aria-pressed={feedback === 'up'}
                     >
                       <ThumbsUp className="h-3 w-3" />
@@ -724,7 +724,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <button
                       onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
                       className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      aria-label="Schlechte Übersetzung"
+                      aria-label={t('translator.badTranslation')}
                       aria-pressed={feedback === 'down'}
                     >
                       <ThumbsDown className="h-3 w-3" />

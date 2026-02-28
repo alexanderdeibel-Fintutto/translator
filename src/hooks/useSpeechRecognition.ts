@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from 'react'
 import { getBestSTTEngine, createGoogleCloudSTTEngine, type STTEngine, type STTResult } from '@/lib/stt'
+import { useI18n } from '@/context/I18nContext'
 
 export function useSpeechRecognition() {
+  const { t } = useI18n()
   const [isListening, setIsListening] = useState(false)
   const [interimTranscript, setInterimTranscript] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -31,7 +33,7 @@ export function useSpeechRecognition() {
     const engine = getEngine()
 
     if (!engine.isSupported) {
-      setError('Spracheingabe wird von diesem Browser nicht unterstützt')
+      setError(t('error.speechNotSupported'))
       return
     }
 

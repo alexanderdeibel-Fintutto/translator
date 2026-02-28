@@ -1,6 +1,7 @@
 import { Clock, Trash2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 import { getLanguageByCode } from '@/lib/languages'
 
@@ -12,6 +13,7 @@ interface TranslationHistoryProps {
 }
 
 export default function TranslationHistory({ history, clearHistory, removeEntry, onSelect }: TranslationHistoryProps) {
+  const { t } = useI18n()
 
   if (history.length === 0) return null
 
@@ -21,11 +23,11 @@ export default function TranslationHistory({ history, clearHistory, removeEntry,
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            Letzte Übersetzungen
+            {t('history.title')}
           </CardTitle>
           <Button variant="ghost" size="sm" onClick={clearHistory} className="text-xs text-muted-foreground">
             <Trash2 className="h-3 w-3 mr-1" />
-            Verlauf löschen
+            {t('history.clear')}
           </Button>
         </div>
       </CardHeader>

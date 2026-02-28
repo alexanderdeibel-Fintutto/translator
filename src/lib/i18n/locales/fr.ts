@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Recharger la page',
   'error.translationFailed': 'Échec de la traduction',
   'error.connectionLost': 'Connexion interrompue — reconnexion automatique...',
+
+  // Layout
+  'layout.skipToContent': 'Aller au contenu',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Accueil',
+  'header.menuClose': 'Fermer le menu',
+  'header.menuOpen': 'Ouvrir le menu',
+
+  // Footer
+  'footer.projectBy': 'Un projet de',
+
+  // Translator
+  'translator.micUnavailable': 'Saisie vocale indisponible. Veuillez vérifier les paramètres de votre navigateur et votre connexion internet.',
+  'translator.autoDetect': 'Détection automatique de la langue',
+  'translator.autoSpeakOn': 'Lecture automatique activée',
+  'translator.autoSpeakOff': 'Lecture automatique désactivée',
+  'translator.hdVoiceOn': 'Voix HD activée (Chirp 3 HD)',
+  'translator.sdVoice': 'Voix standard (Neural2)',
+  'translator.formalityHint': 'Formalité — changez la cible en DE, FR, ES...',
+  'translator.micNotAvailable': 'Saisie vocale indisponible',
+  'translator.stopRecording': 'Arrêter l\'enregistrement',
+  'translator.share': 'Partager',
+  'translator.goodTranslation': 'Bonne traduction',
+  'translator.badTranslation': 'Mauvaise traduction',
+
+  // Live
+  'live.listenersConnected': 'auditeurs connectés',
+  'live.waitingForListeners': 'En attente d\'auditeurs... Partagez le code QR ou le lien.',
+  'live.waitingForSpeaker': 'En attente de traductions de l\'orateur...',
+  'live.startToTranslate': 'Commencez l\'enregistrement pour traduire...',
+
+  // Conversation
+  'conversation.stop': 'Stop',
+  'conversation.person1': 'Personne 1',
+  'conversation.person2': 'Personne 2',
+
+  // Settings
+  'settings.ready': 'Prêt',
+  'settings.deleteLanguagePack': 'Supprimer le pack de langue',
+  'settings.downloadPack': 'Télécharger',
+
+  // Storage indicator
+  'settings.persistentActive': 'Stockage persistant actif — les données ne seront pas supprimées',
+  'settings.persistentInactive': 'Les données peuvent être supprimées par le navigateur.',
+  'settings.enableProtection': 'Activer la protection',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Étape {step} : Connexion WiFi',
+  'live.network': 'Réseau',
+  'live.wifiScanInstruction': 'Les auditeurs scannent ce code QR avec l\'appareil photo',
+  'live.wifiAutoConnect': 'iOS 11+ et Android 10+ se connectent automatiquement',
+  'live.shareTitle': 'guidetranslator Traduction en direct',
+  'live.shareText': 'Rejoignez ma traduction en direct',
+  'live.sessionCodeLabel': 'Code de session',
+  'live.qrInstruction': 'Les auditeurs scannent le code QR ou ouvrent le lien dans le navigateur',
+  'live.copied': 'Copié !',
+  'live.copyLink': 'Copier le lien',
+  'live.share': 'Partager',
+  'live.connecting': 'Connexion en cours...',
+  'live.modeBle': 'BLE Direct',
+  'live.modeHotspot': 'Mode Hotspot',
+  'live.modeLocal': 'Réseau local',
+  'live.modeCloud': 'Cloud',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'La saisie vocale n\'est pas prise en charge par ce navigateur',
+  'error.ttsFallback': 'Google Cloud TTS indisponible — voix du navigateur utilisée',
+  'error.bleScanFailed': 'Échec du scan BLE',
+  'error.micDenied': 'Accès au microphone refusé.',
+  'error.micUnavailable': 'Microphone non disponible.',
+  'error.whisperNotLoaded': 'Modèle Whisper non chargé. Veuillez télécharger dans les Paramètres.',
+  'error.noOfflineTranslation': 'Aucune traduction hors ligne disponible pour {src} → {tgt}',
+  'error.sttStartFailed': 'Impossible de démarrer la saisie vocale',
 }
 
 export default strings

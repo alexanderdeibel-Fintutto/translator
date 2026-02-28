@@ -37,6 +37,18 @@ const strings: Record<string, string> = {
   'translator.formal': 'Formal',
   'translator.informal': 'Informal',
   'translator.shortcutHint': 'Ctrl+Enter = now · Esc = clear',
+  'translator.micUnavailable': 'Voice input unavailable. Please check your browser settings and internet connection.',
+  'translator.autoDetect': 'Auto-detect language',
+  'translator.autoSpeakOn': 'Auto-speak enabled',
+  'translator.autoSpeakOff': 'Auto-speak disabled',
+  'translator.hdVoiceOn': 'HD voice enabled (Chirp 3 HD)',
+  'translator.sdVoice': 'Standard voice (Neural2)',
+  'translator.formalityHint': 'Formality — switch target to DE, FR, ES...',
+  'translator.micNotAvailable': 'Voice input not available',
+  'translator.stopRecording': 'Stop recording',
+  'translator.share': 'Share',
+  'translator.goodTranslation': 'Good translation',
+  'translator.badTranslation': 'Bad translation',
 
   'translator.sentence': 'Sentence',
   'translator.paragraph': 'Paragraph',
@@ -61,6 +73,10 @@ const strings: Record<string, string> = {
   'live.recording': 'Live Recording',
   'live.disconnected': 'Connection lost \u2014 Trying to reconnect...',
   'live.downloadProtocol': 'Download Protocol',
+  'live.listenersConnected': 'listeners connected',
+  'live.waitingForListeners': 'Waiting for listeners... Share the QR code or link.',
+  'live.waitingForSpeaker': 'Waiting for translations from speaker...',
+  'live.startToTranslate': 'Start recording to translate...',
   'conversation.title': 'Conversation',
   'conversation.subtitle': 'Face-to-face translation for two people',
   'conversation.speak': 'Speak',
@@ -68,6 +84,9 @@ const strings: Record<string, string> = {
   'conversation.other': 'Other',
   'conversation.restart': 'Restart',
   'conversation.translating': 'Translating...',
+  'conversation.stop': 'Stop',
+  'conversation.person1': 'Person 1',
+  'conversation.person2': 'Person 2',
   'camera.title': 'Camera Translator',
   'camera.subtitle': 'Take a photo of text and translate it instantly',
   'camera.capture': 'Take Photo',
@@ -118,6 +137,9 @@ const strings: Record<string, string> = {
   'settings.safariHintText': 'Add this app to your home screen so your offline data won\'t be deleted after 7 days. Tap on',
   'settings.safariHintShare': 'Share ↑',
   'settings.safariHintHome': 'Add to Home Screen',
+  'settings.ready': 'Ready',
+  'settings.deleteLanguagePack': 'Delete language pack',
+  'settings.downloadPack': 'Download',
   'liveLanding.title': 'Live Mode',
   'liveLanding.subtitle': 'Translate in real time for an audience or listen as a listener.',
   'liveLanding.speaker': 'Speaker',
@@ -189,8 +211,17 @@ const strings: Record<string, string> = {
   'info.feature11Desc': 'Download a complete transcript as text or Markdown.',
   'info.feature12Title': 'Free & Open Source',
   'info.feature12Desc': 'No cost per listener or minute. PWA installation for fast offline access.',
+  // Layout
+  'layout.skipToContent': 'Skip to content',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Home',
+  'header.menuClose': 'Close navigation',
+  'header.menuOpen': 'Open navigation',
+
   'footer.imprint': 'Imprint',
   'footer.privacy': 'Privacy',
+  'footer.projectBy': 'A project by',
   'live.sessionEnded': 'Session ended',
   'live.sessionEndedDesc': 'The speaker has ended the live translation.',
   'live.back': 'Back',
@@ -210,6 +241,29 @@ const strings: Record<string, string> = {
   'live.hotspotInstruction': 'Please enable Personal Hotspot in your device settings',
   'live.bleAutoDiscovery': 'Listeners find this session automatically via Bluetooth',
 
+  // Storage indicator
+  'settings.persistentActive': 'Persistent storage active — data won\'t be deleted',
+  'settings.persistentInactive': 'Data may be deleted by the browser.',
+  'settings.enableProtection': 'Enable protection',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Step {step}: Connect WiFi',
+  'live.network': 'Network',
+  'live.wifiScanInstruction': 'Listeners scan this QR code with the camera app',
+  'live.wifiAutoConnect': 'iOS 11+ and Android 10+ connect automatically',
+  'live.shareTitle': 'guidetranslator Live Translation',
+  'live.shareText': 'Join my live translation',
+  'live.sessionCodeLabel': 'Session Code',
+  'live.qrInstruction': 'Listeners scan the QR code or open the link in the browser',
+  'live.copied': 'Copied!',
+  'live.copyLink': 'Copy link',
+  'live.share': 'Share',
+  'live.connecting': 'Connecting...',
+  'live.modeBle': 'BLE Direct',
+  'live.modeHotspot': 'Hotspot Mode',
+  'live.modeLocal': 'Local Network',
+  'live.modeCloud': 'Cloud',
+
   // Error boundary
   'error.errorBoundaryTitle': 'Something went wrong',
   'error.errorBoundaryDesc': 'An unexpected error occurred. Please reload the page.',
@@ -218,6 +272,14 @@ const strings: Record<string, string> = {
 
   'error.translationFailed': 'Translation failed',
   'error.connectionLost': 'Connection lost — reconnecting automatically...',
+  'error.speechNotSupported': 'Speech input is not supported by this browser',
+  'error.ttsFallback': 'Google Cloud TTS unavailable — using browser voice',
+  'error.bleScanFailed': 'BLE scan failed',
+  'error.micDenied': 'Microphone access denied.',
+  'error.micUnavailable': 'Microphone not available.',
+  'error.whisperNotLoaded': 'Whisper model not loaded. Please download in Settings.',
+  'error.noOfflineTranslation': 'No offline translation available for {src} → {tgt}',
+  'error.sttStartFailed': 'Speech input could not be started',
 }
 
 export default strings

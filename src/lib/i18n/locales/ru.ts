@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Перезагрузить страницу',
   'error.translationFailed': 'Перевод не удался',
   'error.connectionLost': 'Соединение прервано — автоматическое переподключение...',
+
+  // Layout
+  'layout.skipToContent': 'Перейти к содержимому',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Главная',
+  'header.menuClose': 'Закрыть меню',
+  'header.menuOpen': 'Открыть меню',
+
+  // Footer
+  'footer.projectBy': 'Проект от',
+
+  // Translator
+  'translator.micUnavailable': 'Голосовой ввод недоступен. Проверьте настройки браузера и подключение к интернету.',
+  'translator.autoDetect': 'Автоопределение языка',
+  'translator.autoSpeakOn': 'Автоозвучивание включено',
+  'translator.autoSpeakOff': 'Автоозвучивание выключено',
+  'translator.hdVoiceOn': 'HD голос включён (Chirp 3 HD)',
+  'translator.sdVoice': 'Стандартный голос (Neural2)',
+  'translator.formalityHint': 'Формальность — смените язык на DE, FR, ES...',
+  'translator.micNotAvailable': 'Голосовой ввод недоступен',
+  'translator.stopRecording': 'Остановить запись',
+  'translator.share': 'Поделиться',
+  'translator.goodTranslation': 'Хороший перевод',
+  'translator.badTranslation': 'Плохой перевод',
+
+  // Live
+  'live.listenersConnected': 'слушателей подключено',
+  'live.waitingForListeners': 'Ожидание слушателей... Поделитесь QR-кодом или ссылкой.',
+  'live.waitingForSpeaker': 'Ожидание переводов от спикера...',
+  'live.startToTranslate': 'Начните запись для перевода...',
+
+  // Conversation
+  'conversation.stop': 'Стоп',
+  'conversation.person1': 'Собеседник 1',
+  'conversation.person2': 'Собеседник 2',
+
+  // Settings
+  'settings.ready': 'Готово',
+  'settings.deleteLanguagePack': 'Удалить языковой пакет',
+  'settings.downloadPack': 'Скачать',
+
+  // Storage indicator
+  'settings.persistentActive': 'Постоянное хранилище активно — данные не будут удалены',
+  'settings.persistentInactive': 'Данные могут быть удалены браузером.',
+  'settings.enableProtection': 'Включить защиту',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Шаг {step}: Подключение WiFi',
+  'live.network': 'Сеть',
+  'live.wifiScanInstruction': 'Слушатели сканируют этот QR-код камерой',
+  'live.wifiAutoConnect': 'iOS 11+ и Android 10+ подключаются автоматически',
+  'live.shareTitle': 'guidetranslator Живой перевод',
+  'live.shareText': 'Присоединяйтесь к моему живому переводу',
+  'live.sessionCodeLabel': 'Код сессии',
+  'live.qrInstruction': 'Слушатели сканируют QR-код или открывают ссылку в браузере',
+  'live.copied': 'Скопировано!',
+  'live.copyLink': 'Копировать ссылку',
+  'live.share': 'Поделиться',
+  'live.connecting': 'Подключение...',
+  'live.modeBle': 'BLE Напрямую',
+  'live.modeHotspot': 'Режим Hotspot',
+  'live.modeLocal': 'Локальная сеть',
+  'live.modeCloud': 'Облако',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'Голосовой ввод не поддерживается этим браузером',
+  'error.ttsFallback': 'Google Cloud TTS недоступен — используется голос браузера',
+  'error.bleScanFailed': 'Сканирование BLE не удалось',
+  'error.micDenied': 'Доступ к микрофону отклонён.',
+  'error.micUnavailable': 'Микрофон недоступен.',
+  'error.whisperNotLoaded': 'Модель Whisper не загружена. Скачайте в Настройках.',
+  'error.noOfflineTranslation': 'Офлайн-перевод недоступен для {src} → {tgt}',
+  'error.sttStartFailed': 'Не удалось запустить голосовой ввод',
 }
 
 export default strings

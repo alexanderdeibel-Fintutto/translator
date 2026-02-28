@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'إعادة تحميل الصفحة',
   'error.translationFailed': 'فشلت الترجمة',
   'error.connectionLost': 'انقطع الاتصال — تتم إعادة الاتصال تلقائياً...',
+
+  // Layout
+  'layout.skipToContent': 'انتقل إلى المحتوى',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — الصفحة الرئيسية',
+  'header.menuClose': 'إغلاق القائمة',
+  'header.menuOpen': 'فتح القائمة',
+
+  // Footer
+  'footer.projectBy': 'مشروع من',
+
+  // Translator
+  'translator.micUnavailable': 'الإدخال الصوتي غير متاح. يرجى التحقق من إعدادات المتصفح واتصال الإنترنت.',
+  'translator.autoDetect': 'كشف اللغة تلقائياً',
+  'translator.autoSpeakOn': 'القراءة التلقائية مفعّلة',
+  'translator.autoSpeakOff': 'القراءة التلقائية معطّلة',
+  'translator.hdVoiceOn': 'صوت HD مفعّل (Chirp 3 HD)',
+  'translator.sdVoice': 'صوت قياسي (Neural2)',
+  'translator.formalityHint': 'الرسمية — غيّر لغة الهدف إلى DE، FR، ES...',
+  'translator.micNotAvailable': 'الإدخال الصوتي غير متاح',
+  'translator.stopRecording': 'إيقاف التسجيل',
+  'translator.share': 'مشاركة',
+  'translator.goodTranslation': 'ترجمة جيدة',
+  'translator.badTranslation': 'ترجمة سيئة',
+
+  // Live
+  'live.listenersConnected': 'مستمعون متصلون',
+  'live.waitingForListeners': 'في انتظار المستمعين... شارك رمز QR أو الرابط.',
+  'live.waitingForSpeaker': 'في انتظار الترجمات من المتحدث...',
+  'live.startToTranslate': 'ابدأ التسجيل للترجمة...',
+
+  // Conversation
+  'conversation.stop': 'إيقاف',
+  'conversation.person1': 'شخص 1',
+  'conversation.person2': 'شخص 2',
+
+  // Settings
+  'settings.ready': 'جاهز',
+  'settings.deleteLanguagePack': 'حذف حزمة اللغة',
+  'settings.downloadPack': 'تحميل',
+
+  // Storage indicator
+  'settings.persistentActive': 'التخزين الدائم مفعّل — لن يتم حذف البيانات',
+  'settings.persistentInactive': 'قد يحذف المتصفح البيانات.',
+  'settings.enableProtection': 'تفعيل الحماية',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'الخطوة {step}: الاتصال بالواي فاي',
+  'live.network': 'الشبكة',
+  'live.wifiScanInstruction': 'يمسح المستمعون رمز QR بتطبيق الكاميرا',
+  'live.wifiAutoConnect': 'iOS 11+ و Android 10+ يتصلان تلقائياً',
+  'live.shareTitle': 'guidetranslator ترجمة مباشرة',
+  'live.shareText': 'انضم إلى ترجمتي المباشرة',
+  'live.sessionCodeLabel': 'رمز الجلسة',
+  'live.qrInstruction': 'يمسح المستمعون رمز QR أو يفتحون الرابط في المتصفح',
+  'live.copied': 'تم النسخ!',
+  'live.copyLink': 'نسخ الرابط',
+  'live.share': 'مشاركة',
+  'live.connecting': 'جارٍ الاتصال...',
+  'live.modeBle': 'BLE مباشر',
+  'live.modeHotspot': 'وضع نقطة الاتصال',
+  'live.modeLocal': 'شبكة محلية',
+  'live.modeCloud': 'سحابة',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'الإدخال الصوتي غير مدعوم في هذا المتصفح',
+  'error.ttsFallback': 'Google Cloud TTS غير متاح — يتم استخدام صوت المتصفح',
+  'error.bleScanFailed': 'فشل فحص BLE',
+  'error.micDenied': 'تم رفض الوصول إلى الميكروفون.',
+  'error.micUnavailable': 'الميكروفون غير متاح.',
+  'error.whisperNotLoaded': 'نموذج Whisper غير محمّل. يرجى التحميل من الإعدادات.',
+  'error.noOfflineTranslation': 'لا تتوفر ترجمة بدون اتصال لـ {src} → {tgt}',
+  'error.sttStartFailed': 'تعذر بدء الإدخال الصوتي',
 }
 
 export default strings

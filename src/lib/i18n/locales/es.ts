@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Recargar página',
   'error.translationFailed': 'Error en la traducción',
   'error.connectionLost': 'Conexión interrumpida — reconectando automáticamente...',
+
+  // Layout
+  'layout.skipToContent': 'Ir al contenido',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Inicio',
+  'header.menuClose': 'Cerrar menú',
+  'header.menuOpen': 'Abrir menú',
+
+  // Footer
+  'footer.projectBy': 'Un proyecto de',
+
+  // Translator
+  'translator.micUnavailable': 'Entrada de voz no disponible. Por favor, comprueba la configuración del navegador y la conexión a internet.',
+  'translator.autoDetect': 'Detección automática de idioma',
+  'translator.autoSpeakOn': 'Lectura automática activada',
+  'translator.autoSpeakOff': 'Lectura automática desactivada',
+  'translator.hdVoiceOn': 'Voz HD activada (Chirp 3 HD)',
+  'translator.sdVoice': 'Voz estándar (Neural2)',
+  'translator.formalityHint': 'Formalidad — cambia el idioma destino a DE, FR, ES...',
+  'translator.micNotAvailable': 'Entrada de voz no disponible',
+  'translator.stopRecording': 'Detener grabación',
+  'translator.share': 'Compartir',
+  'translator.goodTranslation': 'Buena traducción',
+  'translator.badTranslation': 'Mala traducción',
+
+  // Live
+  'live.listenersConnected': 'oyentes conectados',
+  'live.waitingForListeners': 'Esperando oyentes... Comparte el código QR o el enlace.',
+  'live.waitingForSpeaker': 'Esperando traducciones del orador...',
+  'live.startToTranslate': 'Inicia la grabación para traducir...',
+
+  // Conversation
+  'conversation.stop': 'Parar',
+  'conversation.person1': 'Persona 1',
+  'conversation.person2': 'Persona 2',
+
+  // Settings
+  'settings.ready': 'Listo',
+  'settings.deleteLanguagePack': 'Eliminar paquete de idioma',
+  'settings.downloadPack': 'Descargar',
+
+  // Storage indicator
+  'settings.persistentActive': 'Almacenamiento persistente activo — los datos no se eliminarán',
+  'settings.persistentInactive': 'Los datos pueden ser eliminados por el navegador.',
+  'settings.enableProtection': 'Activar protección',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Paso {step}: Conectar WiFi',
+  'live.network': 'Red',
+  'live.wifiScanInstruction': 'Los oyentes escanean este código QR con la cámara',
+  'live.wifiAutoConnect': 'iOS 11+ y Android 10+ se conectan automáticamente',
+  'live.shareTitle': 'guidetranslator Traducción en vivo',
+  'live.shareText': 'Únete a mi traducción en vivo',
+  'live.sessionCodeLabel': 'Código de sesión',
+  'live.qrInstruction': 'Los oyentes escanean el código QR o abren el enlace en el navegador',
+  'live.copied': '¡Copiado!',
+  'live.copyLink': 'Copiar enlace',
+  'live.share': 'Compartir',
+  'live.connecting': 'Conectando...',
+  'live.modeBle': 'BLE Directo',
+  'live.modeHotspot': 'Modo Hotspot',
+  'live.modeLocal': 'Red local',
+  'live.modeCloud': 'Nube',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'La entrada de voz no es compatible con este navegador',
+  'error.ttsFallback': 'Google Cloud TTS no disponible — se usa la voz del navegador',
+  'error.bleScanFailed': 'Error en el escaneo BLE',
+  'error.micDenied': 'Acceso al micrófono denegado.',
+  'error.micUnavailable': 'Micrófono no disponible.',
+  'error.whisperNotLoaded': 'Modelo Whisper no cargado. Descárgalo en Ajustes.',
+  'error.noOfflineTranslation': 'No hay traducción sin conexión disponible para {src} → {tgt}',
+  'error.sttStartFailed': 'No se pudo iniciar la entrada de voz',
 }
 
 export default strings

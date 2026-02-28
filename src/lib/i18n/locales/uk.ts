@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Перезавантажити сторінку',
   'error.translationFailed': 'Переклад не вдався',
   'error.connectionLost': 'З\'єднання перервано — автоматичне повторне підключення...',
+
+  // Layout
+  'layout.skipToContent': 'Перейти до вмісту',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Головна',
+  'header.menuClose': 'Закрити меню',
+  'header.menuOpen': 'Відкрити меню',
+
+  // Footer
+  'footer.projectBy': 'Проект від',
+
+  // Translator
+  'translator.micUnavailable': 'Голосовий ввід недоступний. Перевірте налаштування браузера та підключення до інтернету.',
+  'translator.autoDetect': 'Автовизначення мови',
+  'translator.autoSpeakOn': 'Автоозвучення увімкнено',
+  'translator.autoSpeakOff': 'Автоозвучення вимкнено',
+  'translator.hdVoiceOn': 'HD голос увімкнено (Chirp 3 HD)',
+  'translator.sdVoice': 'Стандартний голос (Neural2)',
+  'translator.formalityHint': 'Формальність — змініть мову на DE, FR, ES...',
+  'translator.micNotAvailable': 'Голосовий ввід недоступний',
+  'translator.stopRecording': 'Зупинити запис',
+  'translator.share': 'Поділитися',
+  'translator.goodTranslation': 'Хороший переклад',
+  'translator.badTranslation': 'Поганий переклад',
+
+  // Live
+  'live.listenersConnected': 'слухачів підключено',
+  'live.waitingForListeners': 'Очікування слухачів... Поділіться QR-кодом або посиланням.',
+  'live.waitingForSpeaker': 'Очікування перекладів від спікера...',
+  'live.startToTranslate': 'Почніть запис для перекладу...',
+
+  // Conversation
+  'conversation.stop': 'Стоп',
+  'conversation.person1': 'Особа 1',
+  'conversation.person2': 'Особа 2',
+
+  // Settings
+  'settings.ready': 'Готово',
+  'settings.deleteLanguagePack': 'Видалити мовний пакет',
+  'settings.downloadPack': 'Завантажити',
+
+  // Storage indicator
+  'settings.persistentActive': 'Постійне сховище активне — дані не будуть видалені',
+  'settings.persistentInactive': 'Дані можуть бути видалені браузером.',
+  'settings.enableProtection': 'Увімкнути захист',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'Крок {step}: Підключення WiFi',
+  'live.network': 'Мережа',
+  'live.wifiScanInstruction': 'Слухачі сканують цей QR-код камерою',
+  'live.wifiAutoConnect': 'iOS 11+ та Android 10+ підключаються автоматично',
+  'live.shareTitle': 'guidetranslator Живий переклад',
+  'live.shareText': 'Приєднуйтесь до мого живого перекладу',
+  'live.sessionCodeLabel': 'Код сесії',
+  'live.qrInstruction': 'Слухачі сканують QR-код або відкривають посилання в браузері',
+  'live.copied': 'Скопійовано!',
+  'live.copyLink': 'Копіювати посилання',
+  'live.share': 'Поділитися',
+  'live.connecting': 'Підключення...',
+  'live.modeBle': 'BLE Напряму',
+  'live.modeHotspot': 'Режим Hotspot',
+  'live.modeLocal': 'Локальна мережа',
+  'live.modeCloud': 'Хмара',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'Голосовий ввід не підтримується цим браузером',
+  'error.ttsFallback': 'Google Cloud TTS недоступний — використовується голос браузера',
+  'error.bleScanFailed': 'Сканування BLE не вдалося',
+  'error.micDenied': 'Доступ до мікрофона відхилено.',
+  'error.micUnavailable': 'Мікрофон недоступний.',
+  'error.whisperNotLoaded': 'Модель Whisper не завантажена. Завантажте в Налаштуваннях.',
+  'error.noOfflineTranslation': 'Офлайн-переклад недоступний для {src} → {tgt}',
+  'error.sttStartFailed': 'Не вдалося запустити голосовий ввід',
 }
 
 export default strings

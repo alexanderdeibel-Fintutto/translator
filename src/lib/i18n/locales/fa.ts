@@ -222,6 +222,80 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'بارگذاری مجدد صفحه',
   'error.translationFailed': 'ترجمه ناموفق بود',
   'error.connectionLost': 'اتصال قطع شد — به صورت خودکار در حال اتصال مجدد...',
+
+  // Layout
+  'layout.skipToContent': 'رفتن به محتوا',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — صفحه اصلی',
+  'header.menuClose': 'بستن منو',
+  'header.menuOpen': 'باز کردن منو',
+
+  // Footer
+  'footer.projectBy': 'پروژه‌ای از',
+
+  // Translator
+  'translator.micUnavailable': 'ورودی صوتی در دسترس نیست. لطفاً تنظیمات مرورگر و اتصال اینترنت خود را بررسی کنید.',
+  'translator.autoDetect': 'تشخیص خودکار زبان',
+  'translator.autoSpeakOn': 'خواندن خودکار فعال',
+  'translator.autoSpeakOff': 'خواندن خودکار غیرفعال',
+  'translator.hdVoiceOn': 'صدای HD فعال (Chirp 3 HD)',
+  'translator.sdVoice': 'صدای استاندارد (Neural2)',
+  'translator.formalityHint': 'رسمیت — زبان مقصد را به DE، FR، ES تغییر دهید...',
+  'translator.micNotAvailable': 'ورودی صوتی در دسترس نیست',
+  'translator.stopRecording': 'توقف ضبط',
+  'translator.share': 'اشتراک‌گذاری',
+  'translator.goodTranslation': 'ترجمه خوب',
+  'translator.badTranslation': 'ترجمه بد',
+
+  // Live
+  'live.listenersConnected': 'شنونده متصل',
+  'live.waitingForListeners': 'در انتظار شنوندگان... کد QR یا لینک را به اشتراک بگذارید.',
+  'live.waitingForSpeaker': 'در انتظار ترجمه‌ها از سخنران...',
+  'live.startToTranslate': 'برای ترجمه ضبط را شروع کنید...',
+
+  // Conversation
+  'conversation.stop': 'توقف',
+  'conversation.person1': 'نفر 1',
+  'conversation.person2': 'نفر 2',
+
+  // Settings
+  'settings.ready': 'آماده',
+  'settings.deleteLanguagePack': 'حذف بسته زبان',
+  'settings.downloadPack': 'دانلود',
+
+  // Storage indicator
+  'settings.persistentActive': 'ذخیره‌سازی دائمی فعال — داده‌ها حذف نخواهند شد',
+  'settings.persistentInactive': 'داده‌ها ممکن است توسط مرورگر حذف شوند.',
+  'settings.enableProtection': 'فعال‌سازی محافظت',
+
+  // WiFi QR / Session QR / Connection
+  'live.wifiStep': 'مرحله {step}: اتصال WiFi',
+  'live.network': 'شبکه',
+  'live.wifiScanInstruction': 'شنوندگان این کد QR را با برنامه دوربین اسکن می‌کنند',
+  'live.wifiAutoConnect': 'iOS 11+ و Android 10+ به‌صورت خودکار متصل می‌شوند',
+  'live.shareTitle': 'guidetranslator ترجمه زنده',
+  'live.shareText': 'به ترجمه زنده من بپیوندید',
+  'live.sessionCodeLabel': 'کد جلسه',
+  'live.qrInstruction': 'شنوندگان کد QR را اسکن کنند یا لینک را در مرورگر باز کنند',
+  'live.copied': 'کپی شد!',
+  'live.copyLink': 'کپی لینک',
+  'live.share': 'اشتراک‌گذاری',
+  'live.connecting': 'در حال اتصال...',
+  'live.modeBle': 'BLE مستقیم',
+  'live.modeHotspot': 'حالت هات‌اسپات',
+  'live.modeLocal': 'شبکه محلی',
+  'live.modeCloud': 'ابری',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'ورودی صوتی در این مرورگر پشتیبانی نمی‌شود',
+  'error.ttsFallback': 'Google Cloud TTS در دسترس نیست — از صدای مرورگر استفاده می‌شود',
+  'error.bleScanFailed': 'اسکن BLE ناموفق بود',
+  'error.micDenied': 'دسترسی به میکروفون رد شد.',
+  'error.micUnavailable': 'میکروفون در دسترس نیست.',
+  'error.whisperNotLoaded': 'مدل Whisper بارگذاری نشده. لطفاً از تنظیمات دانلود کنید.',
+  'error.noOfflineTranslation': 'ترجمه آفلاین برای {src} → {tgt} در دسترس نیست',
+  'error.sttStartFailed': 'ورودی صوتی قابل شروع نبود',
 }
 
 export default strings

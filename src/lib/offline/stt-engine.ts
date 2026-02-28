@@ -5,6 +5,12 @@
 
 import type { STTEngine, STTResult } from '../stt'
 import { isModelDownloaded, recordModelDownload } from './model-manager'
+import { getTranslation, type UILanguage } from '@/lib/i18n'
+
+function t(key: string): string {
+  const lang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+  return getTranslation(lang, key)
+}
 
 const WHISPER_MODEL = 'Xenova/whisper-small'
 
@@ -83,9 +89,9 @@ export function createWhisperSTTEngine(): STTEngine {
         stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 16000 } })
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
-          onError('Mikrofon-Zugriff verweigert.')
+          onError(t('error.micDenied'))
         } else {
-          onError('Mikrofon nicht verfügbar.')
+          onError(t('error.micUnavailable'))
         }
         return
       }
@@ -94,7 +100,7 @@ export function createWhisperSTTEngine(): STTEngine {
       try {
         await getWhisperPipeline()
       } catch {
-        onError('Whisper-Modell nicht geladen. Bitte unter Einstellungen herunterladen.')
+        onError(t('error.whisperNotLoaded'))
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         return
       }

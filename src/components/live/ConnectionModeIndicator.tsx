@@ -1,4 +1,5 @@
 import { Cloud, Wifi, Smartphone, Bluetooth, Loader2 } from 'lucide-react'
+import { useI18n } from '@/context/I18nContext'
 
 interface ConnectionModeIndicatorProps {
   mode: 'cloud' | 'local' | 'ble'
@@ -16,11 +17,13 @@ export default function ConnectionModeIndicator({
   serverUrl,
   isHotspotHost,
 }: ConnectionModeIndicatorProps) {
+  const { t } = useI18n()
+
   if (isResolving) {
     return (
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
-        <span>Verbindung wird hergestellt...</span>
+        <span>{t('live.connecting')}</span>
       </div>
     )
   }
@@ -33,7 +36,7 @@ export default function ConnectionModeIndicator({
           ? 'text-blue-600 dark:text-blue-400'
           : 'text-amber-600 dark:text-amber-400'
         }>
-          BLE Direkt
+          {t('live.modeBle')}
         </span>
         {isConnected && (
           <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
@@ -44,7 +47,7 @@ export default function ConnectionModeIndicator({
 
   if (mode === 'local') {
     const Icon = isHotspotHost ? Smartphone : Wifi
-    const label = isHotspotHost ? 'Hotspot-Modus' : 'Lokales Netzwerk'
+    const label = isHotspotHost ? t('live.modeHotspot') : t('live.modeLocal')
 
     return (
       <div className="flex items-center gap-2 text-xs">
@@ -75,7 +78,7 @@ export default function ConnectionModeIndicator({
     <div className="flex items-center gap-2 text-xs">
       <Cloud className="h-3.5 w-3.5" />
       <span className={isConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}>
-        Cloud
+        {t('live.modeCloud')}
       </span>
       {isConnected && (
         <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
