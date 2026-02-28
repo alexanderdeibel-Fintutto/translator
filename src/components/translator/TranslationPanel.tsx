@@ -147,7 +147,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         targetLang,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('translator.translating'))
+      const msg = err instanceof Error ? err.message : ''
+      const errorMap: Record<string, string> = {
+        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
+        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
+      }
+      setError(errorMap[msg] || msg || t('error.unknown'))
     } finally {
       setIsTranslating(false)
     }

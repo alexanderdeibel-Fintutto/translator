@@ -119,10 +119,10 @@ export default function ConversationPage() {
       {/* Header */}
       <div className="text-center space-y-1">
         <h1 className="text-2xl font-bold">
-          <span className="gradient-text-translator">Konversation</span>
+          <span className="gradient-text-translator">{t('conversation.title')}</span>
         </h1>
         <p className="text-sm text-muted-foreground">
-          Face-to-Face Übersetzung für zwei Personen
+          {t('conversation.subtitle')}
         </p>
       </div>
 
@@ -168,7 +168,7 @@ export default function ConversationPage() {
               className="gap-1.5 rounded-full"
             >
               {activeSide === 'top' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              {activeSide === 'top' ? 'Stop' : 'Sprechen'}
+              {activeSide === 'top' ? 'Stop' : t('conversation.speak')}
             </Button>
           </div>
 
@@ -191,7 +191,7 @@ export default function ConversationPage() {
                 >
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                     <span>{isOwnMessage ? (topLangData?.flag || '') : (bottomLangData?.flag || '')}</span>
-                    <span>{isOwnMessage ? 'Du' : 'Gegenüber'}</span>
+                    <span>{isOwnMessage ? t('conversation.you') : t('conversation.other')}</span>
                     <span className="ml-auto">{time}</span>
                   </div>
                   {isOwnMessage ? (
@@ -223,7 +223,7 @@ export default function ConversationPage() {
               className="relative bg-background px-3 py-1 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               <RotateCcw className="h-3 w-3" />
-              Neu starten
+              {t('conversation.restart')}
             </button>
           )}
         </div>
@@ -248,7 +248,7 @@ export default function ConversationPage() {
               className="gap-1.5 rounded-full"
             >
               {activeSide === 'bottom' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              {activeSide === 'bottom' ? 'Stop' : 'Sprechen'}
+              {activeSide === 'bottom' ? 'Stop' : t('conversation.speak')}
             </Button>
           </div>
 
@@ -271,7 +271,7 @@ export default function ConversationPage() {
                 >
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                     <span>{isOwnMessage ? (bottomLangData?.flag || '') : (topLangData?.flag || '')}</span>
-                    <span>{isOwnMessage ? 'Du' : 'Gegenüber'}</span>
+                    <span>{isOwnMessage ? t('conversation.you') : t('conversation.other')}</span>
                     <span className="ml-auto">{time}</span>
                   </div>
                   {isOwnMessage ? (
@@ -297,7 +297,7 @@ export default function ConversationPage() {
 
       {isTranslating && (
         <p className="text-center text-sm text-muted-foreground animate-pulse">
-          Wird übersetzt...
+          {t('conversation.translating')}
         </p>
       )}
     </div>

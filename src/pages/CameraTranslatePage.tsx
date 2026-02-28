@@ -76,7 +76,12 @@ export default function CameraTranslatePage() {
       const result = await translateText(text, sourceLang, targetLang)
       setTranslatedText(result.translatedText)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler bei der Verarbeitung')
+      const msg = err instanceof Error ? err.message : ''
+      const errorMap: Record<string, string> = {
+        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
+        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
+      }
+      setError(errorMap[msg] || msg || t('error.unknown'))
     } finally {
       setIsExtracting(false)
       setIsTranslating(false)
@@ -118,10 +123,10 @@ export default function CameraTranslatePage() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">
-          <span className="gradient-text-translator">Kamera-Übersetzer</span>
+          <span className="gradient-text-translator">{t('camera.title')}</span>
         </h1>
         <p className="text-sm text-muted-foreground">
-          Fotografiere Text und übersetze ihn sofort
+          {t('camera.subtitle')}
         </p>
       </div>
 
@@ -143,7 +148,7 @@ export default function CameraTranslatePage() {
           disabled={isExtracting || isTranslating}
         >
           <Camera className="h-5 w-5" />
-          Foto aufnehmen
+          {t('camera.capture')}
         </Button>
         <input
           ref={fileInputRef}
@@ -171,7 +176,7 @@ export default function CameraTranslatePage() {
           disabled={isExtracting || isTranslating}
         >
           <Image className="h-5 w-5" />
-          Aus Galerie
+          {t('camera.gallery')}
         </Button>
       </div>
 
@@ -190,7 +195,7 @@ export default function CameraTranslatePage() {
       {isExtracting && (
         <div className="flex items-center justify-center gap-2 text-muted-foreground py-4">
           <Loader2 className="h-5 w-5 animate-spin" />
-          <span>Text wird erkannt...</span>
+          <span>{t('camera.extracting')}</span>
         </div>
       )}
       {isTranslating && !isExtracting && (
@@ -210,7 +215,7 @@ export default function CameraTranslatePage() {
       {/* Extracted text */}
       {extractedText && (
         <Card className="p-4 space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">Erkannter Text</p>
+          <p className="text-xs font-medium text-muted-foreground">{t('camera.extracted')}</p>
           <p className="text-sm" dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}>
             {extractedText}
           </p>
@@ -222,7 +227,7 @@ export default function CameraTranslatePage() {
         <Card className="p-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-muted-foreground">
-              {targetLangData?.flag} Übersetzung
+              {targetLangData?.flag} {t('camera.translation')}
             </p>
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" onClick={handleSpeak}>
@@ -244,7 +249,7 @@ export default function CameraTranslatePage() {
         <div className="text-center py-8 space-y-2">
           <Camera className="h-12 w-12 mx-auto text-muted-foreground/30" />
           <p className="text-muted-foreground text-sm">
-            Richte die Kamera auf ein Schild, Menü oder Dokument
+            {t('camera.hint')}
           </p>
         </div>
       )}
