@@ -317,6 +317,15 @@ const strings: Record<string, string> = {
   'protocol.exportText': 'Text (.txt)',
   'protocol.exportMarkdown': 'Markdown (.md)',
   'protocol.filename': 'protocol',
+
+  // Error messages (stt.ts)
+  'error.micDeniedHint': 'دسترسی به میکروفون رد شد. لطفاً در تنظیمات مرورگر اجازه دهید.',
+  'error.micUnavailableHint': 'میکروفون در دسترس نیست. لطفاً تنظیمات دستگاه خود را بررسی کنید.',
+  'error.networkStt': 'خطای شبکه در تشخیص گفتار. لطفاً اتصال اینترنت خود را بررسی کنید.',
+  'error.sttGeneric': 'خطای ورودی صوتی: {error}',
+  'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer هنوز در دسترس نیست. با اپلیکیشن بومی iOS فعال خواهد شد.',
+  'error.cloudSttNotAvailable': 'ورودی صوتی در دسترس نیست. لطفاً Cloud Speech-to-Text API را در Google Cloud Console فعال کنید.',
+  'error.whisperNotAvailable': 'تشخیص گفتار آفلاین در دسترس نیست. لطفاً مدل Whisper را از تنظیمات دانلود کنید.',
 }
 
 export default strings

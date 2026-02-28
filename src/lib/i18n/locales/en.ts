@@ -301,6 +301,13 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'Whisper model not loaded. Please download in Settings.',
   'error.noOfflineTranslation': 'No offline translation available for {src} → {tgt}',
   'error.sttStartFailed': 'Speech input could not be started',
+  'error.micDeniedHint': 'Microphone access denied. Please allow access in your browser settings.',
+  'error.micUnavailableHint': 'Microphone not available. Please check your device settings.',
+  'error.networkStt': 'Network error during speech recognition. Please check your internet connection.',
+  'error.sttGeneric': 'Speech input error: {error}',
+  'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer is not yet available. Will be enabled with the native iOS app.',
+  'error.cloudSttNotAvailable': 'Speech input not available. Please enable Cloud Speech-to-Text API in Google Cloud Console.',
+  'error.whisperNotAvailable': 'Offline speech recognition not available. Please download the Whisper model in Settings.',
 }
 
 export default strings

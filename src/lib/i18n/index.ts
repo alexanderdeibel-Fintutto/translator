@@ -360,6 +360,13 @@ const de: TranslationStrings = {
   'error.whisperNotLoaded': 'Whisper-Modell nicht geladen. Bitte unter Einstellungen herunterladen.',
   'error.noOfflineTranslation': 'Keine Offline-Übersetzung verfügbar für {src} → {tgt}',
   'error.sttStartFailed': 'Spracheingabe konnte nicht gestartet werden',
+  'error.micDeniedHint': 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.',
+  'error.micUnavailableHint': 'Mikrofon nicht verfügbar. Bitte prüfen Sie Ihre Geräte-Einstellungen.',
+  'error.networkStt': 'Netzwerkfehler bei der Spracherkennung. Bitte prüfen Sie Ihre Internetverbindung.',
+  'error.sttGeneric': 'Spracheingabe-Fehler: {error}',
+  'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer ist noch nicht verfügbar. Wird mit der nativen iOS-App freigeschaltet.',
+  'error.cloudSttNotAvailable': 'Spracheingabe nicht verfügbar. Bitte Cloud Speech-to-Text API im Google Cloud Console aktivieren.',
+  'error.whisperNotAvailable': 'Offline-Spracherkennung nicht verfügbar. Bitte Whisper-Modell unter Einstellungen herunterladen.',
 }
 
 // Cache for dynamically loaded locale packs

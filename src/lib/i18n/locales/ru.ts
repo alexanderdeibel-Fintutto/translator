@@ -317,6 +317,15 @@ const strings: Record<string, string> = {
   'protocol.exportText': 'Text (.txt)',
   'protocol.exportMarkdown': 'Markdown (.md)',
   'protocol.filename': 'protocol',
+
+  // Error messages (stt.ts)
+  'error.micDeniedHint': 'Доступ к микрофону отклонён. Пожалуйста, разрешите доступ в настройках браузера.',
+  'error.micUnavailableHint': 'Микрофон недоступен. Пожалуйста, проверьте настройки устройства.',
+  'error.networkStt': 'Ошибка сети при распознавании речи. Пожалуйста, проверьте подключение к Интернету.',
+  'error.sttGeneric': 'Ошибка голосового ввода: {error}',
+  'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer пока недоступен. Будет активирован с нативным приложением iOS.',
+  'error.cloudSttNotAvailable': 'Голосовой ввод недоступен. Пожалуйста, включите Cloud Speech-to-Text API в Google Cloud Console.',
+  'error.whisperNotAvailable': 'Офлайн-распознавание речи недоступно. Пожалуйста, скачайте модель Whisper в Настройках.',
 }
 
 export default strings

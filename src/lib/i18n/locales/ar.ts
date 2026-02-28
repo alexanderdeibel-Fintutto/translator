@@ -317,6 +317,15 @@ const strings: Record<string, string> = {
   'protocol.exportText': 'Text (.txt)',
   'protocol.exportMarkdown': 'Markdown (.md)',
   'protocol.filename': 'protocol',
+
+  // Error messages (stt.ts)
+  'error.micDeniedHint': 'تم رفض الوصول إلى الميكروفون. يرجى السماح بالوصول في إعدادات المتصفح.',
+  'error.micUnavailableHint': 'الميكروفون غير متاح. يرجى التحقق من إعدادات الجهاز.',
+  'error.networkStt': 'خطأ في الشبكة أثناء التعرف على الكلام. يرجى التحقق من اتصال الإنترنت.',
+  'error.sttGeneric': 'خطأ في الإدخال الصوتي: {error}',
+  'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer غير متاح بعد. سيتم تفعيله مع تطبيق iOS الأصلي.',
+  'error.cloudSttNotAvailable': 'الإدخال الصوتي غير متاح. يرجى تفعيل Cloud Speech-to-Text API في Google Cloud Console.',
+  'error.whisperNotAvailable': 'التعرف على الكلام بدون اتصال غير متاح. يرجى تنزيل نموذج Whisper من الإعدادات.',
 }
 
 export default strings
