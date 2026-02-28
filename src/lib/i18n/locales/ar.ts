@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer غير متاح بعد. سيتم تفعيله مع تطبيق iOS الأصلي.',
   'error.cloudSttNotAvailable': 'الإدخال الصوتي غير متاح. يرجى تفعيل Cloud Speech-to-Text API في Google Cloud Console.',
   'error.whisperNotAvailable': 'التعرف على الكلام بدون اتصال غير متاح. يرجى تنزيل نموذج Whisper من الإعدادات.',
+  'error.bluetoothNotEnabled': 'البلوتوث غير مفعّل',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'عبارات أساسية',
+  'phrases.pack.common.desc': 'جمل أساسية لكل رحلة',
+  'phrases.pack.mediterranean.name': 'رحلة البحر المتوسط',
+  'phrases.pack.mediterranean.desc': 'عبارات لموانئ البحر المتوسط: إيطاليا، اليونان، إسبانيا، فرنسا',
+  'phrases.pack.nordic.name': 'رحلة الشمال',
+  'phrases.pack.nordic.desc': 'عبارات لموانئ الدول الاسكندنافية والشمالية',
+  'phrases.pack.migrant.name': 'السلطات والحياة اليومية',
+  'phrases.pack.migrant.desc': 'عبارات مهمة للسلطات والأطباء والسكن والعمل والمدرسة والشرطة والحياة اليومية',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'التحية',
+  'phrases.cat.navigation': 'التنقل',
+  'phrases.cat.food': 'الطعام',
+  'phrases.cat.shopping': 'التسوق',
+  'phrases.cat.emergency': 'الطوارئ',
+  'phrases.cat.port': 'الميناء',
+  'phrases.cat.sightseeing': 'المعالم السياحية',
+  'phrases.cat.localFood': 'الطعام المحلي',
+  'phrases.cat.beach': 'الشاطئ',
+  'phrases.cat.practical': 'عملي',
+  'phrases.cat.excursions': 'رحلات',
+  'phrases.cat.authority': 'السلطات',
+  'phrases.cat.doctor': 'الطبيب',
+  'phrases.cat.housing': 'السكن',
+  'phrases.cat.work': 'العمل',
+  'phrases.cat.school': 'المدرسة',
+  'phrases.cat.police': 'الشرطة',
+  'phrases.cat.daily': 'الحياة اليومية',
 }
 
 export default strings

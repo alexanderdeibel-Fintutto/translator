@@ -131,7 +131,7 @@ export default function PhrasebookPage() {
               activeCategory === cat ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground hover:bg-accent/50'
             }`}
           >
-            {cat}
+            {t(cat)}
           </button>
         ))}
       </div>
@@ -185,7 +185,7 @@ export default function PhrasebookPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground font-medium">
-                      {phrase.category}
+                      {t(phrase.category)}
                     </span>
                   </div>
                   {isLoading ? (

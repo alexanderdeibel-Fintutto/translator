@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer henüz kullanılamıyor. Yerel iOS uygulaması ile etkinleştirilecek.',
   'error.cloudSttNotAvailable': 'Sesli giriş kullanılamıyor. Lütfen Google Cloud Console\'da Cloud Speech-to-Text API\'yi etkinleştirin.',
   'error.whisperNotAvailable': 'Çevrimdışı konuşma tanıma kullanılamıyor. Lütfen Ayarlar\'dan Whisper modelini indirin.',
+  'error.bluetoothNotEnabled': 'Bluetooth etkin değil',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Temel İfadeler',
+  'phrases.pack.common.desc': 'Her yolculuk için temel cümleler',
+  'phrases.pack.mediterranean.name': 'Akdeniz Kruvaziyer',
+  'phrases.pack.mediterranean.desc': 'Akdeniz limanları için ifadeler: İtalya, Yunanistan, İspanya, Fransa',
+  'phrases.pack.nordic.name': 'Kuzey Kruvaziyer',
+  'phrases.pack.nordic.desc': 'İskandinavya ve kuzey limanları için ifadeler',
+  'phrases.pack.migrant.name': 'Resmi Kurumlar ve Günlük Yaşam',
+  'phrases.pack.migrant.desc': 'Resmi kurumlar, doktor, konut, iş, okul, polis ve günlük yaşam için önemli ifadeler',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Selamlama',
+  'phrases.cat.navigation': 'Yön bulma',
+  'phrases.cat.food': 'Yemek',
+  'phrases.cat.shopping': 'Alışveriş',
+  'phrases.cat.emergency': 'Acil durum',
+  'phrases.cat.port': 'Liman',
+  'phrases.cat.sightseeing': 'Gezi',
+  'phrases.cat.localFood': 'Yerel Yemek',
+  'phrases.cat.beach': 'Plaj',
+  'phrases.cat.practical': 'Pratik',
+  'phrases.cat.excursions': 'Geziler',
+  'phrases.cat.authority': 'Resmi Kurumlar',
+  'phrases.cat.doctor': 'Doktor',
+  'phrases.cat.housing': 'Konut',
+  'phrases.cat.work': 'İş',
+  'phrases.cat.school': 'Okul',
+  'phrases.cat.police': 'Polis',
+  'phrases.cat.daily': 'Günlük Yaşam',
 }
 
 export default strings

@@ -6,6 +6,7 @@
 // BLE is used purely for DISCOVERY — actual data transport goes over WiFi/WebSocket.
 
 import { Capacitor } from '@capacitor/core'
+import { getTranslation, type UILanguage } from '@/lib/i18n'
 
 // Our custom BLE service UUID for GuideTranslator session discovery
 // Generated UUID, unique to our app
@@ -55,7 +56,7 @@ export async function startBleAdvertising(sessionCode: string): Promise<void> {
   const { enabled } = await BluetoothLowEnergy.isEnabled()
   if (!enabled) {
     console.warn('[BLE] Bluetooth is not enabled')
-    throw new Error('Bluetooth ist nicht aktiviert')
+    throw new Error(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.bluetoothNotEnabled'))
   }
 
   // Start advertising with session code in the device name

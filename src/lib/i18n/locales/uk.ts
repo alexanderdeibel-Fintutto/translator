@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer ще не доступний. Буде активовано з рідним додатком iOS.',
   'error.cloudSttNotAvailable': 'Голосове введення недоступне. Будь ласка, увімкніть Cloud Speech-to-Text API у Google Cloud Console.',
   'error.whisperNotAvailable': 'Офлайн-розпізнавання мовлення недоступне. Будь ласка, завантажте модель Whisper у Налаштуваннях.',
+  'error.bluetoothNotEnabled': 'Bluetooth не увімкнено',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Базові фрази',
+  'phrases.pack.common.desc': 'Основні речення для будь-якої подорожі',
+  'phrases.pack.mediterranean.name': 'Середземноморський круїз',
+  'phrases.pack.mediterranean.desc': 'Фрази для середземноморських портів: Італія, Греція, Іспанія, Франція',
+  'phrases.pack.nordic.name': 'Північний круїз',
+  'phrases.pack.nordic.desc': 'Фрази для скандинавських та північних портів',
+  'phrases.pack.migrant.name': 'Установи та повсякденне життя',
+  'phrases.pack.migrant.desc': 'Важливі фрази для установ, лікарів, житла, роботи, школи, поліції та повсякденного життя',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Привітання',
+  'phrases.cat.navigation': 'Навігація',
+  'phrases.cat.food': 'Їжа',
+  'phrases.cat.shopping': 'Покупки',
+  'phrases.cat.emergency': 'Екстрені випадки',
+  'phrases.cat.port': 'Порт',
+  'phrases.cat.sightseeing': 'Визначні місця',
+  'phrases.cat.localFood': 'Місцева кухня',
+  'phrases.cat.beach': 'Пляж',
+  'phrases.cat.practical': 'Практичне',
+  'phrases.cat.excursions': 'Екскурсії',
+  'phrases.cat.authority': 'Установи',
+  'phrases.cat.doctor': 'Лікар',
+  'phrases.cat.housing': 'Житло',
+  'phrases.cat.work': 'Робота',
+  'phrases.cat.school': 'Школа',
+  'phrases.cat.police': 'Поліція',
+  'phrases.cat.daily': 'Повсякденне життя',
 }
 
 export default strings

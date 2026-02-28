@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer n\'est pas encore disponible. Sera activé avec l\'application iOS native.',
   'error.cloudSttNotAvailable': 'Saisie vocale non disponible. Veuillez activer l\'API Cloud Speech-to-Text dans la Google Cloud Console.',
   'error.whisperNotAvailable': 'Reconnaissance vocale hors ligne non disponible. Veuillez télécharger le modèle Whisper dans les Paramètres.',
+  'error.bluetoothNotEnabled': 'Le Bluetooth n\'est pas activé',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Phrases de base',
+  'phrases.pack.common.desc': 'Phrases essentielles pour chaque voyage',
+  'phrases.pack.mediterranean.name': 'Croisière Méditerranée',
+  'phrases.pack.mediterranean.desc': 'Phrases pour les ports méditerranéens : Italie, Grèce, Espagne, France',
+  'phrases.pack.nordic.name': 'Croisière Nordique',
+  'phrases.pack.nordic.desc': 'Phrases pour les ports scandinaves et nordiques',
+  'phrases.pack.migrant.name': 'Administrations et vie quotidienne',
+  'phrases.pack.migrant.desc': 'Phrases importantes pour les administrations, médecins, logement, travail, école, police et vie quotidienne',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Salutations',
+  'phrases.cat.navigation': 'Orientation',
+  'phrases.cat.food': 'Nourriture',
+  'phrases.cat.shopping': 'Shopping',
+  'phrases.cat.emergency': 'Urgences',
+  'phrases.cat.port': 'Port',
+  'phrases.cat.sightseeing': 'Tourisme',
+  'phrases.cat.localFood': 'Cuisine locale',
+  'phrases.cat.beach': 'Plage',
+  'phrases.cat.practical': 'Pratique',
+  'phrases.cat.excursions': 'Excursions',
+  'phrases.cat.authority': 'Administrations',
+  'phrases.cat.doctor': 'Médecin',
+  'phrases.cat.housing': 'Logement',
+  'phrases.cat.work': 'Travail',
+  'phrases.cat.school': 'École',
+  'phrases.cat.police': 'Police',
+  'phrases.cat.daily': 'Vie quotidienne',
 }
 
 export default strings

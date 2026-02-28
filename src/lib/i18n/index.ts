@@ -367,6 +367,37 @@ const de: TranslationStrings = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer ist noch nicht verfügbar. Wird mit der nativen iOS-App freigeschaltet.',
   'error.cloudSttNotAvailable': 'Spracheingabe nicht verfügbar. Bitte Cloud Speech-to-Text API im Google Cloud Console aktivieren.',
   'error.whisperNotAvailable': 'Offline-Spracherkennung nicht verfügbar. Bitte Whisper-Modell unter Einstellungen herunterladen.',
+  'error.bluetoothNotEnabled': 'Bluetooth ist nicht aktiviert',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Basis-Phrasen',
+  'phrases.pack.common.desc': 'Grundlegende Sätze für jede Reise',
+  'phrases.pack.mediterranean.name': 'Mittelmeer-Kreuzfahrt',
+  'phrases.pack.mediterranean.desc': 'Sätze für Mittelmeer-Häfen: Italien, Griechenland, Spanien, Frankreich',
+  'phrases.pack.nordic.name': 'Nordland-Kreuzfahrt',
+  'phrases.pack.nordic.desc': 'Sätze für Skandinavien und Nordland-Häfen',
+  'phrases.pack.migrant.name': 'Behörden & Alltag',
+  'phrases.pack.migrant.desc': 'Wichtige Sätze für Behörden, Arzt, Wohnung, Arbeit, Schule, Polizei und Alltag',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Begrüßung',
+  'phrases.cat.navigation': 'Navigation',
+  'phrases.cat.food': 'Essen',
+  'phrases.cat.shopping': 'Shopping',
+  'phrases.cat.emergency': 'Notfall',
+  'phrases.cat.port': 'Hafen',
+  'phrases.cat.sightseeing': 'Sightseeing',
+  'phrases.cat.localFood': 'Lokales Essen',
+  'phrases.cat.beach': 'Strand',
+  'phrases.cat.practical': 'Praktisch',
+  'phrases.cat.excursions': 'Ausflüge',
+  'phrases.cat.authority': 'Behörde',
+  'phrases.cat.doctor': 'Arzt',
+  'phrases.cat.housing': 'Wohnung',
+  'phrases.cat.work': 'Arbeit',
+  'phrases.cat.school': 'Schule',
+  'phrases.cat.police': 'Polizei',
+  'phrases.cat.daily': 'Alltag',
 }
 
 // Cache for dynamically loaded locale packs

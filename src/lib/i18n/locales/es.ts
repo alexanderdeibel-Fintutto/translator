@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer aún no está disponible. Se activará con la aplicación iOS nativa.',
   'error.cloudSttNotAvailable': 'Entrada de voz no disponible. Por favor, active la API Cloud Speech-to-Text en Google Cloud Console.',
   'error.whisperNotAvailable': 'Reconocimiento de voz sin conexión no disponible. Por favor, descargue el modelo Whisper en Ajustes.',
+  'error.bluetoothNotEnabled': 'Bluetooth no está activado',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Frases básicas',
+  'phrases.pack.common.desc': 'Frases esenciales para cada viaje',
+  'phrases.pack.mediterranean.name': 'Crucero Mediterráneo',
+  'phrases.pack.mediterranean.desc': 'Frases para puertos del Mediterráneo: Italia, Grecia, España, Francia',
+  'phrases.pack.nordic.name': 'Crucero Nórdico',
+  'phrases.pack.nordic.desc': 'Frases para puertos escandinavos y nórdicos',
+  'phrases.pack.migrant.name': 'Autoridades y vida diaria',
+  'phrases.pack.migrant.desc': 'Frases importantes para autoridades, médicos, vivienda, trabajo, escuela, policía y vida diaria',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Saludos',
+  'phrases.cat.navigation': 'Orientación',
+  'phrases.cat.food': 'Comida',
+  'phrases.cat.shopping': 'Compras',
+  'phrases.cat.emergency': 'Emergencias',
+  'phrases.cat.port': 'Puerto',
+  'phrases.cat.sightseeing': 'Turismo',
+  'phrases.cat.localFood': 'Comida local',
+  'phrases.cat.beach': 'Playa',
+  'phrases.cat.practical': 'Práctico',
+  'phrases.cat.excursions': 'Excursiones',
+  'phrases.cat.authority': 'Autoridades',
+  'phrases.cat.doctor': 'Médico',
+  'phrases.cat.housing': 'Vivienda',
+  'phrases.cat.work': 'Trabajo',
+  'phrases.cat.school': 'Escuela',
+  'phrases.cat.police': 'Policía',
+  'phrases.cat.daily': 'Vida diaria',
 }
 
 export default strings

@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer هنوز در دسترس نیست. با اپلیکیشن بومی iOS فعال خواهد شد.',
   'error.cloudSttNotAvailable': 'ورودی صوتی در دسترس نیست. لطفاً Cloud Speech-to-Text API را در Google Cloud Console فعال کنید.',
   'error.whisperNotAvailable': 'تشخیص گفتار آفلاین در دسترس نیست. لطفاً مدل Whisper را از تنظیمات دانلود کنید.',
+  'error.bluetoothNotEnabled': 'بلوتوث فعال نیست',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'عبارات پایه',
+  'phrases.pack.common.desc': 'جملات ضروری برای هر سفر',
+  'phrases.pack.mediterranean.name': 'کروز مدیترانه',
+  'phrases.pack.mediterranean.desc': 'عبارات برای بنادر مدیترانه: ایتالیا، یونان، اسپانیا، فرانسه',
+  'phrases.pack.nordic.name': 'کروز شمال',
+  'phrases.pack.nordic.desc': 'عبارات برای بنادر اسکاندیناوی و شمالی',
+  'phrases.pack.migrant.name': 'ادارات و زندگی روزمره',
+  'phrases.pack.migrant.desc': 'عبارات مهم برای ادارات، پزشک، مسکن، کار، مدرسه، پلیس و زندگی روزمره',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'احوالپرسی',
+  'phrases.cat.navigation': 'مسیریابی',
+  'phrases.cat.food': 'غذا',
+  'phrases.cat.shopping': 'خرید',
+  'phrases.cat.emergency': 'اورژانس',
+  'phrases.cat.port': 'بندر',
+  'phrases.cat.sightseeing': 'گردشگری',
+  'phrases.cat.localFood': 'غذای محلی',
+  'phrases.cat.beach': 'ساحل',
+  'phrases.cat.practical': 'کاربردی',
+  'phrases.cat.excursions': 'گشت‌ها',
+  'phrases.cat.authority': 'ادارات',
+  'phrases.cat.doctor': 'پزشک',
+  'phrases.cat.housing': 'مسکن',
+  'phrases.cat.work': 'کار',
+  'phrases.cat.school': 'مدرسه',
+  'phrases.cat.police': 'پلیس',
+  'phrases.cat.daily': 'زندگی روزمره',
 }
 
 export default strings

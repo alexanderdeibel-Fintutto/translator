@@ -326,6 +326,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer пока недоступен. Будет активирован с нативным приложением iOS.',
   'error.cloudSttNotAvailable': 'Голосовой ввод недоступен. Пожалуйста, включите Cloud Speech-to-Text API в Google Cloud Console.',
   'error.whisperNotAvailable': 'Офлайн-распознавание речи недоступно. Пожалуйста, скачайте модель Whisper в Настройках.',
+  'error.bluetoothNotEnabled': 'Bluetooth не включён',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Базовые фразы',
+  'phrases.pack.common.desc': 'Основные предложения для любого путешествия',
+  'phrases.pack.mediterranean.name': 'Средиземноморский круиз',
+  'phrases.pack.mediterranean.desc': 'Фразы для средиземноморских портов: Италия, Греция, Испания, Франция',
+  'phrases.pack.nordic.name': 'Северный круиз',
+  'phrases.pack.nordic.desc': 'Фразы для скандинавских и северных портов',
+  'phrases.pack.migrant.name': 'Учреждения и повседневная жизнь',
+  'phrases.pack.migrant.desc': 'Важные фразы для учреждений, врачей, жилья, работы, школы, полиции и повседневной жизни',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Приветствие',
+  'phrases.cat.navigation': 'Навигация',
+  'phrases.cat.food': 'Еда',
+  'phrases.cat.shopping': 'Покупки',
+  'phrases.cat.emergency': 'Экстренные случаи',
+  'phrases.cat.port': 'Порт',
+  'phrases.cat.sightseeing': 'Достопримечательности',
+  'phrases.cat.localFood': 'Местная кухня',
+  'phrases.cat.beach': 'Пляж',
+  'phrases.cat.practical': 'Практическое',
+  'phrases.cat.excursions': 'Экскурсии',
+  'phrases.cat.authority': 'Учреждения',
+  'phrases.cat.doctor': 'Врач',
+  'phrases.cat.housing': 'Жильё',
+  'phrases.cat.work': 'Работа',
+  'phrases.cat.school': 'Школа',
+  'phrases.cat.police': 'Полиция',
+  'phrases.cat.daily': 'Повседневная жизнь',
 }
 
 export default strings

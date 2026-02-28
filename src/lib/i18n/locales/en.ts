@@ -308,6 +308,37 @@ const strings: Record<string, string> = {
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer is not yet available. Will be enabled with the native iOS app.',
   'error.cloudSttNotAvailable': 'Speech input not available. Please enable Cloud Speech-to-Text API in Google Cloud Console.',
   'error.whisperNotAvailable': 'Offline speech recognition not available. Please download the Whisper model in Settings.',
+  'error.bluetoothNotEnabled': 'Bluetooth is not enabled',
+
+  // Phrase pack metadata
+  'phrases.pack.common.name': 'Basic Phrases',
+  'phrases.pack.common.desc': 'Essential sentences for every trip',
+  'phrases.pack.mediterranean.name': 'Mediterranean Cruise',
+  'phrases.pack.mediterranean.desc': 'Phrases for Mediterranean ports: Italy, Greece, Spain, France',
+  'phrases.pack.nordic.name': 'Nordic Cruise',
+  'phrases.pack.nordic.desc': 'Phrases for Scandinavia and Nordic ports',
+  'phrases.pack.migrant.name': 'Authorities & Daily Life',
+  'phrases.pack.migrant.desc': 'Essential phrases for authorities, doctors, housing, work, school, police and daily life',
+
+  // Phrase categories
+  'phrases.cat.greeting': 'Greetings',
+  'phrases.cat.navigation': 'Navigation',
+  'phrases.cat.food': 'Food',
+  'phrases.cat.shopping': 'Shopping',
+  'phrases.cat.emergency': 'Emergency',
+  'phrases.cat.port': 'Port',
+  'phrases.cat.sightseeing': 'Sightseeing',
+  'phrases.cat.localFood': 'Local Food',
+  'phrases.cat.beach': 'Beach',
+  'phrases.cat.practical': 'Practical',
+  'phrases.cat.excursions': 'Excursions',
+  'phrases.cat.authority': 'Authorities',
+  'phrases.cat.doctor': 'Doctor',
+  'phrases.cat.housing': 'Housing',
+  'phrases.cat.work': 'Work',
+  'phrases.cat.school': 'School',
+  'phrases.cat.police': 'Police',
+  'phrases.cat.daily': 'Daily Life',
 }
 
 export default strings
