@@ -107,10 +107,9 @@ export default function SettingsPage() {
         <Card className="border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30">
           <CardContent className="pt-4">
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              <strong>Tipp für iOS Safari:</strong> Füge diese App zum Home-Bildschirm hinzu, damit deine
-              Offline-Daten nicht nach 7 Tagen gelöscht werden. Tippe auf{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Teilen ↑</span> →{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Zum Home-Bildschirm</span>.
+              <strong>{t('settings.safariHintTitle')}</strong> {t('settings.safariHintText')}{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintShare')}</span> →{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintHome')}</span>.
             </p>
           </CardContent>
         </Card>
