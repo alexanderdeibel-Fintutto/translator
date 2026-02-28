@@ -2,6 +2,8 @@
 // Supports: Web Speech API (Chrome/Edge), Google Cloud STT (iOS + fallback)
 // Future: Apple SpeechAnalyzer (iOS 26)
 
+import { getTranslation, type UILanguage } from '@/lib/i18n'
+
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList
@@ -177,7 +179,8 @@ export function createWebSpeechEngine(): STTEngine {
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         recognition = null
-        onError('Spracheingabe konnte nicht gestartet werden')
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+        onError(getTranslation(uiLang, 'error.sttStartFailed'))
       }
     },
 

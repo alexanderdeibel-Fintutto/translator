@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Hotspot Modu',
   'live.modeLocal': 'Yerel Ağ',
   'live.modeCloud': 'Bulut',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'Bu tarayıcı sesli girişi desteklemiyor',
+  'error.ttsFallback': 'Google Cloud TTS kullanılamıyor — tarayıcı sesi kullanılıyor',
+  'error.bleScanFailed': 'BLE taraması başarısız',
+  'error.micDenied': 'Mikrofon erişimi reddedildi.',
+  'error.micUnavailable': 'Mikrofon kullanılamıyor.',
+  'error.whisperNotLoaded': 'Whisper modeli yüklenmedi. Lütfen Ayarlar\'dan indirin.',
+  'error.noOfflineTranslation': '{src} → {tgt} için çevrimdışı çeviri mevcut değil',
+  'error.sttStartFailed': 'Sesli giriş başlatılamadı',
 }
 
 export default strings

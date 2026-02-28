@@ -331,6 +331,14 @@ const de: TranslationStrings = {
   // Errors
   'error.translationFailed': 'Übersetzung fehlgeschlagen',
   'error.connectionLost': 'Verbindung unterbrochen — wird automatisch wiederhergestellt...',
+  'error.speechNotSupported': 'Spracheingabe wird von diesem Browser nicht unterstützt',
+  'error.ttsFallback': 'Google Cloud TTS nicht verfügbar – Browser-Stimme wird verwendet',
+  'error.bleScanFailed': 'BLE-Scan fehlgeschlagen',
+  'error.micDenied': 'Mikrofon-Zugriff verweigert.',
+  'error.micUnavailable': 'Mikrofon nicht verfügbar.',
+  'error.whisperNotLoaded': 'Whisper-Modell nicht geladen. Bitte unter Einstellungen herunterladen.',
+  'error.noOfflineTranslation': 'Keine Offline-Übersetzung verfügbar für {src} → {tgt}',
+  'error.sttStartFailed': 'Spracheingabe konnte nicht gestartet werden',
 }
 
 // Cache for dynamically loaded locale packs

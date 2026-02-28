@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'وضع نقطة الاتصال',
   'live.modeLocal': 'شبكة محلية',
   'live.modeCloud': 'سحابة',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'الإدخال الصوتي غير مدعوم في هذا المتصفح',
+  'error.ttsFallback': 'Google Cloud TTS غير متاح — يتم استخدام صوت المتصفح',
+  'error.bleScanFailed': 'فشل فحص BLE',
+  'error.micDenied': 'تم رفض الوصول إلى الميكروفون.',
+  'error.micUnavailable': 'الميكروفون غير متاح.',
+  'error.whisperNotLoaded': 'نموذج Whisper غير محمّل. يرجى التحميل من الإعدادات.',
+  'error.noOfflineTranslation': 'لا تتوفر ترجمة بدون اتصال لـ {src} → {tgt}',
+  'error.sttStartFailed': 'تعذر بدء الإدخال الصوتي',
 }
 
 export default strings

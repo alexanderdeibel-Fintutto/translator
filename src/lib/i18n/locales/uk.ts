@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Режим Hotspot',
   'live.modeLocal': 'Локальна мережа',
   'live.modeCloud': 'Хмара',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'Голосовий ввід не підтримується цим браузером',
+  'error.ttsFallback': 'Google Cloud TTS недоступний — використовується голос браузера',
+  'error.bleScanFailed': 'Сканування BLE не вдалося',
+  'error.micDenied': 'Доступ до мікрофона відхилено.',
+  'error.micUnavailable': 'Мікрофон недоступний.',
+  'error.whisperNotLoaded': 'Модель Whisper не завантажена. Завантажте в Налаштуваннях.',
+  'error.noOfflineTranslation': 'Офлайн-переклад недоступний для {src} → {tgt}',
+  'error.sttStartFailed': 'Не вдалося запустити голосовий ввід',
 }
 
 export default strings

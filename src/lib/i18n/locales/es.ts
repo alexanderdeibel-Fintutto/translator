@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Modo Hotspot',
   'live.modeLocal': 'Red local',
   'live.modeCloud': 'Nube',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'La entrada de voz no es compatible con este navegador',
+  'error.ttsFallback': 'Google Cloud TTS no disponible — se usa la voz del navegador',
+  'error.bleScanFailed': 'Error en el escaneo BLE',
+  'error.micDenied': 'Acceso al micrófono denegado.',
+  'error.micUnavailable': 'Micrófono no disponible.',
+  'error.whisperNotLoaded': 'Modelo Whisper no cargado. Descárgalo en Ajustes.',
+  'error.noOfflineTranslation': 'No hay traducción sin conexión disponible para {src} → {tgt}',
+  'error.sttStartFailed': 'No se pudo iniciar la entrada de voz',
 }
 
 export default strings

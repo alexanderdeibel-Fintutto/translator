@@ -272,6 +272,14 @@ const strings: Record<string, string> = {
 
   'error.translationFailed': 'Translation failed',
   'error.connectionLost': 'Connection lost — reconnecting automatically...',
+  'error.speechNotSupported': 'Speech input is not supported by this browser',
+  'error.ttsFallback': 'Google Cloud TTS unavailable — using browser voice',
+  'error.bleScanFailed': 'BLE scan failed',
+  'error.micDenied': 'Microphone access denied.',
+  'error.micUnavailable': 'Microphone not available.',
+  'error.whisperNotLoaded': 'Whisper model not loaded. Please download in Settings.',
+  'error.noOfflineTranslation': 'No offline translation available for {src} → {tgt}',
+  'error.sttStartFailed': 'Speech input could not be started',
 }
 
 export default strings

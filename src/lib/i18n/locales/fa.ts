@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'حالت هات‌اسپات',
   'live.modeLocal': 'شبکه محلی',
   'live.modeCloud': 'ابری',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'ورودی صوتی در این مرورگر پشتیبانی نمی‌شود',
+  'error.ttsFallback': 'Google Cloud TTS در دسترس نیست — از صدای مرورگر استفاده می‌شود',
+  'error.bleScanFailed': 'اسکن BLE ناموفق بود',
+  'error.micDenied': 'دسترسی به میکروفون رد شد.',
+  'error.micUnavailable': 'میکروفون در دسترس نیست.',
+  'error.whisperNotLoaded': 'مدل Whisper بارگذاری نشده. لطفاً از تنظیمات دانلود کنید.',
+  'error.noOfflineTranslation': 'ترجمه آفلاین برای {src} → {tgt} در دسترس نیست',
+  'error.sttStartFailed': 'ورودی صوتی قابل شروع نبود',
 }
 
 export default strings

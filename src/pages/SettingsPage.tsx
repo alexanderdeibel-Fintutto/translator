@@ -176,7 +176,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Key className="h-4 w-4" />
+            <Key className="h-4 w-4" aria-hidden="true" />
             Google Cloud API-Key
           </CardTitle>
         </CardHeader>
@@ -193,6 +193,7 @@ export default function SettingsPage() {
                 onChange={e => setApiKey(e.target.value)}
                 placeholder="AIza..."
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm pr-10 font-mono"
+                aria-label={t('settings.apiKey')}
               />
               <button
                 type="button"
@@ -220,7 +221,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4" aria-hidden="true" />
             {t('settings.offlineLangs')}
           </CardTitle>
         </CardHeader>
@@ -253,7 +254,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Mic className="h-4 w-4" />
+            <Mic className="h-4 w-4" aria-hidden="true" />
             {t('settings.whisper')}
           </CardTitle>
         </CardHeader>
@@ -297,7 +298,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
             {t('settings.cache')}
           </CardTitle>
         </CardHeader>

@@ -19,7 +19,7 @@ export default function StorageIndicator({
     <div className="space-y-3">
       {/* Storage bar */}
       <div className="flex items-center gap-3">
-        <HardDrive className="h-4 w-4 text-muted-foreground shrink-0" />
+        <HardDrive className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
         <div className="flex-1">
           <div className="flex items-center justify-between text-sm mb-1">
             <span className="text-muted-foreground">{t('settings.storage')}</span>
@@ -40,14 +40,14 @@ export default function StorageIndicator({
       <div className="flex items-center gap-2 text-sm">
         {isPersistent ? (
           <>
-            <Shield className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <Shield className="h-4 w-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
             <span className="text-emerald-600 dark:text-emerald-400">
               {t('settings.persistentActive')}
             </span>
           </>
         ) : (
           <>
-            <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
             <span className="text-amber-600 dark:text-amber-400">
               {t('settings.persistentInactive')}{' '}
               <button

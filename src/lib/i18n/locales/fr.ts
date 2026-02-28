@@ -286,6 +286,16 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Mode Hotspot',
   'live.modeLocal': 'Réseau local',
   'live.modeCloud': 'Cloud',
+
+  // Errors (hooks & lib)
+  'error.speechNotSupported': 'La saisie vocale n\'est pas prise en charge par ce navigateur',
+  'error.ttsFallback': 'Google Cloud TTS indisponible — voix du navigateur utilisée',
+  'error.bleScanFailed': 'Échec du scan BLE',
+  'error.micDenied': 'Accès au microphone refusé.',
+  'error.micUnavailable': 'Microphone non disponible.',
+  'error.whisperNotLoaded': 'Modèle Whisper non chargé. Veuillez télécharger dans les Paramètres.',
+  'error.noOfflineTranslation': 'Aucune traduction hors ligne disponible pour {src} → {tgt}',
+  'error.sttStartFailed': 'Impossible de démarrer la saisie vocale',
 }
 
 export default strings

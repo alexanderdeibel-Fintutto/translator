@@ -32,7 +32,7 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
           {t('phrases.title')}
         </CardTitle>
         {/* Pack selector tabs */}
