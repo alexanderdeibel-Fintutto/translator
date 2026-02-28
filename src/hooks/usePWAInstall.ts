@@ -24,13 +24,15 @@ export function usePWAInstall() {
     window.addEventListener('beforeinstallprompt', handler)
 
     // Detect when app is installed
-    window.addEventListener('appinstalled', () => {
+    const installedHandler = () => {
       setDeferredPrompt(null)
       setIsInstalled(true)
-    })
+    }
+    window.addEventListener('appinstalled', installedHandler)
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler)
+      window.removeEventListener('appinstalled', installedHandler)
     }
   }, [])
 

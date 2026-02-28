@@ -25,6 +25,7 @@ export default function ConversationPage() {
   const [isTranslating, setIsTranslating] = useState(false)
   const [currentTranscript, setCurrentTranscript] = useState('')
   const [autoSpeak, setAutoSpeak] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const topRecognition = useSpeechRecognition()
   const bottomRecognition = useSpeechRecognition()
@@ -45,6 +46,7 @@ export default function ConversationPage() {
     const srcLang = side === 'top' ? topLang : bottomLang
     const tgtLang = side === 'top' ? bottomLang : topLang
 
+    setError(null)
     try {
       const result = await translateText(text, srcLang, tgtLang)
       const msg: Message = {
@@ -61,7 +63,8 @@ export default function ConversationPage() {
         ttsRef.current(result.translatedText, lang?.speechCode || tgtLang)
       }
     } catch (err) {
-      console.error('[Conversation] Translation failed:', err)
+      const msg = err instanceof Error ? err.message : ''
+      setError(msg === 'OFFLINE_NO_MODEL' ? t('error.offlineNoModel') : t('error.allProvidersFailed'))
     } finally {
       isTranslatingRef.current = false
       setIsTranslating(false)
@@ -305,6 +308,11 @@ export default function ConversationPage() {
           </p>
         )}
       </div>
+      {error && (
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center" role="alert">
+          {error}
+        </div>
+      )}
     </div>
   )
 }

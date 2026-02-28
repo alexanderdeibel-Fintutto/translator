@@ -111,8 +111,8 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
-    // Translate to all requested languages in parallel
-    const results = await Promise.all(
+    // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
+    const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
         return {
@@ -127,7 +127,12 @@ export function useLiveSession() {
       })
     )
 
-    // Broadcast each translation
+    const results: TranslationChunk[] = []
+    for (const r of settled) {
+      if (r.status === 'fulfilled') results.push(r.value)
+    }
+
+    // Broadcast each successful translation
     for (const chunk of results) {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
@@ -135,6 +140,12 @@ export function useLiveSession() {
     // Add to local history (one entry per source text)
     if (results.length > 0) {
       setTranslationHistory(prev => [...prev, results[0]])
+    }
+
+    // Warn if some translations failed
+    const failed = settled.filter(r => r.status === 'rejected')
+    if (failed.length > 0) {
+      console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
