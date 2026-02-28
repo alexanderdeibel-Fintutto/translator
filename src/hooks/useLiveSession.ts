@@ -113,11 +113,15 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
+ claude/add-new-languages-G9HsJ
+    // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+
     // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
+ main
     const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
-        return {
+        const chunk: TranslationChunk = {
           id: generateChunkId(),
           sourceText: text,
           translatedText: result.translatedText,
@@ -125,14 +129,21 @@ export function useLiveSession() {
           targetLanguage: targetLang,
           isFinal: true,
           timestamp: Date.now(),
-        } satisfies TranslationChunk
+        }
+        return chunk
       })
     )
+
+ claude/add-new-languages-G9HsJ
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
+      .map(r => r.value)
 
     const results: TranslationChunk[] = []
     for (const r of settled) {
       if (r.status === 'fulfilled') results.push(r.value)
     }
+ main
 
     // Broadcast each successful translation
     for (const chunk of results) {

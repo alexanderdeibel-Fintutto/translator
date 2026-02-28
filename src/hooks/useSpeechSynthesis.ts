@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import { isCloudTTSAvailable, speakWithCloudTTS } from '@/lib/tts'
+import { isCloudTTSAvailable, speakWithCloudTTS, prefetchCloudTTS } from '@/lib/tts'
 import type { VoiceQuality } from '@/lib/tts'
 import { useI18n } from '@/context/I18nContext'
 
@@ -37,6 +37,13 @@ export function useSpeechSynthesis() {
     isProcessingRef.current = true
 
     const { text, lang } = queueRef.current.shift()!
+
+    // Prefetch next item in queue while current one plays
+    if (useCloudTTS && queueRef.current.length > 0) {
+      const next = queueRef.current[0]
+      prefetchCloudTTS(next.text, next.lang, voiceQualityRef.current)
+    }
+
     speakImmediate(text, lang)
 
     function speakImmediate(text: string, lang: string) {
