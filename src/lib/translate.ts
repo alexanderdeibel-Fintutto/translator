@@ -3,8 +3,7 @@
 import { getCachedTranslation, cacheTranslation } from './offline/translation-cache'
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
-
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+import { getGoogleApiKey } from './api-key'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'
@@ -51,15 +50,26 @@ function isHealthy(provider: string): boolean {
   return false
 }
 
-function recordFailure(provider: string) {
+function recordFailure(provider: string, retryAfterMs?: number) {
   const c = circuits[provider]
   if (!c) return
   c.failCount++
   if (c.failCount >= CIRCUIT_THRESHOLD) {
     c.isOpen = true
-    c.resetAt = Date.now() + CIRCUIT_RESET_MS
-    console.warn(`[Translate] ${provider} circuit breaker open for ${CIRCUIT_RESET_MS / 1000}s`)
+    c.resetAt = Date.now() + (retryAfterMs || CIRCUIT_RESET_MS)
+    console.warn(`[Translate] ${provider} circuit breaker open for ${(retryAfterMs || CIRCUIT_RESET_MS) / 1000}s`)
   }
+}
+
+/** Parse Retry-After header (seconds or HTTP-date) into ms */
+function parseRetryAfter(response: Response): number | undefined {
+  const val = response.headers?.get?.('Retry-After')
+  if (!val) return undefined
+  const secs = Number(val)
+  if (!isNaN(secs)) return secs * 1000
+  const date = Date.parse(val)
+  if (!isNaN(date)) return Math.max(0, date - Date.now())
+  return undefined
 }
 
 function recordSuccess(provider: string) {
@@ -76,7 +86,11 @@ async function translateWithGoogle(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${GOOGLE_API_KEY}`, {
+  if (!getGoogleApiKey()) {
+    throw new Error('Google API key not configured')
+  }
+
+  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -89,7 +103,12 @@ async function translateWithGoogle(
 
   if (!response.ok) {
     const err = await response.text()
-    throw new Error(`Google Translate failed (${response.status}): ${err}`)
+    const retryMs = response.status === 429 ? parseRetryAfter(response) : undefined
+    const error = Object.assign(
+      new Error(`Google Translate failed (${response.status}): ${err}`),
+      { retryAfterMs: retryMs },
+    )
+    throw error
   }
 
   const data = await response.json()
@@ -176,6 +195,14 @@ const providers: ProviderDef[] = [
   { name: 'LibreTranslate', fn: translateWithLibre },
 ]
 
+/** @internal — exposed for testing only */
+export function _resetInternals() {
+  cache.clear()
+  for (const key of Object.keys(circuits)) {
+    circuits[key] = { failCount: 0, isOpen: false, resetAt: 0 }
+  }
+}
+
 export async function translateText(
   text: string,
   sourceLang: string,
@@ -255,7 +282,8 @@ async function translateTextInner(
         return result
       } catch (err) {
         console.warn(`[Translate] ${provider.name} failed:`, err)
-        if (provider.circuitKey) recordFailure(provider.circuitKey)
+        const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
+        if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
         lastError = err instanceof Error ? err : new Error(String(err))
       }
     }
@@ -284,7 +312,7 @@ async function translateTextInner(
 
   throw new Error(
     networkStatus.isOffline
-      ? 'Offline — kein Sprachmodell für dieses Sprachpaar heruntergeladen. Gehe zu Einstellungen → Offline-Sprachen.'
-      : 'Übersetzung fehlgeschlagen — bitte versuche es erneut'
+      ? 'OFFLINE_NO_MODEL'
+      : 'ALL_PROVIDERS_FAILED'
   )
 }

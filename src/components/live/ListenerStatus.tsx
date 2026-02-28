@@ -1,6 +1,7 @@
 import { Users } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { getLanguageByCode } from '@/lib/languages'
+import { useI18n } from '@/context/I18nContext'
 import type { PresenceState } from '@/lib/session'
 
 interface ListenerStatusProps {
@@ -9,6 +10,7 @@ interface ListenerStatusProps {
 }
 
 export default function ListenerStatus({ listeners, listenersByLanguage }: ListenerStatusProps) {
+  const { t } = useI18n()
   const langEntries = Object.entries(listenersByLanguage)
     .filter(([lang]) => lang !== '_speaker')
     .sort((a, b) => b[1] - a[1])
@@ -16,9 +18,9 @@ export default function ListenerStatus({ listeners, listenersByLanguage }: Liste
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-3">
-        <Users className="h-4 w-4 text-muted-foreground" />
+        <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <span className="text-sm font-medium">
-          {listeners.length} {listeners.length === 1 ? 'Listener' : 'Listener'} verbunden
+          {listeners.length} {t('live.listenersConnected')}
         </span>
         {listeners.length > 0 && (
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -46,7 +48,7 @@ export default function ListenerStatus({ listeners, listenersByLanguage }: Liste
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Warte auf Listener... Teile den QR-Code oder Link.
+          {t('live.waitingForListeners')}
         </p>
       )}
     </Card>

@@ -11,6 +11,10 @@ import {
   Loader2,
   UserCheck,
   User,
+  ThumbsUp,
+  ThumbsDown,
+  Share2,
+
   Send,
   Zap,
   AlignLeft,
@@ -19,9 +23,11 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from './LanguageSelector'
 import { translateText } from '@/lib/translate'
+import { detectLanguage } from '@/lib/detect-language'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
@@ -61,7 +67,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
-
+  const [autoDetect, setAutoDetect] = useState(false)
+  const [detectedLang, setDetectedLang] = useState<string | null>(null)
   // Segment-based state for speech mode
   const [segments, setSegments] = useState<TranslationSegment[]>([])
   const [interimText, setInterimText] = useState('')
@@ -75,6 +82,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
   const [autoSpeak, setAutoSpeak] = useState(() => {
     const saved = localStorage.getItem('translator-auto-speak')
     return saved !== null ? saved === 'true' : true
@@ -182,6 +190,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     if (!text.trim()) {
       setSegments([])
       setError(null)
+      setDetectedLang(null)
       return
     }
 
@@ -193,12 +202,24 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
     setError(null)
 
+    // Auto-detect source language if enabled
+    let effectiveSourceLang = sourceLang
+    if (autoDetect) {
+      const detected = detectLanguage(text)
+      if (detected && detected.confidence > 0.3) {
+        effectiveSourceLang = detected.language
+        setDetectedLang(detected.language)
+      } else {
+        setDetectedLang(null)
+      }
+    }
+
     try {
-      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
+      const result = await translateText(text, effectiveSourceLang, targetLang)
       let finalText = result.translatedText
 
-      if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
-        finalText = convertToInformal(finalText, targetLangRef.current)
+      if (useInformalRef.current && supportsFormality(targetLang)) {
+        finalText = convertToInformal(finalText, targetLang)
       }
 
       setSegments(prev => prev.map(s =>
@@ -206,25 +227,31 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       ))
       setMatchScore(result.match)
       setProvider(result.provider)
+      setFeedback(null)
 
       if (autoSpeakRef.current && finalText) {
-        const lang = getLanguageByCode(targetLangRef.current)
-        targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
+        const lang = getLanguageByCode(targetLang)
+        targetSpeakRef.current(finalText, lang?.speechCode || targetLang)
       }
 
       addEntry({
         sourceText: text,
         translatedText: finalText,
-        sourceLang: sourceLangRef.current,
-        targetLang: targetLangRef.current,
+        sourceLang: effectiveSourceLang,
+        targetLang,
       })
     } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      const errorMap: Record<string, string> = {
+        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
+        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
+      }
       setSegments(prev => prev.map(s =>
         s.id === segmentId ? { ...s, isTranslating: false } : s
       ))
-      setError(err instanceof Error ? err.message : 'Translation failed')
+      setError(errorMap[msg] || msg || t('error.unknown'))
     }
-  }, [segments, addEntry])
+  }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
   // Manual textarea editing: collapse to single segment, debounce translate
   const handleManualEdit = useCallback((newText: string) => {
@@ -292,7 +319,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   const handleMicToggle = () => {
     if (!micSupported) {
-      setMicWarning('Spracheingabe nicht verfügbar. Bitte prüfen Sie Ihre Browser-Einstellungen und Internetverbindung.')
+      setMicWarning(t('translator.micUnavailable'))
       setTimeout(() => setMicWarning(null), 5000)
       return
     }
@@ -356,6 +383,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     await navigator.clipboard.writeText(translatedText)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleShare = async () => {
+    if (!translatedText || !navigator.share) return
+    try {
+      await navigator.share({
+        text: `${sourceText}\n\n→ ${translatedText}`,
+      })
+    } catch {
+      // user cancelled share dialog
+    }
   }
 
   const handleSpeakSource = () => {
@@ -428,6 +466,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+ claude/add-new-languages-G9HsJ
   // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
   const handleMicToggleRef = useRef(handleMicToggle)
   handleMicToggleRef.current = handleMicToggle
@@ -451,6 +490,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
+  useKeyboardShortcuts({
+    'ctrl+enter': () => { if (sourceText.trim()) doTranslateManual(sourceText) },
+    'escape': clearAll,
+    'ctrl+shift+s': swapLanguages,
+  })
+ main
+
   const sourceLangData = getLanguageByCode(sourceLang)
   const targetLangData = getLanguageByCode(targetLang)
   const showFormalityToggle = supportsFormality(targetLang) || supportsFormality(sourceLang)
@@ -460,13 +507,33 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     <div className="space-y-4">
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
-        <LanguageSelector value={sourceLang} onChange={setSourceLang} label={t('translator.from')} />
+        <div className="flex items-end gap-1.5">
+          <LanguageSelector value={sourceLang} onChange={(v) => { setSourceLang(v); setAutoDetect(false); setDetectedLang(null) }} label={t('translator.from')} />
+          <Button
+            variant={autoDetect ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
+            className="mb-0.5 shrink-0 text-xs"
+            aria-pressed={autoDetect}
+            aria-label={t('translator.autoDetect')}
+          >
+            {t('translator.auto')}
+          </Button>
+          {autoDetect && detectedLang && (
+            <span className="mb-1 text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 font-medium">
+              {getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name || detectedLang}
+            </span>
+          )}
+        </div>
         <Button
           variant="outline"
           size="icon"
           onClick={swapLanguages}
           className="mb-0.5 shrink-0"
+ claude/add-new-languages-G9HsJ
           title={t('translator.swap')}
+
+ main
           aria-label={t('translator.swap')}
         >
           <ArrowRightLeft className="h-4 w-4" />
@@ -477,9 +544,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/add-new-languages-G9HsJ
           title={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
           aria-label={autoSpeak ? 'Auto-Vorlesen deaktivieren' : 'Auto-Vorlesen aktivieren'}
           aria-pressed={autoSpeak}
+
+          aria-pressed={autoSpeak}
+          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
+ main
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -489,9 +561,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/add-new-languages-G9HsJ
           title={hdVoice ? 'HD-Stimme aktiv (Chirp 3 HD)' : 'Standard-Stimme (Neural2)'}
           aria-label={hdVoice ? 'Zu Standard-Stimme wechseln' : 'Zu HD-Stimme wechseln'}
           aria-pressed={hdVoice}
+
+          aria-pressed={hdVoice}
+          aria-label={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
+ main
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
@@ -501,9 +578,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleStreamMode}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/add-new-languages-G9HsJ
           title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
           aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
           aria-pressed={streamMode === 'sentence'}
+
+          aria-pressed={streamMode === 'sentence'}
+          aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
+ main
         >
           {streamMode === 'sentence' ? <Zap className="h-3.5 w-3.5" /> : <AlignLeft className="h-3.5 w-3.5" />}
           <span className="text-xs">{streamMode === 'sentence' ? t('translator.sentence') : t('translator.paragraph')}</span>
@@ -515,8 +597,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             size="sm"
             onClick={toggleFormality}
             className={`mb-0.5 shrink-0 gap-1.5 ${!formalityActive ? 'opacity-50' : ''}`}
-            title={!formalityActive
-              ? 'Sie/Du — Zielsprache wechseln zu DE, FR, ES...'
+            aria-pressed={useInformal}
+            aria-label={!formalityActive
+              ? t('translator.formalityHint')
               : useInformal ? t('translator.informal') : t('translator.formal')}
             aria-label={useInformal ? 'Zu formeller Anrede wechseln' : 'Zu informeller Anrede wechseln'}
             aria-pressed={useInformal}
@@ -534,7 +617,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted-foreground">
-                {sourceLangData?.flag} {sourceLangData?.name}
+                {autoDetect && detectedLang
+                  ? <>{getLanguageByCode(detectedLang)?.flag} {getLanguageByCode(detectedLang)?.name} <span className="text-[10px] opacity-60">(auto)</span></>
+                  : <>{sourceLangData?.flag} {sourceLangData?.name}</>
+                }
               </span>
               <div className="flex items-center gap-1">
                 <Button
@@ -542,9 +628,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
+ claude/add-new-languages-G9HsJ
                   title={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
                   aria-label={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : 'Sprachaufnahme starten'}
                   aria-pressed={isListening}
+
+                  aria-pressed={isListening}
+                  aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
+ main
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
@@ -555,7 +646,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSend}
                     className="text-primary"
+ claude/add-new-languages-G9HsJ
                     title={t('translator.send')}
+
+ main
                     aria-label={t('translator.send')}
                   >
                     <Send className="h-4 w-4" />
@@ -566,8 +660,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakSource}
+ claude/add-new-languages-G9HsJ
                     title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                     aria-label={sourceSpeech.isSpeaking ? 'Vorlesen stoppen' : 'Quelltext vorlesen'}
+
+                    aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
                   >
                     {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </Button>
@@ -578,7 +676,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   </span>
                 )}
                 {sourceText && (
+ claude/add-new-languages-G9HsJ
                   <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')} aria-label={t('translator.delete')}>
+
+                  <Button variant="ghost" size="icon" onClick={clearAll} aria-label={t('translator.delete')}>
+ main
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
@@ -590,6 +692,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
+              aria-label={t('translator.placeholder')}
+
               readOnly={isListening}
             />
             {/* Interim text display during recording */}
@@ -599,16 +703,21 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
                 {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
+                {sourceText.length === 0 && !interimText && (
+                  <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
+                )}
               </span>
-              {isListening && (
-                <span className="text-xs text-destructive flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  {t('translator.recording')}
-                  {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
-                </span>
-              )}
+              <span aria-live="assertive">
+                {isListening && (
+                  <span className="text-xs text-destructive flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" aria-hidden="true" />
+                    {t('translator.recording')}
+                    {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
+                  </span>
+                )}
+              </span>
               {(micError || micWarning) && (
-                <span className="text-xs text-destructive">{micError || micWarning}</span>
+                <span className="text-xs text-destructive" role="alert">{micError || micWarning}</span>
               )}
             </div>
           </div>
@@ -627,8 +736,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakTarget}
+ claude/add-new-languages-G9HsJ
                     title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                     aria-label={targetSpeech.isSpeaking ? 'Vorlesen stoppen' : 'Übersetzung vorlesen'}
+
+                    aria-label={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
                   >
                     {targetSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </Button>
@@ -638,10 +751,23 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleCopy}
+ claude/add-new-languages-G9HsJ
                     title={t('translator.copy')}
+
+ main
                     aria-label={t('translator.copy')}
                   >
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                )}
+                {translatedText && typeof navigator.share === 'function' && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleShare}
+                    aria-label={t('translator.share')}
+                  >
+                    <Share2 className="h-4 w-4" />
                   </Button>
                 )}
               </div>
@@ -649,11 +775,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             <div
               className="w-full min-h-[200px] text-base leading-relaxed"
               dir={isRTL(targetLang) ? 'rtl' : 'ltr'}
+              aria-live="polite"
+              aria-label={t('translator.result')}
             >
               {segments.length === 0 && !isTranslating ? (
                 <p className="text-muted-foreground/60">{t('translator.result')}</p>
               ) : error && !translatedText ? (
-                <div className="text-destructive text-sm">{error}</div>
+                <div className="text-destructive text-sm" role="alert">{error}</div>
               ) : (
                 <p className="text-foreground">
                   {segments.map((seg, i) => (
@@ -669,6 +797,26 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 {translatedText.length} {t('translator.chars')}
               </span>
               <div className="flex items-center gap-2">
+                {translatedText && (
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
+                      className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      aria-label={t('translator.goodTranslation')}
+                      aria-pressed={feedback === 'up'}
+                    >
+                      <ThumbsUp className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
+                      className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+                      aria-label={t('translator.badTranslation')}
+                      aria-pressed={feedback === 'down'}
+                    >
+                      <ThumbsDown className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
                 {provider && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     provider === 'google' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :

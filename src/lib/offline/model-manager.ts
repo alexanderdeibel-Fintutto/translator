@@ -21,18 +21,59 @@ export const OPUS_MT_MODELS: Record<string, string> = {
   'it-en': 'Xenova/opus-mt-it-en',
   'en-pt': 'Xenova/opus-mt-en-pt',
   'pt-en': 'Xenova/opus-mt-tc-big-en-pt',
-  // English ↔ Others
+  'en-ro': 'Xenova/opus-mt-en-roa',    // roa = Romance (covers ro)
+  'ro-en': 'Xenova/opus-mt-roa-en',
+  // English ↔ Germanic
   'en-nl': 'Xenova/opus-mt-en-nl',
   'nl-en': 'Xenova/opus-mt-nl-en',
-  'en-ru': 'Xenova/opus-mt-en-ru',
-  'ru-en': 'Xenova/opus-mt-ru-en',
-  'en-pl': 'Xenova/opus-mt-en-zlw',  // zlw = West Slavic (covers pl)
-  'en-cs': 'Xenova/opus-mt-en-zlw',
-  'en-tr': 'Xenova/opus-mt-en-trk',  // trk = Turkic
   'en-sv': 'Xenova/opus-mt-en-sv',
   'en-da': 'Xenova/opus-mt-en-da',
+  'en-no': 'Xenova/opus-mt-en-no',
+  // English ↔ Slavic
+  'en-ru': 'Xenova/opus-mt-en-ru',
+  'ru-en': 'Xenova/opus-mt-ru-en',
+  'en-uk': 'Xenova/opus-mt-en-uk',
+  'uk-en': 'Xenova/opus-mt-uk-en',
+  'en-pl': 'Xenova/opus-mt-en-zlw',    // zlw = West Slavic (covers pl, cs)
+  'en-cs': 'Xenova/opus-mt-en-zlw',
+  'en-bg': 'Xenova/opus-mt-en-zls',    // zls = South Slavic (covers bg, hr, sr)
+  'en-hr': 'Xenova/opus-mt-en-zls',
+  'bg-en': 'Xenova/opus-mt-zls-en',
+  'hr-en': 'Xenova/opus-mt-zls-en',
+  // English ↔ Turkic
+  'en-tr': 'Xenova/opus-mt-en-trk',    // trk = Turkic
+  'tr-en': 'Xenova/opus-mt-trk-en',
+  // English ↔ Greek
   'en-el': 'Xenova/opus-mt-en-el',
   'el-en': 'Xenova/opus-mt-grk-en',
+  // English ↔ Uralic
+  'en-fi': 'Xenova/opus-mt-en-fi',
+  'fi-en': 'Xenova/opus-mt-fi-en',
+  'en-hu': 'Xenova/opus-mt-en-urj',    // urj = Uralic (covers hu, fi, et)
+  'en-et': 'Xenova/opus-mt-en-urj',
+  // English ↔ Arabic
+  'en-ar': 'Xenova/opus-mt-en-ar',
+  'ar-en': 'Xenova/opus-mt-ar-en',
+  // English ↔ Hebrew
+  'en-he': 'Xenova/opus-mt-en-he',
+  'he-en': 'Xenova/opus-mt-he-en',
+  // English ↔ Asian
+  'en-zh': 'Xenova/opus-mt-en-zh',
+  'zh-en': 'Xenova/opus-mt-zh-en',
+  'en-ja': 'Xenova/opus-mt-en-jap',    // jap = Japanese group
+  'ja-en': 'Xenova/opus-mt-jap-en',
+  'en-ko': 'Xenova/opus-mt-en-ko',
+  'ko-en': 'Xenova/opus-mt-ko-en',
+  // English ↔ Southeast Asian
+  'en-vi': 'Xenova/opus-mt-en-vi',
+  'vi-en': 'Xenova/opus-mt-vi-en',
+  'en-th': 'Xenova/opus-mt-en-th',
+  'th-en': 'Xenova/opus-mt-th-en',
+  'en-id': 'Xenova/opus-mt-en-id',
+  'id-en': 'Xenova/opus-mt-id-en',
+  // English ↔ South Asian
+  'en-hi': 'Xenova/opus-mt-en-hi',
+  'hi-en': 'Xenova/opus-mt-hi-en',
 }
 
 // Language pairs that can be handled via English pivot

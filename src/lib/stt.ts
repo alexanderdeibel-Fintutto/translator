@@ -2,6 +2,8 @@
 // Supports: Web Speech API (Chrome/Edge), Google Cloud STT (iOS + fallback)
 // Future: Apple SpeechAnalyzer (iOS 26)
 
+import { getTranslation, type UILanguage } from '@/lib/i18n'
+
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList
@@ -96,9 +98,9 @@ export function createWebSpeechEngine(): STTEngine {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
         } else {
-          onError('Mikrofon nicht verfügbar. Bitte prüfen Sie Ihre Geräte-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micUnavailableHint'))
         }
         return
       }
@@ -154,11 +156,11 @@ export function createWebSpeechEngine(): STTEngine {
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
         if (err.error === 'not-allowed') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
         } else if (err.error === 'network') {
-          onError('Netzwerkfehler bei der Spracherkennung. Bitte prüfen Sie Ihre Internetverbindung.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.networkStt'))
         } else {
-          onError(`Spracheingabe-Fehler: ${err.error}`)
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.sttGeneric').replace('{error}', err.error))
         }
       }
 
@@ -177,7 +179,8 @@ export function createWebSpeechEngine(): STTEngine {
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         recognition = null
-        onError('Spracheingabe konnte nicht gestartet werden')
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+        onError(getTranslation(uiLang, 'error.sttStartFailed'))
       }
     },
 
@@ -215,7 +218,7 @@ export function createAppleSpeechAnalyzerEngine(): STTEngine {
     isSupported,
 
     async start(_lang, _onResult, onError) {
-      onError('Apple SpeechAnalyzer ist noch nicht verfügbar. Wird mit der nativen iOS-App freigeschaltet.')
+      onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.appleSpeechNotAvailable'))
     },
 
     stop() {
@@ -343,9 +346,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
         } else {
-          onError('Mikrofon nicht verfügbar. Bitte prüfen Sie Ihre Geräte-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micUnavailableHint'))
         }
         return
       }
@@ -414,7 +417,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         } catch (err) {
           // Non-fatal — continue recording
           if (err instanceof Error && err.message.includes('403')) {
-            onError('Spracheingabe nicht verfügbar. Bitte Cloud Speech-to-Text API im Google Cloud Console aktivieren.')
+            onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable'))
             isActive = false
           }
         }
@@ -489,7 +492,7 @@ export function getBestSTTEngine(): STTEngine {
         // Store engine reference for stop()
         ;(this as unknown as Record<string, STTEngine>)._activeEngine = engine
       } catch {
-        onError('Offline-Spracherkennung nicht verfügbar. Bitte Whisper-Modell unter Einstellungen herunterladen.')
+        onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.whisperNotAvailable'))
       }
     },
     stop() {

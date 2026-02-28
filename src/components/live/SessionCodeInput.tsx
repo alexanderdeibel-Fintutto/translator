@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 
 interface SessionCodeInputProps {
   onJoin: (code: string) => void
 }
 
 export default function SessionCodeInput({ onJoin }: SessionCodeInputProps) {
+  const { t } = useI18n()
   const [code, setCode] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,7 +27,7 @@ export default function SessionCodeInput({ onJoin }: SessionCodeInputProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="text-sm font-medium text-muted-foreground block mb-2">
-            Session-Code eingeben
+            {t('live.enterCode')}
           </label>
           <input
             type="text"
@@ -35,11 +37,12 @@ export default function SessionCodeInput({ onJoin }: SessionCodeInputProps) {
             className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             maxLength={7}
             autoFocus
+            aria-label={t('live.enterCode')}
           />
         </div>
         <Button type="submit" className="w-full gap-2" disabled={code.trim().length < 4}>
-          <ArrowRight className="h-4 w-4" />
-          Beitreten
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          {t('liveLanding.join')}
         </Button>
       </form>
     </Card>

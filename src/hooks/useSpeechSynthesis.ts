@@ -2,8 +2,10 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { isCloudTTSAvailable, speakWithCloudTTS, prefetchCloudTTS } from '@/lib/tts'
 import type { VoiceQuality } from '@/lib/tts'
+import { useI18n } from '@/context/I18nContext'
 
 export function useSpeechSynthesis() {
+  const { t } = useI18n()
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [ttsEngine, setTtsEngine] = useState<'cloud' | 'browser' | null>(null)
   const voicesRef = useRef<SpeechSynthesisVoice[]>([])
@@ -81,7 +83,7 @@ export function useSpeechSynthesis() {
       setTtsEngine('browser')
 
       if (isFallback) {
-        toast.warning('Google Cloud TTS nicht verfügbar – Browser-Stimme wird verwendet', {
+        toast.warning(t('error.ttsFallback'), {
           duration: 4000,
         })
       }

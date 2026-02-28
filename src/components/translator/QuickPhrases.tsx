@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MessageSquare, Ship, Globe, Mountain } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 import { getPhrasePacks, type PhrasePack } from '@/lib/offline/phrase-packs'
 
 interface QuickPhrasesProps {
@@ -14,6 +15,7 @@ const PACK_ICONS: Record<string, typeof Globe> = {
 }
 
 export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
+  const { t } = useI18n()
   const packs = getPhrasePacks()
   const [activePackId, setActivePackId] = useState(packs[0]?.id || 'common')
 
@@ -30,8 +32,8 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          Häufige Sätze
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          {t('phrases.title')}
         </CardTitle>
         {/* Pack selector tabs */}
         <div className="flex gap-1 mt-2">
@@ -46,10 +48,10 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
                     ? 'bg-accent text-accent-foreground font-medium'
                     : 'text-muted-foreground hover:bg-accent/50'
                 }`}
-                title={pack.description}
+                title={t(pack.description)}
               >
                 <Icon className="h-3 w-3" />
-                {pack.name}
+                {t(pack.name)}
               </button>
             )
           })}
@@ -59,7 +61,7 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
         <div className="space-y-3">
           {Object.entries(grouped).map(([category, phrases]) => (
             <div key={category}>
-              <h4 className="text-xs font-medium text-muted-foreground mb-1.5">{category}</h4>
+              <h4 className="text-xs font-medium text-muted-foreground mb-1.5">{t(category)}</h4>
               <div className="flex flex-wrap gap-1.5">
                 {phrases.map(phrase => (
                   <button

@@ -1,0 +1,13 @@
+{
+  "name": "guidetranslator-relay",
+  "version": "1.0.0",
+  "description": "Local WebSocket relay server for GuideTranslator offline mode. Runs on a portable WiFi router (GL.iNet/OpenWrt) or any device on the local network.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:dev": "node server.js --port 8765 --verbose"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

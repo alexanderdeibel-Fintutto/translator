@@ -1,63 +1,60 @@
-import { useState, useCallback, useRef, useMemo } from 'react'
-import { supabase } from '@/lib/supabase'
-import { getChannelName } from '@/lib/session'
-import type { RealtimeChannel } from '@supabase/supabase-js'
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react'
+import type { PresenceTransport } from '@/lib/transport/types'
+import { SupabasePresenceTransport } from '@/lib/transport/supabase-transport'
 import type { PresenceState } from '@/lib/session'
 
-export function usePresence() {
+export function usePresence(externalTransport?: PresenceTransport) {
   const [listeners, setListeners] = useState<PresenceState[]>([])
-  const channelRef = useRef<RealtimeChannel | null>(null)
-  const myPresenceRef = useRef<PresenceState | null>(null)
+  const transportRef = useRef<PresenceTransport | null>(null)
+  const cleanupRef = useRef<(() => void) | null>(null)
+
+  // Use external transport or create default Supabase transport
+  const getTransport = useCallback((): PresenceTransport => {
+    if (externalTransport) return externalTransport
+    if (!transportRef.current) {
+      transportRef.current = new SupabasePresenceTransport()
+    }
+    return transportRef.current
+  }, [externalTransport])
+
+  // Clean up sync listener on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.()
+    }
+  }, [])
 
   const join = useCallback((code: string, presenceData: PresenceState) => {
-    // Clean up existing
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current)
-      channelRef.current = null
-    }
+    // Clean up previous
+    cleanupRef.current?.()
 
-    myPresenceRef.current = presenceData
-    const channel = supabase.channel(getChannelName(code) + '-presence')
+    const transport = getTransport()
 
-    channel.on('presence', { event: 'sync' }, () => {
-      const state = channel.presenceState<PresenceState>()
-      const allListeners: PresenceState[] = []
-      for (const key of Object.keys(state)) {
-        for (const presence of state[key]) {
-          allListeners.push({
-            deviceName: presence.deviceName,
-            targetLanguage: presence.targetLanguage,
-            joinedAt: presence.joinedAt,
-          })
-        }
-      }
+    // Listen for presence sync
+    cleanupRef.current = transport.onSync((allListeners) => {
       setListeners(allListeners)
     })
 
-    channel.subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        await channel.track(presenceData)
-      }
-    })
+    transport.join(code, presenceData)
+  }, [getTransport])
 
-    channelRef.current = channel
-  }, [])
-
-  const updatePresence = useCallback(async (data: Partial<PresenceState>) => {
-    if (!channelRef.current || !myPresenceRef.current) return
-    const merged = { ...myPresenceRef.current, ...data }
-    myPresenceRef.current = merged
-    await channelRef.current.track(merged)
-  }, [])
+  const updatePresence = useCallback((data: Partial<PresenceState>) => {
+    const transport = externalTransport || transportRef.current
+    transport?.updatePresence(data)
+  }, [externalTransport])
 
   const leave = useCallback(() => {
-    if (channelRef.current) {
-      channelRef.current.untrack()
-      supabase.removeChannel(channelRef.current)
-      channelRef.current = null
+    cleanupRef.current?.()
+    cleanupRef.current = null
+
+    const transport = externalTransport || transportRef.current
+    transport?.leave()
+
+    if (!externalTransport) {
+      transportRef.current = null
     }
     setListeners([])
-  }, [])
+  }, [externalTransport])
 
   const listenerCount = listeners.length
 

@@ -1,12 +1,17 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useBroadcast } from './useBroadcast'
 import { usePresence } from './usePresence'
+import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 import { translateText } from '@/lib/translate'
+import { markSTTEnd, markTranslateStart, markTranslateEnd, markBroadcast } from '@/lib/latency'
 import { getLanguageByCode } from '@/lib/languages'
 import { generateSessionCode } from '@/lib/session'
+import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
+import type { ConnectionConfig } from '@/lib/transport/types'
 
 function generateChunkId(): string {
   return `chunk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -23,6 +28,7 @@ function getDeviceName(): string {
 }
 
 export function useLiveSession() {
+  const { t } = useI18n()
   const [role, setRole] = useState<'speaker' | 'listener' | null>(null)
   const [sessionCode, setSessionCode] = useState('')
   const [sourceLanguage, setSourceLanguage] = useState('de')
@@ -34,8 +40,12 @@ export function useLiveSession() {
   const [error, setError] = useState<string | null>(null)
   const [autoTTS, setAutoTTS] = useState(true)
 
-  const broadcast = useBroadcast()
-  const presence = usePresence()
+  // Connection mode management
+  const connection = useConnectionMode()
+
+  // Pass transport instances to hooks (undefined = use default Supabase)
+  const broadcast = useBroadcast(connection.broadcastTransport)
+  const presence = usePresence(connection.presenceTransport)
   const recognition = useSpeechRecognition()
   const tts = useSpeechSynthesis()
 
@@ -50,7 +60,10 @@ export function useLiveSession() {
 
   // --- SPEAKER ---
 
-  const createSession = useCallback((sourceLang: string) => {
+  const createSession = useCallback(async (
+    sourceLang: string,
+    connectionConfig?: ConnectionConfig,
+  ) => {
     const code = generateSessionCode()
     setSessionCode(code)
     setSourceLanguage(sourceLang)
@@ -58,6 +71,15 @@ export function useLiveSession() {
     setSessionEnded(false)
     setTranslationHistory([])
     setError(null)
+
+    // Initialize connection mode
+    if (connectionConfig) {
+      // For BLE speaker mode, inject session code so GATT server can start
+      const config = connectionConfig.mode === 'ble'
+        ? { ...connectionConfig, bleSessionCode: code, bleSourceLanguage: sourceLang }
+        : connectionConfig
+      await connection.initialize(config)
+    }
 
     // Subscribe to broadcast channel
     broadcast.subscribe(code)
@@ -70,7 +92,7 @@ export function useLiveSession() {
     })
 
     return code
-  }, [broadcast, presence])
+  }, [broadcast, presence, connection])
 
   // Broadcast session info periodically when listener count changes
   useEffect(() => {
@@ -91,7 +113,11 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
+ claude/add-new-languages-G9HsJ
     // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+
+    // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
+ main
     const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
@@ -108,9 +134,16 @@ export function useLiveSession() {
       })
     )
 
+ claude/add-new-languages-G9HsJ
     const results = settled
       .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
       .map(r => r.value)
+
+    const results: TranslationChunk[] = []
+    for (const r of settled) {
+      if (r.status === 'fulfilled') results.push(r.value)
+    }
+ main
 
     // Broadcast each successful translation
     for (const chunk of results) {
@@ -120,6 +153,12 @@ export function useLiveSession() {
     // Add to local history (one entry per source text)
     if (results.length > 0) {
       setTranslationHistory(prev => [...prev, results[0]])
+    }
+
+    // Warn if some translations failed
+    const failed = settled.filter(r => r.status === 'rejected')
+    if (failed.length > 0) {
+      console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
@@ -134,7 +173,7 @@ export function useLiveSession() {
       await processTranslation(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : 'Übersetzung fehlgeschlagen')
+      setError(err instanceof Error ? err.message : t('error.translationFailed'))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -153,6 +192,7 @@ export function useLiveSession() {
 
   const startRecording = useCallback(() => {
     const lang = getLanguageByCode(sourceLanguage)
+    // markSTTStart is called per-utterance via handleSpeechResult flow
     recognition.startListening(lang?.speechCode || sourceLanguage, handleSpeechResult)
   }, [sourceLanguage, recognition, handleSpeechResult])
 
@@ -173,17 +213,22 @@ export function useLiveSession() {
   }, [broadcast, presence, recognition])
 
   // Detect disconnect during active session and show feedback
+  const disconnectMsg = t('error.connectionLost')
   useEffect(() => {
     if (role && !broadcast.isConnected && !sessionEnded) {
-      setError('Verbindung unterbrochen — wird automatisch wiederhergestellt...')
-    } else if (role && broadcast.isConnected && error === 'Verbindung unterbrochen — wird automatisch wiederhergestellt...') {
+      setError(disconnectMsg)
+    } else if (role && broadcast.isConnected && error === disconnectMsg) {
       setError(null) // Clear disconnect error on reconnect
     }
-  }, [broadcast.isConnected, role, sessionEnded, error])
+  }, [broadcast.isConnected, role, sessionEnded, error, disconnectMsg])
 
   // --- LISTENER ---
 
-  const joinSession = useCallback((code: string, targetLang: string) => {
+  const joinSession = useCallback(async (
+    code: string,
+    targetLang: string,
+    connectionConfig?: ConnectionConfig,
+  ) => {
     setSessionCode(code)
     setSelectedLanguage(targetLang)
     setRole('listener')
@@ -191,6 +236,11 @@ export function useLiveSession() {
     setReceivedChunks([])
     setCurrentTranslation('')
     setError(null)
+
+    // Initialize connection mode
+    if (connectionConfig) {
+      await connection.initialize(connectionConfig)
+    }
 
     // Subscribe to broadcast
     broadcast.subscribe(
@@ -224,7 +274,7 @@ export function useLiveSession() {
       targetLanguage: targetLang,
       joinedAt: new Date().toISOString(),
     })
-  }, [broadcast, presence])
+  }, [broadcast, presence, connection])
 
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
@@ -239,6 +289,16 @@ export function useLiveSession() {
     setSessionCode('')
   }, [broadcast, presence, tts])
 
+  // --- Session URL for QR code ---
+  const sessionUrl = sessionCode
+    ? getSessionUrlWithTransport(sessionCode, {
+        broadcast: connection.broadcastTransport!,
+        presence: connection.presenceTransport!,
+        mode: connection.mode,
+        serverUrl: connection.serverUrl,
+      })
+    : ''
+
   return {
     // Session state
     role,
@@ -247,6 +307,19 @@ export function useLiveSession() {
     isConnected: broadcast.isConnected,
     sessionEnded,
     error,
+
+    // Connection mode
+    connectionMode: connection.mode,
+    connectionServerUrl: connection.serverUrl,
+    isResolvingConnection: connection.isResolving,
+    switchToCloud: connection.switchToCloud,
+    switchToLocal: connection.switchToLocal,
+
+    // Hotspot info (WiFi credentials for QR code, populated in hotspot mode)
+    hotspotInfo: connection.hotspotInfo,
+
+    // Session URL (includes local WS params when in local mode)
+    sessionUrl,
 
     // Speaker
     createSession,
