@@ -4,6 +4,7 @@ import { usePresence } from './usePresence'
 import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 import { translateText } from '@/lib/translate'
 import { markSTTEnd, markTranslateStart, markTranslateEnd, markBroadcast } from '@/lib/latency'
 import { getLanguageByCode } from '@/lib/languages'
@@ -27,6 +28,7 @@ function getDeviceName(): string {
 }
 
 export function useLiveSession() {
+  const { t } = useI18n()
   const [role, setRole] = useState<'speaker' | 'listener' | null>(null)
   const [sessionCode, setSessionCode] = useState('')
   const [sourceLanguage, setSourceLanguage] = useState('de')
@@ -103,44 +105,6 @@ export function useLiveSession() {
     } satisfies SessionInfo)
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
- claude/offline-speaker-listener-nhgmf
-  // Handle speech recognition results (speaker side)
-  const handleSpeechResult = useCallback(async (text: string) => {
-    if (isTranslatingRef.current || !text.trim()) return
-    isTranslatingRef.current = true
-    markSTTEnd()
-
-    try {
-      // Get unique target languages from connected listeners
-      const targetLangs = Object.keys(presence.listenersByLanguage)
-        .filter(lang => lang !== '_speaker')
-
-      if (targetLangs.length === 0) return
-
-      // Translate to all requested languages in parallel
-      markTranslateStart()
-      const results = await Promise.all(
-        targetLangs.map(async (targetLang) => {
-          const result = await translateText(text, sourceLanguage, targetLang)
-          return {
-            id: generateChunkId(),
-            sourceText: text,
-            translatedText: result.translatedText,
-            sourceLang: sourceLanguage,
-            targetLanguage: targetLang,
-            isFinal: true,
-            timestamp: Date.now(),
-          } satisfies TranslationChunk
-        })
-      )
-      markTranslateEnd()
-
-      // Broadcast each translation
-      for (const chunk of results) {
-        broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
-      }
-      markBroadcast()
-
   // Process a single text through translation fan-out
   const processTranslation = useCallback(async (text: string) => {
     // Get unique target languages from connected listeners
@@ -149,8 +113,8 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
-    // Translate to all requested languages in parallel
-    const results = await Promise.all(
+    // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
+    const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
         return {
@@ -165,15 +129,25 @@ export function useLiveSession() {
       })
     )
 
-    // Broadcast each translation
+    const results: TranslationChunk[] = []
+    for (const r of settled) {
+      if (r.status === 'fulfilled') results.push(r.value)
+    }
+
+    // Broadcast each successful translation
     for (const chunk of results) {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
- main
 
     // Add to local history (one entry per source text)
     if (results.length > 0) {
       setTranslationHistory(prev => [...prev, results[0]])
+    }
+
+    // Warn if some translations failed
+    const failed = settled.filter(r => r.status === 'rejected')
+    if (failed.length > 0) {
+      console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
@@ -188,7 +162,7 @@ export function useLiveSession() {
       await processTranslation(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : 'Übersetzung fehlgeschlagen')
+      setError(err instanceof Error ? err.message : t('error.translationFailed'))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -228,13 +202,14 @@ export function useLiveSession() {
   }, [broadcast, presence, recognition])
 
   // Detect disconnect during active session and show feedback
+  const disconnectMsg = t('error.connectionLost')
   useEffect(() => {
     if (role && !broadcast.isConnected && !sessionEnded) {
-      setError('Verbindung unterbrochen — wird automatisch wiederhergestellt...')
-    } else if (role && broadcast.isConnected && error === 'Verbindung unterbrochen — wird automatisch wiederhergestellt...') {
+      setError(disconnectMsg)
+    } else if (role && broadcast.isConnected && error === disconnectMsg) {
       setError(null) // Clear disconnect error on reconnect
     }
-  }, [broadcast.isConnected, role, sessionEnded, error])
+  }, [broadcast.isConnected, role, sessionEnded, error, disconnectMsg])
 
   // --- LISTENER ---
 

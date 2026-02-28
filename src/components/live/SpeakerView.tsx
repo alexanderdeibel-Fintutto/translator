@@ -49,7 +49,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     const durationMs = Date.now() - sessionStartRef.current
     const durationMin = Math.round(durationMs / 60000)
     const sourceLangData = getLanguageByCode(session.sourceLanguage)
-    const connectionLabel = session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'
+    const connectionLabel = session.connectionMode === 'ble' ? t('liveSession.bleDirect') : session.connectionMode === 'local' ? t('liveSession.localNetwork') : t('liveSession.cloudConnection')
     return { now, durationMin, sourceLangData, connectionLabel }
   }, [session.sourceLanguage, session.connectionMode])
 
@@ -146,9 +146,9 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
       {/* iOS manual hotspot instruction */}
       {session.hotspotInfo?.manualHotspotRequired && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm">
-          <WifiOff className="h-4 w-4 shrink-0" />
-          <span>Bitte aktiviere den <strong>Persönlichen Hotspot</strong> in den Einstellungen</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm" role="alert">
+          <WifiOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{t('live.hotspotInstruction')}</span>
         </div>
       )}
 
@@ -179,7 +179,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
               <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
               <p className="text-xs text-muted-foreground">
-                Listener finden diese Session automatisch per Bluetooth
+                {t('live.bleAutoDiscovery')}
               </p>
             </div>
           ) : (
@@ -286,7 +286,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               {latency.avg && (
                 <>
                   <span className="text-muted-foreground/30">|</span>
-                  <span title="Durchschnitt">ø {latency.avg.totalMs.toFixed(0)}ms</span>
+                  <span>ø {latency.avg.totalMs.toFixed(0)}ms</span>
                 </>
               )}
             </div>
@@ -300,7 +300,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       </div>
 
       {session.error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
           {session.error}
         </div>
       )}

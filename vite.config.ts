@@ -165,11 +165,14 @@ export default defineConfig({
     }),
   ],
   build: {
+    // Warn only for chunks over 550KB (transformers is ~502KB)
+    chunkSizeWarningLimit: 550,
     rollupOptions: {
       output: {
         manualChunks: {
           'transformers': ['@huggingface/transformers'],
           'onnx': ['onnxruntime-web'],
+          'supabase': ['@supabase/supabase-js'],
         },
       },
     },

@@ -152,7 +152,7 @@ export default function CameraTranslatePage() {
       {/* Language bar */}
       <div className="flex items-end justify-center gap-3">
         <LanguageSelector value={sourceLang} onChange={setSourceLang} label={t('translator.from')} />
-        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0">
+        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0" aria-label={t('translator.swap')}>
           <ArrowRightLeft className="h-4 w-4" />
         </Button>
         <LanguageSelector value={targetLang} onChange={setTargetLang} label={t('translator.to')} />
@@ -208,22 +208,24 @@ export default function CameraTranslatePage() {
       )}
 
       {/* Loading states */}
-      {isExtracting && (
-        <div className="flex items-center justify-center gap-2 text-muted-foreground py-4">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          <span>{t('camera.extracting')}</span>
-        </div>
-      )}
-      {isTranslating && !isExtracting && (
-        <div className="flex items-center justify-center gap-2 text-muted-foreground py-4">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          <span>{t('translator.translating')}</span>
-        </div>
-      )}
+      <div aria-live="polite">
+        {isExtracting && (
+          <div className="flex items-center justify-center gap-2 text-muted-foreground py-4">
+            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+            <span>{t('camera.extracting')}</span>
+          </div>
+        )}
+        {isTranslating && !isExtracting && (
+          <div className="flex items-center justify-center gap-2 text-muted-foreground py-4">
+            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+            <span>{t('translator.translating')}</span>
+          </div>
+        )}
+      </div>
 
       {/* Error */}
       {error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center">
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center" role="alert">
           {error}
         </div>
       )}
@@ -246,10 +248,10 @@ export default function CameraTranslatePage() {
               {targetLangData?.flag} {t('camera.translation')}
             </p>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={handleSpeak}>
+              <Button variant="ghost" size="icon" onClick={handleSpeak} aria-label={tts.isSpeaking ? t('translator.stop') : t('translator.speak')}>
                 <Volume2 className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleCopy}>
+              <Button variant="ghost" size="icon" onClick={handleCopy} aria-label={t('translator.copy')}>
                 {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>

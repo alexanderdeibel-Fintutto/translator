@@ -1,105 +1,61 @@
 import { Languages, Mic, Volume2, History, Globe, Shield, Radio, MessageCircle, Camera, Wifi, WifiOff, Subtitles } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
+import type { LucideIcon } from 'lucide-react'
 
-const FEATURES = [
-  {
-    icon: Languages,
-    title: '54+ Offline-Sprachpaare',
-    description: 'Übersetze zwischen 40+ Sprachen — von Deutsch über Arabisch bis Chinesisch, Japanisch, Koreanisch, Hindi und viele mehr. 54 Offline-Paare via Opus-MT.',
-  },
-  {
-    icon: Radio,
-    title: 'Live-Sessions (1→N)',
-    description: 'Ein Speaker spricht, unbegrenzt viele Zuhörer hören die Übersetzung in ihrer Sprache. QR-Code scannen, fertig. Kein App-Download nötig.',
-  },
-  {
-    icon: MessageCircle,
-    title: 'Konversationsmodus',
-    description: 'Face-to-Face Übersetzung: Zwei Personen sprechen abwechselnd, jede sieht und hört die Übersetzung. Ideal für Arztbesuche oder Behördengänge.',
-  },
-  {
-    icon: Camera,
-    title: 'Kamera-Übersetzer',
-    description: 'Fotografiere Schilder, Menüs oder Dokumente — der Text wird erkannt und sofort übersetzt. OCR via Google Vision API.',
-  },
-  {
-    icon: Subtitles,
-    title: 'Live-Untertitel',
-    description: 'Listener sehen Übersetzungen als Echtzeit-Untertitel — inklusive Vollbild-Modus mit großer Schrift auf schwarzem Hintergrund.',
-  },
-  {
-    icon: Mic,
-    title: 'Spracheingabe (Online + Offline)',
-    description: 'Web Speech API für Chrome/Edge, Whisper-Modell (~40MB) für vollständig offline STT in Firefox und Safari.',
-  },
-  {
-    icon: Volume2,
-    title: 'HD-Sprachausgabe',
-    description: 'Google Cloud TTS mit Neural2 und Chirp 3 HD Stimmen. Automatisches Caching für 30 Tage. Browser-Fallback wenn offline.',
-  },
-  {
-    icon: WifiOff,
-    title: '4-stufiges Offline-System',
-    description: 'Cloud → Lokales WiFi → Hotspot → Bluetooth LE. Funktioniert auch in der U-Bahn, im Museumskeller, oder auf einem Boot ohne Internet.',
-  },
-  {
-    icon: Shield,
-    title: 'E2E-Verschlüsselung',
-    description: 'AES-256-GCM Verschlüsselung für alle lokalen Transporte. PBKDF2 Key Derivation. Kein Server sieht eure Übersetzungen.',
-  },
-  {
-    icon: Wifi,
-    title: 'Auto-Spracherkennung',
-    description: 'Erkennt automatisch die Quellsprache anhand von Unicode-Script-Analyse und Wortfrequenz-Matching — komplett offline, 20+ Sprachen.',
-  },
-  {
-    icon: History,
-    title: 'Session-Protokoll Export',
-    description: 'Lade ein vollständiges Transkript als Text oder Markdown herunter — mit Zeitstempeln, Sprachen und allen Übersetzungen.',
-  },
-  {
-    icon: Globe,
-    title: 'Kostenlos & Open Source',
-    description: 'Keine Kosten pro Zuhörer. Keine Kosten pro Minute. PWA-Installation für schnellen Offline-Zugriff.',
-  },
+const FEATURE_ICONS: { icon: LucideIcon; key: string }[] = [
+  { icon: Languages, key: '1' },
+  { icon: Radio, key: '2' },
+  { icon: MessageCircle, key: '3' },
+  { icon: Camera, key: '4' },
+  { icon: Subtitles, key: '5' },
+  { icon: Mic, key: '6' },
+  { icon: Volume2, key: '7' },
+  { icon: WifiOff, key: '8' },
+  { icon: Shield, key: '9' },
+  { icon: Wifi, key: '10' },
+  { icon: History, key: '11' },
+  { icon: Globe, key: '12' },
 ]
 
+// Native language names — universal, no translation needed
 const LANGUAGES = [
-  '\uD83C\uDDE9\uD83C\uDDEA Deutsch', '\uD83C\uDDEC\uD83C\uDDE7 Englisch', '\uD83C\uDDEB\uD83C\uDDF7 Französisch', '\uD83C\uDDEA\uD83C\uDDF8 Spanisch',
-  '\uD83C\uDDEE\uD83C\uDDF9 Italienisch', '\uD83C\uDDF5\uD83C\uDDF9 Portugiesisch', '\uD83C\uDDF3\uD83C\uDDF1 Niederländisch', '\uD83C\uDDF5\uD83C\uDDF1 Polnisch',
-  '\uD83C\uDDF9\uD83C\uDDF7 Türkisch', '\uD83C\uDDF7\uD83C\uDDFA Russisch', '\uD83C\uDDFA\uD83C\uDDE6 Ukrainisch', '\uD83C\uDDF8\uD83C\uDDE6 Arabisch',
-  '\uD83C\uDDE8\uD83C\uDDF3 Chinesisch', '\uD83C\uDDEF\uD83C\uDDF5 Japanisch', '\uD83C\uDDF0\uD83C\uDDF7 Koreanisch', '\uD83C\uDDEE\uD83C\uDDF3 Hindi',
-  '\uD83C\uDDF8\uD83C\uDDEA Schwedisch', '\uD83C\uDDE9\uD83C\uDDF0 Dänisch', '\uD83C\uDDF3\uD83C\uDDF4 Norwegisch', '\uD83C\uDDE8\uD83C\uDDFF Tschechisch',
-  '\uD83C\uDDF7\uD83C\uDDF4 Rumänisch', '\uD83C\uDDEC\uD83C\uDDF7 Griechisch', '\uD83C\uDDED\uD83C\uDDFA Ungarisch', '\uD83C\uDDEB\uD83C\uDDEE Finnisch',
-  '\uD83C\uDDE7\uD83C\uDDEC Bulgarisch', '\uD83C\uDDED\uD83C\uDDF7 Kroatisch', '\uD83C\uDDEE\uD83C\uDDF1 Hebräisch', '\uD83C\uDDEA\uD83C\uDDEA Estnisch',
-  '\uD83C\uDDFB\uD83C\uDDF3 Vietnamesisch', '\uD83C\uDDF9\uD83C\uDDED Thailändisch', '\uD83C\uDDEE\uD83C\uDDE9 Indonesisch', '\uD83C\uDDEE\uD83C\uDDF7 Farsi',
+  '\uD83C\uDDE9\uD83C\uDDEA Deutsch', '\uD83C\uDDEC\uD83C\uDDE7 English', '\uD83C\uDDEB\uD83C\uDDF7 Fran\u00e7ais', '\uD83C\uDDEA\uD83C\uDDF8 Espa\u00f1ol',
+  '\uD83C\uDDEE\uD83C\uDDF9 Italiano', '\uD83C\uDDF5\uD83C\uDDF9 Portugu\u00eas', '\uD83C\uDDF3\uD83C\uDDF1 Nederlands', '\uD83C\uDDF5\uD83C\uDDF1 Polski',
+  '\uD83C\uDDF9\uD83C\uDDF7 T\u00fcrk\u00e7e', '\uD83C\uDDF7\uD83C\uDDFA \u0420\u0443\u0441\u0441\u043a\u0438\u0439', '\uD83C\uDDFA\uD83C\uDDE6 \u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430', '\uD83C\uDDF8\uD83C\uDDE6 \u0627\u0644\u0639\u0631\u0628\u064a\u0629',
+  '\uD83C\uDDE8\uD83C\uDDF3 \u4e2d\u6587', '\uD83C\uDDEF\uD83C\uDDF5 \u65e5\u672c\u8a9e', '\uD83C\uDDF0\uD83C\uDDF7 \ud55c\uad6d\uc5b4', '\uD83C\uDDEE\uD83C\uDDF3 \u0939\u093f\u0928\u094d\u0926\u0940',
+  '\uD83C\uDDF8\uD83C\uDDEA Svenska', '\uD83C\uDDE9\uD83C\uDDF0 Dansk', '\uD83C\uDDF3\uD83C\uDDF4 Norsk', '\uD83C\uDDE8\uD83C\uDDFF \u010ce\u0161tina',
+  '\uD83C\uDDF7\uD83C\uDDF4 Rom\u00e2n\u0103', '\uD83C\uDDEC\uD83C\uDDF7 \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac', '\uD83C\uDDED\uD83C\uDDFA Magyar', '\uD83C\uDDEB\uD83C\uDDEE Suomi',
+  '\uD83C\uDDE7\uD83C\uDDEC \u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438', '\uD83C\uDDED\uD83C\uDDF7 Hrvatski', '\uD83C\uDDEE\uD83C\uDDF1 \u05e2\u05d1\u05e8\u05d9\u05ea', '\uD83C\uDDEA\uD83C\uDDEA Eesti',
+  '\uD83C\uDDFB\uD83C\uDDF3 Ti\u1ebfng Vi\u1ec7t', '\uD83C\uDDF9\uD83C\uDDED \u0e44\u0e17\u0e22', '\uD83C\uDDEE\uD83C\uDDE9 Bahasa Indonesia', '\uD83C\uDDEE\uD83C\uDDF7 \u0641\u0627\u0631\u0633\u06cc',
 ]
 
 export default function InfoPage() {
+  const { t } = useI18n()
+
   return (
     <div className="container py-8 space-y-8">
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          Über <span className="gradient-text-translator">guidetranslator</span>
+          {t('info.about')} <span className="gradient-text-translator">guidetranslator</span>
         </h1>
         <p className="text-muted-foreground">
-          Die einzige Übersetzungs-App mit Live-Broadcast an unbegrenzt viele Zuhörer — komplett offline.
-          Für Stadtführungen, Museen, Behördengänge und den Alltag in Deutschland.
+          {t('info.subtitle')}
         </p>
         <div className="inline-flex items-center gap-2 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
-          v0.9.0 — 54 Offline-Sprachpaare, 4 Transport-Layer, E2E-Verschlüsselung
+          v1.1 — {t('info.version')}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {FEATURES.map(feature => (
-          <Card key={feature.title} className="hover:shadow-md transition-shadow">
+        {FEATURE_ICONS.map(({ icon: Icon, key }) => (
+          <Card key={key} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="h-10 w-10 rounded-lg gradient-translator flex items-center justify-center mb-2">
-                <feature.icon className="h-5 w-5 text-white" />
+                <Icon className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-base">{feature.title}</CardTitle>
-              <CardDescription>{feature.description}</CardDescription>
+              <CardTitle className="text-base">{t(`info.feature${key}Title`)}</CardTitle>
+              <CardDescription>{t(`info.feature${key}Desc`)}</CardDescription>
             </CardHeader>
           </Card>
         ))}
@@ -107,10 +63,9 @@ export default function InfoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Unterstützte Sprachen ({LANGUAGES.length})</CardTitle>
+          <CardTitle>{t('info.supportedLangs')} ({LANGUAGES.length})</CardTitle>
           <CardDescription>
-            {LANGUAGES.length} Sprachen werden unterstützt. 54 Offline-Sprachpaare via Opus-MT (je ~35MB).
-            Nicht-englische Paare werden automatisch über English als Pivot-Sprache übersetzt.
+            {LANGUAGES.length} {t('info.supportedLangsDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -126,53 +81,43 @@ export default function InfoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Transport-Architektur</CardTitle>
+          <CardTitle>{t('info.transportTitle')}</CardTitle>
           <CardDescription>
-            4 Transport-Layer für maximale Verfügbarkeit — kein anderer Übersetzer bietet das.
+            {t('info.transportDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div className="p-3 rounded-lg bg-secondary space-y-1">
-              <strong>1. Cloud (Supabase)</strong>
-              <p className="text-muted-foreground text-xs">Echtzeit-Broadcast via WebSocket. Unbegrenzte Reichweite.</p>
-            </div>
-            <div className="p-3 rounded-lg bg-secondary space-y-1">
-              <strong>2. Lokales WiFi</strong>
-              <p className="text-muted-foreground text-xs">WebSocket-Relay im lokalen Netzwerk. Kein Internet nötig.</p>
-            </div>
-            <div className="p-3 rounded-lg bg-secondary space-y-1">
-              <strong>3. Hotspot</strong>
-              <p className="text-muted-foreground text-xs">Speaker-Handy erstellt eigenes WiFi + Relay-Server.</p>
-            </div>
-            <div className="p-3 rounded-lg bg-secondary space-y-1">
-              <strong>4. Bluetooth LE</strong>
-              <p className="text-muted-foreground text-xs">GATT Server/Client. Funktioniert komplett ohne Netzwerk.</p>
-            </div>
+            {[1, 2, 3, 4].map(n => (
+              <div key={n} className="p-3 rounded-lg bg-secondary space-y-1">
+                <strong>{t(`info.transport${n}Title`)}</strong>
+                <p className="text-muted-foreground text-xs">{t(`info.transport${n}Desc`)}</p>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Teil des ai tour Ökosystems</CardTitle>
+          <CardTitle>{t('info.ecosystemTitle')}</CardTitle>
           <CardDescription>
-            guidetranslator ist Teil der ai tour Plattform für Finanzen, Immobilien und Verwaltung in Deutschland.
+            {t('info.ecosystemDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className="p-3 rounded-lg bg-secondary">
-              <strong>ai tour Portal</strong> - Rechner, Checker & Formulare
+              <strong>ai tour Portal</strong>
             </div>
             <div className="p-3 rounded-lg bg-secondary">
-              <strong>Vermietify</strong> - Immobilienverwaltung
+              <strong>Vermietify</strong>
             </div>
             <div className="p-3 rounded-lg bg-secondary">
-              <strong>Ablesung</strong> - Zählerablesung & Energie
+              <strong>Ablesung</strong>
             </div>
             <div className="p-3 rounded-lg bg-secondary">
-              <strong>BescheidBoxer</strong> - Steuerbescheid-Prüfung
+              <strong>BescheidBoxer</strong>
             </div>
           </div>
         </CardContent>

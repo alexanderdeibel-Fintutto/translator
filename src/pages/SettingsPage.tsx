@@ -24,6 +24,7 @@ export default function SettingsPage() {
   const [whisperReady, setWhisperReady] = useState(false)
   const [whisperDownloading, setWhisperDownloading] = useState(false)
   const [whisperProgress, setWhisperProgress] = useState(0)
+  const [whisperError, setWhisperError] = useState<string | null>(null)
   const [offlineSupport, setOfflineSupport] = useState<ReturnType<typeof checkOfflineSupport> | null>(null)
   const [showSafariHint, setShowSafariHint] = useState(false)
   const [apiKey, setApiKey] = useState('')
@@ -40,16 +41,16 @@ export default function SettingsPage() {
 
   async function loadData() {
     const { isWhisperAvailable } = await sttEngine()
-    const [pairs, cacheStats, ttsStats, whisper] = await Promise.all([
+    const [pairs, cacheStats, ttsStats, whisper] = await Promise.allSettled([
       getLanguagePairStatus(),
       getCacheStats(),
       getTTSCacheStats(),
       isWhisperAvailable(),
     ])
-    setLanguagePairs(pairs)
-    setTranslationCacheCount(cacheStats.entryCount)
-    setTtsCacheCount(ttsStats.entryCount)
-    setWhisperReady(whisper)
+    if (pairs.status === 'fulfilled') setLanguagePairs(pairs.value)
+    if (cacheStats.status === 'fulfilled') setTranslationCacheCount(cacheStats.value.entryCount)
+    if (ttsStats.status === 'fulfilled') setTtsCacheCount(ttsStats.value.entryCount)
+    if (whisper.status === 'fulfilled') setWhisperReady(whisper.value)
   }
 
   const handleRefresh = async () => {
@@ -76,12 +77,14 @@ export default function SettingsPage() {
   const handleDownloadWhisper = async () => {
     setWhisperDownloading(true)
     setWhisperProgress(0)
+    setWhisperError(null)
     try {
       const { preloadWhisper } = await sttEngine()
       await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
       setWhisperReady(true)
     } catch (err) {
       console.error('[Settings] Whisper download failed:', err)
+      setWhisperError(err instanceof Error ? err.message : t('error.unknown'))
     } finally {
       setWhisperDownloading(false)
     }
@@ -107,10 +110,9 @@ export default function SettingsPage() {
         <Card className="border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30">
           <CardContent className="pt-4">
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              <strong>Tipp für iOS Safari:</strong> Füge diese App zum Home-Bildschirm hinzu, damit deine
-              Offline-Daten nicht nach 7 Tagen gelöscht werden. Tippe auf{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Teilen ↑</span> →{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Zum Home-Bildschirm</span>.
+              <strong>{t('settings.safariHintTitle')}</strong> {t('settings.safariHintText')}{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintShare')}</span> →{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintHome')}</span>.
             </p>
           </CardContent>
         </Card>
@@ -278,10 +280,15 @@ export default function SettingsPage() {
               <span className="text-xs text-muted-foreground">{whisperProgress}%</span>
             </div>
           ) : (
-            <Button variant="outline" size="sm" onClick={handleDownloadWhisper} className="gap-1.5">
-              <Download className="h-3.5 w-3.5" />
-              {t('settings.whisperDownload')}
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={handleDownloadWhisper} className="gap-1.5">
+                <Download className="h-3.5 w-3.5" />
+                {t('settings.whisperDownload')}
+              </Button>
+              {whisperError && (
+                <p className="text-xs text-destructive mt-2" role="alert">{whisperError}</p>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
