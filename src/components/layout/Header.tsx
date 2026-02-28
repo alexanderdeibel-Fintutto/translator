@@ -58,7 +58,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1 ml-4" aria-label="Hauptnavigation">
+        <nav className="hidden md:flex items-center gap-1 ml-4" aria-label={t('nav.mainNavigation')}>
           {NAV_ITEMS.map(item => (
             <Link
               key={item.path}

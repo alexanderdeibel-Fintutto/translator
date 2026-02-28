@@ -296,6 +296,27 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'Модель Whisper не загружена. Скачайте в Настройках.',
   'error.noOfflineTranslation': 'Офлайн-перевод недоступен для {src} → {tgt}',
   'error.sttStartFailed': 'Не удалось запустить голосовой ввод',
+
+  // Header / Protocol
+  'nav.mainNavigation': 'Главная навигация',
+  'protocol.title': 'Протокол сессии',
+  'protocol.field': 'Поле',
+  'protocol.value': 'Значение',
+  'protocol.session': 'Сессия',
+  'protocol.date': 'Дата',
+  'protocol.duration': 'Длительность',
+  'protocol.minutes': 'мин',
+  'protocol.minutesFull': 'минут',
+  'protocol.sourceLanguage': 'Исходный язык',
+  'protocol.sourceLangShort': 'Язык',
+  'protocol.listeners': 'Слушатели',
+  'protocol.connection': 'Соединение',
+  'protocol.translations': 'Переводы',
+  'protocol.endOfProtocol': 'Конец протокола',
+  'protocol.createdWith': 'Создано с помощью',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protocol',
 }
 
 export default strings

@@ -296,6 +296,27 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'Whisper modeli yüklenmedi. Lütfen Ayarlar\'dan indirin.',
   'error.noOfflineTranslation': '{src} → {tgt} için çevrimdışı çeviri mevcut değil',
   'error.sttStartFailed': 'Sesli giriş başlatılamadı',
+
+  // Header / Protocol
+  'nav.mainNavigation': 'Ana gezinme',
+  'protocol.title': 'Oturum Protokolü',
+  'protocol.field': 'Alan',
+  'protocol.value': 'Değer',
+  'protocol.session': 'Oturum',
+  'protocol.date': 'Tarih',
+  'protocol.duration': 'Süre',
+  'protocol.minutes': 'dk',
+  'protocol.minutesFull': 'dakika',
+  'protocol.sourceLanguage': 'Kaynak dil',
+  'protocol.sourceLangShort': 'Dil',
+  'protocol.listeners': 'Dinleyiciler',
+  'protocol.connection': 'Bağlantı',
+  'protocol.translations': 'Çeviriler',
+  'protocol.endOfProtocol': 'Protokol sonu',
+  'protocol.createdWith': 'Oluşturuldu',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protokol',
 }
 
 export default strings

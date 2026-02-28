@@ -296,6 +296,27 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'مدل Whisper بارگذاری نشده. لطفاً از تنظیمات دانلود کنید.',
   'error.noOfflineTranslation': 'ترجمه آفلاین برای {src} → {tgt} در دسترس نیست',
   'error.sttStartFailed': 'ورودی صوتی قابل شروع نبود',
+
+  // Header / Protocol
+  'nav.mainNavigation': 'ناوبری اصلی',
+  'protocol.title': 'پروتکل جلسه',
+  'protocol.field': 'فیلد',
+  'protocol.value': 'مقدار',
+  'protocol.session': 'جلسه',
+  'protocol.date': 'تاریخ',
+  'protocol.duration': 'مدت',
+  'protocol.minutes': 'دقیقه',
+  'protocol.minutesFull': 'دقیقه',
+  'protocol.sourceLanguage': 'زبان مبدأ',
+  'protocol.sourceLangShort': 'زبان',
+  'protocol.listeners': 'شنوندگان',
+  'protocol.connection': 'اتصال',
+  'protocol.translations': 'ترجمه‌ها',
+  'protocol.endOfProtocol': 'پایان پروتکل',
+  'protocol.createdWith': 'ساخته شده با',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protocol',
 }
 
 export default strings

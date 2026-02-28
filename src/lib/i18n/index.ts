@@ -268,6 +268,27 @@ const de: TranslationStrings = {
   'header.homeAriaLabel': 'guidetranslator — Startseite',
   'header.menuClose': 'Navigation schließen',
   'header.menuOpen': 'Navigation öffnen',
+  'nav.mainNavigation': 'Hauptnavigation',
+
+  // Protocol export
+  'protocol.title': 'Session-Protokoll',
+  'protocol.field': 'Feld',
+  'protocol.value': 'Wert',
+  'protocol.session': 'Session',
+  'protocol.date': 'Datum',
+  'protocol.duration': 'Dauer',
+  'protocol.minutes': 'Min',
+  'protocol.minutesFull': 'Minuten',
+  'protocol.sourceLanguage': 'Ausgangssprache',
+  'protocol.sourceLangShort': 'Sprache',
+  'protocol.listeners': 'Zuhörer',
+  'protocol.connection': 'Verbindung',
+  'protocol.translations': 'Übersetzungen',
+  'protocol.endOfProtocol': 'Ende des Protokolls',
+  'protocol.createdWith': 'Erstellt mit',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protokoll',
 
   // Footer
   'footer.imprint': 'Impressum',

@@ -57,6 +57,8 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
     setExportMenuOpen(false)
 
+    const dateStr = now.toLocaleDateString(undefined) + ' ' + now.toLocaleTimeString(undefined)
+
     let protocol: string
     let mimeType: string
     let ext: string
@@ -65,44 +67,44 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       // Markdown format
       mimeType = 'text/markdown;charset=utf-8'
       ext = 'md'
-      protocol = `# guidetranslator — Session-Protokoll\n\n`
-      protocol += `| Feld | Wert |\n|------|------|\n`
-      protocol += `| Session | \`${session.sessionCode}\` |\n`
-      protocol += `| Datum | ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')} |\n`
-      protocol += `| Dauer | ${durationMin} Min |\n`
-      protocol += `| Sprache | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
-      protocol += `| Zuhörer | ${session.listenerCount} |\n`
-      protocol += `| Verbindung | ${connectionLabel} |\n\n`
-      protocol += `---\n\n## Übersetzungen\n\n`
+      protocol = `# guidetranslator — ${t('protocol.title')}\n\n`
+      protocol += `| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`
+      protocol += `| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`
+      protocol += `| ${t('protocol.date')} | ${dateStr} |\n`
+      protocol += `| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`
+      protocol += `| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
+      protocol += `| ${t('protocol.listeners')} | ${session.listenerCount} |\n`
+      protocol += `| ${t('protocol.connection')} | ${connectionLabel} |\n\n`
+      protocol += `---\n\n## ${t('protocol.translations')}\n\n`
 
       for (const chunk of session.translationHistory) {
-        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
         protocol += `**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`
         protocol += `> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`
         protocol += `> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`
       }
 
-      protocol += `---\n\n*Erstellt mit [guidetranslator](https://guidetranslator.com)*\n`
+      protocol += `---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`
     } else {
       // Plain text format
       mimeType = 'text/plain;charset=utf-8'
       ext = 'txt'
       protocol = `========================================\n`
-      protocol += `GUIDETRANSLATOR - SESSION-PROTOKOLL\n`
+      protocol += `GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`
       protocol += `========================================\n\n`
-      protocol += `Session-Code: ${session.sessionCode}\n`
-      protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
-      protocol += `Dauer: ${durationMin} Minuten\n`
-      protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
-      protocol += `Zuhörer: ${session.listenerCount}\n`
-      protocol += `Verbindung: ${connectionLabel}\n`
+      protocol += `${t('protocol.session')}: ${session.sessionCode}\n`
+      protocol += `${t('protocol.date')}: ${dateStr}\n`
+      protocol += `${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`
+      protocol += `${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`
+      protocol += `${t('protocol.listeners')}: ${session.listenerCount}\n`
+      protocol += `${t('protocol.connection')}: ${connectionLabel}\n`
       protocol += `\n----------------------------------------\n`
-      protocol += `ÜBERSETZUNGEN\n`
+      protocol += `${t('protocol.translations').toUpperCase()}\n`
       protocol += `----------------------------------------\n\n`
 
       for (const chunk of session.translationHistory) {
-        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined)
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
         protocol += `[${time}]\n`
         protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
@@ -110,15 +112,15 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       }
 
       protocol += `----------------------------------------\n`
-      protocol += `Ende des Protokolls\n`
-      protocol += `Erstellt mit guidetranslator.com\n`
+      protocol += `${t('protocol.endOfProtocol')}\n`
+      protocol += `${t('protocol.createdWith')} guidetranslator.com\n`
     }
 
     const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
+    a.download = `${t('protocol.filename')}-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
     URL.revokeObjectURL(url)
   }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
@@ -227,16 +229,18 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
                   <button
                     onClick={() => downloadProtocol('txt')}
                     className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportText')}
                   >
-                    <Download className="h-3.5 w-3.5" />
-                    Text (.txt)
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportText')}
                   </button>
                   <button
                     onClick={() => downloadProtocol('md')}
                     className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportMarkdown')}
                   >
-                    <FileText className="h-3.5 w-3.5" />
-                    Markdown (.md)
+                    <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportMarkdown')}
                   </button>
                 </div>
               )}

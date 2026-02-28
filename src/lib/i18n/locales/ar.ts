@@ -296,6 +296,27 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'نموذج Whisper غير محمّل. يرجى التحميل من الإعدادات.',
   'error.noOfflineTranslation': 'لا تتوفر ترجمة بدون اتصال لـ {src} → {tgt}',
   'error.sttStartFailed': 'تعذر بدء الإدخال الصوتي',
+
+  // Header / Protocol
+  'nav.mainNavigation': 'التنقل الرئيسي',
+  'protocol.title': 'بروتوكول الجلسة',
+  'protocol.field': 'الحقل',
+  'protocol.value': 'القيمة',
+  'protocol.session': 'الجلسة',
+  'protocol.date': 'التاريخ',
+  'protocol.duration': 'المدة',
+  'protocol.minutes': 'دقيقة',
+  'protocol.minutesFull': 'دقائق',
+  'protocol.sourceLanguage': 'لغة المصدر',
+  'protocol.sourceLangShort': 'اللغة',
+  'protocol.listeners': 'المستمعون',
+  'protocol.connection': 'الاتصال',
+  'protocol.translations': 'الترجمات',
+  'protocol.endOfProtocol': 'نهاية البروتوكول',
+  'protocol.createdWith': 'تم الإنشاء بواسطة',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protocol',
 }
 
 export default strings

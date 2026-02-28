@@ -296,6 +296,27 @@ const strings: Record<string, string> = {
   'error.whisperNotLoaded': 'Modèle Whisper non chargé. Veuillez télécharger dans les Paramètres.',
   'error.noOfflineTranslation': 'Aucune traduction hors ligne disponible pour {src} → {tgt}',
   'error.sttStartFailed': 'Impossible de démarrer la saisie vocale',
+
+  // Header / Protocol
+  'nav.mainNavigation': 'Navigation principale',
+  'protocol.title': 'Protocole de session',
+  'protocol.field': 'Champ',
+  'protocol.value': 'Valeur',
+  'protocol.session': 'Session',
+  'protocol.date': 'Date',
+  'protocol.duration': 'Durée',
+  'protocol.minutes': 'min',
+  'protocol.minutesFull': 'minutes',
+  'protocol.sourceLanguage': 'Langue source',
+  'protocol.sourceLangShort': 'Langue',
+  'protocol.listeners': 'Auditeurs',
+  'protocol.connection': 'Connexion',
+  'protocol.translations': 'Traductions',
+  'protocol.endOfProtocol': 'Fin du protocole',
+  'protocol.createdWith': 'Créé avec',
+  'protocol.exportText': 'Text (.txt)',
+  'protocol.exportMarkdown': 'Markdown (.md)',
+  'protocol.filename': 'protocole',
 }
 
 export default strings
