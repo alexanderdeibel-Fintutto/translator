@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'حالت هات‌اسپات',
   'live.modeLocal': 'شبکه محلی',
   'live.modeCloud': 'ابری',
+  'live.btnCloud': 'ابری',
+  'live.btnHotspot': 'هات‌اسپات',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'روتر',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'ورودی صوتی در این مرورگر پشتیبانی نمی‌شود',

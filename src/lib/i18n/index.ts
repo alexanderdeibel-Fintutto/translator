@@ -342,6 +342,10 @@ const de: TranslationStrings = {
   'live.modeHotspot': 'Hotspot-Modus',
   'live.modeLocal': 'Lokales Netzwerk',
   'live.modeCloud': 'Cloud',
+  'live.btnCloud': 'Cloud',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Router',
 
   // Error boundary
   'error.errorBoundaryTitle': 'Etwas ist schiefgelaufen',

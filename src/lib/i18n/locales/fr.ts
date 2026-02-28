@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Mode Hotspot',
   'live.modeLocal': 'Réseau local',
   'live.modeCloud': 'Cloud',
+  'live.btnCloud': 'Cloud',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Routeur',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'La saisie vocale n\'est pas prise en charge par ce navigateur',

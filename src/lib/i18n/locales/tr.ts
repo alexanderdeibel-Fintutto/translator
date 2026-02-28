@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Hotspot Modu',
   'live.modeLocal': 'Yerel Ağ',
   'live.modeCloud': 'Bulut',
+  'live.btnCloud': 'Bulut',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Router',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'Bu tarayıcı sesli girişi desteklemiyor',

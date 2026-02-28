@@ -284,6 +284,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Hotspot Mode',
   'live.modeLocal': 'Local Network',
   'live.modeCloud': 'Cloud',
+  'live.btnCloud': 'Cloud',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Router',
 
   // Error boundary
   'error.errorBoundaryTitle': 'Something went wrong',

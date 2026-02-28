@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'وضع نقطة الاتصال',
   'live.modeLocal': 'شبكة محلية',
   'live.modeCloud': 'سحابة',
+  'live.btnCloud': 'سحابة',
+  'live.btnHotspot': 'نقطة اتصال',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'راوتر',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'الإدخال الصوتي غير مدعوم في هذا المتصفح',

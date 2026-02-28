@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Modo Hotspot',
   'live.modeLocal': 'Red local',
   'live.modeCloud': 'Nube',
+  'live.btnCloud': 'Nube',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Router',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'La entrada de voz no es compatible con este navegador',

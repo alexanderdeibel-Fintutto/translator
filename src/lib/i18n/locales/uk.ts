@@ -286,6 +286,10 @@ const strings: Record<string, string> = {
   'live.modeHotspot': 'Режим Hotspot',
   'live.modeLocal': 'Локальна мережа',
   'live.modeCloud': 'Хмара',
+  'live.btnCloud': 'Хмара',
+  'live.btnHotspot': 'Hotspot',
+  'live.btnBle': 'BLE',
+  'live.btnRouter': 'Router',
 
   // Errors (hooks & lib)
   'error.speechNotSupported': 'Голосовий ввід не підтримується цим браузером',
