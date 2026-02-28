@@ -4,6 +4,7 @@ import { usePresence } from './usePresence'
 import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 import { translateText } from '@/lib/translate'
 import { markSTTEnd, markTranslateStart, markTranslateEnd, markBroadcast } from '@/lib/latency'
 import { getLanguageByCode } from '@/lib/languages'
@@ -27,6 +28,7 @@ function getDeviceName(): string {
 }
 
 export function useLiveSession() {
+  const { t } = useI18n()
   const [role, setRole] = useState<'speaker' | 'listener' | null>(null)
   const [sessionCode, setSessionCode] = useState('')
   const [sourceLanguage, setSourceLanguage] = useState('de')
@@ -160,7 +162,7 @@ export function useLiveSession() {
       await processTranslation(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : 'Übersetzung fehlgeschlagen')
+      setError(err instanceof Error ? err.message : t('error.translationFailed'))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -200,13 +202,14 @@ export function useLiveSession() {
   }, [broadcast, presence, recognition])
 
   // Detect disconnect during active session and show feedback
+  const disconnectMsg = t('error.connectionLost')
   useEffect(() => {
     if (role && !broadcast.isConnected && !sessionEnded) {
-      setError('Verbindung unterbrochen — wird automatisch wiederhergestellt...')
-    } else if (role && broadcast.isConnected && error === 'Verbindung unterbrochen — wird automatisch wiederhergestellt...') {
+      setError(disconnectMsg)
+    } else if (role && broadcast.isConnected && error === disconnectMsg) {
       setError(null) // Clear disconnect error on reconnect
     }
-  }, [broadcast.isConnected, role, sessionEnded, error])
+  }, [broadcast.isConnected, role, sessionEnded, error, disconnectMsg])
 
   // --- LISTENER ---
 

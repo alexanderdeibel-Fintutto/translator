@@ -242,6 +242,41 @@ const de: TranslationStrings = {
   // Footer
   'footer.imprint': 'Impressum',
   'footer.privacy': 'Datenschutz',
+
+  // Listener view
+  'live.sessionEnded': 'Session beendet',
+  'live.sessionEndedDesc': 'Der Speaker hat die Live-Übersetzung beendet.',
+  'live.back': 'Zurück',
+  'live.waitingTranslation': 'Warte auf Übersetzung...',
+  'live.speaking': 'Wird vorgelesen...',
+  'live.connected': 'Verbunden',
+  'live.autoSpeak': 'Auto-Vorlesen',
+  'live.subtitles': 'Untertitel',
+  'live.leave': 'Verlassen',
+  'live.fullscreen': 'Vollbild',
+  'live.closeFullscreen': 'Vollbild schließen',
+  'live.chooseTargetLang': 'Zielsprache wählen',
+
+  // PWA
+  'pwa.install': 'App installieren',
+  'pwa.installDesc': 'Offline nutzen, schneller starten',
+
+  // Session code
+  'live.enterCode': 'Session-Code eingeben',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Bitte aktiviere den Persönlichen Hotspot in den Einstellungen',
+  'live.bleAutoDiscovery': 'Listener finden diese Session automatisch per Bluetooth',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Etwas ist schiefgelaufen',
+  'error.errorBoundaryDesc': 'Ein unerwarteter Fehler ist aufgetreten. Bitte lade die Seite neu.',
+  'error.retry': 'Erneut versuchen',
+  'error.reloadPage': 'Seite neu laden',
+
+  // Errors
+  'error.translationFailed': 'Übersetzung fehlgeschlagen',
+  'error.connectionLost': 'Verbindung unterbrochen — wird automatisch wiederhergestellt...',
 }
 
 // Cache for dynamically loaded locale packs

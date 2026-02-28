@@ -191,6 +191,33 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'No cost per listener or minute. PWA installation for fast offline access.',
   'footer.imprint': 'Imprint',
   'footer.privacy': 'Privacy',
+  'live.sessionEnded': 'Session ended',
+  'live.sessionEndedDesc': 'The speaker has ended the live translation.',
+  'live.back': 'Back',
+  'live.waitingTranslation': 'Waiting for translation...',
+  'live.speaking': 'Speaking...',
+  'live.connected': 'Connected',
+  'live.autoSpeak': 'Auto-speak',
+  'live.subtitles': 'Subtitles',
+  'live.leave': 'Leave',
+  'live.fullscreen': 'Fullscreen',
+  'live.closeFullscreen': 'Close fullscreen',
+  'live.chooseTargetLang': 'Choose target language',
+  'pwa.install': 'Install app',
+  'pwa.installDesc': 'Use offline, start faster',
+  'live.enterCode': 'Enter session code',
+  // Speaker view
+  'live.hotspotInstruction': 'Please enable Personal Hotspot in your device settings',
+  'live.bleAutoDiscovery': 'Listeners find this session automatically via Bluetooth',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Something went wrong',
+  'error.errorBoundaryDesc': 'An unexpected error occurred. Please reload the page.',
+  'error.retry': 'Try again',
+  'error.reloadPage': 'Reload page',
+
+  'error.translationFailed': 'Translation failed',
+  'error.connectionLost': 'Connection lost — reconnecting automatically...',
 }
 
 export default strings
