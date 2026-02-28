@@ -3,6 +3,12 @@ import { useParams, useLocation, useNavigate, useSearchParams } from 'react-rout
 import { useLiveSession } from '@/hooks/useLiveSession'
 import LanguageChips from '@/components/live/LanguageChips'
 
+const LoadingSpinner = (
+  <div className="flex items-center justify-center min-h-[200px]">
+    <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+)
+
 const SpeakerView = lazy(() => import('@/components/live/SpeakerView'))
 const ListenerView = lazy(() => import('@/components/live/ListenerView'))
 import { Button } from '@/components/ui/button'
@@ -81,7 +87,7 @@ export default function LiveSessionPage() {
   // Already in a session — show the right view
   if (session.role === 'speaker') {
     return (
-      <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+      <Suspense fallback={LoadingSpinner}>
         <SpeakerView session={session} />
       </Suspense>
     )
@@ -89,7 +95,7 @@ export default function LiveSessionPage() {
 
   if (session.role === 'listener') {
     return (
-      <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+      <Suspense fallback={LoadingSpinner}>
         <ListenerView session={session} />
       </Suspense>
     )

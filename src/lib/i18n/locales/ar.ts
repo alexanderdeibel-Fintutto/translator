@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'إعادة تحميل الصفحة',
   'error.translationFailed': 'فشلت الترجمة',
   'error.connectionLost': 'انقطع الاتصال — تتم إعادة الاتصال تلقائياً...',
+
+  // Layout
+  'layout.skipToContent': 'انتقل إلى المحتوى',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — الصفحة الرئيسية',
+  'header.menuClose': 'إغلاق القائمة',
+  'header.menuOpen': 'فتح القائمة',
+
+  // Footer
+  'footer.projectBy': 'مشروع من',
+
+  // Translator
+  'translator.micUnavailable': 'الإدخال الصوتي غير متاح. يرجى التحقق من إعدادات المتصفح واتصال الإنترنت.',
+  'translator.autoDetect': 'كشف اللغة تلقائياً',
+  'translator.autoSpeakOn': 'القراءة التلقائية مفعّلة',
+  'translator.autoSpeakOff': 'القراءة التلقائية معطّلة',
+  'translator.hdVoiceOn': 'صوت HD مفعّل (Chirp 3 HD)',
+  'translator.sdVoice': 'صوت قياسي (Neural2)',
+  'translator.formalityHint': 'الرسمية — غيّر لغة الهدف إلى DE، FR، ES...',
+  'translator.micNotAvailable': 'الإدخال الصوتي غير متاح',
+  'translator.stopRecording': 'إيقاف التسجيل',
+  'translator.share': 'مشاركة',
+  'translator.goodTranslation': 'ترجمة جيدة',
+  'translator.badTranslation': 'ترجمة سيئة',
+
+  // Live
+  'live.listenersConnected': 'مستمعون متصلون',
+  'live.waitingForListeners': 'في انتظار المستمعين... شارك رمز QR أو الرابط.',
+  'live.waitingForSpeaker': 'في انتظار الترجمات من المتحدث...',
+  'live.startToTranslate': 'ابدأ التسجيل للترجمة...',
+
+  // Conversation
+  'conversation.stop': 'إيقاف',
+  'conversation.person1': 'شخص 1',
+  'conversation.person2': 'شخص 2',
+
+  // Settings
+  'settings.ready': 'جاهز',
+  'settings.deleteLanguagePack': 'حذف حزمة اللغة',
+  'settings.downloadPack': 'تحميل',
 }
 
 export default strings

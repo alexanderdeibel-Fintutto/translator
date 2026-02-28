@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'بارگذاری مجدد صفحه',
   'error.translationFailed': 'ترجمه ناموفق بود',
   'error.connectionLost': 'اتصال قطع شد — به صورت خودکار در حال اتصال مجدد...',
+
+  // Layout
+  'layout.skipToContent': 'رفتن به محتوا',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — صفحه اصلی',
+  'header.menuClose': 'بستن منو',
+  'header.menuOpen': 'باز کردن منو',
+
+  // Footer
+  'footer.projectBy': 'پروژه‌ای از',
+
+  // Translator
+  'translator.micUnavailable': 'ورودی صوتی در دسترس نیست. لطفاً تنظیمات مرورگر و اتصال اینترنت خود را بررسی کنید.',
+  'translator.autoDetect': 'تشخیص خودکار زبان',
+  'translator.autoSpeakOn': 'خواندن خودکار فعال',
+  'translator.autoSpeakOff': 'خواندن خودکار غیرفعال',
+  'translator.hdVoiceOn': 'صدای HD فعال (Chirp 3 HD)',
+  'translator.sdVoice': 'صدای استاندارد (Neural2)',
+  'translator.formalityHint': 'رسمیت — زبان مقصد را به DE، FR، ES تغییر دهید...',
+  'translator.micNotAvailable': 'ورودی صوتی در دسترس نیست',
+  'translator.stopRecording': 'توقف ضبط',
+  'translator.share': 'اشتراک‌گذاری',
+  'translator.goodTranslation': 'ترجمه خوب',
+  'translator.badTranslation': 'ترجمه بد',
+
+  // Live
+  'live.listenersConnected': 'شنونده متصل',
+  'live.waitingForListeners': 'در انتظار شنوندگان... کد QR یا لینک را به اشتراک بگذارید.',
+  'live.waitingForSpeaker': 'در انتظار ترجمه‌ها از سخنران...',
+  'live.startToTranslate': 'برای ترجمه ضبط را شروع کنید...',
+
+  // Conversation
+  'conversation.stop': 'توقف',
+  'conversation.person1': 'نفر 1',
+  'conversation.person2': 'نفر 2',
+
+  // Settings
+  'settings.ready': 'آماده',
+  'settings.deleteLanguagePack': 'حذف بسته زبان',
+  'settings.downloadPack': 'دانلود',
 }
 
 export default strings

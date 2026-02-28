@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Перезагрузить страницу',
   'error.translationFailed': 'Перевод не удался',
   'error.connectionLost': 'Соединение прервано — автоматическое переподключение...',
+
+  // Layout
+  'layout.skipToContent': 'Перейти к содержимому',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Главная',
+  'header.menuClose': 'Закрыть меню',
+  'header.menuOpen': 'Открыть меню',
+
+  // Footer
+  'footer.projectBy': 'Проект от',
+
+  // Translator
+  'translator.micUnavailable': 'Голосовой ввод недоступен. Проверьте настройки браузера и подключение к интернету.',
+  'translator.autoDetect': 'Автоопределение языка',
+  'translator.autoSpeakOn': 'Автоозвучивание включено',
+  'translator.autoSpeakOff': 'Автоозвучивание выключено',
+  'translator.hdVoiceOn': 'HD голос включён (Chirp 3 HD)',
+  'translator.sdVoice': 'Стандартный голос (Neural2)',
+  'translator.formalityHint': 'Формальность — смените язык на DE, FR, ES...',
+  'translator.micNotAvailable': 'Голосовой ввод недоступен',
+  'translator.stopRecording': 'Остановить запись',
+  'translator.share': 'Поделиться',
+  'translator.goodTranslation': 'Хороший перевод',
+  'translator.badTranslation': 'Плохой перевод',
+
+  // Live
+  'live.listenersConnected': 'слушателей подключено',
+  'live.waitingForListeners': 'Ожидание слушателей... Поделитесь QR-кодом или ссылкой.',
+  'live.waitingForSpeaker': 'Ожидание переводов от спикера...',
+  'live.startToTranslate': 'Начните запись для перевода...',
+
+  // Conversation
+  'conversation.stop': 'Стоп',
+  'conversation.person1': 'Собеседник 1',
+  'conversation.person2': 'Собеседник 2',
+
+  // Settings
+  'settings.ready': 'Готово',
+  'settings.deleteLanguagePack': 'Удалить языковой пакет',
+  'settings.downloadPack': 'Скачать',
 }
 
 export default strings

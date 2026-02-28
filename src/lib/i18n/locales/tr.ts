@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Sayfayı yeniden yükle',
   'error.translationFailed': 'Çeviri başarısız',
   'error.connectionLost': 'Bağlantı kesildi — otomatik olarak yeniden bağlanılıyor...',
+
+  // Layout
+  'layout.skipToContent': 'İçeriğe atla',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Ana sayfa',
+  'header.menuClose': 'Menüyü kapat',
+  'header.menuOpen': 'Menüyü aç',
+
+  // Footer
+  'footer.projectBy': 'Bir proje:',
+
+  // Translator
+  'translator.micUnavailable': 'Sesli giriş kullanılamıyor. Lütfen tarayıcı ayarlarınızı ve internet bağlantınızı kontrol edin.',
+  'translator.autoDetect': 'Dili otomatik algıla',
+  'translator.autoSpeakOn': 'Otomatik okuma açık',
+  'translator.autoSpeakOff': 'Otomatik okuma kapalı',
+  'translator.hdVoiceOn': 'HD ses açık (Chirp 3 HD)',
+  'translator.sdVoice': 'Standart ses (Neural2)',
+  'translator.formalityHint': 'Resmiyet — hedef dili DE, FR, ES olarak değiştirin...',
+  'translator.micNotAvailable': 'Sesli giriş kullanılamıyor',
+  'translator.stopRecording': 'Kaydı durdur',
+  'translator.share': 'Paylaş',
+  'translator.goodTranslation': 'İyi çeviri',
+  'translator.badTranslation': 'Kötü çeviri',
+
+  // Live
+  'live.listenersConnected': 'dinleyici bağlı',
+  'live.waitingForListeners': 'Dinleyiciler bekleniyor... QR kodu veya bağlantıyı paylaşın.',
+  'live.waitingForSpeaker': 'Konuşmacıdan çeviriler bekleniyor...',
+  'live.startToTranslate': 'Çevirmek için kaydı başlatın...',
+
+  // Conversation
+  'conversation.stop': 'Durdur',
+  'conversation.person1': 'Kişi 1',
+  'conversation.person2': 'Kişi 2',
+
+  // Settings
+  'settings.ready': 'Hazır',
+  'settings.deleteLanguagePack': 'Dil paketini sil',
+  'settings.downloadPack': 'İndir',
 }
 
 export default strings

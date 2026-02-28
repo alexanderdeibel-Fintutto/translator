@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Recharger la page',
   'error.translationFailed': 'Échec de la traduction',
   'error.connectionLost': 'Connexion interrompue — reconnexion automatique...',
+
+  // Layout
+  'layout.skipToContent': 'Aller au contenu',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Accueil',
+  'header.menuClose': 'Fermer le menu',
+  'header.menuOpen': 'Ouvrir le menu',
+
+  // Footer
+  'footer.projectBy': 'Un projet de',
+
+  // Translator
+  'translator.micUnavailable': 'Saisie vocale indisponible. Veuillez vérifier les paramètres de votre navigateur et votre connexion internet.',
+  'translator.autoDetect': 'Détection automatique de la langue',
+  'translator.autoSpeakOn': 'Lecture automatique activée',
+  'translator.autoSpeakOff': 'Lecture automatique désactivée',
+  'translator.hdVoiceOn': 'Voix HD activée (Chirp 3 HD)',
+  'translator.sdVoice': 'Voix standard (Neural2)',
+  'translator.formalityHint': 'Formalité — changez la cible en DE, FR, ES...',
+  'translator.micNotAvailable': 'Saisie vocale indisponible',
+  'translator.stopRecording': 'Arrêter l\'enregistrement',
+  'translator.share': 'Partager',
+  'translator.goodTranslation': 'Bonne traduction',
+  'translator.badTranslation': 'Mauvaise traduction',
+
+  // Live
+  'live.listenersConnected': 'auditeurs connectés',
+  'live.waitingForListeners': 'En attente d\'auditeurs... Partagez le code QR ou le lien.',
+  'live.waitingForSpeaker': 'En attente de traductions de l\'orateur...',
+  'live.startToTranslate': 'Commencez l\'enregistrement pour traduire...',
+
+  // Conversation
+  'conversation.stop': 'Stop',
+  'conversation.person1': 'Personne 1',
+  'conversation.person2': 'Personne 2',
+
+  // Settings
+  'settings.ready': 'Prêt',
+  'settings.deleteLanguagePack': 'Supprimer le pack de langue',
+  'settings.downloadPack': 'Télécharger',
 }
 
 export default strings

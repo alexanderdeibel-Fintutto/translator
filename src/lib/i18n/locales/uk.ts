@@ -222,6 +222,47 @@ const strings: Record<string, string> = {
   'error.reloadPage': 'Перезавантажити сторінку',
   'error.translationFailed': 'Переклад не вдався',
   'error.connectionLost': 'З\'єднання перервано — автоматичне повторне підключення...',
+
+  // Layout
+  'layout.skipToContent': 'Перейти до вмісту',
+
+  // Header
+  'header.homeAriaLabel': 'guidetranslator — Головна',
+  'header.menuClose': 'Закрити меню',
+  'header.menuOpen': 'Відкрити меню',
+
+  // Footer
+  'footer.projectBy': 'Проект від',
+
+  // Translator
+  'translator.micUnavailable': 'Голосовий ввід недоступний. Перевірте налаштування браузера та підключення до інтернету.',
+  'translator.autoDetect': 'Автовизначення мови',
+  'translator.autoSpeakOn': 'Автоозвучення увімкнено',
+  'translator.autoSpeakOff': 'Автоозвучення вимкнено',
+  'translator.hdVoiceOn': 'HD голос увімкнено (Chirp 3 HD)',
+  'translator.sdVoice': 'Стандартний голос (Neural2)',
+  'translator.formalityHint': 'Формальність — змініть мову на DE, FR, ES...',
+  'translator.micNotAvailable': 'Голосовий ввід недоступний',
+  'translator.stopRecording': 'Зупинити запис',
+  'translator.share': 'Поділитися',
+  'translator.goodTranslation': 'Хороший переклад',
+  'translator.badTranslation': 'Поганий переклад',
+
+  // Live
+  'live.listenersConnected': 'слухачів підключено',
+  'live.waitingForListeners': 'Очікування слухачів... Поділіться QR-кодом або посиланням.',
+  'live.waitingForSpeaker': 'Очікування перекладів від спікера...',
+  'live.startToTranslate': 'Почніть запис для перекладу...',
+
+  // Conversation
+  'conversation.stop': 'Стоп',
+  'conversation.person1': 'Особа 1',
+  'conversation.person2': 'Особа 2',
+
+  // Settings
+  'settings.ready': 'Готово',
+  'settings.deleteLanguagePack': 'Видалити мовний пакет',
+  'settings.downloadPack': 'Завантажити',
 }
 
 export default strings
