@@ -129,7 +129,7 @@ export default function ConversationPage() {
       {/* Language bar */}
       <div className="flex items-end justify-center gap-3">
         <LanguageSelector value={topLang} onChange={setTopLang} label="Person 1" />
-        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0">
+        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0" aria-label={t('translator.swap')}>
           <ArrowUpDown className="h-4 w-4" />
         </Button>
         <LanguageSelector value={bottomLang} onChange={setBottomLang} label="Person 2" />
@@ -138,6 +138,8 @@ export default function ConversationPage() {
           size="sm"
           onClick={() => setAutoSpeak(!autoSpeak)}
           className="mb-0.5 shrink-0 gap-1.5"
+          aria-pressed={autoSpeak}
+          aria-label={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -167,7 +169,7 @@ export default function ConversationPage() {
               disabled={activeSide === 'bottom' || isTranslating}
               className="gap-1.5 rounded-full"
             >
-              {activeSide === 'top' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              {activeSide === 'top' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
               {activeSide === 'top' ? 'Stop' : t('conversation.speak')}
             </Button>
           </div>
@@ -221,8 +223,9 @@ export default function ConversationPage() {
             <button
               onClick={clearMessages}
               className="relative bg-background px-3 py-1 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+              aria-label={t('conversation.restart')}
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3 w-3" aria-hidden="true" />
               {t('conversation.restart')}
             </button>
           )}
@@ -247,7 +250,7 @@ export default function ConversationPage() {
               disabled={activeSide === 'top' || isTranslating}
               className="gap-1.5 rounded-full"
             >
-              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
               {activeSide === 'bottom' ? 'Stop' : t('conversation.speak')}
             </Button>
           </div>
@@ -295,11 +298,13 @@ export default function ConversationPage() {
         </div>
       </div>
 
-      {isTranslating && (
-        <p className="text-center text-sm text-muted-foreground animate-pulse">
-          {t('conversation.translating')}
-        </p>
-      )}
+      <div aria-live="polite">
+        {isTranslating && (
+          <p className="text-center text-sm text-muted-foreground animate-pulse">
+            {t('conversation.translating')}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

@@ -50,9 +50,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
       <div className="container flex h-14 items-center gap-4">
-        <Link to="/" className="flex items-center gap-2 font-semibold">
+        <Link to="/" className="flex items-center gap-2 font-semibold" aria-label="guidetranslator — Startseite">
           <div className="h-8 w-8 rounded-lg gradient-translator flex items-center justify-center">
-            <Languages className="h-4.5 w-4.5 text-white" />
+            <Languages className="h-4.5 w-4.5 text-white" aria-hidden="true" />
           </div>
           <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span></span>
         </Link>
@@ -81,7 +81,8 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Navigation öffnen"
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? 'Navigation schließen' : 'Navigation öffnen'}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -128,15 +129,16 @@ export default function Header() {
               networkMode === 'degraded' ? 'text-amber-700 dark:text-amber-400' :
               'text-destructive'
             )}
-            title={
+            role="status"
+            aria-label={
               networkMode === 'online' ? t('status.online') :
               networkMode === 'degraded' ? t('status.degraded') :
               t('status.offline')
             }
           >
-            {networkMode === 'online' ? <Wifi className="h-3.5 w-3.5" /> :
-             networkMode === 'degraded' ? <Signal className="h-3.5 w-3.5" /> :
-             <WifiOff className="h-3.5 w-3.5" />}
+            {networkMode === 'online' ? <Wifi className="h-3.5 w-3.5" aria-hidden="true" /> :
+             networkMode === 'degraded' ? <Signal className="h-3.5 w-3.5" aria-hidden="true" /> :
+             <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />}
             <span className="hidden sm:inline">
               {networkMode === 'online' ? t('status.online') :
                networkMode === 'degraded' ? t('status.degraded') :
@@ -150,15 +152,24 @@ export default function Header() {
               variant="ghost"
               size="icon"
               onClick={() => setLangOpen(!langOpen)}
-              title={t('lang.select')}
+              aria-expanded={langOpen}
+              aria-haspopup="listbox"
+              aria-label={t('lang.select')}
             >
-              <Globe className="h-4 w-4" />
+              <Globe className="h-4 w-4" aria-hidden="true" />
             </Button>
             {langOpen && (
-              <div className="absolute top-full right-0 mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+              <div
+                className="absolute top-full right-0 mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden"
+                role="listbox"
+                aria-label={t('lang.select')}
+                onKeyDown={(e) => { if (e.key === 'Escape') setLangOpen(false) }}
+              >
                 {UI_LANGUAGES.map(lang => (
                   <button
                     key={lang.code}
+                    role="option"
+                    aria-selected={uiLang === lang.code}
                     onClick={() => {
                       setUILang(lang.code as UILanguage)
                       setLangOpen(false)
@@ -171,7 +182,7 @@ export default function Header() {
                     <span>{lang.flag}</span>
                     <span className="flex-1">{lang.nativeName}</span>
                     {uiLang === lang.code && (
-                      <div className="h-2 w-2 rounded-full bg-primary" />
+                      <div className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
                     )}
                   </button>
                 ))}
@@ -184,12 +195,12 @@ export default function Header() {
             <Button
               variant="ghost"
               size="icon"
-              title={t('nav.settings')}
+              aria-label={t('nav.settings')}
               className={cn(
                 location.pathname === '/settings' && 'bg-accent'
               )}
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4" aria-hidden="true" />
             </Button>
           </Link>
 
@@ -198,9 +209,9 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            title={isDark ? t('theme.light') : t('theme.dark')}
+            aria-label={isDark ? t('theme.light') : t('theme.dark')}
           >
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {isDark ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
           </Button>
         </div>
       </div>

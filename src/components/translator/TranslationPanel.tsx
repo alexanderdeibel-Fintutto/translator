@@ -473,7 +473,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             size="sm"
             onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
             className="mb-0.5 shrink-0 text-xs"
-            title="Sprache automatisch erkennen"
+            aria-pressed={autoDetect}
+            aria-label="Sprache automatisch erkennen"
           >
             {t('translator.auto')}
           </Button>
@@ -488,7 +489,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="icon"
           onClick={swapLanguages}
           className="mb-0.5 shrink-0"
-          title={t('translator.swap')}
+          aria-label={t('translator.swap')}
         >
           <ArrowRightLeft className="h-4 w-4" />
         </Button>
@@ -498,7 +499,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
+          aria-pressed={autoSpeak}
+          aria-label={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -508,7 +510,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={hdVoice ? 'HD-Stimme aktiv (Chirp 3 HD)' : 'Standard-Stimme (Neural2)'}
+          aria-pressed={hdVoice}
+          aria-label={hdVoice ? 'HD-Stimme aktiv (Chirp 3 HD)' : 'Standard-Stimme (Neural2)'}
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
@@ -518,7 +521,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleStreamMode}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
+          aria-pressed={streamMode === 'sentence'}
+          aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
         >
           {streamMode === 'sentence' ? <Zap className="h-3.5 w-3.5" /> : <AlignLeft className="h-3.5 w-3.5" />}
           <span className="text-xs">{streamMode === 'sentence' ? t('translator.sentence') : t('translator.paragraph')}</span>
@@ -530,7 +534,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             size="sm"
             onClick={toggleFormality}
             className={`mb-0.5 shrink-0 gap-1.5 ${!formalityActive ? 'opacity-50' : ''}`}
-            title={!formalityActive
+            aria-pressed={useInformal}
+            aria-label={!formalityActive
               ? 'Sie/Du — Zielsprache wechseln zu DE, FR, ES...'
               : useInformal ? t('translator.informal') : t('translator.formal')}
           >
@@ -558,7 +563,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
-                  title={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
+                  aria-pressed={isListening}
+                  aria-label={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
@@ -569,7 +575,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSend}
                     className="text-primary"
-                    title={t('translator.send')}
+                    aria-label={t('translator.send')}
                   >
                     <Send className="h-4 w-4" />
                   </Button>
@@ -579,7 +585,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakSource}
-                    title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+                    aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
                     {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </Button>
@@ -590,7 +596,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   </span>
                 )}
                 {sourceText && (
-                  <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')}>
+                  <Button variant="ghost" size="icon" onClick={clearAll} aria-label={t('translator.delete')}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
@@ -617,15 +623,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
                 )}
               </span>
-              {isListening && (
-                <span className="text-xs text-destructive flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  {t('translator.recording')}
-                  {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
-                </span>
-              )}
+              <span aria-live="assertive">
+                {isListening && (
+                  <span className="text-xs text-destructive flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" aria-hidden="true" />
+                    {t('translator.recording')}
+                    {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
+                  </span>
+                )}
+              </span>
               {(micError || micWarning) && (
-                <span className="text-xs text-destructive">{micError || micWarning}</span>
+                <span className="text-xs text-destructive" role="alert">{micError || micWarning}</span>
               )}
             </div>
           </div>
@@ -644,7 +652,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakTarget}
-                    title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+                    aria-label={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
                     {targetSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </Button>
@@ -654,7 +662,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleCopy}
-                    title={t('translator.copy')}
+                    aria-label={t('translator.copy')}
                   >
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
                   </Button>
@@ -664,7 +672,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleShare}
-                    title="Teilen"
+                    aria-label="Teilen"
                   >
                     <Share2 className="h-4 w-4" />
                   </Button>
@@ -680,7 +688,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               {segments.length === 0 && !isTranslating ? (
                 <p className="text-muted-foreground/60">{t('translator.result')}</p>
               ) : error && !translatedText ? (
-                <div className="text-destructive text-sm">{error}</div>
+                <div className="text-destructive text-sm" role="alert">{error}</div>
               ) : (
                 <p className="text-foreground">
                   {segments.map((seg, i) => (
@@ -708,14 +716,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <button
                       onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
                       className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      title="Gute Übersetzung"
+                      aria-label="Gute Übersetzung"
+                      aria-pressed={feedback === 'up'}
                     >
                       <ThumbsUp className="h-3 w-3" />
                     </button>
                     <button
                       onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
                       className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      title="Schlechte Übersetzung"
+                      aria-label="Schlechte Übersetzung"
+                      aria-pressed={feedback === 'down'}
                     >
                       <ThumbsDown className="h-3 w-3" />
                     </button>
