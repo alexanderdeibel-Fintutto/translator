@@ -172,6 +172,7 @@ export default defineConfig({
         manualChunks: {
           'transformers': ['@huggingface/transformers'],
           'onnx': ['onnxruntime-web'],
+          'supabase': ['@supabase/supabase-js'],
         },
       },
     },

@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'Dinleyici veya dakika başına maliyet yok. Hızlı çevrimdışı erişim için PWA kurulumu.',
   'footer.imprint': 'K\u00fcnye',
   'footer.privacy': 'Gizlilik',
+
+  // Listener view
+  'live.sessionEnded': 'Oturum sona erdi',
+  'live.sessionEndedDesc': 'Konuşmacı canlı çeviriyi sonlandırdı.',
+  'live.back': 'Geri',
+  'live.waitingTranslation': 'Çeviri bekleniyor...',
+  'live.speaking': 'Okunuyor...',
+  'live.connected': 'Bağlı',
+  'live.autoSpeak': 'Otomatik okuma',
+  'live.subtitles': 'Altyazılar',
+  'live.leave': 'Ayrıl',
+  'live.fullscreen': 'Tam ekran',
+  'live.closeFullscreen': 'Tam ekranı kapat',
+  'live.chooseTargetLang': 'Hedef dil seçin',
+  'live.enterCode': 'Oturum kodunu girin',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Lütfen cihaz ayarlarında Kişisel Erişim Noktasını etkinleştirin',
+  'live.bleAutoDiscovery': 'Dinleyiciler bu oturumu Bluetooth ile otomatik olarak bulur',
+
+  // PWA
+  'pwa.install': 'Uygulamayı yükle',
+  'pwa.installDesc': 'Çevrimdışı kullan, daha hızlı başlat',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Bir şeyler ters gitti',
+  'error.errorBoundaryDesc': 'Beklenmeyen bir hata oluştu. Lütfen sayfayı yeniden yükleyin.',
+  'error.retry': 'Tekrar dene',
+  'error.reloadPage': 'Sayfayı yeniden yükle',
+  'error.translationFailed': 'Çeviri başarısız',
+  'error.connectionLost': 'Bağlantı kesildi — otomatik olarak yeniden bağlanılıyor...',
 }
 
 export default strings

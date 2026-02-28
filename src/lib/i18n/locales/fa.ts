@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'بدون هزینه برای هر شنونده یا دقیقه. نصب PWA برای دسترسی سریع آفلاین.',
   'footer.imprint': '\u0627\u0637\u0644\u0627\u0639\u0627\u062a \u0646\u0627\u0634\u0631',
   'footer.privacy': '\u062d\u0641\u0627\u0638\u062a \u062f\u0627\u062f\u0647\u200c\u0647\u0627',
+
+  // Listener view
+  'live.sessionEnded': 'جلسه پایان یافت',
+  'live.sessionEndedDesc': 'سخنران ترجمه زنده را پایان داد.',
+  'live.back': 'بازگشت',
+  'live.waitingTranslation': 'در انتظار ترجمه...',
+  'live.speaking': 'در حال خواندن...',
+  'live.connected': 'متصل',
+  'live.autoSpeak': 'خواندن خودکار',
+  'live.subtitles': 'زیرنویس',
+  'live.leave': 'خروج',
+  'live.fullscreen': 'تمام صفحه',
+  'live.closeFullscreen': 'بستن تمام صفحه',
+  'live.chooseTargetLang': 'زبان مقصد را انتخاب کنید',
+  'live.enterCode': 'کد جلسه را وارد کنید',
+
+  // Speaker view
+  'live.hotspotInstruction': 'لطفاً هات‌اسپات شخصی را در تنظیمات فعال کنید',
+  'live.bleAutoDiscovery': 'شنوندگان این جلسه را به صورت خودکار از طریق بلوتوث پیدا می‌کنند',
+
+  // PWA
+  'pwa.install': 'نصب برنامه',
+  'pwa.installDesc': 'استفاده آفلاین، شروع سریع‌تر',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'مشکلی پیش آمد',
+  'error.errorBoundaryDesc': 'خطای غیرمنتظره‌ای رخ داد. لطفاً صفحه را دوباره بارگذاری کنید.',
+  'error.retry': 'تلاش مجدد',
+  'error.reloadPage': 'بارگذاری مجدد صفحه',
+  'error.translationFailed': 'ترجمه ناموفق بود',
+  'error.connectionLost': 'اتصال قطع شد — به صورت خودکار در حال اتصال مجدد...',
 }
 
 export default strings

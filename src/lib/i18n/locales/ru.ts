@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'Без затрат за слушателя или минуту. Установка PWA для быстрого офлайн-доступа.',
   'footer.imprint': '\u0418\u043c\u043f\u0440\u0435\u0441\u0441\u0443\u043c',
   'footer.privacy': '\u041a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c',
+
+  // Listener view
+  'live.sessionEnded': 'Сессия завершена',
+  'live.sessionEndedDesc': 'Спикер завершил живой перевод.',
+  'live.back': 'Назад',
+  'live.waitingTranslation': 'Ожидание перевода...',
+  'live.speaking': 'Озвучивается...',
+  'live.connected': 'Подключено',
+  'live.autoSpeak': 'Автоозвучивание',
+  'live.subtitles': 'Субтитры',
+  'live.leave': 'Выйти',
+  'live.fullscreen': 'Полный экран',
+  'live.closeFullscreen': 'Закрыть полный экран',
+  'live.chooseTargetLang': 'Выберите язык перевода',
+  'live.enterCode': 'Введите код сессии',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Пожалуйста, включите Личную точку доступа в настройках',
+  'live.bleAutoDiscovery': 'Слушатели находят эту сессию автоматически через Bluetooth',
+
+  // PWA
+  'pwa.install': 'Установить приложение',
+  'pwa.installDesc': 'Использовать офлайн, быстрый запуск',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Что-то пошло не так',
+  'error.errorBoundaryDesc': 'Произошла непредвиденная ошибка. Пожалуйста, перезагрузите страницу.',
+  'error.retry': 'Попробовать снова',
+  'error.reloadPage': 'Перезагрузить страницу',
+  'error.translationFailed': 'Перевод не удался',
+  'error.connectionLost': 'Соединение прервано — автоматическое переподключение...',
 }
 
 export default strings

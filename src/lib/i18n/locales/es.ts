@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'Sin costo por oyente o minuto. Instalación PWA para acceso rápido sin conexión.',
   'footer.imprint': 'Aviso legal',
   'footer.privacy': 'Privacidad',
+
+  // Listener view
+  'live.sessionEnded': 'Sesión finalizada',
+  'live.sessionEndedDesc': 'El orador ha finalizado la traducción en vivo.',
+  'live.back': 'Volver',
+  'live.waitingTranslation': 'Esperando traducción...',
+  'live.speaking': 'Leyendo en voz alta...',
+  'live.connected': 'Conectado',
+  'live.autoSpeak': 'Lectura automática',
+  'live.subtitles': 'Subtítulos',
+  'live.leave': 'Salir',
+  'live.fullscreen': 'Pantalla completa',
+  'live.closeFullscreen': 'Cerrar pantalla completa',
+  'live.chooseTargetLang': 'Elegir idioma de destino',
+  'live.enterCode': 'Introducir código de sesión',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Por favor, activa el Punto de acceso personal en los ajustes',
+  'live.bleAutoDiscovery': 'Los oyentes encuentran esta sesión automáticamente por Bluetooth',
+
+  // PWA
+  'pwa.install': 'Instalar aplicación',
+  'pwa.installDesc': 'Usar sin conexión, inicio más rápido',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Algo salió mal',
+  'error.errorBoundaryDesc': 'Se produjo un error inesperado. Por favor, recarga la página.',
+  'error.retry': 'Intentar de nuevo',
+  'error.reloadPage': 'Recargar página',
+  'error.translationFailed': 'Error en la traducción',
+  'error.connectionLost': 'Conexión interrumpida — reconectando automáticamente...',
 }
 
 export default strings

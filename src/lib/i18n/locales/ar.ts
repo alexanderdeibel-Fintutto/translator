@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'بدون تكلفة لكل مستمع أو دقيقة. تثبيت PWA للوصول السريع بدون إنترنت.',
   'footer.imprint': '\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0646\u0634\u0631',
   'footer.privacy': '\u062d\u0645\u0627\u064a\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a',
+
+  // Listener view
+  'live.sessionEnded': 'انتهت الجلسة',
+  'live.sessionEndedDesc': 'أنهى المتحدث الترجمة المباشرة.',
+  'live.back': 'رجوع',
+  'live.waitingTranslation': 'في انتظار الترجمة...',
+  'live.speaking': 'جارٍ القراءة...',
+  'live.connected': 'متصل',
+  'live.autoSpeak': 'قراءة تلقائية',
+  'live.subtitles': 'ترجمات',
+  'live.leave': 'مغادرة',
+  'live.fullscreen': 'ملء الشاشة',
+  'live.closeFullscreen': 'إغلاق ملء الشاشة',
+  'live.chooseTargetLang': 'اختر لغة الهدف',
+  'live.enterCode': 'أدخل رمز الجلسة',
+
+  // Speaker view
+  'live.hotspotInstruction': 'يرجى تفعيل نقطة الاتصال الشخصية في الإعدادات',
+  'live.bleAutoDiscovery': 'يجد المستمعون هذه الجلسة تلقائياً عبر البلوتوث',
+
+  // PWA
+  'pwa.install': 'تثبيت التطبيق',
+  'pwa.installDesc': 'استخدم بدون إنترنت، بدء أسرع',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'حدث خطأ ما',
+  'error.errorBoundaryDesc': 'حدث خطأ غير متوقع. يرجى إعادة تحميل الصفحة.',
+  'error.retry': 'حاول مرة أخرى',
+  'error.reloadPage': 'إعادة تحميل الصفحة',
+  'error.translationFailed': 'فشلت الترجمة',
+  'error.connectionLost': 'انقطع الاتصال — تتم إعادة الاتصال تلقائياً...',
 }
 
 export default strings

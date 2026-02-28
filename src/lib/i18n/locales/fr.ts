@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'Aucun coût par auditeur ou minute. Installation PWA pour un accès hors ligne rapide.',
   'footer.imprint': 'Mentions l\u00e9gales',
   'footer.privacy': 'Confidentialit\u00e9',
+
+  // Listener view
+  'live.sessionEnded': 'Session terminée',
+  'live.sessionEndedDesc': 'L\'orateur a terminé la traduction en direct.',
+  'live.back': 'Retour',
+  'live.waitingTranslation': 'En attente de traduction...',
+  'live.speaking': 'Lecture en cours...',
+  'live.connected': 'Connecté',
+  'live.autoSpeak': 'Lecture automatique',
+  'live.subtitles': 'Sous-titres',
+  'live.leave': 'Quitter',
+  'live.fullscreen': 'Plein écran',
+  'live.closeFullscreen': 'Fermer le plein écran',
+  'live.chooseTargetLang': 'Choisir la langue cible',
+  'live.enterCode': 'Entrer le code de session',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Veuillez activer le partage de connexion dans les réglages',
+  'live.bleAutoDiscovery': 'Les auditeurs trouvent cette session automatiquement via Bluetooth',
+
+  // PWA
+  'pwa.install': 'Installer l\'application',
+  'pwa.installDesc': 'Utiliser hors ligne, démarrage plus rapide',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Quelque chose s\'est mal passé',
+  'error.errorBoundaryDesc': 'Une erreur inattendue s\'est produite. Veuillez recharger la page.',
+  'error.retry': 'Réessayer',
+  'error.reloadPage': 'Recharger la page',
+  'error.translationFailed': 'Échec de la traduction',
+  'error.connectionLost': 'Connexion interrompue — reconnexion automatique...',
 }
 
 export default strings

@@ -1,9 +1,10 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLiveSession } from '@/hooks/useLiveSession'
-import SpeakerView from '@/components/live/SpeakerView'
-import ListenerView from '@/components/live/ListenerView'
 import LanguageChips from '@/components/live/LanguageChips'
+
+const SpeakerView = lazy(() => import('@/components/live/SpeakerView'))
+const ListenerView = lazy(() => import('@/components/live/ListenerView'))
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Wifi, Cloud, Bluetooth } from 'lucide-react'
@@ -79,11 +80,19 @@ export default function LiveSessionPage() {
 
   // Already in a session — show the right view
   if (session.role === 'speaker') {
-    return <SpeakerView session={session} />
+    return (
+      <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+        <SpeakerView session={session} />
+      </Suspense>
+    )
   }
 
   if (session.role === 'listener') {
-    return <ListenerView session={session} />
+    return (
+      <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+        <ListenerView session={session} />
+      </Suspense>
+    )
   }
 
   // Not yet joined — show language selection for listener

@@ -191,6 +191,37 @@ const strings: Record<string, string> = {
   'info.feature12Desc': 'Без витрат за слухача або хвилину. Встановлення PWA для швидкого офлайн-доступу.',
   'footer.imprint': '\u0406\u043c\u043f\u0440\u0435\u0441\u0443\u043c',
   'footer.privacy': '\u041a\u043e\u043d\u0444\u0456\u0434\u0435\u043d\u0446\u0456\u0439\u043d\u0456\u0441\u0442\u044c',
+
+  // Listener view
+  'live.sessionEnded': 'Сесію завершено',
+  'live.sessionEndedDesc': 'Спікер завершив живий переклад.',
+  'live.back': 'Назад',
+  'live.waitingTranslation': 'Очікування перекладу...',
+  'live.speaking': 'Озвучується...',
+  'live.connected': 'Підключено',
+  'live.autoSpeak': 'Автоозвучення',
+  'live.subtitles': 'Субтитри',
+  'live.leave': 'Вийти',
+  'live.fullscreen': 'На весь екран',
+  'live.closeFullscreen': 'Закрити повний екран',
+  'live.chooseTargetLang': 'Оберіть мову перекладу',
+  'live.enterCode': 'Введіть код сесії',
+
+  // Speaker view
+  'live.hotspotInstruction': 'Будь ласка, увімкніть Особисту точку доступу в налаштуваннях',
+  'live.bleAutoDiscovery': 'Слухачі знаходять цю сесію автоматично через Bluetooth',
+
+  // PWA
+  'pwa.install': 'Встановити додаток',
+  'pwa.installDesc': 'Використовуйте офлайн, швидший запуск',
+
+  // Error boundary
+  'error.errorBoundaryTitle': 'Щось пішло не так',
+  'error.errorBoundaryDesc': 'Виникла неочікувана помилка. Будь ласка, перезавантажте сторінку.',
+  'error.retry': 'Спробувати знову',
+  'error.reloadPage': 'Перезавантажити сторінку',
+  'error.translationFailed': 'Переклад не вдався',
+  'error.connectionLost': 'З\'єднання перервано — автоматичне повторне підключення...',
 }
 
 export default strings
