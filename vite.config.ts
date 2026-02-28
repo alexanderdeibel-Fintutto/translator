@@ -165,6 +165,8 @@ export default defineConfig({
     }),
   ],
   build: {
+    // Warn only for chunks over 550KB (transformers is ~502KB)
+    chunkSizeWarningLimit: 550,
     rollupOptions: {
       output: {
         manualChunks: {

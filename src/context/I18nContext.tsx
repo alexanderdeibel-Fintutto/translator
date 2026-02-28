@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import { type UILanguage, getTranslation, detectBrowserLanguage, isUILanguageRTL } from '@/lib/i18n'
+import { type UILanguage, getTranslation, detectBrowserLanguage, isUILanguageRTL, loadLocale, isLocaleReady } from '@/lib/i18n'
 
 interface I18nContextType {
   uiLang: UILanguage
@@ -16,10 +16,22 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (saved) return saved as UILanguage
     return detectBrowserLanguage()
   })
+  const [localeReady, setLocaleReady] = useState(() => isLocaleReady(uiLang))
+
+  // Load locale on mount and when language changes
+  useEffect(() => {
+    if (isLocaleReady(uiLang)) {
+      setLocaleReady(true)
+      return
+    }
+    setLocaleReady(false)
+    loadLocale(uiLang).then(() => setLocaleReady(true))
+  }, [uiLang])
 
   const setUILang = useCallback((lang: UILanguage) => {
-    setUILangState(lang)
     localStorage.setItem('ui-language', lang)
+    // Pre-load locale before switching to avoid flash
+    loadLocale(lang).then(() => setUILangState(lang))
   }, [])
 
   const t = useCallback((key: string) => {
@@ -32,6 +44,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
   }, [isRTL])
+
+  // Show nothing until initial locale is loaded (prevents flash of German)
+  if (!localeReady) return null
 
   return (
     <I18nContext.Provider value={{ uiLang, setUILang, t, isRTL }}>

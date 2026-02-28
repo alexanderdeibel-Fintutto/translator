@@ -11,7 +11,6 @@ import {
   Loader2,
   UserCheck,
   User,
- claude/offline-speaker-listener-nhgmf
   ThumbsUp,
   ThumbsDown,
   Share2,
@@ -19,7 +18,6 @@ import {
   Send,
   Zap,
   AlignLeft,
- main
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -53,13 +51,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
- claude/offline-speaker-listener-nhgmf
   const [autoDetect, setAutoDetect] = useState(false)
   const [detectedLang, setDetectedLang] = useState<string | null>(null)
-  const [sourceText, setSourceText] = useState('')
-  const [translatedText, setTranslatedText] = useState('')
-
-
   // Segment-based state for speech mode
   const [segments, setSegments] = useState<TranslationSegment[]>([])
   const [interimText, setInterimText] = useState('')
@@ -69,7 +62,6 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
- main
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
@@ -207,15 +199,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
 
     try {
- claude/offline-speaker-listener-nhgmf
       const result = await translateText(text, effectiveSourceLang, targetLang)
-
-      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
- main
       let finalText = result.translatedText
 
-      if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
-        finalText = convertToInformal(finalText, targetLangRef.current)
+      if (useInformalRef.current && supportsFormality(targetLang)) {
+        finalText = convertToInformal(finalText, targetLang)
       }
 
       setSegments(prev => prev.map(s =>
@@ -226,14 +214,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setFeedback(null)
 
       if (autoSpeakRef.current && finalText) {
-        const lang = getLanguageByCode(targetLangRef.current)
-        targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
+        const lang = getLanguageByCode(targetLang)
+        targetSpeakRef.current(finalText, lang?.speechCode || targetLang)
       }
 
       addEntry({
         sourceText: text,
         translatedText: finalText,
- claude/offline-speaker-listener-nhgmf
         sourceLang: effectiveSourceLang,
         targetLang,
       })
@@ -243,23 +230,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         OFFLINE_NO_MODEL: t('error.offlineNoModel'),
         ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
       }
-      setError(errorMap[msg] || msg || t('error.unknown'))
-    } finally {
-      setIsTranslating(false)
-    }
-  }, [sourceLang, targetLang, autoDetect, addEntry, t])
-
-        sourceLang: sourceLangRef.current,
-        targetLang: targetLangRef.current,
-      })
-    } catch (err) {
       setSegments(prev => prev.map(s =>
         s.id === segmentId ? { ...s, isTranslating: false } : s
       ))
-      setError(err instanceof Error ? err.message : 'Translation failed')
+      setError(errorMap[msg] || msg || t('error.unknown'))
     }
-  }, [segments, addEntry])
- main
+  }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
   // Manual textarea editing: collapse to single segment, debounce translate
   const handleManualEdit = useCallback((newText: string) => {
@@ -476,7 +452,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
   useKeyboardShortcuts({
-    'ctrl+enter': () => { if (sourceText.trim()) doTranslate(sourceText) },
+    'ctrl+enter': () => { if (sourceText.trim()) doTranslateManual(sourceText) },
     'escape': clearAll,
     'ctrl+shift+s': swapLanguages,
   })
@@ -626,11 +602,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
- claude/offline-speaker-listener-nhgmf
               aria-label={t('translator.placeholder')}
 
               readOnly={isListening}
- main
             />
             {/* Interim text display during recording */}
             {isListening && interimText && (
@@ -638,14 +612,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
- claude/offline-speaker-listener-nhgmf
-                {sourceText.length} {t('translator.chars')}
-                {sourceText.length === 0 && (
+                {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
+                {sourceText.length === 0 && !interimText && (
                   <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
                 )}
-
-                {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
- main
               </span>
               {isListening && (
                 <span className="text-xs text-destructive flex items-center gap-1">
