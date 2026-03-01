@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal, Users, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
@@ -65,6 +65,29 @@ export default function LiveLandingPage() {
         <p className="text-muted-foreground">
           {t('liveLanding.subtitle')}
         </p>
+      </div>
+
+      {/* Group Session Banner */}
+      <div className="bg-gradient-to-r from-violet-50 to-blue-50 dark:from-violet-950/20 dark:to-blue-950/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
+            <Users className="h-5 w-5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm">{t('group.title')}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('group.subtitle')}</p>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Globe className="h-3 w-3" aria-hidden="true" />
+                45 {t('translator.languages')}
+              </span>
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Radio className="h-3 w-3" aria-hidden="true" />
+                1→N Broadcast
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
