@@ -20,6 +20,8 @@ const DatenschutzPage = lazy(() => import('@/pages/DatenschutzPage'))
 const PhrasebookPage = lazy(() => import('@/pages/PhrasebookPage'))
 const ConversationPage = lazy(() => import('@/pages/ConversationPage'))
 const CameraTranslatePage = lazy(() => import('@/pages/CameraTranslatePage'))
+const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
+const HistoryPage = lazy(() => import('@/pages/HistoryPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 if (import.meta.env.DEV) {
@@ -52,6 +54,8 @@ function App() {
                 <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
                 <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
                 <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />
+                <Route path="favorites" element={<Suspense fallback={<PageLoader />}><FavoritesPage /></Suspense>} />
+                <Route path="history" element={<Suspense fallback={<PageLoader />}><HistoryPage /></Suspense>} />
                 <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
               </Route>
             </Routes>

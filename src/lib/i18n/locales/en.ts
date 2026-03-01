@@ -400,6 +400,71 @@ const strings: Record<string, string> = {
   'tts.cloud': '☁ Cloud',
   'tts.browser': '🖥 Browser',
 
+  // Favorites
+  'nav.favorites': 'Favorites',
+  'nav.history': 'History',
+  'favorites.title': 'Favorites',
+  'favorites.subtitle': 'Your saved translations — quick access to important phrases.',
+  'favorites.empty': 'No favorites saved yet.',
+  'favorites.emptyHint': 'Tap the star on a translation to save it here.',
+  'favorites.search': 'Search favorites...',
+  'favorites.count': 'favorites',
+  'favorites.clearAll': 'Clear all',
+  'favorites.remove': 'Remove favorite',
+  'favorites.add': 'Save as favorite',
+  'favorites.noResults': 'No favorites found.',
+
+  // History Page
+  'historyPage.title': 'Translation History',
+  'historyPage.subtitle': 'Browse, search, filter, and export all past translations.',
+  'historyPage.search': 'Search history...',
+  'historyPage.entries': 'entries',
+  'historyPage.export': 'Export',
+  'history.justNow': 'Just now',
+  'history.yesterday': 'Yesterday',
+
+  // Export / Import
+  'export.title': 'Export / Import',
+  'export.subtitle': 'Export and import favorites, history, and phrasebook as JSON or CSV.',
+  'export.favorites': 'Export favorites',
+  'export.history': 'Export history',
+  'export.phrasebook': 'Export phrasebook',
+  'export.importData': 'Import data',
+  'export.importDesc': 'Select a JSON file to import favorites or history.',
+  'export.importSuccess': '{count} entries imported.',
+  'export.importError': 'Import failed. Please check the file format.',
+  'export.csv': 'CSV',
+  'export.json': 'JSON',
+  'export.all': 'Export all',
+
+  // Pronunciation Guide
+  'pronunciation.show': 'Pronunciation',
+  'pronunciation.hide': 'Hide pronunciation',
+  'pronunciation.romanization': 'Romanization',
+
+  // Context Modes
+  'context.label': 'Context',
+  'context.general': 'General',
+  'context.travel': 'Travel',
+  'context.medical': 'Medical',
+  'context.legal': 'Legal',
+  'context.business': 'Business',
+  'context.casual': 'Casual',
+
+  // Word Alternatives
+  'alternatives.title': 'Alternatives',
+  'alternatives.show': 'Show alternatives',
+  'alternatives.hide': 'Hide alternatives',
+  'alternatives.loading': 'Loading alternatives...',
+  'alternatives.none': 'No alternatives found.',
+
+  // Group Sessions
+  'group.title': 'Group Session',
+  'group.subtitle': 'Multi-language broadcast — one speaker, many languages at once.',
+  'group.participants': 'Participants',
+  'group.languages': 'Target languages',
+  'group.addLanguage': 'Add language',
+
   // PWA
   'pwa.ok': 'OK',
   'pwa.dismiss': 'Dismiss',

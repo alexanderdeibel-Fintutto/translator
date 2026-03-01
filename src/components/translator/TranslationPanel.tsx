@@ -14,7 +14,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   Share2,
-
+  Star,
   Send,
   Zap,
   AlignLeft,
@@ -45,9 +45,11 @@ interface TranslationPanelProps {
   initialTargetLang?: string
   onInitialTextConsumed?: () => void
   addEntry: (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => void
+  isFavorite?: (sourceText: string, targetLang: string) => boolean
+  toggleFavorite?: (entry: { sourceText: string; translatedText: string; sourceLang: string; targetLang: string }) => void
 }
 
-export default function TranslationPanel({ initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed, addEntry }: TranslationPanelProps) {
+export default function TranslationPanel({ initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed, addEntry, isFavorite, toggleFavorite }: TranslationPanelProps) {
   const { t } = useI18n()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
@@ -665,6 +667,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     aria-label={t('translator.copy')}
                   >
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                )}
+                {translatedText && toggleFavorite && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleFavorite({ sourceText, translatedText, sourceLang, targetLang })}
+                    aria-label={isFavorite?.(sourceText, targetLang) ? t('favorites.remove') : t('favorites.add')}
+                  >
+                    <Star className={`h-4 w-4 ${isFavorite?.(sourceText, targetLang) ? 'fill-amber-400 text-amber-400' : ''}`} />
                   </Button>
                 )}
                 {translatedText && typeof navigator.share === 'function' && (

@@ -1,4 +1,4 @@
-import { Languages, Mic, Globe, Zap, Radio, MessageCircle, Camera } from 'lucide-react'
+import { Languages, Mic, Globe, Zap, Radio, MessageCircle, Camera, Star } from 'lucide-react'
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -6,6 +6,7 @@ import TranslationPanel from '@/components/translator/TranslationPanel'
 import TranslationHistory from '@/components/translator/TranslationHistory'
 import QuickPhrases from '@/components/translator/QuickPhrases'
 import { useTranslationHistory } from '@/hooks/useTranslationHistory'
+import { useFavorites } from '@/hooks/useFavorites'
 import { useI18n } from '@/context/I18nContext'
 
 export default function TranslatorPage() {
@@ -14,6 +15,7 @@ export default function TranslatorPage() {
   const [sourceLang, setSourceLang] = useState('')
   const [targetLang, setTargetLang] = useState('')
   const { history, addEntry, clearHistory, removeEntry } = useTranslationHistory()
+  const { isFavorite, toggleFavorite } = useFavorites()
 
   const handleConsumed = useCallback(() => {
     setQuickText('')
@@ -73,6 +75,12 @@ export default function TranslatorPage() {
             {t('nav.camera')}
           </Button>
         </Link>
+        <Link to="/favorites">
+          <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
+            <Star className="h-3 w-3" aria-hidden="true" />
+            {t('nav.favorites')}
+          </Button>
+        </Link>
       </div>
 
       {/* Main Translation */}
@@ -82,6 +90,8 @@ export default function TranslatorPage() {
         initialTargetLang={targetLang}
         onInitialTextConsumed={handleConsumed}
         addEntry={addEntry}
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
       />
 
       {/* Quick Phrases & History */}

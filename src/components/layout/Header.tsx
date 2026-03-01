@@ -25,6 +25,8 @@ export default function Header() {
     { label: t('nav.conversation'), path: '/conversation' },
     { label: t('nav.camera'), path: '/camera' },
     { label: t('nav.phrasebook'), path: '/phrasebook' },
+    { label: t('nav.favorites'), path: '/favorites' },
+    { label: t('nav.history'), path: '/history' },
     { label: t('nav.info'), path: '/info' },
   ]
 

@@ -459,6 +459,71 @@ const de: TranslationStrings = {
   'tts.cloud': '☁ Cloud',
   'tts.browser': '🖥 Browser',
 
+  // Favorites
+  'nav.favorites': 'Favoriten',
+  'nav.history': 'Verlauf',
+  'favorites.title': 'Favoriten',
+  'favorites.subtitle': 'Deine gespeicherten Übersetzungen — schneller Zugriff auf wichtige Sätze.',
+  'favorites.empty': 'Noch keine Favoriten gespeichert.',
+  'favorites.emptyHint': 'Tippe auf den Stern bei einer Übersetzung, um sie hier zu speichern.',
+  'favorites.search': 'Favoriten durchsuchen...',
+  'favorites.count': 'Favoriten',
+  'favorites.clearAll': 'Alle löschen',
+  'favorites.remove': 'Favorit entfernen',
+  'favorites.add': 'Als Favorit speichern',
+  'favorites.noResults': 'Keine Favoriten gefunden.',
+
+  // History Page
+  'historyPage.title': 'Übersetzungsverlauf',
+  'historyPage.subtitle': 'Alle bisherigen Übersetzungen durchsuchen, filtern und exportieren.',
+  'historyPage.search': 'Verlauf durchsuchen...',
+  'historyPage.entries': 'Einträge',
+  'historyPage.export': 'Exportieren',
+  'history.justNow': 'Gerade eben',
+  'history.yesterday': 'Gestern',
+
+  // Export / Import
+  'export.title': 'Export / Import',
+  'export.subtitle': 'Favoriten, Verlauf und Phrasebook als JSON oder CSV exportieren und importieren.',
+  'export.favorites': 'Favoriten exportieren',
+  'export.history': 'Verlauf exportieren',
+  'export.phrasebook': 'Phrasebook exportieren',
+  'export.importData': 'Daten importieren',
+  'export.importDesc': 'JSON-Datei auswählen, um Favoriten oder Verlauf zu importieren.',
+  'export.importSuccess': '{count} Einträge importiert.',
+  'export.importError': 'Import fehlgeschlagen. Bitte prüfe das Dateiformat.',
+  'export.csv': 'CSV',
+  'export.json': 'JSON',
+  'export.all': 'Alles exportieren',
+
+  // Pronunciation Guide
+  'pronunciation.show': 'Aussprache',
+  'pronunciation.hide': 'Aussprache verbergen',
+  'pronunciation.romanization': 'Lautschrift',
+
+  // Context Modes
+  'context.label': 'Kontext',
+  'context.general': 'Allgemein',
+  'context.travel': 'Reise',
+  'context.medical': 'Medizin',
+  'context.legal': 'Recht',
+  'context.business': 'Geschäft',
+  'context.casual': 'Alltag',
+
+  // Word Alternatives
+  'alternatives.title': 'Alternativen',
+  'alternatives.show': 'Alternativen anzeigen',
+  'alternatives.hide': 'Alternativen verbergen',
+  'alternatives.loading': 'Lade Alternativen...',
+  'alternatives.none': 'Keine Alternativen gefunden.',
+
+  // Group Sessions
+  'group.title': 'Gruppen-Session',
+  'group.subtitle': 'Multi-Sprach-Broadcast — ein Speaker, viele Sprachen gleichzeitig.',
+  'group.participants': 'Teilnehmer',
+  'group.languages': 'Zielsprachen',
+  'group.addLanguage': 'Sprache hinzufügen',
+
   // PWA
   'pwa.ok': 'OK',
   'pwa.dismiss': 'Schließen',
