@@ -18,6 +18,7 @@ import {
   Send,
   Zap,
   AlignLeft,
+  BookOpenText,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -29,6 +30,8 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
+import { canRomanize, romanize } from '@/lib/romanize'
+import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/context-modes'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
@@ -78,6 +81,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   })
   const [useInformal, setUseInformal] = useState(() => {
     return localStorage.getItem('translator-informal') === 'true'
+  })
+  const [showPronunciation, setShowPronunciation] = useState(false)
+  const [translationContext, setTranslationContext] = useState<TranslationContext>(() => {
+    return (localStorage.getItem('translator-context') as TranslationContext) || 'general'
   })
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -545,7 +552,41 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             <span className="text-xs">{useInformal ? t('translator.informal') : t('translator.formal')}</span>
           </Button>
         )}
+        {/* Context Mode Selector */}
+        <div className="relative mb-0.5 shrink-0">
+          <select
+            value={translationContext}
+            onChange={e => {
+              const ctx = e.target.value as TranslationContext
+              setTranslationContext(ctx)
+              localStorage.setItem('translator-context', ctx)
+            }}
+            className="appearance-none bg-secondary text-secondary-foreground text-xs font-medium px-3 py-1.5 pr-6 rounded-full border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+            aria-label={t('context.label')}
+          >
+            {CONTEXT_MODES.map(mode => (
+              <option key={mode.id} value={mode.id}>
+                {mode.icon} {t(mode.i18nKey)}
+              </option>
+            ))}
+          </select>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[10px]">▼</span>
+        </div>
       </div>
+
+      {/* Context Hints */}
+      {translationContext !== 'general' && sourceText && (() => {
+        const hints = getContextHints(sourceText, sourceLang, translationContext)
+        if (hints.length === 0) return null
+        return (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-md">
+            <span className="font-medium">{t('context.label')}:</span>
+            {hints.map((h, i) => (
+              <span key={i} className="px-1.5 py-0.5 bg-background rounded text-[10px]">{h}</span>
+            ))}
+          </div>
+        )
+      })()}
 
       {/* Translation Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -679,6 +720,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <Star className={`h-4 w-4 ${isFavorite?.(sourceText, targetLang) ? 'fill-amber-400 text-amber-400' : ''}`} />
                   </Button>
                 )}
+                {translatedText && canRomanize(targetLang) && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPronunciation(!showPronunciation)}
+                    aria-pressed={showPronunciation}
+                    aria-label={showPronunciation ? t('pronunciation.hide') : t('pronunciation.show')}
+                  >
+                    <BookOpenText className={`h-4 w-4 ${showPronunciation ? 'text-primary' : ''}`} />
+                  </Button>
+                )}
                 {translatedText && typeof navigator.share === 'function' && (
                   <Button
                     variant="ghost"
@@ -718,6 +770,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 </p>
               )}
             </div>
+            {/* Pronunciation / Romanization */}
+            {showPronunciation && translatedText && canRomanize(targetLang) && (() => {
+              const rom = romanize(translatedText, targetLang)
+              return rom ? (
+                <div className="mt-2 px-1 py-1.5 bg-muted/50 rounded-md">
+                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{t('pronunciation.romanization')}</span>
+                  <p className="text-sm text-muted-foreground italic mt-0.5">{rom}</p>
+                </div>
+              ) : null
+            })()}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
                 {translatedText.length} {t('translator.chars')}
