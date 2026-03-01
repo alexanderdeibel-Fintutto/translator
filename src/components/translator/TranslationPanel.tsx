@@ -19,6 +19,7 @@ import {
   Zap,
   AlignLeft,
   BookOpenText,
+  ListTree,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -32,6 +33,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
 import { canRomanize, romanize } from '@/lib/romanize'
 import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/context-modes'
+import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
@@ -86,6 +88,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const [translationContext, setTranslationContext] = useState<TranslationContext>(() => {
     return (localStorage.getItem('translator-context') as TranslationContext) || 'general'
   })
+  const [showAlternatives, setShowAlternatives] = useState(false)
+  const [alternatives, setAlternatives] = useState<Alternative[]>([])
+  const [alternativesLoading, setAlternativesLoading] = useState(false)
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const autoSpeakRef = useRef(autoSpeak)
@@ -731,6 +736,27 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <BookOpenText className={`h-4 w-4 ${showPronunciation ? 'text-primary' : ''}`} />
                   </Button>
                 )}
+                {translatedText && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={async () => {
+                      if (showAlternatives) {
+                        setShowAlternatives(false)
+                        return
+                      }
+                      setShowAlternatives(true)
+                      setAlternativesLoading(true)
+                      const alts = await fetchAlternatives(sourceText, sourceLang, targetLang)
+                      setAlternatives(alts)
+                      setAlternativesLoading(false)
+                    }}
+                    aria-pressed={showAlternatives}
+                    aria-label={showAlternatives ? t('alternatives.hide') : t('alternatives.show')}
+                  >
+                    <ListTree className={`h-4 w-4 ${showAlternatives ? 'text-primary' : ''}`} />
+                  </Button>
+                )}
                 {translatedText && typeof navigator.share === 'function' && (
                   <Button
                     variant="ghost"
@@ -780,6 +806,44 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                 </div>
               ) : null
             })()}
+            {/* Word Alternatives */}
+            {showAlternatives && (
+              <div className="mt-2 px-1 py-1.5 bg-muted/50 rounded-md">
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{t('alternatives.title')}</span>
+                {alternativesLoading ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">{t('alternatives.loading')}</span>
+                  </div>
+                ) : alternatives.length === 0 ? (
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('alternatives.none')}</p>
+                ) : (
+                  <div className="space-y-1 mt-1">
+                    {alternatives.map((alt, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between gap-2 px-2 py-1 rounded hover:bg-background transition-colors cursor-pointer"
+                        onClick={() => {
+                          // Replace translation with selected alternative
+                          const id = segments.length === 1 ? segments[0].id : `seg_alt_${Date.now()}`
+                          setSegments([{ id, sourceText, translatedText: alt.text, isTranslating: false }])
+                          setShowAlternatives(false)
+                        }}
+                      >
+                        <span className="text-sm" dir={isRTL(targetLang) ? 'rtl' : 'ltr'}>{alt.text}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
+                          alt.match >= 0.8 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                          alt.match >= 0.5 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                          'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        }`}>
+                          {Math.round(alt.match * 100)}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
                 {translatedText.length} {t('translator.chars')}
