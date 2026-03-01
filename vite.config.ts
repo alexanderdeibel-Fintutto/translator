@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'guidetranslator',
-        short_name: 'guidetranslator',
+        name: 'Fintutto Translator',
+        short_name: 'Fintutto',
         description: 'Kostenloser Übersetzer mit Spracheingabe, HD-Sprachausgabe, Live-Sessions, Kamera-OCR und Offline-Modus. 32+ Sprachen.',
         theme_color: '#0369a1',
         background_color: '#ffffff',
