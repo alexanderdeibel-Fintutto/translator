@@ -598,6 +598,323 @@ GPT-5 nano könnte Translation für **$0,15/1M Zeichen** liefern — das ist **1
 
 ---
 
+## TEIL 11: DER HÖRER-HEBEL — Versteckte Stellschraube für maximalen Umsatz
+
+### 11.1 Die Schlüssel-Erkenntnis
+
+```
+UNSERE KOSTEN:     skalieren mit SPRACHEN (Translation + TTS wird 1× pro Sprache erstellt)
+KUNDEN-WERT:       skaliert mit HÖRERN (ob 5 oder 5.000 — alle hören das Gleiche)
+WETTBEWERB-PREIS:  skaliert mit HÖRERN (1 Gerät = 1 Hörer = 1× Kosten)
+```
+
+**Das bedeutet:** Jeder zusätzliche Hörer kostet uns praktisch **€0,00** (nur minimale Supabase-Realtime-Kosten: ~€0,0000025 pro Broadcast-Nachricht). Aber der WERT für den Kunden steigt linear mit jedem Hörer. Das ist unser stärkster Preishebel.
+
+### 11.2 Wettbewerbslandschaft: Wo haben wir Konkurrenz vs. Monopol?
+
+| Segment | Gruppengröße | Direkter Wettbewerb? | Preismacht |
+|---------|-------------|---------------------|-----------|
+| **1:1 Übersetzer** (Arzt, Behörde) | 2-3 Personen | **HOCH** — iTranslate €5-15/Mon, DeepL €9/Mon, Google Translate kostenlos, Apple Translate kostenlos | **NIEDRIG** — Kampfpreise nötig |
+| **Kleiner Guide** (Stadtführer) | 5-15 Personen | **MITTEL** — Wordly, AirTranslator, aber ohne Broadcast | **MITTEL** — Broadcast ist Vorteil |
+| **Agentur** (Reisebüro mit Guides) | 10-30 Personen | **MITTEL** — Vox Hardware (£3,50/Gerät/Tag), Whisper-Systeme | **MITTEL-HOCH** — Software günstiger als Hardware |
+| **Events/Messe** (Konferenz, Messe) | 30-500 Personen | **MITTEL** — Wordly ($75/h), KUDO, Interprefy | **MITTEL** — aber noch nicht unser Kernfeature |
+| **Kreuzfahrt-Exkursion** | 50-3.000 Personen | **SEHR NIEDRIG** — Kein Software-Broadcast-Wettbewerber | **SEHR HOCH** — Monopolstellung |
+| **Museum/Ausstellung** | 20-200 Personen | **MITTEL** — Audio-Guide-Systeme (Orpheo, Acoustiguide) | **HOCH** — kein Geräte-Investment |
+| **Enterprise Fleet/Armada** | 1.000-50.000 | **KEIN WETTBEWERB** | **MAXIMAL** |
+
+### 11.3 Strategie: Niedrig wo Konkurrenz, Hoch wo Monopol
+
+#### Prinzip: "Hörer-Staffeln"
+
+Die Idee: Statt alle Segmente gleich zu behandeln, staffeln wir den Preis nach **maximaler Hörer-Anzahl pro Session**. Dort wo Konkurrenz herrscht (kleine Gruppen), sind wir aggressiv günstig. Dort wo wir allein sind (große Gruppen), schöpfen wir den Wert ab.
+
+**Warum funktioniert das?**
+- Kleine Gruppen (1-10) → User vergleichen mit iTranslate, DeepL → Preis muss niedrig sein
+- Mittlere Gruppen (10-50) → User vergleichen mit Hardware (Vox €3,50/Person/Tag) → Preis kann moderat sein
+- Große Gruppen (50-500) → User vergleichen mit Dolmetschern (€200-500/Tag/Sprache) → Preis kann hoch sein
+- Riesige Gruppen (500+) → Kein Vergleich möglich → Preis nach VALUE
+
+### 11.4 DAS VERFEINERTE PREISMODELL: 6 Segmente, 1 einfache Logik
+
+#### Kern-Prinzip: **Basis + Session-Minuten + Hörer-Staffel**
+
+```
+Monatspreis = BASISPREIS (nach Segment)
+            + SESSION-MINUTEN × PREIS/MINUTE
+            + HÖRER-AUFSCHLAG (nach Staffel, pro Session-Minute)
+```
+
+---
+
+#### SEGMENT 1: PERSONAL (1:1 Gespräche — Arzt, Behörde, Alltag)
+**Wettbewerb: HOCH** → Preis: AGGRESSIV GÜNSTIG
+
+| | Free | Personal Pro |
+|---|------|-------------|
+| **Preis** | **€0** | **€4,99/Monat** |
+| Translation | MyMemory/Libre/Offline | Azure NMT |
+| TTS | Browser | Standard Voices |
+| STT | Web Speech | Web Speech |
+| Max. Hörer | 1 | **3** |
+| Session-Min inkl. | — | Unbegrenzt |
+| **Wettbewerber-Vergleich** | Google Translate: €0 | iTranslate: €5-15, DeepL: €9 |
+| **Unsere API-Kosten** | €0 | **~€0,50/Monat** |
+| **Marge** | 100% | **~90%** |
+
+> **Strategie:** Hier gewinnen wir über Features (Offline + Konversationsmodus + Kamera-OCR), nicht über Preis. €4,99 ist psychologisch unter iTranslate (€5,99) und weit unter DeepL (€8,74).
+
+---
+
+#### SEGMENT 2: GUIDE (Einzelne Stadtführer, Freelancer)
+**Wettbewerb: MITTEL** → Preis: WETTBEWERBSFÄHIG MIT AUFSCHLAG
+
+| | Guide Basic | Guide Pro |
+|---|------------|----------|
+| **Preis** | **€19,90/Monat** | **€39,90/Monat** |
+| Translation | Azure NMT | Azure NMT |
+| TTS | Standard Voices | **Neural2** |
+| STT | Web Speech + Google Fallback | Google Cloud STT |
+| Max. Hörer | **10** | **25** |
+| Sprachen | 30 | 50 |
+| Session-Min inkl. | 300 (~5 Std.) | 600 (~10 Std.) |
+| Overage | €0,15/Session-Min | €0,12/Session-Min |
+| **Vergleich** | Vox Hardware: 10×€3,50×20 Tage = **€700/Mon** | Wordly: 10h × $75 = **€690/Mon** |
+| **API-Kosten (Ø)** | ~€3/Monat | ~€8/Monat |
+| **Marge** | **~85%** | **~80%** |
+
+> **Strategie:** €19,90 für 10 Hörer ist **97% günstiger** als 10 Vox-Geräte. Das ist der Killer-Vergleich im Verkaufsgespräch. Guide Pro mit Neural2-Stimmen bietet hörbar bessere Qualität als kostenlose Alternativen.
+
+---
+
+#### SEGMENT 3: AGENTUR (Reisebüros mit Guide-Pool)
+**Wettbewerb: MITTEL** → Preis: MODERATE PREMIUM
+
+| | Agentur Standard | Agentur Premium |
+|---|-----------------|----------------|
+| **Preis** | **€99/Monat** | **€249/Monat** |
+| Guides gleichzeitig | 3 | 10 |
+| Max. Hörer/Guide | **30** | **50** |
+| Session-Min inkl. | 1.500 (~25 Std.) | 5.000 (~83 Std.) |
+| TTS | Neural2 | Neural2 + Chirp 3 HD |
+| Overage | €0,10/Session-Min | €0,08/Session-Min |
+| Custom Glossare | 5 | Unbegrenzt |
+| White-Label | — | Eigenes Logo |
+| **Vergleich** | 30 Vox × 20 Tage = **€2.100/Mon** | 50 Vox × 20 Tage = **€3.500/Mon** |
+| **API-Kosten (Ø)** | ~€20/Monat | ~€55/Monat |
+| **Marge** | **~80%** | **~78%** |
+
+> **Strategie:** Hier ist der Hörer-Hebel besonders stark. 30 Hörer × Vox-Preis = €2.100/Monat vs. unsere €99. Selbst wenn wir €249 nehmen, ist das **93% günstiger**. Wir können den Preis ruhig höher setzen und sind trotzdem unschlagbar.
+
+---
+
+#### SEGMENT 4: VERANSTALTER (Events, Konferenzen, Messen)
+**Wettbewerb: MITTEL (Wordly, KUDO)** → Preis: VALUE-BASED
+
+| | Event Basic | Event Pro |
+|---|-----------|----------|
+| **Preis** | **€199/Monat** | **€499/Monat** |
+| Max. Hörer/Session | **100** | **500** |
+| Sessions gleichzeitig | 3 | 10 |
+| Session-Min inkl. | 2.000 (~33 Std.) | 8.000 (~133 Std.) |
+| TTS | Neural2 | Chirp 3 HD |
+| Live-Untertitel | Ja | Ja + Export |
+| Overage | €0,08/Session-Min | €0,06/Session-Min |
+| **Vergleich** | Wordly: 33h × $75 = **€2.275/Mon** | KUDO: ~€500-2.000/Event |
+| **API-Kosten (Ø)** | ~€35/Monat | ~€95/Monat |
+| **Marge** | **~82%** | **~81%** |
+
+> **Strategie:** Wordly ist der Hauptwettbewerber hier. Bei $75/Stunde ist Wordly für 33 Stunden bei €2.275. Unser €199 ist **91% günstiger**. Aber Wordly hat bessere Enterprise-Features. Wir positionieren uns als **günstige Alternative für kleinere Events**.
+
+---
+
+#### SEGMENT 5: KREUZFAHRT (Exkursionen — UNSER MONOPOLMARKT)
+**Wettbewerb: SEHR NIEDRIG** → Preis: MAXIMAL VALUE-BASED
+
+| | Cruise Starter | Cruise Fleet | Cruise Armada |
+|---|---------------|-------------|--------------|
+| **Preis** | **€1.990/Mon** | **€6.990/Mon** | **€19.990/Mon** |
+| Schiffe/Standorte | 1 | 5-10 | 10+ |
+| Max. Hörer/Session | **Unbegrenzt** | **Unbegrenzt** | **Unbegrenzt** |
+| Session-Min inkl. | 1.500 | 8.000 | 30.000 |
+| Sprachen inkl. | 8 | 12 | Alle (130+) |
+| Overage/Session-Min | **€0,80** | **€0,60** | **€0,40** |
+| Pre-Translation | 10 Skripte/Mon | 50 Skripte/Mon | Unbegrenzt |
+| Offline-Modus | WiFi + BLE | WiFi + BLE | WiFi + BLE + Custom |
+| API-Zugang | — | Read-Only | Full API |
+| SLA | Standard | 99,5% | 99,9% |
+| **API-Kosten (Ø)** | ~€170/Mon | ~€1.100/Mon | ~€4.500/Mon |
+| **Marge** | **~91%** | **~84%** | **~77%** |
+
+> **DER HÖRER-HEBEL IN AKTION:**
+> Eine Kreuzfahrt-Exkursion mit 3.000 Hörern kostet uns exakt das Gleiche wie eine mit 10 Hörern (gleiche Sprachen = gleiche API-Kosten). Aber der Wert für die Reederei ist **300× höher**. Deshalb: Unbegrenzte Hörer bei Kreuzfahrt — der Preis ist durch Session-Minuten + Sprachen gedeckt, nicht durch Hörer. Das ist unser **unfairer Vorteil**.
+
+> **Warum €0,80 Overage statt €0,50?** Weil es KEINEN Wettbewerber gibt. Die Alternative für die Reederei ist:
+> - 8 Dolmetscher × €350/Tag = **€2.800 pro Ausflug**
+> - Unsere €0,80/Session-Min × 90 Min = **€72 pro Ausflug**
+> - Das ist **97% günstiger** — bei €0,80 immer noch ein No-Brainer für die Reederei
+
+---
+
+#### SEGMENT 6: FINTUTTO SINGLE (Mieter/Vermieter — Cross-Sell)
+**Wettbewerb: IRRELEVANT** → Preis: KOSTENLOS (Lead-Magnet)
+
+| | FinTuttO Free |
+|---|-------------|
+| **Preis** | **€0** (für immer) |
+| Translation | MyMemory + LibreTranslate |
+| TTS | Browser-nativ |
+| Max. Hörer | 1 |
+| Sprachen | 22 |
+| Limit | 500 Übersetzungen/Tag |
+| **Zweck** | Lead-Magnet, Cross-Sell zu Guide/Agentur |
+
+---
+
+### 11.5 Übersicht: Alle Preise + Hörer-Staffeln auf einen Blick
+
+| Plan | Preis/Mon | Max. Hörer | Kosten/Hörer/Monat | Marge | Wettbewerber-Preis |
+|------|----------|-----------|-------------------|-------|-------------------|
+| **Free** | €0 | 1 | €0 | 100% | Google Translate: €0 |
+| **Personal Pro** | €4,99 | 3 | €1,66 | ~90% | iTranslate: €5,99 |
+| **Guide Basic** | €19,90 | 10 | €1,99 | ~85% | Vox: €70/Tag |
+| **Guide Pro** | €39,90 | 25 | €1,60 | ~80% | Wordly: €69/Std |
+| **Agentur Standard** | €99 | 30 | €3,30 | ~80% | Vox: €105/Tag |
+| **Agentur Premium** | €249 | 50 | €4,98 | ~78% | Vox: €175/Tag |
+| **Event Basic** | €199 | 100 | €1,99 | ~82% | Wordly: €69/Std |
+| **Event Pro** | €499 | 500 | €1,00 | ~81% | KUDO: €500+/Event |
+| **Cruise Starter** | €1.990 | ∞ | ~€0,007* | ~91% | Dolmetscher: €2.800/Tag |
+| **Cruise Fleet** | €6.990 | ∞ | ~€0,002* | ~84% | Kein Wettbewerber |
+| **Cruise Armada** | €19.990 | ∞ | ~€0,001* | ~77% | Kein Wettbewerber |
+
+*Bei 3.000 Hörern/Ausflug, 15 Ausflügen/Monat
+
+### 11.6 Der versteckte Umsatz-Turbo: Hörer-Upgrade-Pfade
+
+```
+UPSELL-PFAD:
+
+Free (1 Hörer) ──→ Personal Pro (3) ──→ Guide Basic (10) ──→ Guide Pro (25)
+     €0               €4,99                €19,90               €39,90
+                   "Ich gehe zum Arzt       "Ich mache jetzt     "Meine Gruppe
+                    mit meiner Frau"         Stadtführungen"       wächst"
+
+Guide Pro (25) ──→ Agentur Standard (30) ──→ Agentur Premium (50) ──→ Cruise
+    €39,90              €99                       €249                €1.990+
+                   "Ich habe jetzt           "Meine Agentur       "Kreuzfahrt-
+                    3 Guides"                 braucht mehr"        Reederei"
+```
+
+Jeder natürliche Wachstumsschritt des Kunden führt automatisch zum nächsten Preistier. Die Hörer-Staffeln sind so gewählt, dass sie den typischen Gruppengrössen der Zielgruppen entsprechen.
+
+### 11.7 Umsatz-Steigerung durch Hörer-Staffeln vs. altes Modell
+
+| Szenario | Altes Modell (Flat) | Neues Modell (Hörer-Staffeln) | Steigerung |
+|----------|-------------------|-------------------------------|-----------|
+| 100 Privat-User | 100 × €29,90 = €2.990 | 70 × €4,99 + 30 × €19,90 = €946 | -68% (ABER: Mehr User, mehr Conversions!) |
+| 20 Guides | 20 × €29,90 = €598 | 10 × €19,90 + 10 × €39,90 = €598 | ±0% (gleich, aber besser differenziert) |
+| 5 Agenturen | 5 × €29,90 = €150 | 3 × €99 + 2 × €249 = €795 | **+430%** |
+| 3 Event-Veranstalter | 3 × €29,90 = €90 | 2 × €199 + 1 × €499 = €897 | **+897%** |
+| 1 Reederei (5 Schiffe) | 1 × €9.990 = €9.990 | 1 × €6.990 + Overage ~€4.800 = €11.790 | **+18%** |
+| **TOTAL (Beispiel-Mix)** | **€13.818** | **€15.026** | **+9% Gesamt** |
+
+> **Ergebnis:** Das Hörer-Staffel-Modell senkt die Eintrittsbarriere für Privat-User (€4,99 statt €29,90 → mehr Conversions) und steigert den Umsatz bei Agenturen (+430%) und Events (+897%) massiv. Der Gesamt-Umsatz steigt um ~9% bei besserer Marktsegmentierung.
+
+### 11.8 Die "€0,10 pro Hörer"-Idee: Lohnt sich das?
+
+Du hast einen Aufschlag von z.B. €0,10/Hörer/Session erwähnt. Hier die Rechnung:
+
+| Szenario | Hörer | Sessions/Mon | Aufschlag €0,10/Hörer/Session | Effekt auf Preis |
+|----------|-------|-------------|------------------------------|-----------------|
+| Stadtführer | 15 | 20 | €30/Mon | Guide Basic wäre €19,90 + €30 = €49,90 |
+| Agentur (3 Guides) | 30 | 60 | €180/Mon | Agentur wäre €99 + €180 = €279 |
+| Event (200 Teiln.) | 200 | 8 | €160/Mon | Event wäre €199 + €160 = €359 |
+| Kreuzfahrt (3.000) | 3.000 | 15 | €4.500/Mon | Cruise wäre €1.990 + €4.500 = €6.490 |
+
+**Problem:** Bei kleinen Gruppen fühlt sich der Aufschlag zu groß an (Guide verdoppelt sich fast). Bei Kreuzfahrt wird der Preis plötzlich hörer-sensitiv, was unseren größten Vorteil (unbegrenzte Hörer) untergräbt.
+
+**Bessere Alternative: Hörer als TIER-GRENZE, nicht als Aufschlag**
+
+Statt €0,10/Hörer nehmen wir die Hörer-Zahl als natürliche Grenze zwischen den Tiers. Wer mehr Hörer braucht, steigt automatisch ins nächste Tier auf. Das ist einfacher zu kommunizieren und zwingt organisch zum Upgrade:
+
+- 11. Hörer? → Upgrade von Guide Basic (€19,90) auf Guide Pro (€39,90) = +€20
+- 26. Hörer? → Upgrade auf Agentur Standard (€99) = natürlicher Wachstumsschritt
+- 51. Hörer? → Upgrade auf Event oder Agentur Premium (€249)
+
+### 11.9 Mini-Aufschläge dort wo es passt: "Sprach-Pakete"
+
+Statt direkt an der Hörer-Schraube zu drehen (was Wettbewerber abschrecken könnte), gibt es eine elegantere Stellschraube: **Sprach-Pakete**.
+
+Die Logik: Hörer kosten uns nichts, aber Sprachen kosten uns API-Geld. Also:
+
+| Tier | Sprachen inkl. | Zusätzliche Sprache |
+|------|---------------|-------------------|
+| Free | 22 (Offline) | — |
+| Personal Pro | 30 | — |
+| Guide Basic | 5 | **+€2,99/Sprache/Monat** |
+| Guide Pro | 10 | **+€1,99/Sprache/Monat** |
+| Agentur Standard | 15 | **+€1,49/Sprache/Monat** |
+| Event Basic | 20 | **+€0,99/Sprache/Monat** |
+| Cruise Starter | 8 | **+€49/Sprache/Monat** |
+| Cruise Fleet | 12 | **+€39/Sprache/Monat** |
+| Cruise Armada | Alle 130+ | Inkludiert |
+
+**Warum das clever ist:**
+- Eine zusätzliche Sprache bei Cruise Starter kostet uns ~€20/Monat (API) → Wir verkaufen sie für €49 → **59% Marge**
+- Japanisch/Koreanisch/Arabisch auf Kreuzfahrten sind HIGH-VALUE Sprachen (Passagiere aus diesen Ländern geben überdurchschnittlich viel aus)
+- Reedereien zahlen gerne €49/Sprache, wenn die Alternative €500/Tag für einen japanischen Guide ist
+
+---
+
+## TEIL 12: GESAMTSTRATEGIE — EINFACH UND PROFITABEL
+
+### 12.1 Die Formel auf 1 Satz
+
+> **"Kostenlos starten, günstig bleiben wo Konkurrenz ist, Premium dort wo wir allein sind — und die Hörer-Grenze als natürlichen Upgrade-Trigger nutzen."**
+
+### 12.2 Zusammenfassung der Preisoptimierungen
+
+| Stellschraube | Alte Strategie | Neue Strategie | Umsatz-Effekt |
+|--------------|---------------|---------------|--------------|
+| **Hörer als Tier-Grenze** | 10 Hörer für alle Pro | 3→10→25→50→100→∞ | Natürliche Upsells |
+| **Segment-Preise** | 1 Preis (€29,90) für alle | 6 Preise (€4,99-€19.990) | +430% bei Agenturen |
+| **Sprach-Pakete** | Alle Sprachen inkl. | 5-12 Sprachen + Zukauf | +€49/Sprache/Mon (Enterprise) |
+| **Overage hoch wo Monopol** | €0,05/Min | €0,80/Min (Cruise) | +1.500% pro Overage-Minute |
+| **Overage niedrig wo Konkurrenz** | €0,05/Min | €0,12-0,15/Min (Guide) | Attraktiver als Wettbewerb |
+| **Pre-Translation Incentive** | Nicht vorhanden | Skripte inkl. + API-Kosten-Ersparnis | -90% API-Kosten wiederkehrend |
+
+### 12.3 Erwarteter Jahres-Umsatz mit dem neuen Modell
+
+| Phase | Kunden-Mix | MRR (alt) | MRR (neu) | Steigerung |
+|-------|-----------|----------|----------|-----------|
+| **Monat 1-6** | 200 Free, 50 Personal, 10 Guide | ~€300 | ~€450 | +50% |
+| **Monat 6-12** | 500 Free, 100 Personal, 30 Guide, 5 Agentur | ~€900 | ~€2.100 | **+133%** |
+| **Jahr 2** | + 3 Event, 1 Cruise Starter | ~€6.500 | ~€8.500 | **+31%** |
+| **Jahr 3** | + 10 Event, 2 Cruise Fleet, 1 Armada | ~€35.000 | ~€55.000 | **+57%** |
+
+### 12.4 Warum das Modell NICHT zu kompliziert ist
+
+Für den Kunden sieht es so aus:
+
+```
+┌─────────────────────────────────────────────────┐
+│            PRICING PAGE                          │
+│                                                  │
+│  👤 Privat    👥 Guide    🏢 Business   🚢 Cruise│
+│                                                  │
+│  €0/€4,99    €19,90/€39,90  €99/€249   ab €1.990│
+│                                                  │
+│  1-3 Hörer   10-25 Hörer   30-50 Hörer  Unbegr. │
+│                                                  │
+│  [Kostenlos]  [Starten]    [Kontakt]   [Demo]   │
+└─────────────────────────────────────────────────┘
+```
+
+**4 Tabs, 8 Preise, fertig.** Kein Taschenrechner nötig. Kein "0,10€ pro Hörer pro Minute pro Sprache"-Wirrwarr.
+
+Die Session-Minuten, Sprach-Pakete und Overage sind **Unter der Haube** und werden nur im Detail-Vergleich und im Enterprise-Gespräch relevant.
+
+---
+
 ## QUELLEN
 
 - [Google Cloud Translation Pricing](https://cloud.google.com/translate/pricing)
@@ -610,5 +927,10 @@ GPT-5 nano könnte Translation für **$0,15/1M Zeichen** liefern — das ist **1
 - [Vercel Hobby Plan Limits](https://vercel.com/docs/plans/hobby)
 - [Wordly.ai Pricing](https://www.wordly.ai/pricing)
 - [Vox Group Tour Systems](https://voxtours.com/)
+- [Tour Guide Systems Rental UK](https://www.tourguide.systems/) — £3,50/Gerät/Tag
+- [iTranslate Pricing](https://itranslate.com) — €5,99-14,99/Monat
+- [DeepL Pro Pricing](https://www.deepl.com/pro) — ab €8,74/Monat
+- [Retekess Whisper Systems](https://www.retekess.com/) — Hardware-Vergleich
 - Internes Dokument: Geschäftskonzept-and-Preismodell.pdf (21.02.2026)
 - Internes Dokument: Wettbewerbsanalyse-guidetranslator.pdf (02/2026)
+- Internes Dokument: GuideTranslator-v7-Multi-Segment-SaaS-Plattform.pdf
