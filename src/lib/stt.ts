@@ -3,6 +3,7 @@
 // Future: Apple SpeechAnalyzer (iOS 26)
 
 import { getTranslation, type UILanguage } from '@/lib/i18n'
+import { getGoogleApiKey } from '@/lib/api-key'
 
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
@@ -241,7 +242,6 @@ function isIOS(): boolean {
 // Primary STT on iOS (where Web Speech API is broken) and general fallback.
 // Uses the same API key as TTS and Translate.
 
-const STT_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
 const STT_API_URL = 'https://speech.googleapis.com/v1/speech:recognize'
 
 function pcmToBase64Linear16(chunks: Float32Array[]): string {
@@ -287,7 +287,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
 
   const isSupported =
     typeof window !== 'undefined' &&
-    !!STT_API_KEY &&
+    !!getGoogleApiKey() &&
     typeof navigator !== 'undefined' &&
     !!navigator.mediaDevices?.getUserMedia
 
@@ -298,7 +298,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
     const timeout = setTimeout(() => controller.abort(), 8000) // 8s timeout
 
     try {
-      const response = await fetch(`${STT_API_URL}?key=${STT_API_KEY}`, {
+      const apiKey = getGoogleApiKey()
+      if (!apiKey) throw new Error('Google STT API key not configured')
+
+      const response = await fetch(`${STT_API_URL}?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
