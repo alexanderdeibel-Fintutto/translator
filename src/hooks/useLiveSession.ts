@@ -43,6 +43,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [autoTTS, setAutoTTS] = useState(true)
   const [listenerLimitReached, setListenerLimitReached] = useState(false)
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
+  const [languageLimitReached, setLanguageLimitReached] = useState(false)
 
   // Tier config
   const tierConfig = TIERS[userTierId] ?? TIERS.free
@@ -103,6 +104,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
     return code
   }, [broadcast, presence, connection])
 
+  // Broadcast session info when listener count changes (throttled to 1s)
+  const lastBroadcastRef = useRef(0)
+  const broadcastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   // Track listener count and enforce tier limits
   useEffect(() => {
     if (role !== 'speaker') return
@@ -131,12 +136,28 @@ export function useLiveSession(userTierId: TierId = 'free') {
   // Broadcast session info periodically when listener count changes
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return
-    broadcast.broadcast('session_info', {
-      sessionCode,
-      speakerName: getDeviceName(),
-      sourceLanguage,
-      listenerCount: presence.listenerCount,
-    } satisfies SessionInfo)
+
+    const send = () => {
+      lastBroadcastRef.current = Date.now()
+      broadcast.broadcast('session_info', {
+        sessionCode,
+        speakerName: getDeviceName(),
+        sourceLanguage,
+        listenerCount: presence.listenerCount,
+      } satisfies SessionInfo)
+    }
+
+    const elapsed = Date.now() - lastBroadcastRef.current
+    if (elapsed >= 1000) {
+      send()
+    } else {
+      if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
+      broadcastTimerRef.current = setTimeout(send, 1000 - elapsed)
+    }
+
+    return () => {
+      if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
+    }
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
   // Process a single text through translation fan-out
@@ -152,6 +173,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
       console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
       targetLangs = targetLangs.slice(0, maxLangs)
+      setLanguageLimitReached(true)
+    } else {
+      setLanguageLimitReached(false)
     }
 
     // Translate to all requested languages in parallel (resilient — individual failures don't block others)
@@ -180,9 +204,12 @@ export function useLiveSession(userTierId: TierId = 'free') {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
 
-    // Add to local history (one entry per source text)
+    // Add to local history (one entry per source text, capped at 100)
     if (results.length > 0) {
-      setTranslationHistory(prev => [...prev, results[0]])
+      setTranslationHistory(prev => {
+        const next = [...prev, results[0]]
+        return next.length > 100 ? next.slice(-100) : next
+      })
     }
 
     // Warn if some translations failed
@@ -279,7 +306,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
       (chunk: TranslationChunk) => {
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
-          setReceivedChunks(prev => [...prev, chunk])
+          setReceivedChunks(prev => {
+            const next = [...prev, chunk]
+            return next.length > 100 ? next.slice(-100) : next
+          })
 
           // Auto-TTS
           if (autoTTSRef.current && chunk.translatedText) {
@@ -379,6 +409,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Tier limits
     listenerLimitReached,
     sessionLimitReached,
+    languageLimitReached,
     maxListeners: tierConfig.limits.maxListeners,
     maxLanguages: tierConfig.limits.maxLanguages,
   }

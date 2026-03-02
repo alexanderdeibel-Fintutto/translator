@@ -194,13 +194,14 @@ export async function speakWithCloudTTS(
   })
 
   if (!response.ok) {
+    const error = await response.text()
+    console.error(`[TTS] Google Cloud TTS error ${response.status}:`, error)
     // If Chirp fails, auto-fallback to Neural2
     if (quality === 'chirp3hd') {
       console.warn('[TTS] Chirp 3 HD failed, falling back to Neural2')
       return speakWithCloudTTS(text, speechCode, 'neural2')
     }
-    const error = await response.text()
-    throw new Error(`Cloud TTS failed: ${error}`)
+    throw new Error(`Cloud TTS failed (${response.status}): ${error}`)
   }
 
   const data = await response.json()

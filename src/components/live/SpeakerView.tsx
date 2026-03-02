@@ -10,6 +10,8 @@ import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
 import { getLatencyHistory, getAverageLatency, type LatencyReport } from '@/lib/latency'
+import { useTierId } from '@/context/UserContext'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -20,6 +22,7 @@ interface SpeakerViewProps {
 
 export default function SpeakerView({ session }: SpeakerViewProps) {
   const { t } = useI18n()
+  const tierId = useTierId()
   const sessionStartRef = useRef(Date.now())
 
   const isBleMode = session.connectionMode === 'ble'
@@ -161,6 +164,17 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           <span>{t('live.disconnected')}</span>
           <Loader2 className="h-4 w-4 animate-spin ml-auto shrink-0" />
         </div>
+      )}
+
+      {/* Tier limit warnings */}
+      {session.listenerLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="listeners" />
+      )}
+      {session.sessionLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="session_minutes" />
+      )}
+      {session.languageLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="languages" />
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

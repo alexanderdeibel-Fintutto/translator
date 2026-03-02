@@ -8,10 +8,10 @@ export interface Language {
 }
 
 // RTL languages: ar, fa, ps, ku, ur, he
-export const RTL_LANGUAGES = ['ar', 'fa', 'ps', 'ku', 'ur', 'he']
+const RTL_SET = new Set(['ar', 'fa', 'ps', 'ku', 'ur', 'he'])
 
 export function isRTL(code: string): boolean {
-  return RTL_LANGUAGES.includes(code)
+  return RTL_SET.has(code)
 }
 
 export const LANGUAGES: Language[] = [
@@ -67,6 +67,9 @@ export const LANGUAGES: Language[] = [
   { code: 'ka', name: 'Georgisch', nativeName: '\u10E5\u10D0\u10E0\u10D7\u10E3\u10DA\u10D8', flag: '\uD83C\uDDEC\uD83C\uDDEA', speechCode: 'ka-GE' },
 ]
 
+// O(1) lookup map — built once at module load
+const LANGUAGE_MAP = new Map<string, Language>(LANGUAGES.map(l => [l.code, l]))
+
 export function getLanguageByCode(code: string): Language | undefined {
-  return LANGUAGES.find(l => l.code === code)
+  return LANGUAGE_MAP.get(code)
 }

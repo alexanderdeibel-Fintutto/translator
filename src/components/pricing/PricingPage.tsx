@@ -2,8 +2,9 @@
 // Importable in both the translator app and the sales site.
 
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { TIERS, SEGMENTS, getTiersBySegment, formatPrice, type TierId, type Segment } from '@/lib/tiers'
-import { Check, X } from 'lucide-react'
+import { Check, X, ArrowRight } from 'lucide-react'
 
 interface PricingPageProps {
   currentTierId?: TierId
@@ -35,6 +36,19 @@ export function PricingPage({ currentTierId = 'free', onSelectTier, showInternal
           </button>
         ))}
       </div>
+
+      {/* Segment sales link */}
+      {(['guide', 'event', 'cruise'] as const).includes(activeSegment as any) && (
+        <div className="text-center mb-6">
+          <Link
+            to={`/sales/${activeSegment}`}
+            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+          >
+            Mehr erfahren &amp; ROI berechnen
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      )}
 
       {/* Tier cards */}
       <div className={`grid gap-6 ${

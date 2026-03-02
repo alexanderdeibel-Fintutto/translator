@@ -36,6 +36,8 @@ import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/c
 import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
 import { useTierId } from '@/context/UserContext'
+import { isWithinDailyTranslationLimit } from '@/lib/usage-tracker'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
 interface TranslationSegment {
@@ -87,6 +89,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
+  const [dailyLimitHit, setDailyLimitHit] = useState(false)
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
@@ -169,6 +172,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const translateSegment = useCallback(async (segmentId: string, text: string) => {
     if (!text.trim()) return
 
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
+
     setSegments(prev => prev.map(s =>
       s.id === segmentId ? { ...s, isTranslating: true } : s
     ))
@@ -209,6 +218,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setDetectedLang(null)
       return
     }
+
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
 
     const segmentId = segId || (segments.length === 1 ? segments[0].id : `seg_${Date.now()}`)
     if (!segId) {
@@ -482,7 +497,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
-  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
+  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send (during recording)
   const handleMicToggleRef = useRef(handleMicToggle)
   handleMicToggleRef.current = handleMicToggle
   const handleSendRef = useRef(handleSend)
@@ -505,9 +520,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
+  // Keyboard shortcuts: Ctrl+Enter → translate now (when not recording), Escape → clear
   useKeyboardShortcuts({
-    'ctrl+enter': () => { if (sourceText.trim()) doTranslateManual(sourceText) },
+    'ctrl+enter': () => { if (!isListening && sourceText.trim()) doTranslateManual(sourceText) },
     'escape': clearAll,
     'ctrl+shift+s': swapLanguages,
   })
@@ -519,6 +534,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   return (
     <div className="space-y-4">
+      {/* Daily translation limit banner */}
+      {dailyLimitHit && (
+        <UpgradePrompt tierId={tierId} limitType="daily_translations" />
+      )}
+
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
         <div className="flex items-end gap-1.5">
@@ -555,6 +575,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
+          title={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
           aria-pressed={autoSpeak}
           aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
@@ -566,6 +587,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
+          title={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
           aria-pressed={hdVoice}
           aria-label={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
         >
@@ -577,6 +599,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleStreamMode}
           className="mb-0.5 shrink-0 gap-1.5"
+          title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
           aria-pressed={streamMode === 'sentence'}
           aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
         >
@@ -653,6 +676,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
+                  title={!micSupported ? t('translator.micNotAvailable') : isListening ? `${t('translator.stopRecording')} (Ctrl+M)` : `${t('translator.speechInput')} (Ctrl+M)`}
                   aria-pressed={isListening}
                   aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
                 >
@@ -665,7 +689,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSend}
                     className="text-primary"
-                    title={t('translator.send')}
+                    title={`${t('translator.send')} (Ctrl+Enter)`}
                     aria-label={t('translator.send')}
                   >
                     <Send className="h-4 w-4" />
@@ -701,7 +725,6 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
               aria-label={t('translator.placeholder')}
-
               readOnly={isListening}
             />
             {/* Interim text display during recording */}
