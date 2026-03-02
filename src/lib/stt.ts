@@ -426,7 +426,23 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         } catch (err) {
           console.error('[STT] Recognition error:', err)
           if (err instanceof Error && (err.message.includes('403') || err.message.includes('401') || err.message.includes('400'))) {
-            onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable'))
+            // Extract the actual Google API error message for better diagnostics
+            let detail = ''
+            try {
+              const jsonStart = err.message.indexOf('{')
+              if (jsonStart >= 0) {
+                const parsed = JSON.parse(err.message.slice(jsonStart))
+                detail = parsed?.error?.message || ''
+              }
+            } catch { /* ignore parse errors */ }
+
+            const apiKey = getGoogleApiKey()
+            const keyHint = apiKey ? ` (Key: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)})` : ''
+            const errorDetail = detail
+              ? `Cloud STT API: ${detail}${keyHint}`
+              : getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable') + keyHint
+
+            onError(errorDetail)
             isActive = false
           }
         }
