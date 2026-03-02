@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useLiveSession } from '@/hooks/useLiveSession'
+import { useTierId } from '@/context/UserContext'
 import LanguageChips from '@/components/live/LanguageChips'
 
 const LoadingSpinner = (
@@ -24,7 +25,8 @@ export default function LiveSessionPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useI18n()
-  const session = useLiveSession()
+  const tierId = useTierId()
+  const session = useLiveSession(tierId)
   const [listenerLang, setListenerLang] = useState('en')
 
   const state = location.state as {

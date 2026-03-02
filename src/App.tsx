@@ -36,6 +36,7 @@ const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 const PricingPageRoute = lazy(() => import('@/pages/PricingPageRoute'))
 const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
+const SalesLandingPage = lazy(() => import('@/pages/SalesLandingPage'))
 
  main
  main
@@ -97,6 +98,7 @@ function App() {
                   <Route path="pricing" element={<Suspense fallback={<PageLoader />}><PricingPageRoute /></Suspense>} />
                   <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
                   <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />
+                  <Route path="sales/:segment" element={<Suspense fallback={<PageLoader />}><SalesLandingPage /></Suspense>} />
                   <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
                   <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
                   <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />

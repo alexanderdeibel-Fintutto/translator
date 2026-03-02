@@ -7,10 +7,15 @@ import { translateText } from '@/lib/translate'
 import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useI18n } from '@/context/I18nContext'
+import { useTierId } from '@/context/UserContext'
+import { hasFeature } from '@/lib/tiers'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import { getGoogleApiKey } from '@/lib/api-key'
 
 export default function CameraTranslatePage() {
   const { t } = useI18n()
+  const tierId = useTierId()
+  const canCamera = hasFeature(tierId, 'cameraOcr')
   const [sourceLang, setSourceLang] = useState('en')
   const [targetLang, setTargetLang] = useState('de')
   const [extractedText, setExtractedText] = useState('')
@@ -136,6 +141,20 @@ export default function CameraTranslatePage() {
   }
 
   const targetLangData = getLanguageByCode(targetLang)
+
+  if (!canCamera) {
+    return (
+      <div className="container py-6 space-y-6 max-w-2xl mx-auto">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold">
+            <span className="gradient-text-translator">{t('camera.title')}</span>
+          </h1>
+          <p className="text-sm text-muted-foreground">{t('camera.subtitle')}</p>
+        </div>
+        <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Kamera-Übersetzer" />
+      </div>
+    )
+  }
 
   return (
     <div className="container py-6 space-y-6 max-w-2xl mx-auto">

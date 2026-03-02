@@ -43,6 +43,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [autoTTS, setAutoTTS] = useState(true)
   const [listenerLimitReached, setListenerLimitReached] = useState(false)
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
+  const [languageLimitReached, setLanguageLimitReached] = useState(false)
 
   // Tier config
   const tierConfig = TIERS[userTierId] ?? TIERS.free
@@ -153,6 +154,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
       console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
       targetLangs = targetLangs.slice(0, maxLangs)
+      setLanguageLimitReached(true)
+    } else {
+      setLanguageLimitReached(false)
     }
 
  claude/add-new-languages-G9HsJ
@@ -392,6 +396,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Tier limits
     listenerLimitReached,
     sessionLimitReached,
+    languageLimitReached,
     maxListeners: tierConfig.limits.maxListeners,
     maxLanguages: tierConfig.limits.maxLanguages,
   }

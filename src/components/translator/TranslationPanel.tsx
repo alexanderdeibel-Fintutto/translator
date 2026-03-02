@@ -36,6 +36,8 @@ import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/c
 import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
 import { useTierId } from '@/context/UserContext'
+import { isWithinDailyTranslationLimit } from '@/lib/usage-tracker'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
 interface TranslationSegment {
@@ -87,6 +89,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
+  const [dailyLimitHit, setDailyLimitHit] = useState(false)
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
@@ -169,6 +172,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const translateSegment = useCallback(async (segmentId: string, text: string) => {
     if (!text.trim()) return
 
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
+
     setSegments(prev => prev.map(s =>
       s.id === segmentId ? { ...s, isTranslating: true } : s
     ))
@@ -209,6 +218,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setDetectedLang(null)
       return
     }
+
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
 
     const segmentId = segId || (segments.length === 1 ? segments[0].id : `seg_${Date.now()}`)
     if (!segId) {
@@ -521,6 +536,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   return (
     <div className="space-y-4">
+      {/* Daily translation limit banner */}
+      {dailyLimitHit && (
+        <UpgradePrompt tierId={tierId} limitType="daily_translations" />
+      )}
+
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
         <div className="flex items-end gap-1.5">
