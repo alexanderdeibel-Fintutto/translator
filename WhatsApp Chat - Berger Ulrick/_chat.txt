@@ -1,3 +1,5 @@
+ fix/offline-session-checkin
+
 [14.04.25, 17:06:34] Berger Ulrick: ‎Nachrichten und Anrufe sind Ende-zu-Ende-verschlüsselt. Nur Personen in diesem Chat können sie lesen, anhören oder teilen.
 [14.04.25, 17:06:34] Berger Ulrick: ‎Ch hat die Telefonnummer geändert. Du chattest gerade mit dieser neuen Nummer
 [29.04.25, 18:38:48] Berger Ulrick: ‎Verpasster Sprachanruf. ‎Zum Zurückrufen tippen
@@ -897,6 +899,7 @@ kdu-checker.de
 [07.02.26, 02:12:18] Berger Ulrick: Hey du bist so krass! Danke dass du schreibst…! Good luck!
 [07.02.26, 02:12:47] Berger Ulrick: Läuft denn deine Werbung von der hausverwaltungsapp Auch in vollautomatischer Lichtgeschwindigkeit?
 [07.02.26, 02:14:48] Berger Ulrick: Darf ich dich zu einem dchnöden Anliegen bzgl. Konto stören? Du weißt ja, ich muss eigentlich deinen Lohn nicht nur buchen, sondern auch bezahlen. Und so ist meine Idee, dass ich meine aktuell noch vorhandenen 10.000 € erst mal bei der Zeitreisen als Darlehen einzahle, um die Löhne zu bezahlen. Um das zu können, müsste ich die Kreditkarte aktivieren die du mir letztens schon hast zukommen lassen. Aber ich würde gerne auch das Konto wie wir mal ursprünglich wollten direkt zugreifen wollen gerne. Vielleicht könnten wir das noch gemeinsam einrichten?
+ main
 [07.02.26, 02:16:08] Berger Ulrick: Ich denk drüber nach- gestern kam mir wieder was in den Sinn. Wie ist dein Deal Angebot für mich. Umsatzbeteilugung in % wieviel für die Idee?! 😉😀🫶🏻
 [07.02.26, 02:25:47] Alexander Deibel: werbung noch nicht geschaltet und nu auch kein geld mehr dafür. werde mich voll auf die seo-oprimierungkonzentrieren, habe da so viel gold.... aber vor allem ein setup, wo ich NUR MIT CLAude code die apps programmiere, ein riesen datenbank in supabase aufgebaut habe (alle daten über alle apps zentral nur unter meiner kontrtolle, jede renditeberechnung erfolgt nur mit validiertem (von google)-adresse,  usw. usf. sie mit github und vercel hoste (kostenlos), mit strip schon 400 preise / produkte eingerichtet habe, die alle scharf sind, habe gestern und heut die ersten zahlungen selolbst vorgenommen....  ich habe etwa 25 apps, und 100 webpages erstellt, , google analytics eingerichtet und alle webhooks, um jeden kontakt eines users zu verfolgen und ki die nagebote optimieren lasse, 60 formulare erstellt, 22 rechner, 17 checker,  brevo emailmarketing: 150 email templates für die verfolgund von 25 personas mit entsprechender angebotsgenerierung durch ki immer ins zntraum meines universums, soweit bzw.. so teuer wie die jeweillige persona budget hat.  und meine geschwindikeit ver40igfacht oder 500, dabei die kosten um ca. 90% ggü meinem beginn (an credits für diese blöden editoren) jetzt zahle ich250 für claude und 80 für gamma und gabe alles was ich brauche...........ich habe bei den editoren base44 und lovable bestimmt im letzten 40 tagen 2000 euro ausgegebe. alles weggemrgt, gepusht und deployed ;-9
 [07.02.26, 02:26:51] Alexander Deibel: hier mein seo-gold: bescheidboxer.de
@@ -1077,12 +1080,20 @@ Auf dem Meer…. Ich hab hier leider keine Internetverbindung und die wenigen St
 [16.02.26, 01:10:31] Berger Ulrick: All inkl wurde nicht bezahlt. Sollte Alexander es nicht bezahlen haben wir keine Mails mehr.
 [16.02.26, 01:11:02] Berger Ulrick: Hi Alexander! Kannst du bitte umgehend All Inkl bezahlen?!! 🙏🏻🙋🏼‍♂️
 ‎[16.02.26, 11:14:12] Alexander Deibel: 👍 ‎<Anhang: 00000857-PHOTO-2026-02-16-11-14-12.jpg>
+ fix/offline-session-checkin
+[17.02.26, 19:08:45] Alexander Deibel: die war von sebastian dem alten österreichischen hinter Fotzer?
+
 [17.02.26, 19:08:44] Alexander Deibel: die war von sebastian dem alten österreichischen hinter Fotzer?
+ main
 ‎[17.02.26, 21:45:35] Alexander Deibel: ‎<Anhang: 00000859-AUDIO-2026-02-17-21-45-35.opus>
 [17.02.26, 21:45:39] Alexander Deibel: https://luggagex.fintutto.cloud/
 ‎[17.02.26, 21:58:13] Alexander Deibel: ‎<Anhang: 00000861-AUDIO-2026-02-17-21-58-13.opus>
 [17.02.26, 22:52:10] Berger Ulrick: Nein, das hat andré mitgeteilt und ist völlig emotionslos zu betrachten, er betreut ja den Account
+ fix/offline-session-checkin
+[17.02.26, 22:53:28] Alexander Deibel: dann alles gut
+
 [17.02.26, 22:53:27] Alexander Deibel: dann alles gut
+ main
 ‎[17.02.26, 23:03:25] Berger Ulrick: ‎<Anhang: 00000864-AUDIO-2026-02-17-23-03-25.opus>
 ‎[17.02.26, 23:17:39] Berger Ulrick: ‎<Anhang: 00000865-AUDIO-2026-02-17-23-17-39.opus>
 ‎[18.02.26, 00:10:09] Berger Ulrick: ‎<Anhang: 00000866-AUDIO-2026-02-18-00-10-09.opus>
@@ -1410,11 +1421,19 @@ na los
 ‎[22.02.26, 02:25:14] Alexander Deibel: ‎<Anhang: 00001026-PHOTO-2026-02-22-02-25-14.jpg>
 [22.02.26, 02:26:05] Alexander Deibel: lies doch erst mal. ich schicke dir nur das nötigste (und bischen was zum stand/fortgang): https://gamma.app/docs/Geschaftskonzept-and-Preismodell-2rs3x0wylpjeoi0?following_id=jge9yt63d8o5v9i&follow_on_start=true
 ‎[22.02.26, 02:29:00] Berger Ulrick: ‎<Anhang: 00001028-AUDIO-2026-02-22-02-29-00.opus>
+ fix/offline-session-checkin
+‎[22.02.26, 02:30:04] Alexander Deibel: ‎<Anhang: 00001029-AUDIO-2026-02-22-02-30-03.opus>
+‎[22.02.26, 02:30:12] Alexander Deibel: ‎<Anhang: 00001030-PHOTO-2026-02-22-02-30-12.jpg>
+‎[22.02.26, 02:30:30] Alexander Deibel: ‎<Anhang: 00001031-PHOTO-2026-02-22-02-30-30.jpg>
+‎[22.02.26, 02:30:53] Alexander Deibel: ‎<Anhang: 00001032-PHOTO-2026-02-22-02-30-52.jpg>
+‎[22.02.26, 02:31:21] Alexander Deibel: ‎<Anhang: 00001033-PHOTO-2026-02-22-02-31-20.jpg>
+
 ‎[22.02.26, 02:30:03] Alexander Deibel: ‎<Anhang: 00001029-AUDIO-2026-02-22-02-30-03.opus>
 ‎[22.02.26, 02:30:12] Alexander Deibel: ‎<Anhang: 00001030-PHOTO-2026-02-22-02-30-12.jpg>
 ‎[22.02.26, 02:30:30] Alexander Deibel: ‎<Anhang: 00001031-PHOTO-2026-02-22-02-30-30.jpg>
 ‎[22.02.26, 02:30:52] Alexander Deibel: ‎<Anhang: 00001032-PHOTO-2026-02-22-02-30-52.jpg>
 ‎[22.02.26, 02:31:20] Alexander Deibel: ‎<Anhang: 00001033-PHOTO-2026-02-22-02-31-20.jpg>
+ main
 ‎[22.02.26, 02:31:41] Alexander Deibel: ‎<Anhang: 00001034-PHOTO-2026-02-22-02-31-41.jpg>
 ‎[22.02.26, 02:31:56] Alexander Deibel: ‎<Anhang: 00001035-PHOTO-2026-02-22-02-31-56.jpg>
 ‎[22.02.26, 02:32:21] Alexander Deibel: ‎<Anhang: 00001036-AUDIO-2026-02-22-02-32-21.opus>
@@ -1605,9 +1624,15 @@ npx cap open android → Android Studio → Signed APK/AAB
 [23.02.26, 06:22:07] Berger Ulrick: Du kannst also getrost erstmal 24 Stunden schlafen 😉✨🌊
 [23.02.26, 06:25:54] Berger Ulrick: Gibt’s etwas was ich auf meinem Gerät (iPhone)  tun muss oder downlaoden damit die offline Funktion in ganzer Linie funktioniert? Wenn möglich bereite du das in den Stunden vor unserem Einsatz so vor dass wir nicht gleich im ersten oder dritten Schritt aufgeben müssen… vielleicht ein amwendungstest von dir mit 2 Handys. Es muss offline gehen! Denn wir sind auf einer Inseltour ohne Internet! Zuvor am Hafen haben wir Netz zum aktivierenden Downloaden. …
 [23.02.26, 06:27:55] Berger Ulrick: Noch ein Hinweis zur Apple Welt! Wirklich schade ist in diesem Fall, dass wir die von mir gedachte „One and Only“ iPhone App one to many Translate - Vortrags (guide) Lösung nicht bauen und nicht im App Store veröffentlichen… dann wird es jemand anders tun und damit Geld verdienen… Vielleicht wollen wir das parallel auch tun? Ich weiß, die Idee ist doof aber was denkst du dazu?
+ fix/offline-session-checkin
+[23.02.26, 17:51:49] Alexander Deibel: offline läuft erstmal nur lokal bei mir, eben offline. oder dann wenn die app zu downloaden ist (zb im store). …
+[23.02.26, 17:52:42] Alexander Deibel: ich versucje was anderes, damit ihr offline testen könnt. bevor wir die apps für die storrs wrappen
+[23.02.26, 17:53:31] Alexander Deibel: guten morgen übrigends, istv1730 und ich hab 12h gwschlafen
+
 [23.02.26, 17:51:48] Alexander Deibel: offline läuft erstmal nur lokal bei mir, eben offline. oder dann wenn die app zu downloaden ist (zb im store). …
 [23.02.26, 17:52:42] Alexander Deibel: ich versucje was anderes, damit ihr offline testen könnt. bevor wir die apps für die storrs wrappen
 [23.02.26, 17:53:30] Alexander Deibel: guten morgen übrigends, istv1730 und ich hab 12h gwschlafen
+ main
 [23.02.26, 19:19:46] Alexander Deibel: App Store (dauert Wochen!)
 Apple Review: 1-7 Tage
 Google Play Review: 1-3 Tage
@@ -1715,7 +1740,11 @@ ulrich.b@gmx.ch
 [24.02.26, 08:46:28] Berger Ulrick: Ich habe auch die Browser Lösung bei mir auf den Homebildschirm gelegt, aber leider öffnet sich die Seite nur neu. Wenn ich auch im Internet bin, ist klar. Die offline Lösung funktioniert erst als App wirklich ganz offline….
 [24.02.26, 08:53:29] Alexander Deibel: Also hat offline bei dir gar nichts funktioniert. Hast du mit dem Handy oder mit dem Computer getestet? Hast du online was gehört?
 [24.02.26, 08:54:10] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
+ fix/offline-session-checkin
+[24.02.26, 08:55:08] Alexander Deibel: Bitte erkläre mir doch nicht was wann funktioniert, sondern genau was wo bei dir funktioniert und was wo genau bei dir nicht funktioniert. Das wäre hilfreich
+
 [24.02.26, 08:55:07] Alexander Deibel: Bitte erkläre mir doch nicht was wann funktioniert, sondern genau was wo bei dir funktioniert und was wo genau bei dir nicht funktioniert. Das wäre hilfreich
+ main
 [24.02.26, 09:00:53] Alexander Deibel: so deployment endlich durch, mußte nochmal zurck, code ändern, beim mergen gabs probleme. build 4b jetzt live. (siehste am impressum)
 ‎[24.02.26, 09:10:31] Alexander Deibel: RE-2026-178.pdf • ‎2 Seiten ‎<Anhang: 00001253-RE-2026-178.pdf>
 ‎[24.02.26, 11:52:06] Alexander Deibel: appguidetranslatorcom-V3b-UlrichsBugs-Analyse.pdf • ‎5 Seiten ‎<Anhang: 00001254-appguidetranslatorcom-V3b-UlrichsBugs-Analyse.pdf>
@@ -1751,6 +1780,16 @@ ulrich.b@gmx.ch
 ‎[24.02.26, 13:26:41] Berger Ulrick: ‎<Anhang: 00001284-AUDIO-2026-02-24-13-26-41.opus>
 [24.02.26, 13:27:14] Berger Ulrick: Ich hab sie dir gerade noch mal geschickt… werde jetzt nicht für dich transkribiert😉 habe keine ki Antwort, die mir dabei hilft…
 ‎[24.02.26, 13:28:31] Berger Ulrick: ‎<Anhang: 00001286-AUDIO-2026-02-24-13-28-31.opus>
+ fix/offline-session-checkin
+[24.02.26, 13:28:31] Berger Ulrick: Und hier nochmal zur Koffer App
+[13:31, 24.2.2026] Berger Ulrick: ch habe Ferien, und anderes Programm, du nervst 😉! Wenn ich morgen um 10:00 Uhr in den Tender steige und dann am Ufer ankommen, weiß ich nicht mal ob ich genügend Zeit habe meine neue eSIM zu installiert und mit der ich dann auch morgen den ganzen Tag kein Internet hätte dann bis in einer Reisegruppe unterwegs und dürfen nicht ohne dem guide rumlaufen… d.h. also wenn ich dann Internet und Zeit habe… :-) aber ab dem 27.2. Bin ich dann bei Chaca und dann kann ich mir bestimmt ein Stündchen pro Tag einrichten, dass wir mit der App weiterkommen🤞🏻🙌🏻💪🏻💪🏻💪🏻
+[13:34, 24.2.2026] Berger Ulrick: du bist krass: Nerv mich nicht  |  wenn du dann zeit hast????????  das produkt ist da! du nimmst es znur nicht zur kenntnis, und nicht nur das produkt sondern noch zwei weitere apps. testen, optimieren, fertig, los
+Zwei weitere Apps? Welche meinst du?
+[14:41, 24.2.2026] Alexander Deibel: Ich habe Ferien, und anderes Programm, du nervst ! Wenn ich morgen um 10:00 Uhr in den Tender steige und dann am Ufer ankommen, weiß ich nicht mal ob ich genügend Zeit habe meine neue eSIM zu installiert und mit der ich dann auch morgen den ganzen Tag kein Internet hätte dann bis in einer Reisegruppe unterwegs und dürfen nicht ohne dem guide rumlaufen… d.h. also wenn ich dann Internet und Zeit habe… :-) aber ab dem 27.2. Bin ich dann bei Chaca und dann kann ich mir bestimmt ein Stündchen pro Tag einrichten, dass wir mit der App weiterkommen
+fuck you
+[14:41, 24.2.2026] Alexander Deibel: Zwei weitere Apps? Welche meinst du?
+sales and admin
+
 [24.02.26, 13:28:31] Berger Ulrick: Und hier nochmal zur Koffer App
 [24.02.26, 13:31:47] Berger Ulrick: Ich habe Ferien, und anderes Programm, du nervst 😉! Wenn ich morgen um 10:00 Uhr in den Tender steige und dann am Ufer ankommen, weiß ich nicht mal ob ich genügend Zeit habe meine neue eSIM zu installiert und mit der ich dann auch morgen den ganzen Tag kein Internet hätte dann bis in einer Reisegruppe unterwegs und dürfen nicht ohne dem guide rumlaufen… d.h. also wenn ich dann Internet und Zeit habe… :-) aber ab dem 27.2. Bin ich dann bei Chaca und dann kann ich mir bestimmt ein Stündchen pro Tag einrichten, dass wir mit der App weiterkommen🤞🏻🙌🏻💪🏻💪🏻💪🏻
 [24.02.26, 13:34:46] Berger Ulrick: Zwei weitere Apps? Welche meinst du?
@@ -1866,3 +1905,4 @@ dass gefällt mir 😻
 [28.02.26, 00:57:38] Alexander Deibel: ‎Du hast diese Nachricht gelöscht.
 [28.02.26, 01:50:35] Berger Ulrick: Im Gegensatz zu dir scheine ich dich ja wohl ernst zu nehmen! Auf diese deine Spielchen habe ich wirklich keine Lust! ohne klare Basis kann und will und werde ich nicht arbeiten. Vielleicht machst du deine Sache doch besser allein du weißt es ja eh am besten, wie es geht, brauchst mich gar nicht dazu und für den Vertrieb findest du bestimmt einen preiswerteren, motivierten Mitarbeiter als mich. Viel Glück, falls du mich brauchst, melde dich! Es könnte so schön gut werden💫💟
 ‎[28.02.26, 02:11:28] Alexander Deibel: guidetranslator-V8b-vs-Markt Site1 Kopie.pdf • ‎1 Seite ‎<Anhang: 00001396-guidetranslator-V8b-vs-Markt Site1 Kopie.pdf>
+ main
