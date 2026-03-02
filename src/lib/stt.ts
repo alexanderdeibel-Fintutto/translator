@@ -156,12 +156,16 @@ export function createWebSpeechEngine(): STTEngine {
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
-        if (err.error === 'not-allowed') {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
-        } else if (err.error === 'network') {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.networkStt'))
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+
+        // getUserMedia already succeeded above, so 'not-allowed' here means the
+        // speech SERVICE is blocked (Opera, certain WebKit browsers), NOT a mic
+        // permission issue. Tag all non-mic errors so the hook can detect & fallback.
+        if (err.error === 'not-allowed' || err.error === 'service-not-allowed' || err.error === 'network') {
+          console.warn(`[STT] Web Speech service error: ${err.error}`)
+          onError(`[web-speech-unavailable] ${getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error)}`)
         } else {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.sttGeneric').replace('{error}', err.error))
+          onError(getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error))
         }
       }
 
