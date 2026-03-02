@@ -96,6 +96,15 @@ export function isCloudTTSAvailable(): boolean {
   return !!getGoogleApiKey()
 }
 
+export type TtsQualityTier = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
+
+/** Map tier-level TTS quality to the VoiceQuality used by the API.
+ *  'browser' and 'standard' both use Neural2 voices but standard uses Standard-A voices. */
+export function mapTierTtsQuality(tierQuality: TtsQualityTier): VoiceQuality {
+  if (tierQuality === 'chirp3hd') return 'chirp3hd'
+  return 'neural2' // standard and neural2 both map to the neural2 voice map
+}
+
 function getVoiceConfig(speechCode: string, quality: VoiceQuality = 'neural2') {
   const map = quality === 'chirp3hd' ? CHIRP_VOICE_MAP : VOICE_MAP_NEURAL
 

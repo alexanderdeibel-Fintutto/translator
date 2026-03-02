@@ -5,13 +5,31 @@ import { translateOffline, isLanguagePairAvailable } from './offline/translation
 import { getNetworkStatus } from './offline/network-status'
 import { getGoogleApiKey } from './api-key'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
+const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'
 
 export interface TranslationResult {
   translatedText: string
   match: number
-  provider?: 'google' | 'mymemory' | 'libre' | 'offline' | 'cache'
+  provider?: 'google' | 'azure' | 'mymemory' | 'libre' | 'offline' | 'cache'
+}
+
+/** Azure API key — set via env or localStorage */
+function getAzureApiKey(): string {
+  try {
+    return localStorage.getItem('gt_azure_key') || import.meta.env.VITE_AZURE_TRANSLATE_KEY || ''
+  } catch {
+    return ''
+  }
+}
+
+function getAzureRegion(): string {
+  try {
+    return localStorage.getItem('gt_azure_region') || import.meta.env.VITE_AZURE_TRANSLATE_REGION || 'westeurope'
+  } catch {
+    return 'westeurope'
+  }
 }
 
 // In-memory cache to avoid duplicate API calls for same text+language pair
@@ -29,6 +47,7 @@ interface CircuitState {
 }
 
 const circuits: Record<string, CircuitState> = {
+  azure: { failCount: 0, isOpen: false, resetAt: 0 },
   google: { failCount: 0, isOpen: false, resetAt: 0 },
   mymemory: { failCount: 0, isOpen: false, resetAt: 0 },
 }
@@ -181,6 +200,53 @@ async function translateWithLibre(
   }
 }
 
+// --- Azure Translator (50% cheaper than Google, $10/1M chars) ---
+
+async function translateWithAzure(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const apiKey = getAzureApiKey()
+  if (!apiKey) {
+    throw new Error('Azure Translator API key not configured')
+  }
+
+  const url = `${AZURE_TRANSLATE_URL}?api-version=3.0&from=${sourceLang}&to=${targetLang}`
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': apiKey,
+      'Ocp-Apim-Subscription-Region': getAzureRegion(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([{ Text: text }]),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    const retryMs = response.status === 429 ? parseRetryAfter(response) : undefined
+    throw Object.assign(
+      new Error(`Azure Translate failed (${response.status}): ${err}`),
+      { retryAfterMs: retryMs },
+    )
+  }
+
+  const data = await response.json()
+  const translated = data?.[0]?.translations?.[0]?.text
+
+  if (!translated) {
+    throw new Error('Azure Translate returned empty result')
+  }
+
+  return {
+    translatedText: translated,
+    match: 1.0,
+    provider: 'azure',
+  }
+}
+
 // --- Main translation function with cascading fallback ---
 
 type ProviderDef = {
@@ -189,7 +255,9 @@ type ProviderDef = {
   circuitKey?: string
 }
 
+// Provider cascade: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free)
 const providers: ProviderDef[] = [
+  { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
