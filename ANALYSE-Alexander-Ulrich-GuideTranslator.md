@@ -157,6 +157,58 @@ Ulrichs Reaktionen:
 
   > "Im Gegensatz zu dir scheine ich dich ja wohl ernst zu nehmen! Auf diese Spielchen habe ich keine Lust! Ohne klare Basis kann und will und werde ich nicht arbeiten. Vielleicht machst du deine Sache doch besser allein. Falls du mich brauchst, melde dich!"
 
+### Phase 10: 1.--2. März 2026 (Tauwetter)
+
+**Alexanders Offensive (1. März):**
+
+- **17:55**: Ulrichs 10-Punkte-Feedback zum Deal wird beantwortet
+- **18:22**: Gamma-Präsentation GuideTranslator V3.0
+- **18:23**: Vollständige Antworten zu allen 10 Deal-Punkten (Royalties 35%, White-Label-Marge, Exklusivität, Kündigungsschutz)
+- **22:05**: V3.1 App-Store-Readiness-Analyse
+- **22:11**: Motivations-Nachricht: "14 Versionen in 10 Tagen. Die Basis ist geklärt. Es gibt keinen Grund mehr, nicht anzufangen."
+- **23:26**: **BODO SCHÄFER VS. ULRICH** -- Ironie-Analyse als Gamma-Seite veröffentlicht
+- **01:35** (2.3.): Kostenanalyse
+- **02:48**: Preismodell-Analyse
+- **05:19**: **pitchdecks.guidetranslator.com** -- Pitch Decks für Investoren + 5 Zielmärkte live
+
+**Ulrichs Antwort (2. März) -- ERSTMALS SUBSTANTIELL:**
+
+- **03:19**: Schaut sich alles nochmal an: *"Ist on hold und du kriegst Nachrichten. Ich freu mich, wenn es jetzt schon klappt."*
+- **04:09**: **Antwortet inhaltlich auf Deal-Punkte**:
+  - Punkt 2 (White-Label): 10% zu wenig, will höhere Marge + Kundenzuordnungs-Regelung
+  - Punkt 3 (Exklusivität): OK
+  - Punkt 5 (Provision Laufzeit): OK, solange Kunde zahlt
+  - Punkt 6 (Kündigungsschutz): Braucht Entschädigungsklausel, UG hat sonst "2x schwarzen Peter"
+- **04:17**: **Die Offenbarung**: *"Mein Weg geht in die tantrisch spirituelle Richtung und deshalb möchte ich mit der Firma nicht mehr so total hingabemäßig verstricken."* -- Erwähnt: Wolfram-Test auf Schiff hat NICHT funktioniert
+- **04:27**: **Bodo-Schäfer-Reaktion**: *"Eher beleidigend als ironisch. Du unterstellst mir deine Forderungen und führst damit deinen ganzen Vortrag ad absurdum."* -- Aber: *"Ich werde dir eine Chance geben."*
+- **04:33**: Bietet **2h/Woche** für Feedback an. *"Sobald es wirklich funktioniert, aktiviere ich den Vertrieb. Diesmal werde ich erst ein funktionierendes System verkaufen."*
+- **04:38**: **Schlägt Telefonat vor: 15:00 Singapore-Zeit**
+
+**Bewertung Phase 10:**
+
+Erstmals seit Projektstart bewegt sich Ulrich messbar:
+
+| Indikator | Phase 9 (28.02.) | Phase 10 (02.03.) |
+|-----------|------------------|-------------------|
+| Deal-Engagement | "Ohne Basis arbeite ich nicht" | Antwortet auf 4 von 10 Punkten |
+| Zeitangebot | Null | 2h/Woche (zu wenig, aber >0) |
+| Telefonat | Keins stattgefunden | Aktiv vorgeschlagen |
+| Tonalität | "Mach deine Sache allein" | "Ich freu mich wenn es klappt" |
+| Selbstreflexion | Null | "Tantrisch-spirituelle Richtung" = ehrlich |
+| Bodo Schäfer | -- | Getroffen, als "beleidigend" abgewehrt, aber gelesen |
+
+**Offene Deal-Punkte (Stand 02.03.):**
+
+| Punkt | Status | Alexanders Position |
+|-------|--------|-------------------|
+| Royalties 35% | **Einig** | ✓ |
+| White-Label-Marge | **Offen** | 15% für UG statt 10% |
+| Exklusivität | **Einig** | Kreuzfahrt/Tourismus/Tours exklusiv UG |
+| Provision Laufzeit | **Einig** | Solange Kunde zahlt |
+| Kündigungsschutz | **Offen** | 12 Monate + 1x Jahresumsatz oder Buyout |
+| Zeitcommitment | **Offen** | Alexander fordert 3h/Tag Woche 1, dann 1h/Tag |
+| "Funktioniert erst" | **Offen** | App funktioniert -- konkreter Meilenstein nötig |
+
 ---
 
 ## II. ULRICHS VERHALTEN
