@@ -177,6 +177,10 @@ export default defineConfig({
       },
     },
   },
+  esbuild: {
+    // Strip console.log/warn in production (keep console.error)
+    pure: ['console.log', 'console.warn'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

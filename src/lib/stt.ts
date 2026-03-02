@@ -3,6 +3,7 @@
 // Future: Apple SpeechAnalyzer (iOS 26)
 
 import { getTranslation, type UILanguage } from '@/lib/i18n'
+import { getGoogleApiKey } from '@/lib/api-key'
 
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
@@ -155,12 +156,16 @@ export function createWebSpeechEngine(): STTEngine {
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
-        if (err.error === 'not-allowed') {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
-        } else if (err.error === 'network') {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.networkStt'))
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+
+        // getUserMedia already succeeded above, so 'not-allowed' here means the
+        // speech SERVICE is blocked (Opera, certain WebKit browsers), NOT a mic
+        // permission issue. Tag all non-mic errors so the hook can detect & fallback.
+        if (err.error === 'not-allowed' || err.error === 'service-not-allowed' || err.error === 'network') {
+          console.warn(`[STT] Web Speech service error: ${err.error}`)
+          onError(`[web-speech-unavailable] ${getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error)}`)
         } else {
-          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.sttGeneric').replace('{error}', err.error))
+          onError(getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error))
         }
       }
 
@@ -241,7 +246,6 @@ function isIOS(): boolean {
 // Primary STT on iOS (where Web Speech API is broken) and general fallback.
 // Uses the same API key as TTS and Translate.
 
-const STT_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
 const STT_API_URL = 'https://speech.googleapis.com/v1/speech:recognize'
 
 function pcmToBase64Linear16(chunks: Float32Array[]): string {
@@ -287,7 +291,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
 
   const isSupported =
     typeof window !== 'undefined' &&
-    !!STT_API_KEY &&
+    !!getGoogleApiKey() &&
     typeof navigator !== 'undefined' &&
     !!navigator.mediaDevices?.getUserMedia
 
@@ -298,7 +302,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
     const timeout = setTimeout(() => controller.abort(), 8000) // 8s timeout
 
     try {
-      const response = await fetch(`${STT_API_URL}?key=${STT_API_KEY}`, {
+      const apiKey = getGoogleApiKey()
+      if (!apiKey) throw new Error('Google STT API key not configured')
+
+      const response = await fetch(`${STT_API_URL}?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -314,7 +321,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       })
 
       if (!response.ok) {
-        throw new Error(`Google STT ${response.status}`)
+        const errorBody = await response.text()
+        console.error(`[STT] Google Cloud STT error ${response.status}:`, errorBody)
+        throw new Error(`Google STT ${response.status}: ${errorBody}`)
       }
 
       const data = await response.json()
@@ -415,9 +424,25 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             onResultCallback({ text: newText, isFinal: false })
           }
         } catch (err) {
-          // Non-fatal — continue recording
-          if (err instanceof Error && err.message.includes('403')) {
-            onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable'))
+          console.error('[STT] Recognition error:', err)
+          if (err instanceof Error && (err.message.includes('403') || err.message.includes('401') || err.message.includes('400'))) {
+            // Extract the actual Google API error message for better diagnostics
+            let detail = ''
+            try {
+              const jsonStart = err.message.indexOf('{')
+              if (jsonStart >= 0) {
+                const parsed = JSON.parse(err.message.slice(jsonStart))
+                detail = parsed?.error?.message || ''
+              }
+            } catch { /* ignore parse errors */ }
+
+            const apiKey = getGoogleApiKey()
+            const keyHint = apiKey ? ` (Key: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)})` : ''
+            const errorDetail = detail
+              ? `Cloud STT API: ${detail}${keyHint}`
+              : getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable') + keyHint
+
+            onError(errorDetail)
             isActive = false
           }
         }
