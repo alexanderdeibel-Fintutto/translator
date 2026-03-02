@@ -147,6 +147,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     if (targetLangs.length === 0) return
 
+ claude/analyze-app-costs-X7EqR
     // Enforce language limit per tier (0 = unlimited)
     const maxLangs = tierRef.current.limits.maxLanguages
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
@@ -154,11 +155,16 @@ export function useLiveSession(userTierId: TierId = 'free') {
       targetLangs = targetLangs.slice(0, maxLangs)
     }
 
+ claude/add-new-languages-G9HsJ
+    // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+ main
+
     // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
+ main
     const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
-        return {
+        const chunk: TranslationChunk = {
           id: generateChunkId(),
           sourceText: text,
           translatedText: result.translatedText,
@@ -166,14 +172,21 @@ export function useLiveSession(userTierId: TierId = 'free') {
           targetLanguage: targetLang,
           isFinal: true,
           timestamp: Date.now(),
-        } satisfies TranslationChunk
+        }
+        return chunk
       })
     )
+
+ claude/add-new-languages-G9HsJ
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
+      .map(r => r.value)
 
     const results: TranslationChunk[] = []
     for (const r of settled) {
       if (r.status === 'fulfilled') results.push(r.value)
     }
+ main
 
     // Broadcast each successful translation
     for (const chunk of results) {
