@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect, useState, useCallback, type React
 import { supabase } from '../lib/supabase'
 import { TIERS, type TierId, type TierDefinition } from '../lib/tiers'
 import { setUsageTier, getUsage, type UsageRecord } from '../lib/usage-tracker'
+import { startUsageSync, stopUsageSync } from '../lib/usage-sync'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -94,8 +95,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
             stripeCustomerId: profile?.stripe_customer_id ?? null,
           })
           setTierId(userTier)
+
+          // Start syncing usage to server
+          startUsageSync(session.user.id)
         } else {
           setUser(null)
+          stopUsageSync()
           // Keep local tier for anonymous/demo users
         }
         setIsLoading(false)
@@ -122,6 +127,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(async () => {
+    stopUsageSync()
     await supabase.auth.signOut()
     setUser(null)
     setTierId('free')

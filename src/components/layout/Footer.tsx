@@ -13,6 +13,7 @@ export default function Footer() {
             <span>guidetranslator</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <Link to="/pricing" className="hover:text-foreground transition-colors">Preise</Link>
             <Link to="/impressum" className="hover:text-foreground transition-colors">{t('footer.imprint')}</Link>
             <Link to="/datenschutz" className="hover:text-foreground transition-colors">{t('footer.privacy')}</Link>
             <span>&copy; {new Date().getFullYear()} ai tour ug</span>

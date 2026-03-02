@@ -1,13 +1,17 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useUser } from '@/context/UserContext'
-import { TIERS, formatPrice, type TierId } from '@/lib/tiers'
+import { formatPrice } from '@/lib/tiers'
 import { getRemainingSessionMinutes, getOverageCost } from '@/lib/usage-tracker'
+import { openCustomerPortal } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
-import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight } from 'lucide-react'
+import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function AccountPage() {
   const { user, tier, tierId, usage, isAuthenticated, signOut } = useUser()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const checkoutStatus = searchParams.get('checkout')
 
   if (!isAuthenticated) {
     navigate('/auth?redirect=/account', { replace: true })
@@ -25,9 +29,28 @@ export default function AccountPage() {
     navigate('/', { replace: true })
   }
 
+  async function handleManageSubscription() {
+    try {
+      await openCustomerPortal()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Fehler beim Öffnen des Kundenportals')
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       <h1 className="text-2xl font-bold">Mein Konto</h1>
+
+      {/* Checkout success banner */}
+      {checkoutStatus === 'success' && (
+        <div className="rounded-xl border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/20 p-4 flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" />
+          <div>
+            <div className="font-medium text-sm">Upgrade erfolgreich!</div>
+            <div className="text-xs text-muted-foreground">Dein Plan wurde aktiviert. Viel Spaß mit den neuen Features!</div>
+          </div>
+        </div>
+      )}
 
       {/* Profile */}
       <div className="rounded-xl border border-border p-5">
@@ -63,14 +86,26 @@ export default function AccountPage() {
           </div>
         )}
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate('/pricing')}
-          className="gap-2"
-        >
-          Plan ändern <ArrowRight className="w-4 h-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/pricing')}
+            className="gap-2"
+          >
+            Plan ändern <ArrowRight className="w-4 h-4" />
+          </Button>
+          {tier.pricing.monthlyEur > 0 && user?.stripeCustomerId && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleManageSubscription}
+              className="gap-2"
+            >
+              <Settings className="w-4 h-4" /> Abo verwalten
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Usage */}

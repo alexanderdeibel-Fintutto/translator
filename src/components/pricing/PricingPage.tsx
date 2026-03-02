@@ -9,9 +9,10 @@ interface PricingPageProps {
   currentTierId?: TierId
   onSelectTier?: (tierId: TierId) => void
   showInternalMargins?: boolean // Only for admin view
+  billingCycle?: 'monthly' | 'yearly'
 }
 
-export function PricingPage({ currentTierId = 'free', onSelectTier, showInternalMargins }: PricingPageProps) {
+export function PricingPage({ currentTierId = 'free', onSelectTier, showInternalMargins, billingCycle = 'monthly' }: PricingPageProps) {
   const [activeSegment, setActiveSegment] = useState<Segment>('personal')
 
   const tiers = getTiersBySegment(activeSegment)
@@ -63,14 +64,31 @@ export function PricingPage({ currentTierId = 'free', onSelectTier, showInternal
 
               {/* Price */}
               <div className="mt-4 mb-6">
-                <span className="text-3xl font-bold">{formatPrice(tier.pricing.monthlyEur)}</span>
-                {tier.pricing.monthlyEur > 0 && (
-                  <span className="text-muted-foreground text-sm">/Monat</span>
-                )}
-                {tier.pricing.yearlyEur > 0 && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    oder {formatPrice(tier.pricing.yearlyEur)}/Jahr (2 Monate gespart)
-                  </div>
+                {billingCycle === 'yearly' && tier.pricing.yearlyEur > 0 ? (
+                  <>
+                    <span className="text-3xl font-bold">{formatPrice(Math.round(tier.pricing.yearlyEur / 12 * 100) / 100)}</span>
+                    <span className="text-muted-foreground text-sm">/Monat</span>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {formatPrice(tier.pricing.yearlyEur)}/Jahr — 2 Monate gratis
+                    </div>
+                    {tier.pricing.monthlyEur > 0 && (
+                      <div className="text-xs text-muted-foreground/50 line-through mt-0.5">
+                        statt {formatPrice(tier.pricing.monthlyEur)}/Monat
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span className="text-3xl font-bold">{formatPrice(tier.pricing.monthlyEur)}</span>
+                    {tier.pricing.monthlyEur > 0 && (
+                      <span className="text-muted-foreground text-sm">/Monat</span>
+                    )}
+                    {tier.pricing.yearlyEur > 0 && (
+                      <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+                        {formatPrice(tier.pricing.yearlyEur)}/Jahr spart 17%
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 

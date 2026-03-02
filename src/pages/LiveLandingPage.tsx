@@ -9,11 +9,17 @@ import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hots
 import { isBleTransportAvailable } from '@/lib/ble-utils'
 import { useBleScanner } from '@/hooks/useBleDiscovery'
 import { useI18n } from '@/context/I18nContext'
+import { useTierId, useTier } from '@/context/UserContext'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
+import { hasFeature } from '@/lib/tiers'
 import type { ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveLandingPage() {
   const { t } = useI18n()
   const navigate = useNavigate()
+  const tierId = useTierId()
+  const tier = useTier()
+  const canBroadcast = hasFeature(tierId, 'broadcasting')
   const [sourceLang, setSourceLang] = useState('de')
   const [connectionMode, setConnectionMode] = useState<ConnectionMode>('cloud')
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
@@ -196,9 +202,13 @@ export default function LiveLandingPage() {
             )}
           </div>
 
-          <Button onClick={handleCreate} className="w-full">
-            {t('liveLanding.startSession')}
-          </Button>
+          {canBroadcast ? (
+            <Button onClick={handleCreate} className="w-full">
+              {t('liveLanding.startSession')}
+            </Button>
+          ) : (
+            <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Live-Broadcasting" />
+          )}
         </Card>
 
         {/* Listener */}
