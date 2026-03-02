@@ -14,6 +14,8 @@ export interface UsageRecord {
   translationsCount: number
   peakListeners: number
   languagesUsed: string[]    // unique language codes used this period
+  dailyTranslationsCount: number  // translations today
+  dailyDate: string               // YYYY-MM-DD of last daily count
 }
 
 const STORAGE_KEY = 'gt_usage'
@@ -50,6 +52,10 @@ function loadUsage(): UsageRecord {
   return createEmptyUsage()
 }
 
+function todayISO(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
 function createEmptyUsage(): UsageRecord {
   const { start, end } = getBillingPeriod()
   return {
@@ -61,6 +67,8 @@ function createEmptyUsage(): UsageRecord {
     translationsCount: 0,
     peakListeners: 0,
     languagesUsed: [],
+    dailyTranslationsCount: 0,
+    dailyDate: todayISO(),
   }
 }
 
@@ -102,6 +110,13 @@ export function recordTranslation(charCount: number, targetLanguage: string): vo
   if (!currentUsage.languagesUsed.includes(targetLanguage)) {
     currentUsage.languagesUsed.push(targetLanguage)
   }
+  // Daily counter — reset when day changes
+  const today = todayISO()
+  if (currentUsage.dailyDate !== today) {
+    currentUsage.dailyDate = today
+    currentUsage.dailyTranslationsCount = 0
+  }
+  currentUsage.dailyTranslationsCount += 1
   saveUsage(currentUsage)
 }
 
@@ -132,13 +147,17 @@ export function isWithinDailyTranslationLimit(tierId?: TierId): boolean {
   if (!tier) return false
   const limit = tier.limits.dailyTranslationLimit
   if (limit === 0) return true // unlimited
-  // Simple daily check: count today's translations
-  // For a more accurate daily count we'd need per-day tracking;
-  // for now, use monthly count / days elapsed as a rough heuristic
-  const now = new Date()
-  const dayOfMonth = now.getDate()
-  const avgPerDay = currentUsage.translationsCount / Math.max(dayOfMonth, 1)
-  return avgPerDay < limit
+  // Reset daily counter if day changed
+  const today = todayISO()
+  if (currentUsage.dailyDate !== today) return true // new day, 0 used
+  return currentUsage.dailyTranslationsCount < limit
+}
+
+/** Get today's translation count */
+export function getDailyTranslationsUsed(): number {
+  const today = todayISO()
+  if (currentUsage.dailyDate !== today) return 0
+  return currentUsage.dailyTranslationsCount
 }
 
 /** Get remaining session minutes (0 = unlimited, -1 = not available) */

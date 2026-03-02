@@ -7,6 +7,9 @@ import { getLanguageByCode, isRTL } from '@/lib/languages'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useI18n } from '@/context/I18nContext'
+import { useTierId } from '@/context/UserContext'
+import { hasFeature } from '@/lib/tiers'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 
 const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -20,6 +23,8 @@ interface Message {
 
 export default function ConversationPage() {
   const { t } = useI18n()
+  const tierId = useTierId()
+  const canConversation = hasFeature(tierId, 'conversationMode')
   const [topLang, setTopLang] = useState('en')
   const [bottomLang, setBottomLang] = useState('de')
   const [activeSide, setActiveSide] = useState<'top' | 'bottom' | null>(null)
@@ -118,6 +123,20 @@ export default function ConversationPage() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
+
+  if (!canConversation) {
+    return (
+      <div className="container py-6 space-y-6 max-w-2xl mx-auto">
+        <div className="text-center space-y-1">
+          <h1 className="text-2xl font-bold">
+            <span className="gradient-text-translator">{t('conversation.title')}</span>
+          </h1>
+          <p className="text-sm text-muted-foreground">{t('conversation.subtitle')}</p>
+        </div>
+        <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Konversationsmodus" />
+      </div>
+    )
+  }
 
   return (
     <div className="container py-4 space-y-3 max-w-2xl mx-auto">
