@@ -1,7 +1,11 @@
+ claude/add-new-languages-G9HsJ
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
  claude/setup-integrations-dashboard-QVFdq
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Suspense, lazy, useEffect } from 'react'
 
+ main
 import { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
  main
@@ -30,9 +34,12 @@ const CameraTranslatePage = lazy(() => import('@/pages/CameraTranslatePage'))
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const HistoryPage = lazy(() => import('@/pages/HistoryPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
+ claude/add-new-languages-G9HsJ
+
 const PricingPageRoute = lazy(() => import('@/pages/PricingPageRoute'))
 const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
+ main
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -46,6 +53,8 @@ function PageLoader() {
   )
 }
 
+ claude/add-new-languages-G9HsJ
+
 function RouteTracker() {
   const location = useLocation()
   useEffect(() => {
@@ -54,6 +63,7 @@ function RouteTracker() {
   return null
 }
 
+ main
 function App() {
   return (
     <ErrorBoundary>

@@ -482,7 +482,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+ claude/add-new-languages-G9HsJ
+  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send (during recording)
+
   // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
+ main
   const handleMicToggleRef = useRef(handleMicToggle)
   handleMicToggleRef.current = handleMicToggle
   const handleSendRef = useRef(handleSend)
@@ -505,9 +509,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
+  // Keyboard shortcuts: Ctrl+Enter → translate now (when not recording), Escape → clear
   useKeyboardShortcuts({
-    'ctrl+enter': () => { if (sourceText.trim()) doTranslateManual(sourceText) },
+    'ctrl+enter': () => { if (!isListening && sourceText.trim()) doTranslateManual(sourceText) },
     'escape': clearAll,
     'ctrl+shift+s': swapLanguages,
   })
@@ -653,6 +657,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
+ claude/add-new-languages-G9HsJ
+                  title={!micSupported ? t('translator.micNotAvailable') : isListening ? `${t('translator.stopRecording')} (Ctrl+M)` : `${t('translator.speechInput')} (Ctrl+M)`}
+
+ main
                   aria-pressed={isListening}
                   aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
                 >
@@ -665,7 +673,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSend}
                     className="text-primary"
+ claude/add-new-languages-G9HsJ
+                    title={`${t('translator.send')} (Ctrl+Enter)`}
+
                     title={t('translator.send')}
+ main
                     aria-label={t('translator.send')}
                   >
                     <Send className="h-4 w-4" />
@@ -676,7 +688,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakSource}
+ claude/add-new-languages-G9HsJ
+
                     title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
                     aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
                     {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" aria-hidden="true" /> : <Volume2 className="h-4 w-4" aria-hidden="true" />}
@@ -688,8 +703,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   </span>
                 )}
                 {sourceText && (
+ claude/add-new-languages-G9HsJ
+                  <Button variant="ghost" size="icon" onClick={clearAll} aria-label={t('translator.delete')}>
+                    <Trash2 className="h-4 w-4" />
+
                   <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')} aria-label={t('translator.delete')}>
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
+ main
                   </Button>
                 )}
               </div>
@@ -744,7 +764,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakTarget}
+ claude/add-new-languages-G9HsJ
+
                     title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
                     aria-label={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
                     {targetSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -755,7 +778,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleCopy}
+ claude/add-new-languages-G9HsJ
+
                     title={t('translator.copy')}
+ main
                     aria-label={t('translator.copy')}
                   >
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
