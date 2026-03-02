@@ -11,7 +11,7 @@ export async function validateApiKey(key: string | null): Promise<boolean> {
 
   const hash = hashApiKey(key)
   const { data } = await supabaseAdmin
-    .from('api_keys')
+    .from('analytics_api_keys')
     .select('id, is_active')
     .eq('key_hash', hash)
     .eq('is_active', true)
@@ -20,7 +20,7 @@ export async function validateApiKey(key: string | null): Promise<boolean> {
   if (data) {
     // Update last_used_at (fire and forget)
     supabaseAdmin
-      .from('api_keys')
+      .from('analytics_api_keys')
       .update({ last_used_at: new Date().toISOString() })
       .eq('id', data.id)
       .then()
@@ -34,7 +34,7 @@ export async function createApiKey(name: string, source: string): Promise<string
   const key = `fta_${crypto.randomUUID().replace(/-/g, '')}`
   const hash = hashApiKey(key)
 
-  await supabaseAdmin.from('api_keys').insert({
+  await supabaseAdmin.from('analytics_api_keys').insert({
     key_hash: hash,
     name,
     source,

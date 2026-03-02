@@ -68,12 +68,12 @@ CREATE TABLE IF NOT EXISTS analytics_web_vitals (
 
 CREATE INDEX idx_vitals_metric ON analytics_web_vitals (metric, created_at DESC);
 
--- 5. API keys table for authentication
-CREATE TABLE IF NOT EXISTS api_keys (
+-- 5. API keys table for authentication (analytics_api_keys to avoid conflict with Supabase internal api_keys)
+CREATE TABLE IF NOT EXISTS analytics_api_keys (
   id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   key_hash      TEXT NOT NULL UNIQUE,
   name          TEXT NOT NULL,
-  source        TEXT NOT NULL,  -- 'translator', 'admin', etc.
+  source        TEXT NOT NULL DEFAULT 'translator',
   is_active     BOOLEAN NOT NULL DEFAULT TRUE,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   last_used_at  TIMESTAMPTZ
@@ -84,7 +84,7 @@ ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_daily ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_errors ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_web_vitals ENABLE ROW LEVEL SECURITY;
-ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
+ALTER TABLE analytics_api_keys ENABLE ROW LEVEL SECURITY;
 
 -- Allow service_role full access (for API routes)
 CREATE POLICY "Service role full access" ON analytics_events
@@ -95,7 +95,7 @@ CREATE POLICY "Service role full access" ON analytics_errors
   FOR ALL USING (auth.role() = 'service_role');
 CREATE POLICY "Service role full access" ON analytics_web_vitals
   FOR ALL USING (auth.role() = 'service_role');
-CREATE POLICY "Service role full access" ON api_keys
+CREATE POLICY "Service role full access" ON analytics_api_keys
   FOR ALL USING (auth.role() = 'service_role');
 
 -- 7. Function: Aggregate daily stats (call via cron or manually)
