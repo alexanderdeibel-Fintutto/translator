@@ -1,17 +1,5 @@
- claude/add-new-languages-G9HsJ
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
- claude/analyze-app-costs-X7EqR
-
-
- claude/setup-integrations-dashboard-QVFdq
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Suspense, lazy, useEffect } from 'react'
-
- main
-import { Suspense, lazy } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
- main
- main
 import { Toaster } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { OfflineProvider } from '@/context/OfflineContext'
@@ -37,19 +25,10 @@ const CameraTranslatePage = lazy(() => import('@/pages/CameraTranslatePage'))
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const HistoryPage = lazy(() => import('@/pages/HistoryPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
- claude/analyze-app-costs-X7EqR
 const PricingPageRoute = lazy(() => import('@/pages/PricingPageRoute'))
 const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
 const SalesLandingPage = lazy(() => import('@/pages/SalesLandingPage'))
-
- claude/add-new-languages-G9HsJ
-
-const PricingPageRoute = lazy(() => import('@/pages/PricingPageRoute'))
-const AuthPage = lazy(() => import('@/pages/AuthPage'))
-const AccountPage = lazy(() => import('@/pages/AccountPage'))
- main
- main
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -63,10 +42,6 @@ function PageLoader() {
   )
 }
 
- claude/analyze-app-costs-X7EqR
-
- claude/add-new-languages-G9HsJ
-
 function RouteTracker() {
   const location = useLocation()
   useEffect(() => {
@@ -75,40 +50,14 @@ function RouteTracker() {
   return null
 }
 
- main
- main
 function App() {
   return (
     <ErrorBoundary>
       <I18nProvider>
         <OfflineProvider>
- claude/analyze-app-costs-X7EqR
-
- claude/setup-integrations-dashboard-QVFdq
-          <BrowserRouter>
-            <RouteTracker />
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<TranslatorPage />} />
-                <Route path="info" element={<Suspense fallback={<PageLoader />}><InfoPage /></Suspense>} />
-                <Route path="live" element={<Suspense fallback={<PageLoader />}><LiveLandingPage /></Suspense>} />
-                <Route path="live/:code" element={<Suspense fallback={<PageLoader />}><LiveSessionPage /></Suspense>} />
-                <Route path="conversation" element={<Suspense fallback={<PageLoader />}><ConversationPage /></Suspense>} />
-                <Route path="camera" element={<Suspense fallback={<PageLoader />}><CameraTranslatePage /></Suspense>} />
-                <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
-                <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
-                <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
-                <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />
-                <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
-              </Route>
-            </Routes>
-            <Toaster position="top-right" richColors />
-            <PWAInstallBanner />
-          </BrowserRouter>
-
- main
           <UserProvider>
             <BrowserRouter>
+              <RouteTracker />
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route index element={<TranslatorPage />} />
@@ -134,10 +83,6 @@ function App() {
               <PWAInstallBanner />
             </BrowserRouter>
           </UserProvider>
- claude/analyze-app-costs-X7EqR
-
- main
- main
         </OfflineProvider>
       </I18nProvider>
     </ErrorBoundary>
