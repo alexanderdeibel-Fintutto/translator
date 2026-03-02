@@ -6,12 +6,14 @@ import {
   stopBleAdvertising,
   type DiscoveredSession,
 } from '@/lib/ble-discovery'
+import { useI18n } from '@/context/I18nContext'
 
 /**
  * Hook for BLE session discovery on the listener side.
  * Scans for nearby GuideTranslator speakers and returns discovered sessions.
  */
 export function useBleScanner() {
+  const { t } = useI18n()
   const [sessions, setSessions] = useState<DiscoveredSession[]>([])
   const [isScanning, setIsScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +41,7 @@ export function useBleScanner() {
       setIsScanning(true)
     } catch (err) {
       console.error('[BLE Scanner] Failed to start:', err)
-      setError(err instanceof Error ? err.message : 'BLE-Scan fehlgeschlagen')
+      setError(err instanceof Error ? err.message : t('error.bleScanFailed'))
     }
   }, [isScanning])
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import {
   ArrowRightLeft,
   Mic,
@@ -11,15 +11,15 @@ import {
   Loader2,
   UserCheck,
   User,
- claude/offline-speaker-listener-nhgmf
   ThumbsUp,
   ThumbsDown,
   Share2,
-
+  Star,
   Send,
   Zap,
   AlignLeft,
- main
+  BookOpenText,
+  ListTree,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -31,7 +31,11 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { supportsFormality, convertToInformal } from '@/lib/formality'
+import { canRomanize, romanize } from '@/lib/romanize'
+import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/context-modes'
+import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
+import { useTierId } from '@/context/UserContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
 interface TranslationSegment {
@@ -39,7 +43,23 @@ interface TranslationSegment {
   sourceText: string
   translatedText: string
   isTranslating: boolean
+  error?: string
 }
+
+// Memoized segment renderer — only re-renders when its own props change
+const SegmentDisplay = memo(function SegmentDisplay({ seg, isLast }: { seg: TranslationSegment; isLast: boolean }) {
+  if (seg.isTranslating) {
+    return (
+      <span className="inline-flex items-center gap-1 text-muted-foreground">
+        <Loader2 className="h-3 w-3 animate-spin inline" />
+      </span>
+    )
+  }
+  if (seg.error) {
+    return <span className="text-destructive text-sm" title={seg.error}>[!]</span>
+  }
+  return <>{seg.translatedText}{!isLast && seg.translatedText ? ' ' : ''}</>
+})
 
 interface TranslationPanelProps {
   initialText?: string
@@ -47,19 +67,17 @@ interface TranslationPanelProps {
   initialTargetLang?: string
   onInitialTextConsumed?: () => void
   addEntry: (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => void
+  isFavorite?: (sourceText: string, targetLang: string) => boolean
+  toggleFavorite?: (entry: { sourceText: string; translatedText: string; sourceLang: string; targetLang: string }) => void
 }
 
-export default function TranslationPanel({ initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed, addEntry }: TranslationPanelProps) {
+export default function TranslationPanel({ initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed, addEntry, isFavorite, toggleFavorite }: TranslationPanelProps) {
   const { t } = useI18n()
+  const tierId = useTierId()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
- claude/offline-speaker-listener-nhgmf
   const [autoDetect, setAutoDetect] = useState(false)
   const [detectedLang, setDetectedLang] = useState<string | null>(null)
-  const [sourceText, setSourceText] = useState('')
-  const [translatedText, setTranslatedText] = useState('')
-
-
   // Segment-based state for speech mode
   const [segments, setSegments] = useState<TranslationSegment[]>([])
   const [interimText, setInterimText] = useState('')
@@ -69,7 +87,6 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
- main
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
@@ -85,6 +102,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const [useInformal, setUseInformal] = useState(() => {
     return localStorage.getItem('translator-informal') === 'true'
   })
+  const [showPronunciation, setShowPronunciation] = useState(false)
+  const [translationContext, setTranslationContext] = useState<TranslationContext>(() => {
+    return (localStorage.getItem('translator-context') as TranslationContext) || 'general'
+  })
+  const [showAlternatives, setShowAlternatives] = useState(false)
+  const [alternatives, setAlternatives] = useState<Alternative[]>([])
+  const [alternativesLoading, setAlternativesLoading] = useState(false)
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const autoSpeakRef = useRef(autoSpeak)
@@ -151,7 +175,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
 
     try {
-      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
+      const result = await translateText(text, sourceLangRef.current, targetLangRef.current, tierId)
       let finalText = result.translatedText
 
       if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
@@ -170,10 +194,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
       }
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Translation failed'
       setSegments(prev => prev.map(s =>
-        s.id === segmentId ? { ...s, isTranslating: false } : s
+        s.id === segmentId ? { ...s, isTranslating: false, error: errorMsg } : s
       ))
-      setError(err instanceof Error ? err.message : 'Translation failed')
     }
   }, [])
 
@@ -207,15 +231,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
 
     try {
- claude/offline-speaker-listener-nhgmf
-      const result = await translateText(text, effectiveSourceLang, targetLang)
-
-      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
- main
+      const result = await translateText(text, effectiveSourceLang, targetLang, tierId)
       let finalText = result.translatedText
 
-      if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
-        finalText = convertToInformal(finalText, targetLangRef.current)
+      if (useInformalRef.current && supportsFormality(targetLang)) {
+        finalText = convertToInformal(finalText, targetLang)
       }
 
       setSegments(prev => prev.map(s =>
@@ -226,14 +246,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setFeedback(null)
 
       if (autoSpeakRef.current && finalText) {
-        const lang = getLanguageByCode(targetLangRef.current)
-        targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
+        const lang = getLanguageByCode(targetLang)
+        targetSpeakRef.current(finalText, lang?.speechCode || targetLang)
       }
 
       addEntry({
         sourceText: text,
         translatedText: finalText,
- claude/offline-speaker-listener-nhgmf
         sourceLang: effectiveSourceLang,
         targetLang,
       })
@@ -243,23 +262,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
         OFFLINE_NO_MODEL: t('error.offlineNoModel'),
         ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
       }
-      setError(errorMap[msg] || msg || t('error.unknown'))
-    } finally {
-      setIsTranslating(false)
-    }
-  }, [sourceLang, targetLang, autoDetect, addEntry, t])
-
-        sourceLang: sourceLangRef.current,
-        targetLang: targetLangRef.current,
-      })
-    } catch (err) {
       setSegments(prev => prev.map(s =>
         s.id === segmentId ? { ...s, isTranslating: false } : s
       ))
-      setError(err instanceof Error ? err.message : 'Translation failed')
+      setError(errorMap[msg] || msg || t('error.unknown'))
     }
-  }, [segments, addEntry])
- main
+  }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
   // Manual textarea editing: collapse to single segment, debounce translate
   const handleManualEdit = useCallback((newText: string) => {
@@ -327,7 +335,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   const handleMicToggle = () => {
     if (!micSupported) {
-      setMicWarning('Spracheingabe nicht verfügbar. Bitte prüfen Sie Ihre Browser-Einstellungen und Internetverbindung.')
+      setMicWarning(t('translator.micUnavailable'))
       setTimeout(() => setMicWarning(null), 5000)
       return
     }
@@ -474,9 +482,32 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
+  const handleMicToggleRef = useRef(handleMicToggle)
+  handleMicToggleRef.current = handleMicToggle
+  const handleSendRef = useRef(handleSend)
+  handleSendRef.current = handleSend
+  const isListeningRef = useRef(isListening)
+  isListeningRef.current = isListening
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'm') {
+        e.preventDefault()
+        handleMicToggleRef.current()
+      }
+      if (e.ctrlKey && e.key === 'Enter' && isListeningRef.current) {
+        e.preventDefault()
+        handleSendRef.current()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
+
   // Keyboard shortcuts: Ctrl+Enter → translate now, Escape → clear
   useKeyboardShortcuts({
-    'ctrl+enter': () => { if (sourceText.trim()) doTranslate(sourceText) },
+    'ctrl+enter': () => { if (sourceText.trim()) doTranslateManual(sourceText) },
     'escape': clearAll,
     'ctrl+shift+s': swapLanguages,
   })
@@ -497,7 +528,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             size="sm"
             onClick={() => { setAutoDetect(!autoDetect); if (autoDetect) setDetectedLang(null) }}
             className="mb-0.5 shrink-0 text-xs"
-            title="Sprache automatisch erkennen"
+            aria-pressed={autoDetect}
+            aria-label={t('translator.autoDetect')}
           >
             {t('translator.auto')}
           </Button>
@@ -513,6 +545,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           onClick={swapLanguages}
           className="mb-0.5 shrink-0"
           title={t('translator.swap')}
+          aria-label={t('translator.swap')}
         >
           <ArrowRightLeft className="h-4 w-4" />
         </Button>
@@ -522,7 +555,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={autoSpeak ? 'Auto-Vorlesen aktiv' : 'Auto-Vorlesen aus'}
+          aria-pressed={autoSpeak}
+          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -532,7 +566,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={hdVoice ? 'HD-Stimme aktiv (Chirp 3 HD)' : 'Standard-Stimme (Neural2)'}
+          aria-pressed={hdVoice}
+          aria-label={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
         >
           <span className="text-xs">{hdVoice ? 'HD' : 'SD'}</span>
         </Button>
@@ -542,7 +577,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleStreamMode}
           className="mb-0.5 shrink-0 gap-1.5"
-          title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
+          aria-pressed={streamMode === 'sentence'}
+          aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
         >
           {streamMode === 'sentence' ? <Zap className="h-3.5 w-3.5" /> : <AlignLeft className="h-3.5 w-3.5" />}
           <span className="text-xs">{streamMode === 'sentence' ? t('translator.sentence') : t('translator.paragraph')}</span>
@@ -554,15 +590,50 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             size="sm"
             onClick={toggleFormality}
             className={`mb-0.5 shrink-0 gap-1.5 ${!formalityActive ? 'opacity-50' : ''}`}
-            title={!formalityActive
-              ? 'Sie/Du — Zielsprache wechseln zu DE, FR, ES...'
+            aria-pressed={useInformal}
+            aria-label={!formalityActive
+              ? t('translator.formalityHint')
               : useInformal ? t('translator.informal') : t('translator.formal')}
           >
             {useInformal ? <User className="h-3.5 w-3.5" /> : <UserCheck className="h-3.5 w-3.5" />}
             <span className="text-xs">{useInformal ? t('translator.informal') : t('translator.formal')}</span>
           </Button>
         )}
+        {/* Context Mode Selector */}
+        <div className="relative mb-0.5 shrink-0">
+          <select
+            value={translationContext}
+            onChange={e => {
+              const ctx = e.target.value as TranslationContext
+              setTranslationContext(ctx)
+              localStorage.setItem('translator-context', ctx)
+            }}
+            className="appearance-none bg-secondary text-secondary-foreground text-xs font-medium px-3 py-1.5 pr-6 rounded-full border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+            aria-label={t('context.label')}
+          >
+            {CONTEXT_MODES.map(mode => (
+              <option key={mode.id} value={mode.id}>
+                {mode.icon} {t(mode.i18nKey)}
+              </option>
+            ))}
+          </select>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[10px]">▼</span>
+        </div>
       </div>
+
+      {/* Context Hints */}
+      {translationContext !== 'general' && sourceText && (() => {
+        const hints = getContextHints(sourceText, sourceLang, translationContext)
+        if (hints.length === 0) return null
+        return (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-md">
+            <span className="font-medium">{t('context.label')}:</span>
+            {hints.map((h, i) => (
+              <span key={i} className="px-1.5 py-0.5 bg-background rounded text-[10px]">{h}</span>
+            ))}
+          </div>
+        )
+      })()}
 
       {/* Translation Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -582,7 +653,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
-                  title={!micSupported ? 'Spracheingabe nicht verfügbar' : isListening ? 'Aufnahme stoppen' : t('translator.speechInput')}
+                  aria-pressed={isListening}
+                  aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 </Button>
@@ -594,6 +666,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     onClick={handleSend}
                     className="text-primary"
                     title={t('translator.send')}
+                    aria-label={t('translator.send')}
                   >
                     <Send className="h-4 w-4" />
                   </Button>
@@ -604,18 +677,19 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSpeakSource}
                     title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+                    aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
-                    {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    {sourceSpeech.isSpeaking ? <VolumeX className="h-4 w-4" aria-hidden="true" /> : <Volume2 className="h-4 w-4" aria-hidden="true" />}
                   </Button>
                 )}
                 {activeTtsEngine && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${activeTtsEngine === 'cloud' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}`}>
-                    {activeTtsEngine === 'cloud' ? '\u2601 Cloud' : '\uD83D\uDDA5 Browser'}
+                    {t(activeTtsEngine === 'cloud' ? 'tts.cloud' : 'tts.browser')}
                   </span>
                 )}
                 {sourceText && (
-                  <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')}>
-                    <Trash2 className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')} aria-label={t('translator.delete')}>
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 )}
               </div>
@@ -626,11 +700,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               placeholder={t('translator.placeholder')}
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
- claude/offline-speaker-listener-nhgmf
               aria-label={t('translator.placeholder')}
 
               readOnly={isListening}
- main
             />
             {/* Interim text display during recording */}
             {isListening && interimText && (
@@ -638,24 +710,22 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
             )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
- claude/offline-speaker-listener-nhgmf
-                {sourceText.length} {t('translator.chars')}
-                {sourceText.length === 0 && (
+                {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
+                {sourceText.length === 0 && !interimText && (
                   <span className="hidden sm:inline ml-2 opacity-50">{t('translator.shortcutHint')}</span>
                 )}
-
-                {(sourceText.length + (interimText ? interimText.length + 1 : 0))} {t('translator.chars')}
- main
               </span>
-              {isListening && (
-                <span className="text-xs text-destructive flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  {t('translator.recording')}
-                  {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
-                </span>
-              )}
+              <span aria-live="assertive">
+                {isListening && (
+                  <span className="text-xs text-destructive flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-destructive animate-pulse" aria-hidden="true" />
+                    {t('translator.recording')}
+                    {streamMode === 'paragraph' && <span className="text-muted-foreground ml-1">({t('translator.paragraph')})</span>}
+                  </span>
+                )}
+              </span>
               {(micError || micWarning) && (
-                <span className="text-xs text-destructive">{micError || micWarning}</span>
+                <span className="text-xs text-destructive" role="alert">{micError || micWarning}</span>
               )}
             </div>
           </div>
@@ -675,6 +745,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSpeakTarget}
                     title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+                    aria-label={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
                     {targetSpeech.isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </Button>
@@ -685,8 +756,51 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleCopy}
                     title={t('translator.copy')}
+                    aria-label={t('translator.copy')}
                   >
                     {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                )}
+                {translatedText && toggleFavorite && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleFavorite({ sourceText, translatedText, sourceLang, targetLang })}
+                    aria-label={isFavorite?.(sourceText, targetLang) ? t('favorites.remove') : t('favorites.add')}
+                  >
+                    <Star className={`h-4 w-4 ${isFavorite?.(sourceText, targetLang) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  </Button>
+                )}
+                {translatedText && canRomanize(targetLang) && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPronunciation(!showPronunciation)}
+                    aria-pressed={showPronunciation}
+                    aria-label={showPronunciation ? t('pronunciation.hide') : t('pronunciation.show')}
+                  >
+                    <BookOpenText className={`h-4 w-4 ${showPronunciation ? 'text-primary' : ''}`} />
+                  </Button>
+                )}
+                {translatedText && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={async () => {
+                      if (showAlternatives) {
+                        setShowAlternatives(false)
+                        return
+                      }
+                      setShowAlternatives(true)
+                      setAlternativesLoading(true)
+                      const alts = await fetchAlternatives(sourceText, sourceLang, targetLang)
+                      setAlternatives(alts)
+                      setAlternativesLoading(false)
+                    }}
+                    aria-pressed={showAlternatives}
+                    aria-label={showAlternatives ? t('alternatives.hide') : t('alternatives.show')}
+                  >
+                    <ListTree className={`h-4 w-4 ${showAlternatives ? 'text-primary' : ''}`} />
                   </Button>
                 )}
                 {translatedText && typeof navigator.share === 'function' && (
@@ -694,7 +808,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleShare}
-                    title="Teilen"
+                    aria-label={t('translator.share')}
                   >
                     <Share2 className="h-4 w-4" />
                   </Button>
@@ -710,24 +824,65 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               {segments.length === 0 && !isTranslating ? (
                 <p className="text-muted-foreground/60">{t('translator.result')}</p>
               ) : error && !translatedText ? (
-                <div className="text-destructive text-sm">{error}</div>
+                <div className="text-destructive text-sm" role="alert">{error}</div>
               ) : (
                 <p className="text-foreground">
                   {segments.map((seg, i) => (
                     <span key={seg.id}>
-                      {seg.isTranslating ? (
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <Loader2 className="h-3 w-3 animate-spin inline" />
-                        </span>
-                      ) : (
-                        seg.translatedText
-                      )}
-                      {i < segments.length - 1 && seg.translatedText ? ' ' : ''}
+                      <SegmentDisplay seg={seg} isLast={i === segments.length - 1} />
                     </span>
                   ))}
                 </p>
               )}
             </div>
+            {/* Pronunciation / Romanization */}
+            {showPronunciation && translatedText && canRomanize(targetLang) && (() => {
+              const rom = romanize(translatedText, targetLang)
+              return rom ? (
+                <div className="mt-2 px-1 py-1.5 bg-muted/50 rounded-md">
+                  <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{t('pronunciation.romanization')}</span>
+                  <p className="text-sm text-muted-foreground italic mt-0.5">{rom}</p>
+                </div>
+              ) : null
+            })()}
+            {/* Word Alternatives */}
+            {showAlternatives && (
+              <div className="mt-2 px-1 py-1.5 bg-muted/50 rounded-md">
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{t('alternatives.title')}</span>
+                {alternativesLoading ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">{t('alternatives.loading')}</span>
+                  </div>
+                ) : alternatives.length === 0 ? (
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('alternatives.none')}</p>
+                ) : (
+                  <div className="space-y-1 mt-1">
+                    {alternatives.map((alt, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between gap-2 px-2 py-1 rounded hover:bg-background transition-colors cursor-pointer"
+                        onClick={() => {
+                          // Replace translation with selected alternative
+                          const id = segments.length === 1 ? segments[0].id : `seg_alt_${Date.now()}`
+                          setSegments([{ id, sourceText, translatedText: alt.text, isTranslating: false }])
+                          setShowAlternatives(false)
+                        }}
+                      >
+                        <span className="text-sm" dir={isRTL(targetLang) ? 'rtl' : 'ltr'}>{alt.text}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
+                          alt.match >= 0.8 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                          alt.match >= 0.5 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                          'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        }`}>
+                          {Math.round(alt.match * 100)}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex items-center justify-between border-t border-border pt-2 mt-2">
               <span className="text-xs text-muted-foreground">
                 {translatedText.length} {t('translator.chars')}
@@ -738,14 +893,16 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     <button
                       onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
                       className={`p-1 rounded transition-colors ${feedback === 'up' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      title="Gute Übersetzung"
+                      aria-label={t('translator.goodTranslation')}
+                      aria-pressed={feedback === 'up'}
                     >
                       <ThumbsUp className="h-3 w-3" />
                     </button>
                     <button
                       onClick={() => setFeedback(feedback === 'down' ? null : 'down')}
                       className={`p-1 rounded transition-colors ${feedback === 'down' ? 'text-destructive' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
-                      title="Schlechte Übersetzung"
+                      aria-label={t('translator.badTranslation')}
+                      aria-pressed={feedback === 'down'}
                     >
                       <ThumbsDown className="h-3 w-3" />
                     </button>
@@ -758,10 +915,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     provider === 'cache' ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' :
                     'bg-muted text-muted-foreground'
                   }`}>
-                    {provider === 'google' ? 'Google' :
-                     provider === 'offline' ? 'Offline' :
-                     provider === 'cache' ? 'Cache' :
-                     provider === 'libre' ? 'LibreTranslate' : 'MyMemory'}
+                    {t('provider.' + (provider === 'libre' ? 'libre' : provider === 'mymemory' ? 'myMemory' : provider || 'google'))}
                   </span>
                 )}
                 {matchScore !== null && matchScore > 0 && translatedText && (

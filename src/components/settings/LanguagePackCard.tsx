@@ -3,6 +3,7 @@ import { Download, Trash2, Loader2, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getLanguageByCode } from '@/lib/languages'
+import { useI18n } from '@/context/I18nContext'
 import { preloadModel } from '@/lib/offline/translation-engine'
 import { deleteModel } from '@/lib/offline/model-manager'
 
@@ -23,6 +24,7 @@ export default function LanguagePackCard({
   sizeEstimateMB,
   onStatusChange,
 }: LanguagePackCardProps) {
+  const { t } = useI18n()
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -83,14 +85,14 @@ export default function LanguagePackCard({
         ) : downloaded ? (
           <>
             <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-              <Check className="h-3 w-3" /> Bereit
+              <Check className="h-3 w-3" /> {t('settings.ready')}
             </span>
             <Button
               variant="ghost"
               size="icon"
               onClick={handleDelete}
               disabled={isDeleting}
-              title="Sprachpaket löschen"
+              aria-label={t('settings.deleteLanguagePack')}
               className="h-8 w-8"
             >
               {isDeleting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
@@ -104,7 +106,7 @@ export default function LanguagePackCard({
             className="gap-1.5"
           >
             <Download className="h-3.5 w-3.5" />
-            Laden
+            {t('settings.downloadPack')}
           </Button>
         )}
       </div>

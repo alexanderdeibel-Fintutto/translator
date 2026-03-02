@@ -4,11 +4,14 @@ import { usePresence } from './usePresence'
 import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
+import { useI18n } from '@/context/I18nContext'
 import { translateText } from '@/lib/translate'
 import { markSTTEnd, markTranslateStart, markTranslateEnd, markBroadcast } from '@/lib/latency'
 import { getLanguageByCode } from '@/lib/languages'
 import { generateSessionCode } from '@/lib/session'
 import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
+import { TIERS, type TierId } from '@/lib/tiers'
+import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
 import type { ConnectionConfig } from '@/lib/transport/types'
 
@@ -26,7 +29,8 @@ function getDeviceName(): string {
   return 'Browser'
 }
 
-export function useLiveSession() {
+export function useLiveSession(userTierId: TierId = 'free') {
+  const { t } = useI18n()
   const [role, setRole] = useState<'speaker' | 'listener' | null>(null)
   const [sessionCode, setSessionCode] = useState('')
   const [sourceLanguage, setSourceLanguage] = useState('de')
@@ -37,6 +41,13 @@ export function useLiveSession() {
   const [sessionEnded, setSessionEnded] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [autoTTS, setAutoTTS] = useState(true)
+  const [listenerLimitReached, setListenerLimitReached] = useState(false)
+  const [sessionLimitReached, setSessionLimitReached] = useState(false)
+
+  // Tier config
+  const tierConfig = TIERS[userTierId] ?? TIERS.free
+  const tierRef = useRef(tierConfig)
+  tierRef.current = tierConfig
 
   // Connection mode management
   const connection = useConnectionMode()
@@ -92,6 +103,31 @@ export function useLiveSession() {
     return code
   }, [broadcast, presence, connection])
 
+  // Track listener count and enforce tier limits
+  useEffect(() => {
+    if (role !== 'speaker') return
+    recordPeakListeners(presence.listenerCount)
+
+    const maxListeners = tierRef.current.limits.maxListeners
+    if (maxListeners > 0 && presence.listenerCount > maxListeners) {
+      setListenerLimitReached(true)
+    } else {
+      setListenerLimitReached(false)
+    }
+  }, [role, presence.listenerCount])
+
+  // Track session minutes (tick every 60s while speaker is active)
+  useEffect(() => {
+    if (role !== 'speaker' || !sessionCode) return
+    const interval = setInterval(() => {
+      recordSessionMinute(1)
+      if (!isWithinSessionLimit(tierRef.current.id)) {
+        setSessionLimitReached(true)
+      }
+    }, 60_000) // every 60 seconds
+    return () => clearInterval(interval)
+  }, [role, sessionCode])
+
   // Broadcast session info periodically when listener count changes
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return
@@ -103,57 +139,26 @@ export function useLiveSession() {
     } satisfies SessionInfo)
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
- claude/offline-speaker-listener-nhgmf
-  // Handle speech recognition results (speaker side)
-  const handleSpeechResult = useCallback(async (text: string) => {
-    if (isTranslatingRef.current || !text.trim()) return
-    isTranslatingRef.current = true
-    markSTTEnd()
-
-    try {
-      // Get unique target languages from connected listeners
-      const targetLangs = Object.keys(presence.listenersByLanguage)
-        .filter(lang => lang !== '_speaker')
-
-      if (targetLangs.length === 0) return
-
-      // Translate to all requested languages in parallel
-      markTranslateStart()
-      const results = await Promise.all(
-        targetLangs.map(async (targetLang) => {
-          const result = await translateText(text, sourceLanguage, targetLang)
-          return {
-            id: generateChunkId(),
-            sourceText: text,
-            translatedText: result.translatedText,
-            sourceLang: sourceLanguage,
-            targetLanguage: targetLang,
-            isFinal: true,
-            timestamp: Date.now(),
-          } satisfies TranslationChunk
-        })
-      )
-      markTranslateEnd()
-
-      // Broadcast each translation
-      for (const chunk of results) {
-        broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
-      }
-      markBroadcast()
-
   // Process a single text through translation fan-out
   const processTranslation = useCallback(async (text: string) => {
     // Get unique target languages from connected listeners
-    const targetLangs = Object.keys(presence.listenersByLanguage)
+    let targetLangs = Object.keys(presence.listenersByLanguage)
       .filter(lang => lang !== '_speaker')
 
     if (targetLangs.length === 0) return
 
-    // Translate to all requested languages in parallel
-    const results = await Promise.all(
+    // Enforce language limit per tier (0 = unlimited)
+    const maxLangs = tierRef.current.limits.maxLanguages
+    if (maxLangs > 0 && targetLangs.length > maxLangs) {
+      console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
+      targetLangs = targetLangs.slice(0, maxLangs)
+    }
+
+    // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+    const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
-        return {
+        const chunk: TranslationChunk = {
           id: generateChunkId(),
           sourceText: text,
           translatedText: result.translatedText,
@@ -161,19 +166,29 @@ export function useLiveSession() {
           targetLanguage: targetLang,
           isFinal: true,
           timestamp: Date.now(),
-        } satisfies TranslationChunk
+        }
+        return chunk
       })
     )
 
-    // Broadcast each translation
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
+      .map(r => r.value)
+
+    // Broadcast each successful translation
     for (const chunk of results) {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
- main
 
     // Add to local history (one entry per source text)
     if (results.length > 0) {
       setTranslationHistory(prev => [...prev, results[0]])
+    }
+
+    // Warn if some translations failed
+    const failed = settled.filter(r => r.status === 'rejected')
+    if (failed.length > 0) {
+      console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
@@ -188,7 +203,7 @@ export function useLiveSession() {
       await processTranslation(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : 'Übersetzung fehlgeschlagen')
+      setError(err instanceof Error ? err.message : t('error.translationFailed'))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -228,13 +243,14 @@ export function useLiveSession() {
   }, [broadcast, presence, recognition])
 
   // Detect disconnect during active session and show feedback
+  const disconnectMsg = t('error.connectionLost')
   useEffect(() => {
     if (role && !broadcast.isConnected && !sessionEnded) {
-      setError('Verbindung unterbrochen — wird automatisch wiederhergestellt...')
-    } else if (role && broadcast.isConnected && error === 'Verbindung unterbrochen — wird automatisch wiederhergestellt...') {
+      setError(disconnectMsg)
+    } else if (role && broadcast.isConnected && error === disconnectMsg) {
       setError(null) // Clear disconnect error on reconnect
     }
-  }, [broadcast.isConnected, role, sessionEnded, error])
+  }, [broadcast.isConnected, role, sessionEnded, error, disconnectMsg])
 
   // --- LISTENER ---
 
@@ -359,5 +375,11 @@ export function useLiveSession() {
     listeners: presence.listeners.filter(l => l.targetLanguage !== '_speaker'),
     listenerCount: presence.listeners.filter(l => l.targetLanguage !== '_speaker').length,
     listenersByLanguage: presence.listenersByLanguage,
+
+    // Tier limits
+    listenerLimitReached,
+    sessionLimitReached,
+    maxListeners: tierConfig.limits.maxListeners,
+    maxLanguages: tierConfig.limits.maxLanguages,
   }
 }

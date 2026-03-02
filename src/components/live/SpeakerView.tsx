@@ -49,13 +49,15 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     const durationMs = Date.now() - sessionStartRef.current
     const durationMin = Math.round(durationMs / 60000)
     const sourceLangData = getLanguageByCode(session.sourceLanguage)
-    const connectionLabel = session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'
+    const connectionLabel = session.connectionMode === 'ble' ? t('liveSession.bleDirect') : session.connectionMode === 'local' ? t('liveSession.localNetwork') : t('liveSession.cloudConnection')
     return { now, durationMin, sourceLangData, connectionLabel }
   }, [session.sourceLanguage, session.connectionMode])
 
   const downloadProtocol = useCallback((format: 'txt' | 'md') => {
     const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
     setExportMenuOpen(false)
+
+    const dateStr = now.toLocaleDateString(undefined) + ' ' + now.toLocaleTimeString(undefined)
 
     let protocol: string
     let mimeType: string
@@ -65,44 +67,44 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       // Markdown format
       mimeType = 'text/markdown;charset=utf-8'
       ext = 'md'
-      protocol = `# guidetranslator — Session-Protokoll\n\n`
-      protocol += `| Feld | Wert |\n|------|------|\n`
-      protocol += `| Session | \`${session.sessionCode}\` |\n`
-      protocol += `| Datum | ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')} |\n`
-      protocol += `| Dauer | ${durationMin} Min |\n`
-      protocol += `| Sprache | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
-      protocol += `| Zuhörer | ${session.listenerCount} |\n`
-      protocol += `| Verbindung | ${connectionLabel} |\n\n`
-      protocol += `---\n\n## Übersetzungen\n\n`
+      protocol = `# guidetranslator — ${t('protocol.title')}\n\n`
+      protocol += `| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`
+      protocol += `| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`
+      protocol += `| ${t('protocol.date')} | ${dateStr} |\n`
+      protocol += `| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`
+      protocol += `| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
+      protocol += `| ${t('protocol.listeners')} | ${session.listenerCount} |\n`
+      protocol += `| ${t('protocol.connection')} | ${connectionLabel} |\n\n`
+      protocol += `---\n\n## ${t('protocol.translations')}\n\n`
 
       for (const chunk of session.translationHistory) {
-        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
         protocol += `**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`
         protocol += `> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`
         protocol += `> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`
       }
 
-      protocol += `---\n\n*Erstellt mit [guidetranslator](https://guidetranslator.com)*\n`
+      protocol += `---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`
     } else {
       // Plain text format
       mimeType = 'text/plain;charset=utf-8'
       ext = 'txt'
       protocol = `========================================\n`
-      protocol += `GUIDETRANSLATOR - SESSION-PROTOKOLL\n`
+      protocol += `GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`
       protocol += `========================================\n\n`
-      protocol += `Session-Code: ${session.sessionCode}\n`
-      protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
-      protocol += `Dauer: ${durationMin} Minuten\n`
-      protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
-      protocol += `Zuhörer: ${session.listenerCount}\n`
-      protocol += `Verbindung: ${connectionLabel}\n`
+      protocol += `${t('protocol.session')}: ${session.sessionCode}\n`
+      protocol += `${t('protocol.date')}: ${dateStr}\n`
+      protocol += `${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`
+      protocol += `${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`
+      protocol += `${t('protocol.listeners')}: ${session.listenerCount}\n`
+      protocol += `${t('protocol.connection')}: ${connectionLabel}\n`
       protocol += `\n----------------------------------------\n`
-      protocol += `ÜBERSETZUNGEN\n`
+      protocol += `${t('protocol.translations').toUpperCase()}\n`
       protocol += `----------------------------------------\n\n`
 
       for (const chunk of session.translationHistory) {
-        const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined)
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
         protocol += `[${time}]\n`
         protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
@@ -110,15 +112,15 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       }
 
       protocol += `----------------------------------------\n`
-      protocol += `Ende des Protokolls\n`
-      protocol += `Erstellt mit guidetranslator.com\n`
+      protocol += `${t('protocol.endOfProtocol')}\n`
+      protocol += `${t('protocol.createdWith')} guidetranslator.com\n`
     }
 
     const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
+    a.download = `${t('protocol.filename')}-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
     URL.revokeObjectURL(url)
   }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
@@ -137,7 +139,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           />
           {(isAdvertising || isBleMode) && (
             <span className="flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
-              <Bluetooth className="h-3 w-3" />
+              <Bluetooth className="h-3 w-3" aria-hidden="true" />
               {isBleMode ? 'GATT' : 'BLE'}
             </span>
           )}
@@ -146,9 +148,9 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
       {/* iOS manual hotspot instruction */}
       {session.hotspotInfo?.manualHotspotRequired && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm">
-          <WifiOff className="h-4 w-4 shrink-0" />
-          <span>Bitte aktiviere den <strong>Persönlichen Hotspot</strong> in den Einstellungen</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm" role="alert">
+          <WifiOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{t('live.hotspotInstruction')}</span>
         </div>
       )}
 
@@ -179,7 +181,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
               <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
               <p className="text-xs text-muted-foreground">
-                Listener finden diese Session automatisch per Bluetooth
+                {t('live.bleAutoDiscovery')}
               </p>
             </div>
           ) : (
@@ -227,16 +229,18 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
                   <button
                     onClick={() => downloadProtocol('txt')}
                     className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportText')}
                   >
-                    <Download className="h-3.5 w-3.5" />
-                    Text (.txt)
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportText')}
                   </button>
                   <button
                     onClick={() => downloadProtocol('md')}
                     className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportMarkdown')}
                   >
-                    <FileText className="h-3.5 w-3.5" />
-                    Markdown (.md)
+                    <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportMarkdown')}
                   </button>
                 </div>
               )}
@@ -286,7 +290,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               {latency.avg && (
                 <>
                   <span className="text-muted-foreground/30">|</span>
-                  <span title="Durchschnitt">ø {latency.avg.totalMs.toFixed(0)}ms</span>
+                  <span>ø {latency.avg.totalMs.toFixed(0)}ms</span>
                 </>
               )}
             </div>
@@ -300,7 +304,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       </div>
 
       {session.error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
           {session.error}
         </div>
       )}

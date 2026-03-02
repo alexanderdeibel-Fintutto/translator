@@ -16,12 +16,12 @@ export default function NotFoundPage() {
       </div>
       <div className="flex gap-3">
         <Button variant="outline" onClick={() => window.history.back()} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           {t('notFound.back')}
         </Button>
         <Button asChild className="gap-2">
           <Link to="/">
-            <Home className="h-4 w-4" />
+            <Home className="h-4 w-4" aria-hidden="true" />
             {t('notFound.home')}
           </Link>
         </Button>

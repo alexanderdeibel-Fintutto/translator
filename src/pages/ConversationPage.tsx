@@ -8,6 +8,8 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis'
 import { useI18n } from '@/context/I18nContext'
 
+const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
+
 interface Message {
   id: string
   speaker: 'top' | 'bottom'
@@ -25,6 +27,7 @@ export default function ConversationPage() {
   const [isTranslating, setIsTranslating] = useState(false)
   const [currentTranscript, setCurrentTranscript] = useState('')
   const [autoSpeak, setAutoSpeak] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const topRecognition = useSpeechRecognition()
   const bottomRecognition = useSpeechRecognition()
@@ -45,6 +48,7 @@ export default function ConversationPage() {
     const srcLang = side === 'top' ? topLang : bottomLang
     const tgtLang = side === 'top' ? bottomLang : topLang
 
+    setError(null)
     try {
       const result = await translateText(text, srcLang, tgtLang)
       const msg: Message = {
@@ -61,7 +65,8 @@ export default function ConversationPage() {
         ttsRef.current(result.translatedText, lang?.speechCode || tgtLang)
       }
     } catch (err) {
-      console.error('[Conversation] Translation failed:', err)
+      const msg = err instanceof Error ? err.message : ''
+      setError(msg === 'OFFLINE_NO_MODEL' ? t('error.offlineNoModel') : t('error.allProvidersFailed'))
     } finally {
       isTranslatingRef.current = false
       setIsTranslating(false)
@@ -128,16 +133,18 @@ export default function ConversationPage() {
 
       {/* Language bar */}
       <div className="flex items-end justify-center gap-3">
-        <LanguageSelector value={topLang} onChange={setTopLang} label="Person 1" />
-        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0">
+        <LanguageSelector value={topLang} onChange={setTopLang} label={t('conversation.person1')} />
+        <Button variant="outline" size="icon" onClick={swapLanguages} className="mb-0.5 shrink-0" aria-label={t('translator.swap')}>
           <ArrowUpDown className="h-4 w-4" />
         </Button>
-        <LanguageSelector value={bottomLang} onChange={setBottomLang} label="Person 2" />
+        <LanguageSelector value={bottomLang} onChange={setBottomLang} label={t('conversation.person2')} />
         <Button
           variant={autoSpeak ? 'default' : 'outline'}
           size="sm"
           onClick={() => setAutoSpeak(!autoSpeak)}
           className="mb-0.5 shrink-0 gap-1.5"
+          aria-pressed={autoSpeak}
+          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
           {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
           <span className="text-xs">{t('translator.auto')}</span>
@@ -167,8 +174,8 @@ export default function ConversationPage() {
               disabled={activeSide === 'bottom' || isTranslating}
               className="gap-1.5 rounded-full"
             >
-              {activeSide === 'top' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              {activeSide === 'top' ? 'Stop' : t('conversation.speak')}
+              {activeSide === 'top' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
+              {activeSide === 'top' ? t('conversation.stop') : t('conversation.speak')}
             </Button>
           </div>
 
@@ -178,7 +185,7 @@ export default function ConversationPage() {
               const isOwnMessage = msg.speaker === 'top'
               const originalDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
-              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+              const time = shortTimeFormat.format(new Date(msg.timestamp))
 
               return (
                 <div
@@ -221,8 +228,9 @@ export default function ConversationPage() {
             <button
               onClick={clearMessages}
               className="relative bg-background px-3 py-1 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+              aria-label={t('conversation.restart')}
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3 w-3" aria-hidden="true" />
               {t('conversation.restart')}
             </button>
           )}
@@ -247,8 +255,8 @@ export default function ConversationPage() {
               disabled={activeSide === 'top' || isTranslating}
               className="gap-1.5 rounded-full"
             >
-              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              {activeSide === 'bottom' ? 'Stop' : t('conversation.speak')}
+              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
+              {activeSide === 'bottom' ? t('conversation.stop') : t('conversation.speak')}
             </Button>
           </div>
 
@@ -258,7 +266,7 @@ export default function ConversationPage() {
               const isOwnMessage = msg.speaker === 'bottom'
               const originalDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
-              const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+              const time = shortTimeFormat.format(new Date(msg.timestamp))
 
               return (
                 <div
@@ -295,10 +303,17 @@ export default function ConversationPage() {
         </div>
       </div>
 
-      {isTranslating && (
-        <p className="text-center text-sm text-muted-foreground animate-pulse">
-          {t('conversation.translating')}
-        </p>
+      <div aria-live="polite">
+        {isTranslating && (
+          <p className="text-center text-sm text-muted-foreground animate-pulse">
+            {t('conversation.translating')}
+          </p>
+        )}
+      </div>
+      {error && (
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center" role="alert">
+          {error}
+        </div>
       )}
     </div>
   )

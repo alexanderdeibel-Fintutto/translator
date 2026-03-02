@@ -6,6 +6,7 @@ import LanguageChips from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
+import { useI18n } from '@/context/I18nContext'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -15,6 +16,7 @@ interface ListenerViewProps {
 }
 
 export default function ListenerView({ session }: ListenerViewProps) {
+  const { t } = useI18n()
   const langData = getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
@@ -22,11 +24,11 @@ export default function ListenerView({ session }: ListenerViewProps) {
   if (session.sessionEnded) {
     return (
       <Card className="p-8 text-center space-y-4">
-        <p className="text-xl font-semibold">Session beendet</p>
+        <p className="text-xl font-semibold">{t('live.sessionEnded')}</p>
         <p className="text-muted-foreground">
-          Der Speaker hat die Live-Übersetzung beendet.
+          {t('live.sessionEndedDesc')}
         </p>
-        <Button onClick={session.leaveSession}>Zurück</Button>
+        <Button onClick={session.leaveSession}>{t('live.back')}</Button>
       </Card>
     )
   }
@@ -37,16 +39,20 @@ export default function ListenerView({ session }: ListenerViewProps) {
       <div
         className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-6 cursor-pointer"
         onClick={() => setFullscreen(false)}
+        role="region"
+        aria-label={t('live.fullscreen')}
       >
         <div className="absolute top-4 right-4 flex items-center gap-2">
           {session.isConnected && (
             <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+              <span className="sr-only">{t('live.connected')}</span>
             </span>
           )}
           <button
             onClick={(e) => { e.stopPropagation(); setFullscreen(false) }}
             className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label={t('live.closeFullscreen')}
           >
             <Minimize2 className="h-5 w-5" />
           </button>
@@ -59,7 +65,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
             </p>
           ) : (
             <p className="text-2xl text-white/30">
-              Warte auf Übersetzung...
+              {t('live.waitingTranslation')}
             </p>
           )}
         </div>
@@ -96,10 +102,10 @@ export default function ListenerView({ session }: ListenerViewProps) {
 
       {/* Connection status bar */}
       {!session.isConnected && !session.isResolvingConnection && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm">
-          <WifiOff className="h-4 w-4 shrink-0" />
-          <span>Verbindung unterbrochen — Versuche erneut zu verbinden...</span>
-          <Loader2 className="h-4 w-4 animate-spin ml-auto shrink-0" />
+        <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm" role="alert">
+          <WifiOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{t('live.disconnected')}</span>
+          <Loader2 className="h-4 w-4 animate-spin ml-auto shrink-0" aria-hidden="true" />
         </div>
       )}
 
@@ -109,38 +115,40 @@ export default function ListenerView({ session }: ListenerViewProps) {
         <button
           onClick={() => setFullscreen(true)}
           className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          title="Vollbild-Untertitel"
+          aria-label={t('live.fullscreen')}
         >
           <Maximize2 className="h-4 w-4" />
         </button>
 
-        {session.currentTranslation ? (
-          <div className="text-center space-y-2 w-full">
-            <p className="text-2xl md:text-3xl font-medium leading-relaxed break-words">
-              {session.currentTranslation}
-            </p>
-            {session.isSpeaking && (
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <Volume2 className="h-4 w-4 animate-pulse" />
-                Wird vorgelesen...
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="text-center text-muted-foreground space-y-3">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto opacity-40" />
-            <p className="text-lg">Warte auf Übersetzung...</p>
-            <p className="text-sm">
-              Session <span className="font-mono font-bold">{session.sessionCode}</span>
-            </p>
-            {session.isConnected && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                Verbunden
-              </span>
-            )}
-          </div>
-        )}
+        <div aria-live="polite">
+          {session.currentTranslation ? (
+            <div className="text-center space-y-2 w-full">
+              <p className="text-2xl md:text-3xl font-medium leading-relaxed break-words">
+                {session.currentTranslation}
+              </p>
+              {session.isSpeaking && (
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Volume2 className="h-4 w-4 animate-pulse" aria-hidden="true" />
+                  {t('live.speaking')}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center text-muted-foreground space-y-3">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto opacity-40" aria-hidden="true" />
+              <p className="text-lg">{t('live.waitingTranslation')}</p>
+              <p className="text-sm">
+                Session <span className="font-mono font-bold">{session.sessionCode}</span>
+              </p>
+              {session.isConnected && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+                  {t('live.connected')}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </Card>
 
       {/* Live subtitles strip (when enabled) */}
@@ -165,9 +173,11 @@ export default function ListenerView({ session }: ListenerViewProps) {
           size="sm"
           onClick={() => session.setAutoTTS(!session.autoTTS)}
           className="gap-1.5"
+          aria-pressed={session.autoTTS}
+          aria-label={t('live.autoSpeak')}
         >
           {session.autoTTS ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
-          Auto-Vorlesen
+          {t('live.autoSpeak')}
         </Button>
 
         <Button
@@ -175,9 +185,11 @@ export default function ListenerView({ session }: ListenerViewProps) {
           size="sm"
           onClick={() => setSubtitleMode(!subtitleMode)}
           className="gap-1.5"
+          aria-pressed={subtitleMode}
+          aria-label={t('live.subtitles')}
         >
           <Subtitles className="h-3.5 w-3.5" />
-          Untertitel
+          {t('live.subtitles')}
         </Button>
 
         <div className="flex-1" />
@@ -186,15 +198,15 @@ export default function ListenerView({ session }: ListenerViewProps) {
           {langData?.flag} {langData?.name}
         </span>
 
-        <Button variant="ghost" size="sm" onClick={session.leaveSession} className="gap-1.5 text-destructive">
+        <Button variant="ghost" size="sm" onClick={session.leaveSession} className="gap-1.5 text-destructive" aria-label={t('live.leave')}>
           <LogOut className="h-3.5 w-3.5" />
-          Verlassen
+          {t('live.leave')}
         </Button>
       </div>
 
       {/* Language selection */}
       <Card className="p-4">
-        <p className="text-sm font-medium mb-3">Zielsprache wählen</p>
+        <p className="text-sm font-medium mb-3">{t('live.chooseTargetLang')}</p>
         <LanguageChips
           selected={session.selectedLanguage}
           onSelect={session.selectLanguage}

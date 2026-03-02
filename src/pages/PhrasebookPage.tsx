@@ -18,6 +18,7 @@ export default function PhrasebookPage() {
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState<string | null>(null)
   const [batchProgress, setBatchProgress] = useState<{ done: number; total: number } | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const tts = useSpeechSynthesis()
 
   const pack = getMigrantPhrases()
@@ -38,6 +39,7 @@ export default function PhrasebookPage() {
     }
 
     setLoading(text)
+    setError(null)
     try {
       const result = await translateText(text, 'de', targetLang)
       setTranslations(prev => ({ ...prev, [key]: result.translatedText }))
@@ -45,8 +47,9 @@ export default function PhrasebookPage() {
       // Auto-speak
       const lang = getLanguageByCode(targetLang)
       tts.speak(result.translatedText, lang?.speechCode || targetLang)
-    } catch {
-      // ignore
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      setError(msg === 'OFFLINE_NO_MODEL' ? t('error.offlineNoModel') : t('error.allProvidersFailed'))
     } finally {
       setLoading(null)
     }
@@ -97,6 +100,7 @@ export default function PhrasebookPage() {
           <button
             key={lang.code}
             onClick={() => setTargetLang(lang.code)}
+            aria-pressed={targetLang === lang.code}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               targetLang === lang.code
                 ? 'bg-primary text-primary-foreground'
@@ -127,10 +131,17 @@ export default function PhrasebookPage() {
               activeCategory === cat ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground hover:bg-accent/50'
             }`}
           >
-            {cat}
+            {t(cat)}
           </button>
         ))}
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center" role="alert">
+          {error}
+        </div>
+      )}
 
       {/* Batch translate */}
       {untranslatedCount > 0 && (
@@ -144,12 +155,12 @@ export default function PhrasebookPage() {
           >
             {batchProgress ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                 {batchProgress.done}/{batchProgress.total}
               </>
             ) : (
               <>
-                <Languages className="h-3.5 w-3.5" />
+                <Languages className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('phrasebook.translateAll')} ({untranslatedCount})
               </>
             )}
@@ -174,13 +185,13 @@ export default function PhrasebookPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground font-medium">
-                      {phrase.category}
+                      {t(phrase.category)}
                     </span>
                   </div>
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" aria-hidden="true" />
                   ) : (
-                    <Volume2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <Volume2 className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                   )}
                 </div>
 
@@ -202,7 +213,7 @@ export default function PhrasebookPage() {
 
       {filteredPhrases.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" aria-hidden="true" />
           <p>{t('phrasebook.empty')}</p>
         </div>
       )}

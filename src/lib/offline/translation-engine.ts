@@ -3,6 +3,7 @@
 
 import type { TranslationResult } from '../translate'
 import { getModelId, canPivotTranslate, isModelDownloaded, recordModelDownload, OPUS_MT_MODELS } from './model-manager'
+import { getTranslation, type UILanguage } from '@/lib/i18n'
 
 // Lazy-loaded pipeline instances (one per model)
 const pipelines = new Map<string, unknown>()
@@ -82,7 +83,10 @@ export async function translateOffline(
     }
   }
 
-  throw new Error(`Keine Offline-Übersetzung verfügbar für ${sourceLang} → ${targetLang}`)
+  const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+  const msg = getTranslation(uiLang, 'error.noOfflineTranslation')
+    .replace('{src}', sourceLang).replace('{tgt}', targetLang)
+  throw new Error(msg)
 }
 
 /**

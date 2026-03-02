@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check, Upload, FileDown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
@@ -13,6 +13,10 @@ const sttEngine = () => import('@/lib/offline/stt-engine')
 import { checkOfflineSupport, isIOSSafariNotStandalone } from '@/lib/offline/storage-manager'
 import { getGoogleApiKey, setGoogleApiKey, hasGoogleApiKey } from '@/lib/api-key'
 import { useI18n } from '@/context/I18nContext'
+import { toast } from 'sonner'
+
+const HISTORY_KEY = 'fintutto-translator-history'
+const FAVORITES_KEY = 'fintutto-translator-favorites'
 
 export default function SettingsPage() {
   const { t } = useI18n()
@@ -24,6 +28,7 @@ export default function SettingsPage() {
   const [whisperReady, setWhisperReady] = useState(false)
   const [whisperDownloading, setWhisperDownloading] = useState(false)
   const [whisperProgress, setWhisperProgress] = useState(0)
+  const [whisperError, setWhisperError] = useState<string | null>(null)
   const [offlineSupport, setOfflineSupport] = useState<ReturnType<typeof checkOfflineSupport> | null>(null)
   const [showSafariHint, setShowSafariHint] = useState(false)
   const [apiKey, setApiKey] = useState('')
@@ -40,16 +45,16 @@ export default function SettingsPage() {
 
   async function loadData() {
     const { isWhisperAvailable } = await sttEngine()
-    const [pairs, cacheStats, ttsStats, whisper] = await Promise.all([
+    const [pairs, cacheStats, ttsStats, whisper] = await Promise.allSettled([
       getLanguagePairStatus(),
       getCacheStats(),
       getTTSCacheStats(),
       isWhisperAvailable(),
     ])
-    setLanguagePairs(pairs)
-    setTranslationCacheCount(cacheStats.entryCount)
-    setTtsCacheCount(ttsStats.entryCount)
-    setWhisperReady(whisper)
+    if (pairs.status === 'fulfilled') setLanguagePairs(pairs.value)
+    if (cacheStats.status === 'fulfilled') setTranslationCacheCount(cacheStats.value.entryCount)
+    if (ttsStats.status === 'fulfilled') setTtsCacheCount(ttsStats.value.entryCount)
+    if (whisper.status === 'fulfilled') setWhisperReady(whisper.value)
   }
 
   const handleRefresh = async () => {
@@ -76,16 +81,95 @@ export default function SettingsPage() {
   const handleDownloadWhisper = async () => {
     setWhisperDownloading(true)
     setWhisperProgress(0)
+    setWhisperError(null)
     try {
       const { preloadWhisper } = await sttEngine()
       await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
       setWhisperReady(true)
     } catch (err) {
       console.error('[Settings] Whisper download failed:', err)
+      setWhisperError(err instanceof Error ? err.message : t('error.unknown'))
     } finally {
       setWhisperDownloading(false)
     }
   }
+
+  // Export / Import helpers
+  const exportData = useCallback((type: 'favorites' | 'history' | 'all', format: 'json' | 'csv') => {
+    const favs = localStorage.getItem(FAVORITES_KEY)
+    const hist = localStorage.getItem(HISTORY_KEY)
+
+    if (format === 'json') {
+      let data: Record<string, unknown>
+      if (type === 'all') {
+        data = {
+          favorites: favs ? JSON.parse(favs) : [],
+          history: hist ? JSON.parse(hist) : [],
+          exportedAt: new Date().toISOString(),
+          version: '3.0',
+        }
+      } else {
+        const raw = type === 'favorites' ? favs : hist
+        data = { [type]: raw ? JSON.parse(raw) : [], exportedAt: new Date().toISOString(), version: '3.0' }
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      downloadBlob(blob, `translator-${type}-${new Date().toISOString().slice(0, 10)}.json`)
+    } else {
+      const raw = (type === 'favorites' ? favs : hist)
+      const entries: Array<{ sourceText: string; translatedText: string; sourceLang: string; targetLang: string; timestamp?: number }> = raw ? JSON.parse(raw) : []
+      const header = 'sourceText,translatedText,sourceLang,targetLang,timestamp'
+      const rows = entries.map(e =>
+        [e.sourceText, e.translatedText, e.sourceLang, e.targetLang, e.timestamp || '']
+          .map(v => `"${String(v).replace(/"/g, '""')}"`)
+          .join(',')
+      )
+      const csv = [header, ...rows].join('\n')
+      const blob = new Blob([csv], { type: 'text/csv' })
+      downloadBlob(blob, `translator-${type}-${new Date().toISOString().slice(0, 10)}.csv`)
+    }
+  }, [])
+
+  function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string)
+        let count = 0
+        if (data.favorites && Array.isArray(data.favorites)) {
+          const existing = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]')
+          const merged = [...data.favorites, ...existing]
+          // Deduplicate by id
+          const unique = merged.filter((v: { id: string }, i: number, a: { id: string }[]) => a.findIndex(x => x.id === v.id) === i)
+          localStorage.setItem(FAVORITES_KEY, JSON.stringify(unique))
+          count += data.favorites.length
+        }
+        if (data.history && Array.isArray(data.history)) {
+          const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+          const merged = [...data.history, ...existing]
+          const unique = merged.filter((v: { id: string }, i: number, a: { id: string }[]) => a.findIndex(x => x.id === v.id) === i)
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(unique))
+          count += data.history.length
+        }
+        toast.success(t('export.importSuccess').replace('{count}', String(count)))
+      } catch {
+        toast.error(t('export.importError'))
+      }
+    }
+    reader.readAsText(file)
+    // Reset so the same file can be imported again
+    e.target.value = ''
+  }, [t])
 
   // Group language pairs by source language for better display
   const groupedPairs = languagePairs.reduce((acc, pair) => {
@@ -107,10 +191,9 @@ export default function SettingsPage() {
         <Card className="border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30">
           <CardContent className="pt-4">
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              <strong>Tipp für iOS Safari:</strong> Füge diese App zum Home-Bildschirm hinzu, damit deine
-              Offline-Daten nicht nach 7 Tagen gelöscht werden. Tippe auf{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Teilen ↑</span> →{' '}
-              <span className="inline-block px-1 bg-amber-200/50 rounded">Zum Home-Bildschirm</span>.
+              <strong>{t('settings.safariHintTitle')}</strong> {t('settings.safariHintText')}{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintShare')}</span> →{' '}
+              <span className="inline-block px-1 bg-amber-200/50 rounded">{t('settings.safariHintHome')}</span>.
             </p>
           </CardContent>
         </Card>
@@ -174,8 +257,8 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Key className="h-4 w-4" />
-            Google Cloud API-Key
+            <Key className="h-4 w-4" aria-hidden="true" />
+            {t('settings.apiKey')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -191,6 +274,7 @@ export default function SettingsPage() {
                 onChange={e => setApiKey(e.target.value)}
                 placeholder="AIza..."
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm pr-10 font-mono"
+                aria-label={t('settings.apiKey')}
               />
               <button
                 type="button"
@@ -218,7 +302,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4" aria-hidden="true" />
             {t('settings.offlineLangs')}
           </CardTitle>
         </CardHeader>
@@ -251,7 +335,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Mic className="h-4 w-4" />
+            <Mic className="h-4 w-4" aria-hidden="true" />
             {t('settings.whisper')}
           </CardTitle>
         </CardHeader>
@@ -278,11 +362,99 @@ export default function SettingsPage() {
               <span className="text-xs text-muted-foreground">{whisperProgress}%</span>
             </div>
           ) : (
-            <Button variant="outline" size="sm" onClick={handleDownloadWhisper} className="gap-1.5">
-              <Download className="h-3.5 w-3.5" />
-              {t('settings.whisperDownload')}
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={handleDownloadWhisper} className="gap-1.5">
+                <Download className="h-3.5 w-3.5" />
+                {t('settings.whisperDownload')}
+              </Button>
+              {whisperError && (
+                <p className="text-xs text-destructive mt-2" role="alert">{whisperError}</p>
+              )}
+            </>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Export / Import */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <FileDown className="h-4 w-4" aria-hidden="true" />
+            {t('export.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">{t('export.subtitle')}</p>
+
+          {/* Export buttons */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('favorites', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.favorites')} (JSON)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('history', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.history')} (JSON)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('favorites', 'csv')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.favorites')} (CSV)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('history', 'csv')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.history')} (CSV)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('all', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.all')}
+            </Button>
+          </div>
+
+          {/* Import */}
+          <div className="border-t pt-3 space-y-2">
+            <p className="text-sm font-medium">{t('export.importData')}</p>
+            <p className="text-xs text-muted-foreground">{t('export.importDesc')}</p>
+            <label className="inline-flex items-center gap-1.5 cursor-pointer">
+              <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                <span>
+                  <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t('export.importData')}
+                </span>
+              </Button>
+              <input
+                type="file"
+                accept=".json"
+                className="sr-only"
+                onChange={handleImport}
+                aria-label={t('export.importData')}
+              />
+            </label>
+          </div>
         </CardContent>
       </Card>
 
@@ -290,7 +462,7 @@ export default function SettingsPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
             {t('settings.cache')}
           </CardTitle>
         </CardHeader>

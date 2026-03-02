@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal, Users, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
@@ -8,10 +8,18 @@ import SessionCodeInput from '@/components/live/SessionCodeInput'
 import { isHotspotSupported, canCreateHotspotProgrammatically } from '@/lib/hotspot-utils'
 import { isBleTransportAvailable } from '@/lib/ble-utils'
 import { useBleScanner } from '@/hooks/useBleDiscovery'
+import { useI18n } from '@/context/I18nContext'
+import { useTierId, useTier } from '@/context/UserContext'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
+import { hasFeature } from '@/lib/tiers'
 import type { ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveLandingPage() {
+  const { t } = useI18n()
   const navigate = useNavigate()
+  const tierId = useTierId()
+  const tier = useTier()
+  const canBroadcast = hasFeature(tierId, 'broadcasting')
   const [sourceLang, setSourceLang] = useState('de')
   const [connectionMode, setConnectionMode] = useState<ConnectionMode>('cloud')
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
@@ -59,10 +67,33 @@ export default function LiveLandingPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Live-Übersetzung</h1>
+        <h1 className="text-3xl font-bold">{t('liveLanding.title')}</h1>
         <p className="text-muted-foreground">
-          Ein Speaker spricht — alle Listener hören die Übersetzung in ihrer Sprache.
+          {t('liveLanding.subtitle')}
         </p>
+      </div>
+
+      {/* Group Session Banner */}
+      <div className="bg-gradient-to-r from-violet-50 to-blue-50 dark:from-violet-950/20 dark:to-blue-950/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
+            <Users className="h-5 w-5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm">{t('group.title')}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('group.subtitle')}</p>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Globe className="h-3 w-3" aria-hidden="true" />
+                45 {t('translator.languages')}
+              </span>
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Radio className="h-3 w-3" aria-hidden="true" />
+                1→N Broadcast
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -70,23 +101,23 @@ export default function LiveLandingPage() {
         <Card className="p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Radio className="h-5 w-5 text-primary" />
+              <Radio className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="font-semibold">Speaker</h2>
-              <p className="text-sm text-muted-foreground">Session erstellen</p>
+              <h2 className="font-semibold">{t('liveLanding.speaker')}</h2>
+              <p className="text-sm text-muted-foreground">{t('liveLanding.createSession')}</p>
             </div>
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Du sprichst und deine Worte werden automatisch in alle Sprachen deiner Listener übersetzt.
+            {t('liveLanding.speakerDesc')}
           </p>
 
-          <LanguageSelector value={sourceLang} onChange={setSourceLang} label="Ich spreche" />
+          <LanguageSelector value={sourceLang} onChange={setSourceLang} label={t('liveLanding.iSpeak')} />
 
           {/* Connection mode selection */}
           <div className="space-y-2">
-            <p className="text-sm font-medium">Verbindung</p>
+            <p className="text-sm font-medium">{t('liveLanding.connection')}</p>
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setConnectionMode('cloud')}
@@ -96,13 +127,13 @@ export default function LiveLandingPage() {
                     : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Cloud className="h-4 w-4" />
-                Cloud
+                <Cloud className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnCloud')}
               </button>
               <button
                 onClick={() => hotspotAvailable && setConnectionMode('hotspot')}
                 disabled={!hotspotAvailable}
-                title={!hotspotAvailable ? 'Nur auf Mobilgeräten verfügbar' : undefined}
+                title={!hotspotAvailable ? t('liveLanding.mobileOnly') : undefined}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
                   !hotspotAvailable
                     ? 'border-border text-muted-foreground/40 cursor-not-allowed'
@@ -111,13 +142,13 @@ export default function LiveLandingPage() {
                       : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Smartphone className="h-4 w-4" />
-                Hotspot
+                <Smartphone className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnHotspot')}
               </button>
               <button
                 onClick={() => bleTransportAvailable && setConnectionMode('ble')}
                 disabled={!bleTransportAvailable}
-                title={!bleTransportAvailable ? 'Nur auf Mobilgeräten verfügbar' : undefined}
+                title={!bleTransportAvailable ? t('liveLanding.mobileOnly') : undefined}
                 className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
                   !bleTransportAvailable
                     ? 'border-border text-muted-foreground/40 cursor-not-allowed'
@@ -126,8 +157,8 @@ export default function LiveLandingPage() {
                       : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Bluetooth className="h-4 w-4" />
-                BLE
+                <Bluetooth className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnBle')}
               </button>
               <button
                 onClick={() => setConnectionMode('local')}
@@ -137,8 +168,8 @@ export default function LiveLandingPage() {
                     : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Wifi className="h-4 w-4" />
-                Router
+                <Wifi className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnRouter')}
               </button>
             </div>
 
@@ -146,15 +177,15 @@ export default function LiveLandingPage() {
             {connectionMode === 'hotspot' && (
               <div className="space-y-1.5 p-3 rounded-lg bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-800">
                 <p className="text-xs font-medium text-sky-700 dark:text-sky-400">
-                  Dein Handy wird zum WLAN-Hotspot
+                  {t('liveLanding.hotspotTitle')}
                 </p>
                 <p className="text-[10px] text-muted-foreground">
                   {canCreateHotspotProgrammatically()
-                    ? 'Der Hotspot wird automatisch erstellt. Listener scannen einen QR-Code um sich zu verbinden. Kein Internet nötig.'
-                    : 'Bitte aktiviere den Persönlichen Hotspot in den Einstellungen. Der Relay-Server startet automatisch auf deinem Gerät.'}
+                    ? t('liveLanding.hotspotAutoDesc')
+                    : t('liveLanding.hotspotManualDesc')}
                 </p>
                 <p className="text-[10px] text-muted-foreground/60">
-                  Max. 8-10 Listener, Reichweite ca. 20-30m
+                  {t('liveLanding.hotspotLimit')}
                 </p>
               </div>
             )}
@@ -163,13 +194,13 @@ export default function LiveLandingPage() {
             {connectionMode === 'ble' && (
               <div className="space-y-1.5 p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
                 <p className="text-xs font-medium text-blue-700 dark:text-blue-400">
-                  Direkte Bluetooth-Verbindung
+                  {t('liveLanding.bleTitle')}
                 </p>
                 <p className="text-[10px] text-muted-foreground">
-                  Übersetzungen werden direkt per Bluetooth an Listener gesendet. Kein WLAN, kein Internet nötig.
+                  {t('liveLanding.bleDesc')}
                 </p>
                 <p className="text-[10px] text-muted-foreground/60">
-                  Max. 5-7 Listener, Reichweite ca. 10-30m
+                  {t('liveLanding.bleLimit')}
                 </p>
               </div>
             )}
@@ -178,7 +209,7 @@ export default function LiveLandingPage() {
             {connectionMode === 'local' && (
               <div className="space-y-1.5">
                 <label className="text-xs text-muted-foreground">
-                  Relay-Server Adresse
+                  {t('liveLanding.relayAddress')}
                 </label>
                 <input
                   type="text"
@@ -188,40 +219,44 @@ export default function LiveLandingPage() {
                   placeholder="ws://192.168.8.1:8765"
                 />
                 <p className="text-[10px] text-muted-foreground/60">
-                  Adresse des Relay-Servers auf dem portablen WiFi-Router
+                  {t('liveLanding.relayAddressHint')}
                 </p>
               </div>
             )}
           </div>
 
-          <Button onClick={handleCreate} className="w-full">
-            Session starten
-          </Button>
+          {canBroadcast ? (
+            <Button onClick={handleCreate} className="w-full">
+              {t('liveLanding.startSession')}
+            </Button>
+          ) : (
+            <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Live-Broadcasting" />
+          )}
         </Card>
 
         {/* Listener */}
         <Card className="p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Headphones className="h-5 w-5 text-primary" />
+              <Headphones className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="font-semibold">Listener</h2>
-              <p className="text-sm text-muted-foreground">Session beitreten</p>
+              <h2 className="font-semibold">{t('liveLanding.listener')}</h2>
+              <p className="text-sm text-muted-foreground">{t('liveLanding.joinSession')}</p>
             </div>
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Scanne den QR-Code des Speakers oder gib den Session-Code ein.
+            {t('liveLanding.listenerDesc')}
           </p>
 
           {/* BLE discovered sessions */}
           {bleScanner.sessions.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                 <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
-                  Sessions in der Nähe
+                  {t('liveLanding.nearbySessions')}
                 </p>
               </div>
               <div className="space-y-1.5">
@@ -248,7 +283,7 @@ export default function LiveLandingPage() {
                           </span>
                         </div>
                         <span className="text-xs text-primary font-medium">
-                          Beitreten
+                          {t('liveLanding.join')}
                         </span>
                       </button>
                     )
@@ -260,8 +295,8 @@ export default function LiveLandingPage() {
           {/* BLE scanning indicator */}
           {bleScanner.isScanning && bleScanner.sessions.length === 0 && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
-              <Bluetooth className="h-3 w-3 animate-pulse" />
-              <span>Suche nach Sessions in der Nähe...</span>
+              <Bluetooth className="h-3 w-3 animate-pulse" aria-hidden="true" />
+              <span>{t('liveLanding.scanning')}</span>
             </div>
           )}
 
