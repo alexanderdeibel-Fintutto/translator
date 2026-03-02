@@ -265,7 +265,7 @@ export default function CameraTranslatePage() {
       {/* Empty state hint */}
       {!previewUrl && !error && (
         <div className="text-center py-8 space-y-2">
-          <Camera className="h-12 w-12 mx-auto text-muted-foreground/30" />
+          <Camera className="h-12 w-12 mx-auto text-muted-foreground/30" aria-hidden="true" />
           <p className="text-muted-foreground text-sm">
             {t('camera.hint')}
           </p>

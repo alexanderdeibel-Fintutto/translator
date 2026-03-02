@@ -155,12 +155,12 @@ export default function PhrasebookPage() {
           >
             {batchProgress ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                 {batchProgress.done}/{batchProgress.total}
               </>
             ) : (
               <>
-                <Languages className="h-3.5 w-3.5" />
+                <Languages className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('phrasebook.translateAll')} ({untranslatedCount})
               </>
             )}
@@ -189,9 +189,9 @@ export default function PhrasebookPage() {
                     </span>
                   </div>
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" aria-hidden="true" />
                   ) : (
-                    <Volume2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <Volume2 className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                   )}
                 </div>
 
@@ -213,7 +213,7 @@ export default function PhrasebookPage() {
 
       {filteredPhrases.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <BookOpen className="h-8 w-8 mx-auto mb-2 opacity-50" aria-hidden="true" />
           <p>{t('phrasebook.empty')}</p>
         </div>
       )}

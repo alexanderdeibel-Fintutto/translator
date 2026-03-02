@@ -50,7 +50,7 @@ export default function QuickPhrases({ onSelect }: QuickPhrasesProps) {
                 }`}
                 title={t(pack.description)}
               >
-                <Icon className="h-3 w-3" />
+                <Icon className="h-3 w-3" aria-hidden="true" />
                 {t(pack.name)}
               </button>
             )

@@ -1,17 +1,38 @@
-// Translation providers: Google Cloud (primary) → MyMemory (fallback) → LibreTranslate (fallback) → Offline (Opus-MT)
+// Translation providers: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free) → Offline (Opus-MT)
+// Tier-aware: free tier only gets free providers; paid tiers get Azure/Google first.
 
 import { getCachedTranslation, cacheTranslation } from './offline/translation-cache'
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
 import { getGoogleApiKey } from './api-key'
+import { TIERS, type TierId } from './tiers'
+import { recordTranslation } from './usage-tracker'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
+const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'
 
 export interface TranslationResult {
   translatedText: string
   match: number
-  provider?: 'google' | 'mymemory' | 'libre' | 'offline' | 'cache'
+  provider?: 'google' | 'azure' | 'mymemory' | 'libre' | 'offline' | 'cache'
+}
+
+/** Azure API key — set via env or localStorage */
+function getAzureApiKey(): string {
+  try {
+    return localStorage.getItem('gt_azure_key') || import.meta.env.VITE_AZURE_TRANSLATE_KEY || ''
+  } catch {
+    return ''
+  }
+}
+
+function getAzureRegion(): string {
+  try {
+    return localStorage.getItem('gt_azure_region') || import.meta.env.VITE_AZURE_TRANSLATE_REGION || 'westeurope'
+  } catch {
+    return 'westeurope'
+  }
 }
 
 // In-memory cache to avoid duplicate API calls for same text+language pair
@@ -29,6 +50,7 @@ interface CircuitState {
 }
 
 const circuits: Record<string, CircuitState> = {
+  azure: { failCount: 0, isOpen: false, resetAt: 0 },
   google: { failCount: 0, isOpen: false, resetAt: 0 },
   mymemory: { failCount: 0, isOpen: false, resetAt: 0 },
 }
@@ -181,6 +203,53 @@ async function translateWithLibre(
   }
 }
 
+// --- Azure Translator (50% cheaper than Google, $10/1M chars) ---
+
+async function translateWithAzure(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const apiKey = getAzureApiKey()
+  if (!apiKey) {
+    throw new Error('Azure Translator API key not configured')
+  }
+
+  const url = `${AZURE_TRANSLATE_URL}?api-version=3.0&from=${sourceLang}&to=${targetLang}`
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': apiKey,
+      'Ocp-Apim-Subscription-Region': getAzureRegion(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([{ Text: text }]),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    const retryMs = response.status === 429 ? parseRetryAfter(response) : undefined
+    throw Object.assign(
+      new Error(`Azure Translate failed (${response.status}): ${err}`),
+      { retryAfterMs: retryMs },
+    )
+  }
+
+  const data = await response.json()
+  const translated = data?.[0]?.translations?.[0]?.text
+
+  if (!translated) {
+    throw new Error('Azure Translate returned empty result')
+  }
+
+  return {
+    translatedText: translated,
+    match: 1.0,
+    provider: 'azure',
+  }
+}
+
 // --- Main translation function with cascading fallback ---
 
 type ProviderDef = {
@@ -189,11 +258,26 @@ type ProviderDef = {
   circuitKey?: string
 }
 
-const providers: ProviderDef[] = [
+// Provider cascade: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free)
+const paidProviders: ProviderDef[] = [
+  { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
 ]
+
+const freeProviders: ProviderDef[] = [
+  { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
+  { name: 'LibreTranslate', fn: translateWithLibre },
+]
+
+/** Get the provider cascade for a given tier */
+function getProvidersForTier(tierId: TierId): ProviderDef[] {
+  const tier = TIERS[tierId]
+  if (!tier) return freeProviders
+  if (tier.features.translationProvider === 'free') return freeProviders
+  return paidProviders
+}
 
 /** @internal — exposed for testing only */
 export function _resetInternals() {
@@ -206,13 +290,19 @@ export function _resetInternals() {
 export async function translateText(
   text: string,
   sourceLang: string,
-  targetLang: string
+  targetLang: string,
+  tierId?: TierId,
 ): Promise<TranslationResult> {
   if (!text.trim()) {
     return { translatedText: '', match: 0 }
   }
 
-  const cacheKey = getCacheKey(text, sourceLang, targetLang)
+  // Enforce max chars per request based on tier
+  const tier = tierId ? TIERS[tierId] : undefined
+  const maxChars = tier?.limits.maxCharsPerRequest ?? 5_000
+  const trimmedText = text.length > maxChars ? text.slice(0, maxChars) : text
+
+  const cacheKey = getCacheKey(trimmedText, sourceLang, targetLang)
 
   // 1. In-memory cache (fastest, 5min TTL)
   const memCached = cache.get(cacheKey)
@@ -224,10 +314,16 @@ export async function translateText(
   const existing = inflight.get(cacheKey)
   if (existing) return existing
 
-  const promise = translateTextInner(text, sourceLang, targetLang, cacheKey)
+  const activeProviders = getProvidersForTier(tierId ?? 'free')
+  const promise = translateTextInner(trimmedText, sourceLang, targetLang, cacheKey, activeProviders)
   inflight.set(cacheKey, promise)
   try {
-    return await promise
+    const result = await promise
+    // Record usage (only for non-cache hits — cache hits are recorded inside translateTextInner)
+    if (result.provider !== 'cache') {
+      recordTranslation(trimmedText.length, targetLang)
+    }
+    return result
   } finally {
     inflight.delete(cacheKey)
   }
@@ -238,6 +334,7 @@ async function translateTextInner(
   sourceLang: string,
   targetLang: string,
   cacheKey: string,
+  activeProviders: ProviderDef[] = paidProviders,
 ): Promise<TranslationResult> {
 
   // 2. IndexedDB persistent cache (30-day TTL)
@@ -258,7 +355,7 @@ async function translateTextInner(
   if (networkStatus.isOnline) {
     let lastError: Error | null = null
 
-    for (const provider of providers) {
+    for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
         continue
       }

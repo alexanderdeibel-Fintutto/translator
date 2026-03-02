@@ -139,7 +139,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           />
           {(isAdvertising || isBleMode) && (
             <span className="flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
-              <Bluetooth className="h-3 w-3" />
+              <Bluetooth className="h-3 w-3" aria-hidden="true" />
               {isBleMode ? 'GATT' : 'BLE'}
             </span>
           )}
