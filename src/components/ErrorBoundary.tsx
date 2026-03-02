@@ -1,11 +1,8 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
- claude/setup-integrations-dashboard-QVFdq
 import { captureError } from '@/lib/sentry'
 import { trackError } from '@/lib/analytics'
-
 import { getTranslation, type UILanguage } from '@/lib/i18n'
- main
 
 interface Props {
   children: ReactNode
