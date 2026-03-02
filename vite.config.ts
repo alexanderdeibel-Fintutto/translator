@@ -1,15 +1,188 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg'],
+      manifest: {
+        name: 'Fintutto Translator',
+        short_name: 'Fintutto',
+        description: 'Kostenloser Übersetzer mit Spracheingabe, HD-Sprachausgabe, Live-Sessions, Kamera-OCR und Offline-Modus. 32+ Sprachen.',
+        theme_color: '#0369a1',
+        background_color: '#ffffff',
+        display: 'standalone',
+        orientation: 'any',
+        scope: '/',
+        start_url: '/',
+        categories: ['utilities', 'education', 'productivity'],
+        lang: 'de',
+        dir: 'ltr',
+        icons: [
+          {
+            src: '/favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable',
+          },
+        ],
+        shortcuts: [
+          {
+            name: 'Live-Session starten',
+            short_name: 'Live',
+            url: '/live',
+            description: 'Echtzeit-Übersetzung für Zuhörer starten',
+          },
+          {
+            name: 'Konversation',
+            short_name: 'Gespräch',
+            url: '/conversation',
+            description: 'Face-to-Face Übersetzung für zwei Personen',
+          },
+          {
+            name: 'Kamera-Übersetzer',
+            short_name: 'Kamera',
+            url: '/camera',
+            description: 'Text im Bild erkennen und übersetzen',
+          },
+          {
+            name: 'Phrasebook',
+            short_name: 'Phrasen',
+            url: '/phrasebook',
+            description: 'Wichtige Sätze für Alltag und Behörden',
+          },
+        ],
+      },
+      workbox: {
+        // Cache static assets (exclude large WASM — loaded on demand via runtime cache)
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Exclude ONNX WASM from precache (21MB+), handle via runtime caching
+        globIgnores: ['**/*.wasm'],
+        // Offline navigation fallback
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        // Runtime caching for API requests and ML models
+        runtimeCaching: [
+          {
+            // Cache translation API responses
+            urlPattern: /^https:\/\/api\.mymemory\.translated\.net/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'translation-cache',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+            },
+          },
+          {
+            // Cache Google Translation API responses
+            urlPattern: /^https:\/\/translation\.googleapis\.com/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'google-translate-cache',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
+          },
+          {
+            // Cache Google TTS audio responses
+            urlPattern: /^https:\/\/texttospeech\.googleapis\.com/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'tts-audio-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+          {
+            // Cache HuggingFace model files (Opus-MT, Whisper)
+            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'offline-models',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Also cache CDN-served model files
+            urlPattern: /^https:\/\/cdn-lfs(-us-1)?\.huggingface\.co/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'offline-models-cdn',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Cache local WASM files (ONNX Runtime) on first use
+            urlPattern: /\.wasm$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'wasm-runtime',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Cache Google Fonts
+            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+            },
+          },
+        ],
+      },
+    }),
+  ],
+  build: {
+    // Warn only for chunks over 550KB (transformers is ~502KB)
+    chunkSizeWarningLimit: 550,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'transformers': ['@huggingface/transformers'],
+          'onnx': ['onnxruntime-web'],
+          'supabase': ['@supabase/supabase-js'],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
-    port: 5173,
+    port: 5180,
   },
 })
