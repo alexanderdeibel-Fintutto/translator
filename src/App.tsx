@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { Suspense, lazy, useEffect } from 'react'
 import { Toaster } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { OfflineProvider } from '@/context/OfflineContext'
@@ -9,6 +9,7 @@ import PWAInstallBanner from '@/components/PWAInstallBanner'
 import Layout from '@/components/layout/Layout'
 import TranslatorPage from '@/pages/TranslatorPage'
 import { hasGoogleApiKey } from '@/lib/api-key'
+import { trackPageView } from '@/lib/analytics'
 
 // Lazy-loaded routes for code splitting
 const InfoPage = lazy(() => import('@/pages/InfoPage'))
@@ -34,12 +35,21 @@ function PageLoader() {
   )
 }
 
+function RouteTracker() {
+  const location = useLocation()
+  useEffect(() => {
+    trackPageView(location.pathname)
+  }, [location.pathname])
+  return null
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <I18nProvider>
         <OfflineProvider>
           <BrowserRouter>
+            <RouteTracker />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<TranslatorPage />} />
