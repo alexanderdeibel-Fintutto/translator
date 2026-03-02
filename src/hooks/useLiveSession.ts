@@ -94,15 +94,34 @@ export function useLiveSession() {
     return code
   }, [broadcast, presence, connection])
 
-  // Broadcast session info periodically when listener count changes
+  // Broadcast session info when listener count changes (throttled to 1s)
+  const lastBroadcastRef = useRef(0)
+  const broadcastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return
-    broadcast.broadcast('session_info', {
-      sessionCode,
-      speakerName: getDeviceName(),
-      sourceLanguage,
-      listenerCount: presence.listenerCount,
-    } satisfies SessionInfo)
+
+    const send = () => {
+      lastBroadcastRef.current = Date.now()
+      broadcast.broadcast('session_info', {
+        sessionCode,
+        speakerName: getDeviceName(),
+        sourceLanguage,
+        listenerCount: presence.listenerCount,
+      } satisfies SessionInfo)
+    }
+
+    const elapsed = Date.now() - lastBroadcastRef.current
+    if (elapsed >= 1000) {
+      send()
+    } else {
+      if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
+      broadcastTimerRef.current = setTimeout(send, 1000 - elapsed)
+    }
+
+    return () => {
+      if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
+    }
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
   // Process a single text through translation fan-out
@@ -113,11 +132,7 @@ export function useLiveSession() {
 
     if (targetLangs.length === 0) return
 
- claude/add-new-languages-G9HsJ
-    // Translate to all requested languages in parallel (resilient — individual failures don't block others)
-
     // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
- main
     const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
@@ -134,25 +149,22 @@ export function useLiveSession() {
       })
     )
 
- claude/add-new-languages-G9HsJ
-    const results = settled
-      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
-      .map(r => r.value)
-
     const results: TranslationChunk[] = []
     for (const r of settled) {
       if (r.status === 'fulfilled') results.push(r.value)
     }
- main
 
     // Broadcast each successful translation
     for (const chunk of results) {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
 
-    // Add to local history (one entry per source text)
+    // Add to local history (one entry per source text, capped at 100)
     if (results.length > 0) {
-      setTranslationHistory(prev => [...prev, results[0]])
+      setTranslationHistory(prev => {
+        const next = [...prev, results[0]]
+        return next.length > 100 ? next.slice(-100) : next
+      })
     }
 
     // Warn if some translations failed
@@ -249,7 +261,10 @@ export function useLiveSession() {
       (chunk: TranslationChunk) => {
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
-          setReceivedChunks(prev => [...prev, chunk])
+          setReceivedChunks(prev => {
+            const next = [...prev, chunk]
+            return next.length > 100 ? next.slice(-100) : next
+          })
 
           // Auto-TTS
           if (autoTTSRef.current && chunk.translatedText) {
