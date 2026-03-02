@@ -1,23 +1,28 @@
-import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe, Menu, X } from 'lucide-react'
+import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe, Menu, X, User, Crown, LogOut } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useOffline } from '@/context/OfflineContext'
 import { useI18n } from '@/context/I18nContext'
+import { useUser } from '@/context/UserContext'
 import { UI_LANGUAGES, type UILanguage } from '@/lib/i18n'
 import { useTheme } from '@/hooks/useTheme'
 
 export default function Header() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { networkMode } = useOffline()
   const { t, uiLang, setUILang } = useI18n()
   const { theme, toggle: toggleTheme } = useTheme()
+  const { user, isAuthenticated, tier, signOut } = useUser()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   const NAV_ITEMS = [
     { label: t('nav.translator'), path: '/' },
@@ -36,6 +41,9 @@ export default function Header() {
       }
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setMobileMenuOpen(false)
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -104,6 +112,17 @@ export default function Header() {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  to="/pricing"
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                    location.pathname === '/pricing'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  Preise
+                </Link>
                 <Link
                   to="/settings"
                   className={cn(
@@ -213,6 +232,71 @@ export default function Header() {
           >
             {isDark ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
           </Button>
+
+          {/* User menu / Login */}
+          {isAuthenticated ? (
+            <div className="relative" ref={userMenuRef}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="menu"
+                aria-label="Benutzermenu"
+                className="relative"
+              >
+                <User className="h-4 w-4" aria-hidden="true" />
+                {tier.id !== 'free' && (
+                  <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background" />
+                )}
+              </Button>
+              {userMenuOpen && (
+                <div className="absolute top-full right-0 mt-1 w-56 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+                  <div className="px-3 py-2 border-b border-border">
+                    <div className="text-sm font-medium truncate">{user?.displayName || user?.email}</div>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <Crown className="h-3 w-3 text-primary" />
+                      <span className="text-xs text-primary font-medium">{tier.displayName}</span>
+                    </div>
+                  </div>
+                  <Link
+                    to="/account"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    Mein Konto
+                  </Link>
+                  <Link
+                    to="/pricing"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    <Crown className="h-4 w-4 text-muted-foreground" />
+                    Preise & Pakete
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      setUserMenuOpen(false)
+                      await signOut()
+                      navigate('/')
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors w-full text-left text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Abmelden
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/auth">
+              <Button variant="default" size="sm" className="text-xs gap-1.5">
+                <User className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Anmelden</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>

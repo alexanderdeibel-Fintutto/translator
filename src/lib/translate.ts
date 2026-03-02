@@ -1,9 +1,12 @@
-// Translation providers: Google Cloud (primary) → MyMemory (fallback) → LibreTranslate (fallback) → Offline (Opus-MT)
+// Translation providers: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free) → Offline (Opus-MT)
+// Tier-aware: free tier only gets free providers; paid tiers get Azure/Google first.
 
 import { getCachedTranslation, cacheTranslation } from './offline/translation-cache'
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
 import { getGoogleApiKey } from './api-key'
+import { TIERS, type TierId } from './tiers'
+import { recordTranslation } from './usage-tracker'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
@@ -256,12 +259,25 @@ type ProviderDef = {
 }
 
 // Provider cascade: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free)
-const providers: ProviderDef[] = [
+const paidProviders: ProviderDef[] = [
   { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
 ]
+
+const freeProviders: ProviderDef[] = [
+  { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
+  { name: 'LibreTranslate', fn: translateWithLibre },
+]
+
+/** Get the provider cascade for a given tier */
+function getProvidersForTier(tierId: TierId): ProviderDef[] {
+  const tier = TIERS[tierId]
+  if (!tier) return freeProviders
+  if (tier.features.translationProvider === 'free') return freeProviders
+  return paidProviders
+}
 
 /** @internal — exposed for testing only */
 export function _resetInternals() {
@@ -274,13 +290,19 @@ export function _resetInternals() {
 export async function translateText(
   text: string,
   sourceLang: string,
-  targetLang: string
+  targetLang: string,
+  tierId?: TierId,
 ): Promise<TranslationResult> {
   if (!text.trim()) {
     return { translatedText: '', match: 0 }
   }
 
-  const cacheKey = getCacheKey(text, sourceLang, targetLang)
+  // Enforce max chars per request based on tier
+  const tier = tierId ? TIERS[tierId] : undefined
+  const maxChars = tier?.limits.maxCharsPerRequest ?? 5_000
+  const trimmedText = text.length > maxChars ? text.slice(0, maxChars) : text
+
+  const cacheKey = getCacheKey(trimmedText, sourceLang, targetLang)
 
   // 1. In-memory cache (fastest, 5min TTL)
   const memCached = cache.get(cacheKey)
@@ -292,10 +314,16 @@ export async function translateText(
   const existing = inflight.get(cacheKey)
   if (existing) return existing
 
-  const promise = translateTextInner(text, sourceLang, targetLang, cacheKey)
+  const activeProviders = getProvidersForTier(tierId ?? 'free')
+  const promise = translateTextInner(trimmedText, sourceLang, targetLang, cacheKey, activeProviders)
   inflight.set(cacheKey, promise)
   try {
-    return await promise
+    const result = await promise
+    // Record usage (only for non-cache hits — cache hits are recorded inside translateTextInner)
+    if (result.provider !== 'cache') {
+      recordTranslation(trimmedText.length, targetLang)
+    }
+    return result
   } finally {
     inflight.delete(cacheKey)
   }
@@ -306,6 +334,7 @@ async function translateTextInner(
   sourceLang: string,
   targetLang: string,
   cacheKey: string,
+  activeProviders: ProviderDef[] = paidProviders,
 ): Promise<TranslationResult> {
 
   // 2. IndexedDB persistent cache (30-day TTL)
@@ -326,7 +355,7 @@ async function translateTextInner(
   if (networkStatus.isOnline) {
     let lastError: Error | null = null
 
-    for (const provider of providers) {
+    for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
         continue
       }
