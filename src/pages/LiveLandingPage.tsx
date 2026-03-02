@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal } from 'lucide-react'
+import { Radio, Headphones, Wifi, Cloud, Smartphone, Bluetooth, Signal, Users, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageSelector from '@/components/translator/LanguageSelector'
@@ -67,12 +67,35 @@ export default function LiveLandingPage() {
         </p>
       </div>
 
+      {/* Group Session Banner */}
+      <div className="bg-gradient-to-r from-violet-50 to-blue-50 dark:from-violet-950/20 dark:to-blue-950/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
+            <Users className="h-5 w-5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm">{t('group.title')}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('group.subtitle')}</p>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Globe className="h-3 w-3" aria-hidden="true" />
+                45 {t('translator.languages')}
+              </span>
+              <span className="flex items-center gap-1 text-[10px] text-violet-600 dark:text-violet-400">
+                <Radio className="h-3 w-3" aria-hidden="true" />
+                1→N Broadcast
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Speaker */}
         <Card className="p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Radio className="h-5 w-5 text-primary" />
+              <Radio className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div>
               <h2 className="font-semibold">{t('liveLanding.speaker')}</h2>
@@ -98,8 +121,8 @@ export default function LiveLandingPage() {
                     : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Cloud className="h-4 w-4" />
-                Cloud
+                <Cloud className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnCloud')}
               </button>
               <button
                 onClick={() => hotspotAvailable && setConnectionMode('hotspot')}
@@ -113,8 +136,8 @@ export default function LiveLandingPage() {
                       : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Smartphone className="h-4 w-4" />
-                Hotspot
+                <Smartphone className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnHotspot')}
               </button>
               <button
                 onClick={() => bleTransportAvailable && setConnectionMode('ble')}
@@ -128,8 +151,8 @@ export default function LiveLandingPage() {
                       : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Bluetooth className="h-4 w-4" />
-                BLE
+                <Bluetooth className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnBle')}
               </button>
               <button
                 onClick={() => setConnectionMode('local')}
@@ -139,8 +162,8 @@ export default function LiveLandingPage() {
                     : 'border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
-                <Wifi className="h-4 w-4" />
-                Router
+                <Wifi className="h-4 w-4" aria-hidden="true" />
+                {t('live.btnRouter')}
               </button>
             </div>
 
@@ -205,7 +228,7 @@ export default function LiveLandingPage() {
         <Card className="p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Headphones className="h-5 w-5 text-primary" />
+              <Headphones className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div>
               <h2 className="font-semibold">{t('liveLanding.listener')}</h2>
@@ -221,7 +244,7 @@ export default function LiveLandingPage() {
           {bleScanner.sessions.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <Bluetooth className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                 <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
                   {t('liveLanding.nearbySessions')}
                 </p>
@@ -262,7 +285,7 @@ export default function LiveLandingPage() {
           {/* BLE scanning indicator */}
           {bleScanner.isScanning && bleScanner.sessions.length === 0 && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
-              <Bluetooth className="h-3 w-3 animate-pulse" />
+              <Bluetooth className="h-3 w-3 animate-pulse" aria-hidden="true" />
               <span>{t('liveLanding.scanning')}</span>
             </div>
           )}

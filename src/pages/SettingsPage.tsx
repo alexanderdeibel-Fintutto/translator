@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Download, Trash2, Wifi, WifiOff, Mic, Loader2, Key, Eye, EyeOff, Check, Upload, FileDown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
@@ -13,6 +13,10 @@ const sttEngine = () => import('@/lib/offline/stt-engine')
 import { checkOfflineSupport, isIOSSafariNotStandalone } from '@/lib/offline/storage-manager'
 import { getGoogleApiKey, setGoogleApiKey, hasGoogleApiKey } from '@/lib/api-key'
 import { useI18n } from '@/context/I18nContext'
+import { toast } from 'sonner'
+
+const HISTORY_KEY = 'fintutto-translator-history'
+const FAVORITES_KEY = 'fintutto-translator-favorites'
 
 export default function SettingsPage() {
   const { t } = useI18n()
@@ -89,6 +93,83 @@ export default function SettingsPage() {
       setWhisperDownloading(false)
     }
   }
+
+  // Export / Import helpers
+  const exportData = useCallback((type: 'favorites' | 'history' | 'all', format: 'json' | 'csv') => {
+    const favs = localStorage.getItem(FAVORITES_KEY)
+    const hist = localStorage.getItem(HISTORY_KEY)
+
+    if (format === 'json') {
+      let data: Record<string, unknown>
+      if (type === 'all') {
+        data = {
+          favorites: favs ? JSON.parse(favs) : [],
+          history: hist ? JSON.parse(hist) : [],
+          exportedAt: new Date().toISOString(),
+          version: '3.0',
+        }
+      } else {
+        const raw = type === 'favorites' ? favs : hist
+        data = { [type]: raw ? JSON.parse(raw) : [], exportedAt: new Date().toISOString(), version: '3.0' }
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      downloadBlob(blob, `translator-${type}-${new Date().toISOString().slice(0, 10)}.json`)
+    } else {
+      const raw = (type === 'favorites' ? favs : hist)
+      const entries: Array<{ sourceText: string; translatedText: string; sourceLang: string; targetLang: string; timestamp?: number }> = raw ? JSON.parse(raw) : []
+      const header = 'sourceText,translatedText,sourceLang,targetLang,timestamp'
+      const rows = entries.map(e =>
+        [e.sourceText, e.translatedText, e.sourceLang, e.targetLang, e.timestamp || '']
+          .map(v => `"${String(v).replace(/"/g, '""')}"`)
+          .join(',')
+      )
+      const csv = [header, ...rows].join('\n')
+      const blob = new Blob([csv], { type: 'text/csv' })
+      downloadBlob(blob, `translator-${type}-${new Date().toISOString().slice(0, 10)}.csv`)
+    }
+  }, [])
+
+  function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string)
+        let count = 0
+        if (data.favorites && Array.isArray(data.favorites)) {
+          const existing = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]')
+          const merged = [...data.favorites, ...existing]
+          // Deduplicate by id
+          const unique = merged.filter((v: { id: string }, i: number, a: { id: string }[]) => a.findIndex(x => x.id === v.id) === i)
+          localStorage.setItem(FAVORITES_KEY, JSON.stringify(unique))
+          count += data.favorites.length
+        }
+        if (data.history && Array.isArray(data.history)) {
+          const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+          const merged = [...data.history, ...existing]
+          const unique = merged.filter((v: { id: string }, i: number, a: { id: string }[]) => a.findIndex(x => x.id === v.id) === i)
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(unique))
+          count += data.history.length
+        }
+        toast.success(t('export.importSuccess').replace('{count}', String(count)))
+      } catch {
+        toast.error(t('export.importError'))
+      }
+    }
+    reader.readAsText(file)
+    // Reset so the same file can be imported again
+    e.target.value = ''
+  }, [t])
 
   // Group language pairs by source language for better display
   const groupedPairs = languagePairs.reduce((acc, pair) => {
@@ -291,6 +372,89 @@ export default function SettingsPage() {
               )}
             </>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Export / Import */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <FileDown className="h-4 w-4" aria-hidden="true" />
+            {t('export.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">{t('export.subtitle')}</p>
+
+          {/* Export buttons */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('favorites', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.favorites')} (JSON)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('history', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.history')} (JSON)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('favorites', 'csv')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.favorites')} (CSV)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('history', 'csv')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.history')} (CSV)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportData('all', 'json')}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('export.all')}
+            </Button>
+          </div>
+
+          {/* Import */}
+          <div className="border-t pt-3 space-y-2">
+            <p className="text-sm font-medium">{t('export.importData')}</p>
+            <p className="text-xs text-muted-foreground">{t('export.importDesc')}</p>
+            <label className="inline-flex items-center gap-1.5 cursor-pointer">
+              <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                <span>
+                  <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t('export.importData')}
+                </span>
+              </Button>
+              <input
+                type="file"
+                accept=".json"
+                className="sr-only"
+                onChange={handleImport}
+                aria-label={t('export.importData')}
+              />
+            </label>
+          </div>
         </CardContent>
       </Card>
 

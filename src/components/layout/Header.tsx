@@ -25,6 +25,8 @@ export default function Header() {
     { label: t('nav.conversation'), path: '/conversation' },
     { label: t('nav.camera'), path: '/camera' },
     { label: t('nav.phrasebook'), path: '/phrasebook' },
+    { label: t('nav.favorites'), path: '/favorites' },
+    { label: t('nav.history'), path: '/history' },
     { label: t('nav.info'), path: '/info' },
   ]
 
@@ -84,7 +86,7 @@ export default function Header() {
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? t('header.menuClose') : t('header.menuOpen')}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </Button>
 
           {mobileMenuOpen && (

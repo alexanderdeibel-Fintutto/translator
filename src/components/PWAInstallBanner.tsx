@@ -25,12 +25,12 @@ export default function PWAInstallBanner() {
           className="shrink-0 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
           aria-label={t('pwa.install')}
         >
-          OK
+          {t('pwa.ok')}
         </button>
         <button
           onClick={dismiss}
           className="shrink-0 p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground"
-          aria-label="Dismiss"
+          aria-label={t('pwa.dismiss')}
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
