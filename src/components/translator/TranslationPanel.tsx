@@ -58,7 +58,15 @@ const SegmentDisplay = memo(function SegmentDisplay({ seg, isLast }: { seg: Tran
     )
   }
   if (seg.error) {
-    return <span className="text-destructive text-sm" title={seg.error}>[!]</span>
+    return (
+      <span
+        className="text-destructive text-sm cursor-pointer underline decoration-dotted"
+        title={seg.error}
+        onClick={() => alert(seg.error)}
+      >
+        [!]
+      </span>
+    )
   }
   return <>{seg.translatedText}{!isLast && seg.translatedText ? ' ' : ''}</>
 })
