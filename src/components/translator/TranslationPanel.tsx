@@ -35,6 +35,7 @@ import { canRomanize, romanize } from '@/lib/romanize'
 import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/context-modes'
 import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
+import { useTierId } from '@/context/UserContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
 interface TranslationSegment {
@@ -72,6 +73,7 @@ interface TranslationPanelProps {
 
 export default function TranslationPanel({ initialText, initialSourceLang, initialTargetLang, onInitialTextConsumed, addEntry, isFavorite, toggleFavorite }: TranslationPanelProps) {
   const { t } = useI18n()
+  const tierId = useTierId()
   const [sourceLang, setSourceLang] = useState('de')
   const [targetLang, setTargetLang] = useState('en')
   const [autoDetect, setAutoDetect] = useState(false)
@@ -173,7 +175,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
 
     try {
-      const result = await translateText(text, sourceLangRef.current, targetLangRef.current)
+      const result = await translateText(text, sourceLangRef.current, targetLangRef.current, tierId)
       let finalText = result.translatedText
 
       if (useInformalRef.current && supportsFormality(targetLangRef.current)) {
@@ -229,7 +231,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     }
 
     try {
-      const result = await translateText(text, effectiveSourceLang, targetLang)
+      const result = await translateText(text, effectiveSourceLang, targetLang, tierId)
       let finalText = result.translatedText
 
       if (useInformalRef.current && supportsFormality(targetLang)) {
