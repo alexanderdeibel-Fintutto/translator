@@ -43,6 +43,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [autoTTS, setAutoTTS] = useState(true)
   const [listenerLimitReached, setListenerLimitReached] = useState(false)
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
+  const [languageLimitReached, setLanguageLimitReached] = useState(false)
 
   // Tier config
   const tierConfig = TIERS[userTierId] ?? TIERS.free
@@ -170,17 +171,26 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     if (targetLangs.length === 0) return
 
+ claude/analyze-app-costs-X7EqR
+
  claude/add-new-languages-G9HsJ
     // Translate to all requested languages in parallel (allSettled to avoid cascade failure)
 
+ main
     // Enforce language limit per tier (0 = unlimited)
     const maxLangs = tierRef.current.limits.maxLanguages
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
       console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
       targetLangs = targetLangs.slice(0, maxLangs)
+      setLanguageLimitReached(true)
+    } else {
+      setLanguageLimitReached(false)
     }
 
     // Translate to all requested languages in parallel (resilient — individual failures don't block others)
+ claude/analyze-app-costs-X7EqR
+
+ main
  main
     const settled = await Promise.allSettled(
       targetLangs.map(async (targetLang) => {
@@ -198,6 +208,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
       })
     )
 
+ claude/analyze-app-costs-X7EqR
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
+      .map(r => r.value)
+
  claude/add-new-languages-G9HsJ
     const results: TranslationChunk[] = []
     for (const r of settled) {
@@ -207,6 +222,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     const results = settled
       .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
       .map(r => r.value)
+ main
  main
 
     // Broadcast each successful translation
@@ -419,6 +435,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Tier limits
     listenerLimitReached,
     sessionLimitReached,
+    languageLimitReached,
     maxListeners: tierConfig.limits.maxListeners,
     maxLanguages: tierConfig.limits.maxLanguages,
   }

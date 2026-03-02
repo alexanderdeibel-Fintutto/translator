@@ -36,6 +36,8 @@ import { CONTEXT_MODES, getContextHints, type TranslationContext } from '@/lib/c
 import { fetchAlternatives, type Alternative } from '@/lib/alternatives'
 import { useI18n } from '@/context/I18nContext'
 import { useTierId } from '@/context/UserContext'
+import { isWithinDailyTranslationLimit } from '@/lib/usage-tracker'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 
 interface TranslationSegment {
@@ -87,6 +89,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     return (localStorage.getItem('translator-stream-mode') as 'sentence' | 'paragraph') || 'sentence'
   })
 
+  const [dailyLimitHit, setDailyLimitHit] = useState(false)
   const [matchScore, setMatchScore] = useState<number | null>(null)
   const [provider, setProvider] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
@@ -169,6 +172,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const translateSegment = useCallback(async (segmentId: string, text: string) => {
     if (!text.trim()) return
 
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
+
     setSegments(prev => prev.map(s =>
       s.id === segmentId ? { ...s, isTranslating: true } : s
     ))
@@ -209,6 +218,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setDetectedLang(null)
       return
     }
+
+    if (!isWithinDailyTranslationLimit(tierId)) {
+      setDailyLimitHit(true)
+      return
+    }
+    setDailyLimitHit(false)
 
     const segmentId = segId || (segments.length === 1 ? segments[0].id : `seg_${Date.now()}`)
     if (!segId) {
@@ -482,9 +497,12 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
+ claude/analyze-app-costs-X7EqR
+
  claude/add-new-languages-G9HsJ
   // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send (during recording)
 
+ main
   // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
  main
   const handleMicToggleRef = useRef(handleMicToggle)
@@ -523,6 +541,11 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   return (
     <div className="space-y-4">
+      {/* Daily translation limit banner */}
+      {dailyLimitHit && (
+        <UpgradePrompt tierId={tierId} limitType="daily_translations" />
+      )}
+
       {/* Language Selection Bar */}
       <div className="flex items-end gap-3 flex-wrap">
         <div className="flex items-end gap-1.5">
@@ -559,6 +582,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleAutoSpeak}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/analyze-app-costs-X7EqR
+          title={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
+
+ main
           aria-pressed={autoSpeak}
           aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
         >
@@ -570,6 +597,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleHdVoice}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/analyze-app-costs-X7EqR
+          title={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
+
+ main
           aria-pressed={hdVoice}
           aria-label={hdVoice ? t('translator.hdVoiceOn') : t('translator.sdVoice')}
         >
@@ -581,6 +612,10 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
           size="sm"
           onClick={toggleStreamMode}
           className="mb-0.5 shrink-0 gap-1.5"
+ claude/analyze-app-costs-X7EqR
+          title={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
+
+ main
           aria-pressed={streamMode === 'sentence'}
           aria-label={streamMode === 'sentence' ? t('translator.sentenceMode') : t('translator.paragraphMode')}
         >
@@ -657,9 +692,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   size="icon"
                   onClick={handleMicToggle}
                   className={isListening ? 'text-destructive pulse-mic' : !micSupported ? 'opacity-50' : ''}
+ claude/analyze-app-costs-X7EqR
+                  title={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
+
  claude/add-new-languages-G9HsJ
                   title={!micSupported ? t('translator.micNotAvailable') : isListening ? `${t('translator.stopRecording')} (Ctrl+M)` : `${t('translator.speechInput')} (Ctrl+M)`}
 
+ main
  main
                   aria-pressed={isListening}
                   aria-label={!micSupported ? t('translator.micNotAvailable') : isListening ? t('translator.stopRecording') : t('translator.speechInput')}
@@ -673,10 +712,14 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     size="icon"
                     onClick={handleSend}
                     className="text-primary"
+ claude/analyze-app-costs-X7EqR
+                    title={t('translator.send')}
+
  claude/add-new-languages-G9HsJ
                     title={`${t('translator.send')} (Ctrl+Enter)`}
 
                     title={t('translator.send')}
+ main
  main
                     aria-label={t('translator.send')}
                   >
@@ -688,9 +731,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakSource}
+ claude/analyze-app-costs-X7EqR
+                    title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+
  claude/add-new-languages-G9HsJ
 
                     title={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
  main
                     aria-label={sourceSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
@@ -703,12 +750,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                   </span>
                 )}
                 {sourceText && (
+ claude/analyze-app-costs-X7EqR
+                  <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')} aria-label={t('translator.delete')}>
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+
  claude/add-new-languages-G9HsJ
                   <Button variant="ghost" size="icon" onClick={clearAll} aria-label={t('translator.delete')}>
                     <Trash2 className="h-4 w-4" />
 
                   <Button variant="ghost" size="icon" onClick={clearAll} title={t('translator.delete')} aria-label={t('translator.delete')}>
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
+ main
  main
                   </Button>
                 )}
@@ -721,7 +773,6 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
               className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground/60 text-base leading-relaxed"
               dir={isRTL(sourceLang) ? 'rtl' : 'ltr'}
               aria-label={t('translator.placeholder')}
-
               readOnly={isListening}
             />
             {/* Interim text display during recording */}
@@ -764,9 +815,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleSpeakTarget}
+ claude/analyze-app-costs-X7EqR
+                    title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+
  claude/add-new-languages-G9HsJ
 
                     title={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
+ main
  main
                     aria-label={targetSpeech.isSpeaking ? t('translator.stop') : t('translator.speak')}
                   >
@@ -778,9 +833,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
                     variant="ghost"
                     size="icon"
                     onClick={handleCopy}
+ claude/analyze-app-costs-X7EqR
+                    title={t('translator.copy')}
+
  claude/add-new-languages-G9HsJ
 
                     title={t('translator.copy')}
+ main
  main
                     aria-label={t('translator.copy')}
                   >
