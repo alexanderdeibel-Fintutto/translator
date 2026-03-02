@@ -317,7 +317,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       })
 
       if (!response.ok) {
-        throw new Error(`Google STT ${response.status}`)
+        const errorBody = await response.text()
+        console.error(`[STT] Google Cloud STT error ${response.status}:`, errorBody)
+        throw new Error(`Google STT ${response.status}: ${errorBody}`)
       }
 
       const data = await response.json()
@@ -418,8 +420,8 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             onResultCallback({ text: newText, isFinal: false })
           }
         } catch (err) {
-          // Non-fatal — continue recording
-          if (err instanceof Error && err.message.includes('403')) {
+          console.error('[STT] Recognition error:', err)
+          if (err instanceof Error && (err.message.includes('403') || err.message.includes('401') || err.message.includes('400'))) {
             onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable'))
             isActive = false
           }
