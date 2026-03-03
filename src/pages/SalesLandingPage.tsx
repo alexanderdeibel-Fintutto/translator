@@ -177,6 +177,7 @@ export default function SalesLandingPage() {
   const { segment } = useParams<{ segment: string }>()
   const [searchParams] = useSearchParams()
   const inviteToken = searchParams.get('invite')
+  const source = searchParams.get('source')
 
   if (!segment || !VALID_SEGMENTS.includes(segment as SalesSegment)) {
     return <Navigate to="/pricing" replace />
@@ -224,8 +225,8 @@ export default function SalesLandingPage() {
         <ROICalculator segment={seg as CalcSegment} />
       )}
 
-      {/* Lead registration form */}
-      <LeadRegistrationForm segment={seg} />
+      {/* Lead registration / invite form */}
+      <LeadRegistrationForm segment={seg} inviteToken={inviteToken} source={source} />
 
       {/* Bottom CTA */}
       <div className="text-center space-y-3 pb-4">

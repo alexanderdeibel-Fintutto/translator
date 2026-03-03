@@ -21,6 +21,6 @@
     }
   },
   "include": ["src"],
-  "exclude": ["src/lib/ble-*.ts"],
+  "exclude": ["src/lib/ble-*.ts", "src/lib/analytics.ts", "src/lib/sentry.ts", "src/lib/web-vitals.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

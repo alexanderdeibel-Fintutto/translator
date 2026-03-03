@@ -84,11 +84,28 @@ export function UserProvider({ children }: { children: ReactNode }) {
       async (_event, session) => {
         if (session?.user) {
           // Fetch user profile with tier from database
-          const { data: profile } = await supabase
+          let { data: profile } = await supabase
             .from('gt_users')
             .select('tier_id, organization_id, stripe_customer_id, display_name, role')
             .eq('id', session.user.id)
             .single()
+
+          // Auto-create profile if missing (fallback for users who signed up
+          // before the DB trigger existed, or if the trigger didn't fire)
+          if (!profile) {
+            const { data: created } = await supabase
+              .from('gt_users')
+              .upsert({
+                id: session.user.id,
+                email: session.user.email,
+                display_name: session.user.email,
+                tier_id: 'free',
+                role: 'user',
+              }, { onConflict: 'id' })
+              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
+              .single()
+            profile = created
+          }
 
           const userTier = (profile?.tier_id as TierId) || 'free'
 

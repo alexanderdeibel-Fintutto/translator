@@ -122,6 +122,7 @@ export default function LeadList() {
               <TableHead>Segment</TableHead>
               <TableHead>Pipeline</TableHead>
               <TableHead>Tags</TableHead>
+              <TableHead>Quelle</TableHead>
               <TableHead className="text-right">Erstellt</TableHead>
             </TableRow>
           </TableHeader>
@@ -156,6 +157,11 @@ export default function LeadList() {
                       ))}
                     </div>
                   </TableCell>
+                  <TableCell>
+                    {lead.source && (
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">{lead.source}</Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right text-xs text-muted-foreground">
                     {new Date(lead.created_at).toLocaleDateString('de-DE')}
                   </TableCell>
@@ -164,7 +170,7 @@ export default function LeadList() {
             })}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                   Keine Leads gefunden
                 </TableCell>
               </TableRow>
