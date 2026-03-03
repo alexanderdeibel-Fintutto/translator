@@ -1,4 +1,4 @@
-import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe, Menu, X, User, Crown, LogOut } from 'lucide-react'
+import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe, Menu, X, User, Crown, LogOut, Shield } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -15,7 +15,7 @@ export default function Header() {
   const { networkMode } = useOffline()
   const { t, uiLang, setUILang } = useI18n()
   const { theme, toggle: toggleTheme } = useTheme()
-  const { user, isAuthenticated, tier, signOut } = useUser()
+  const { user, isAuthenticated, tier, isSalesAgent, signOut } = useUser()
   const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -277,6 +277,16 @@ export default function Header() {
                     <Crown className="h-4 w-4 text-muted-foreground" />
                     Preise & Pakete
                   </Link>
+                  {isSalesAgent && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                    >
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      Admin CRM
+                    </Link>
+                  )}
                   <button
                     onClick={async () => {
                       setUserMenuOpen(false)

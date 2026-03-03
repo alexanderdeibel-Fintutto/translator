@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase'
 import { TIERS, type TierId, type TierDefinition } from '../lib/tiers'
 import { setUsageTier, getUsage, type UsageRecord } from '../lib/usage-tracker'
 import { startUsageSync, stopUsageSync } from '../lib/usage-sync'
+import type { UserRole } from '../lib/admin-types'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -20,6 +21,7 @@ export interface UserProfile {
   tierId: TierId
   organizationId: string | null
   stripeCustomerId: string | null
+  role: UserRole
 }
 
 interface UserContextValue {
@@ -31,6 +33,10 @@ interface UserContextValue {
   // Tier info
   tier: TierDefinition
   tierId: TierId
+
+  // Role
+  isAdmin: boolean
+  isSalesAgent: boolean
 
   // Usage
   usage: UsageRecord
@@ -80,7 +86,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           // Fetch user profile with tier from database
           const { data: profile } = await supabase
             .from('gt_users')
-            .select('tier_id, organization_id, stripe_customer_id, display_name')
+            .select('tier_id, organization_id, stripe_customer_id, display_name, role')
             .eq('id', session.user.id)
             .single()
 
@@ -93,6 +99,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             tierId: userTier,
             organizationId: profile?.organization_id ?? null,
             stripeCustomerId: profile?.stripe_customer_id ?? null,
+            role: (profile?.role as UserRole) || 'user',
           })
           setTierId(userTier)
 
@@ -144,6 +151,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const tier = TIERS[tierId] ?? TIERS.free
+  const isAdmin = user?.role === 'admin'
+  const isSalesAgent = user?.role === 'admin' || user?.role === 'sales_agent'
 
   return (
     <UserContext.Provider value={{
@@ -152,6 +161,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       isAuthenticated: !!user,
       tier,
       tierId,
+      isAdmin,
+      isSalesAgent,
       usage,
       signIn,
       signUp,
@@ -177,4 +188,9 @@ export function useTier(): TierDefinition {
 
 export function useTierId(): TierId {
   return useUser().tierId
+}
+
+export function useRole() {
+  const { user, isAdmin, isSalesAgent } = useUser()
+  return { role: user?.role ?? 'user', isAdmin, isSalesAgent }
 }

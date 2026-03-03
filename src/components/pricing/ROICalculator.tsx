@@ -16,10 +16,11 @@ import {
   calculateGuideSavings,
   calculateEventSavings,
   calculateCruiseSavings,
+  calculateAgencySavings,
   type SavingsResult,
 } from '@/lib/sales-calculator'
 
-type CalcSegment = 'guide' | 'event' | 'cruise'
+type CalcSegment = 'guide' | 'agency' | 'event' | 'cruise'
 
 interface ROICalculatorProps {
   segment: CalcSegment
@@ -39,8 +40,13 @@ interface SliderDef {
 
 const SEGMENT_SLIDERS: Record<CalcSegment, SliderDef[]> = {
   guide: [
-    { key: 'listenersPerTour', label: 'Hörer pro Tour', min: 5, max: 100, step: 5, defaultValue: 25, unit: '' },
+    { key: 'listenersPerTour', label: 'Hoerer pro Tour', min: 5, max: 100, step: 5, defaultValue: 25, unit: '' },
     { key: 'toursPerMonth', label: 'Touren pro Monat', min: 1, max: 60, step: 1, defaultValue: 12, unit: '' },
+  ],
+  agency: [
+    { key: 'guidesCount', label: 'Anzahl Guides', min: 1, max: 20, step: 1, defaultValue: 5, unit: '' },
+    { key: 'toursPerMonth', label: 'Touren pro Monat', min: 1, max: 100, step: 1, defaultValue: 30, unit: '' },
+    { key: 'minutesPerTour', label: 'Minuten pro Tour', min: 30, max: 240, step: 15, defaultValue: 90, unit: 'min' },
   ],
   event: [
     { key: 'hoursPerMonth', label: 'Stunden pro Monat', min: 1, max: 200, step: 1, defaultValue: 20, unit: 'h' },
@@ -50,11 +56,13 @@ const SEGMENT_SLIDERS: Record<CalcSegment, SliderDef[]> = {
     { key: 'excursionsPerMonth', label: 'Exkursionen pro Monat', min: 1, max: 60, step: 1, defaultValue: 15, unit: '' },
     { key: 'minutesPerExcursion', label: 'Minuten pro Exkursion', min: 15, max: 240, step: 15, defaultValue: 90, unit: 'min' },
     { key: 'languages', label: 'Sprachen', min: 2, max: 20, step: 1, defaultValue: 8, unit: '' },
+    { key: 'costPerGuideDay', label: 'Dolmetscher EUR/Tag', min: 150, max: 800, step: 50, defaultValue: 350, unit: 'EUR' },
   ],
 }
 
 const SEGMENT_LABELS: Record<CalcSegment, { title: string; competitor: string }> = {
   guide: { title: 'Guide: ROI-Rechner', competitor: 'Vox Hardware-Miete' },
+  agency: { title: 'Agentur: ROI-Rechner', competitor: 'KUDO / Vox Hardware' },
   event: { title: 'Event: ROI-Rechner', competitor: 'Wordly.ai' },
   cruise: { title: 'Cruise: ROI-Rechner', competitor: 'Dolmetscher-Kosten' },
 }
@@ -85,6 +93,13 @@ export default function ROICalculator({ segment }: ROICalculatorProps) {
           listenersPerTour: values.listenersPerTour,
           toursPerMonth: values.toursPerMonth,
         })
+      case 'agency':
+        return calculateAgencySavings({
+          tierId: selectedTierId,
+          guidesCount: values.guidesCount,
+          toursPerMonth: values.toursPerMonth,
+          minutesPerTour: values.minutesPerTour,
+        })
       case 'event':
         return calculateEventSavings({
           tierId: selectedTierId,
@@ -97,6 +112,7 @@ export default function ROICalculator({ segment }: ROICalculatorProps) {
           excursionsPerMonth: values.excursionsPerMonth,
           minutesPerExcursion: values.minutesPerExcursion,
           languages: values.languages,
+          costPerGuideDay: values.costPerGuideDay,
         })
     }
   }, [segment, selectedTierId, values])

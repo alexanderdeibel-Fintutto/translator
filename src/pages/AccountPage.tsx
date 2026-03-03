@@ -6,6 +6,7 @@ import { openCustomerPortal } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
 import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings } from 'lucide-react'
 import { toast } from 'sonner'
+import OrganizationSettings from '@/components/settings/OrganizationSettings'
 
 export default function AccountPage() {
   const { user, tier, tierId, usage, isAuthenticated, signOut } = useUser()
@@ -169,6 +170,9 @@ export default function AccountPage() {
           )}
         </div>
       </div>
+
+      {/* Organization */}
+      {user?.organizationId && <OrganizationSettings />}
 
       {/* Sign out */}
       <Button variant="outline" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive">
