@@ -58,13 +58,18 @@ const SegmentDisplay = memo(function SegmentDisplay({ seg, isLast }: { seg: Tran
     )
   }
   if (seg.error) {
+    const shortError = seg.error.includes('ALL_PROVIDERS_FAILED')
+      ? 'Übersetzung fehlgeschlagen'
+      : seg.error.includes('OFFLINE_NO_MODEL')
+        ? 'Offline — kein Modell'
+        : seg.error.length > 60 ? seg.error.slice(0, 60) + '…' : seg.error
     return (
       <span
-        className="text-destructive text-sm cursor-pointer underline decoration-dotted"
+        className="text-destructive text-sm cursor-pointer underline decoration-dotted inline-flex items-center gap-1"
         title={seg.error}
         onClick={() => alert(seg.error)}
       >
-        [!]
+        [!] <span className="text-xs opacity-75">{shortError}</span>
       </span>
     )
   }

@@ -21,6 +21,7 @@ export default function Footer() {
         </div>
         <div className="mt-3 text-center text-[11px] text-muted-foreground/60">
           {t('footer.projectBy')} <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.cloud</a>
+          <span className="ml-2 opacity-40">v2.1</span>
         </div>
       </div>
     </footer>

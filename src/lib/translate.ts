@@ -267,9 +267,9 @@ const paidProviders: ProviderDef[] = [
 ]
 
 const freeProviders: ProviderDef[] = [
+  { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
-  { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
 ]
 
 /** Get the provider cascade for a given tier */
