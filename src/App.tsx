@@ -42,6 +42,7 @@ const PricingPageRoute = lazy(() => import('@/pages/PricingPageRoute'))
 const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
 const SalesLandingPage = lazy(() => import('@/pages/SalesLandingPage'))
+const AdminPage = lazy(() => import('@/pages/AdminPage'))
 
  claude/add-new-languages-G9HsJ
 
@@ -122,6 +123,7 @@ function App() {
                   <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
                   <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />
                   <Route path="sales/:segment" element={<Suspense fallback={<PageLoader />}><SalesLandingPage /></Suspense>} />
+                  <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
                   <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
                   <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />

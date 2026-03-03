@@ -100,6 +100,40 @@ export function calculateEventSavings(params: {
   }
 }
 
+/** Agency: Compare vs KUDO/interpreter combo */
+export function calculateAgencySavings(params: {
+  tierId: TierId
+  guidesCount: number
+  toursPerMonth: number
+  minutesPerTour: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const totalMinutes = params.toursPerMonth * params.minutesPerTour
+  const overageMinutes = Math.max(0,
+    totalMinutes - (tier?.limits.sessionMinutesPerMonth || 0)
+  )
+
+  const ourCost = (tier?.pricing.monthlyEur || 0) +
+    overageMinutes * (tier?.pricing.overagePerMinuteEur || 0)
+
+  // Competitor: KUDO per-event minimum × tours + Vox hardware for guides
+  const kudoCost = params.toursPerMonth * COMPETITOR_PRICES.kudoPerEventMin
+  const voxCost = params.guidesCount * COMPETITOR_PRICES.voxPerDeviceDay * params.toursPerMonth * 10 // ~10 devices per guide
+
+  const competitorCost = Math.min(kudoCost, voxCost) // conservative: pick cheaper alternative
+
+  const savings = competitorCost - ourCost
+
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: competitorCost,
+    savingsPercent: competitorCost > 0 ? Math.round((savings / competitorCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'KUDO / Vox Hardware',
+  }
+}
+
 /** Cruise: Compare vs human interpreters */
 export function calculateCruiseSavings(params: {
   tierId: TierId
@@ -107,6 +141,7 @@ export function calculateCruiseSavings(params: {
   excursionsPerMonth: number
   minutesPerExcursion: number
   languages: number
+  costPerGuideDay?: number
 }): SavingsResult {
   const tier = TIERS[params.tierId]
   const totalMinutes = params.excursionsPerMonth * params.minutesPerExcursion
@@ -117,10 +152,9 @@ export function calculateCruiseSavings(params: {
   const ourCost = (tier?.pricing.monthlyEur || 0) +
     overageMinutes * (tier?.pricing.overagePerMinuteEur || 0)
 
-  // Human interpreters: X languages × €350/day × excursions
-  const interpreterCost = params.languages *
-    COMPETITOR_PRICES.interpreterPerDay *
-    params.excursionsPerMonth
+  // Human interpreters: X languages × cost/day × excursions
+  const dailyCost = params.costPerGuideDay ?? COMPETITOR_PRICES.interpreterPerDay
+  const interpreterCost = params.languages * dailyCost * params.excursionsPerMonth
 
   const savings = interpreterCost - ourCost
 
