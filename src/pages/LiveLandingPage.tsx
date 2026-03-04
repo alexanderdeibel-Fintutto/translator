@@ -19,7 +19,7 @@ export default function LiveLandingPage() {
   const navigate = useNavigate()
   const tierId = useTierId()
   const tier = useTier()
-  const canBroadcast = hasFeature(tierId, 'broadcasting')
+  const canLive = hasFeature(tierId, 'liveSession')
   const [sourceLang, setSourceLang] = useState('de')
   const [connectionMode, setConnectionMode] = useState<ConnectionMode>('cloud')
   const [localServerUrl, setLocalServerUrl] = useState('ws://192.168.8.1:8765')
@@ -225,12 +225,12 @@ export default function LiveLandingPage() {
             )}
           </div>
 
-          {canBroadcast ? (
+          {canLive ? (
             <Button onClick={handleCreate} className="w-full">
               {t('liveLanding.startSession')}
             </Button>
           ) : (
-            <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Live-Broadcasting" />
+            <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Live-Modus" />
           )}
         </Card>
 
