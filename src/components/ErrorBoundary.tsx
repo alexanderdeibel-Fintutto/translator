@@ -25,13 +25,6 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('[ErrorBoundary] Unhandled error:', error, errorInfo)
-    captureError(error, { componentStack: errorInfo.componentStack ?? undefined })
-    trackError({
-      type: 'js_error',
-      message: error.message,
-      source: 'ErrorBoundary',
-      stack: error.stack,
-    })
   }
 
   handleReload = () => {

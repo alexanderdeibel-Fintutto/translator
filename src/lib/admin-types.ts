@@ -55,6 +55,7 @@ export interface Lead {
   assigned_to: string | null
   converted_user_id: string | null
   converted_at: string | null
+  source: string | null
   created_at: string
   updated_at: string
 }
@@ -89,6 +90,7 @@ export interface ContactRequest {
   type: 'contact' | 'proposal' | 'demo'
   segment: string | null
   status: 'new' | 'responded' | 'closed'
+  source: string | null
   created_at: string
 }
 
@@ -97,7 +99,7 @@ export interface ContactRequest {
 // ---------------------------------------------------------------------------
 
 export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
-  all: ['VIP', 'Pilot-Kandidat', 'Bestandskunde', 'Prioritaet-Hoch'],
+  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Prioritaet-Hoch'],
   personal: [],
   guide: ['Stadtfuehrer', 'Freelancer', 'Tourismus-Verband'],
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],

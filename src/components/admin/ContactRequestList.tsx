@@ -41,6 +41,7 @@ export default function ContactRequestList() {
             <TableHead>E-Mail</TableHead>
             <TableHead>Firma</TableHead>
             <TableHead>Typ</TableHead>
+            <TableHead>Quelle</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Datum</TableHead>
             <TableHead></TableHead>
@@ -55,6 +56,7 @@ export default function ContactRequestList() {
               <TableCell>
                 <Badge variant="secondary" className="text-xs">{req.type}</Badge>
               </TableCell>
+              <TableCell className="text-xs text-muted-foreground">{req.source ?? '-'}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-1.5">
                   <div className={`w-2 h-2 rounded-full ${STATUS_COLORS[req.status] ?? 'bg-gray-400'}`} />
@@ -82,7 +84,7 @@ export default function ContactRequestList() {
           ))}
           {requests.length === 0 && (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+              <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                 Keine Anfragen vorhanden
               </TableCell>
             </TableRow>
