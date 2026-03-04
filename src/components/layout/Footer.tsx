@@ -12,8 +12,12 @@ export default function Footer() {
             <Languages className="h-4 w-4" aria-hidden="true" />
             <span>guidetranslator</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <Link to="/features" className="hover:text-foreground transition-colors">Features</Link>
             <Link to="/pricing" className="hover:text-foreground transition-colors">Preise</Link>
+            <Link to="/technology" className="hover:text-foreground transition-colors">Technologie</Link>
+            <Link to="/compare" className="hover:text-foreground transition-colors">Vergleich</Link>
+            <Link to="/investors" className="hover:text-foreground transition-colors">Investoren</Link>
             <Link to="/impressum" className="hover:text-foreground transition-colors">{t('footer.imprint')}</Link>
             <Link to="/datenschutz" className="hover:text-foreground transition-colors">{t('footer.privacy')}</Link>
             <span>&copy; {new Date().getFullYear()} ai tour ug</span>
@@ -21,7 +25,7 @@ export default function Footer() {
         </div>
         <div className="mt-3 text-center text-[11px] text-muted-foreground/60">
           {t('footer.projectBy')} <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.cloud</a>
-          <span className="ml-2 opacity-40">v2.2</span>
+          <span className="ml-2 opacity-40">v3.1</span>
         </div>
       </div>
     </footer>
