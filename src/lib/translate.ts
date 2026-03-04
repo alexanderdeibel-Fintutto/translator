@@ -118,7 +118,12 @@ async function translateWithProxy(
 
   if (!response.ok) {
     const err = await response.text()
-    throw new Error(`Proxy failed (${response.status}): ${err}`)
+    const error = Object.assign(
+      new Error(`Proxy failed (${response.status}): ${err}`),
+      // 503 = "not configured" → skip proxy entirely, don't retry
+      response.status === 503 ? { instantCircuitBreak: true } : {},
+    )
+    throw error
   }
 
   const data = await response.json()
@@ -416,8 +421,22 @@ async function translateTextInner(
         const msg = err instanceof Error ? err.message : String(err)
         providerErrors.push(`${provider.name}: ${msg.slice(0, 80)}`)
         console.warn(`[Translate] ${provider.name} failed:`, err)
-        const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
-        if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
+
+        if (provider.circuitKey) {
+          const e = err as { retryAfterMs?: number; instantCircuitBreak?: boolean }
+          if (e.instantCircuitBreak) {
+            // 503 "not configured" — open circuit immediately, long cooldown (5 min)
+            const c = circuits[provider.circuitKey]
+            if (c) {
+              c.failCount = CIRCUIT_THRESHOLD
+              c.isOpen = true
+              c.resetAt = Date.now() + 5 * 60_000
+              console.warn(`[Translate] ${provider.name} not configured — circuit open for 5 min`)
+            }
+          } else {
+            recordFailure(provider.circuitKey, e.retryAfterMs)
+          }
+        }
       }
     }
 
