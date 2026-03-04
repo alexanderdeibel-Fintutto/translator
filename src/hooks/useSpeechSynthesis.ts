@@ -59,7 +59,11 @@ export function useSpeechSynthesis() {
               // Fallback to browser TTS on error
               speakBrowserQueued(text, lang, true)
             })
-            audio.play()
+            // Catch iOS autoplay rejection (Chrome/WebKit block play() outside user gesture)
+            audio.play().catch(() => {
+              audioRef.current = null
+              speakBrowserQueued(text, lang, true)
+            })
           })
           .catch((err) => {
             console.error('[TTS] Cloud TTS failed:', err)
