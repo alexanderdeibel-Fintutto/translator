@@ -3,7 +3,7 @@ import { useUser } from '@/context/UserContext'
 import { Loader2 } from 'lucide-react'
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
-  const { isLoading, isSalesAgent } = useUser()
+  const { isLoading, isAuthenticated, isSalesAgent } = useUser()
 
   if (isLoading) {
     return (
@@ -11,6 +11,10 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth?redirect=/admin" replace />
   }
 
   if (!isSalesAgent) {
