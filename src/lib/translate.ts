@@ -50,6 +50,7 @@ interface CircuitState {
 }
 
 const circuits: Record<string, CircuitState> = {
+  proxy: { failCount: 0, isOpen: false, resetAt: 0 },
   azure: { failCount: 0, isOpen: false, resetAt: 0 },
   google: { failCount: 0, isOpen: false, resetAt: 0 },
   mymemory: { failCount: 0, isOpen: false, resetAt: 0 },
@@ -102,6 +103,35 @@ function recordSuccess(provider: string) {
 }
 
 // --- Provider implementations ---
+
+/** Server-side proxy (Vercel Edge Function) — hides API keys, bypasses CSP/ad-blockers */
+async function translateWithProxy(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const response = await fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, source: sourceLang, target: targetLang }),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(`Proxy failed (${response.status}): ${err}`)
+  }
+
+  const data = await response.json()
+  if (!data.translatedText) {
+    throw new Error('Proxy returned empty result')
+  }
+
+  return {
+    translatedText: data.translatedText,
+    match: data.match ?? 1.0,
+    provider: (data.provider as TranslationResult['provider']) || 'google',
+  }
+}
 
 async function translateWithGoogle(
   text: string,
@@ -258,8 +288,10 @@ type ProviderDef = {
   circuitKey?: string
 }
 
-// Provider cascade: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free)
+// Provider cascade: Proxy (server-side, hides keys) → direct fallbacks
+// Proxy internally cascades: Azure → Google → MyMemory
 const paidProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
   { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
@@ -267,6 +299,8 @@ const paidProviders: ProviderDef[] = [
 ]
 
 const freeProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
+  { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
 ]
@@ -351,12 +385,13 @@ async function translateTextInner(
 
   const networkStatus = getNetworkStatus()
 
-  // 3-5. Online providers (only if network available)
-  if (networkStatus.isOnline) {
-    let lastError: Error | null = null
+  // 3-5. Online providers (try unless definitely offline)
+  const providerErrors: string[] = []
 
+  if (!networkStatus.isOffline) {
     for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
+        providerErrors.push(`${provider.name}: circuit-open`)
         continue
       }
 
@@ -378,17 +413,20 @@ async function translateTextInner(
 
         return result
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        providerErrors.push(`${provider.name}: ${msg.slice(0, 80)}`)
         console.warn(`[Translate] ${provider.name} failed:`, err)
         const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
         if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
-        lastError = err instanceof Error ? err : new Error(String(err))
       }
     }
 
     // All online providers failed — log but continue to offline
-    if (lastError) {
+    if (providerErrors.length > 0) {
       console.warn('[Translate] All online providers failed, trying offline engine...')
     }
+  } else {
+    providerErrors.push('Network: offline')
   }
 
   // 6. Offline translation engine (Opus-MT via Transformers.js)
@@ -407,9 +445,14 @@ async function translateTextInner(
     console.warn('[Translate] Offline engine failed:', err)
   }
 
+  // Include provider details so the user can see WHY it failed
+  const detail = providerErrors.length > 0
+    ? providerErrors.join(' | ')
+    : 'no providers available'
+
   throw new Error(
     networkStatus.isOffline
       ? 'OFFLINE_NO_MODEL'
-      : 'ALL_PROVIDERS_FAILED'
+      : `ALL_PROVIDERS_FAILED [${detail}]`
   )
 }

@@ -74,6 +74,7 @@ export function createWebSpeechEngine(): STTEngine {
   let stream: MediaStream | null = null
   let shouldBeListening = false
   let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
+  let serviceCheckTimer: ReturnType<typeof setTimeout> | null = null
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -113,6 +114,9 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.lang = lang
 
       recognition.onresult = (event) => {
+        // Clear service check — we got results, the service works
+        if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]
           const text = result[0].transcript
@@ -180,6 +184,15 @@ export function createWebSpeechEngine(): STTEngine {
       shouldBeListening = true
       try {
         recognition.start()
+        // Detect broken Web Speech services (Opera, some WebKit):
+        // If no result arrives within 4s, assume the service is non-functional
+        serviceCheckTimer = setTimeout(() => {
+          if (shouldBeListening && recognition) {
+            console.warn('[STT] Web Speech started but no results after 4s — triggering fallback')
+            onError(`[web-speech-unavailable] Speech service not responding`)
+          }
+          serviceCheckTimer = null
+        }, 4000)
       } catch {
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
@@ -191,6 +204,7 @@ export function createWebSpeechEngine(): STTEngine {
 
     stop() {
       shouldBeListening = false
+      if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
       if (recognition) {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null

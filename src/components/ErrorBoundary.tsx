@@ -1,5 +1,7 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { captureError } from '@/lib/sentry'
+import { trackError } from '@/lib/analytics'
 import { getTranslation, type UILanguage } from '@/lib/i18n'
 
 interface Props {

@@ -108,7 +108,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const lastBroadcastRef = useRef(0)
   const broadcastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-
   // Track listener count and enforce tier limits
   useEffect(() => {
     if (role !== 'speaker') return

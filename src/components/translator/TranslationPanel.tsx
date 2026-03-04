@@ -58,7 +58,20 @@ const SegmentDisplay = memo(function SegmentDisplay({ seg, isLast }: { seg: Tran
     )
   }
   if (seg.error) {
-    return <span className="text-destructive text-sm" title={seg.error}>[!]</span>
+    const shortError = seg.error.includes('ALL_PROVIDERS_FAILED')
+      ? 'Übersetzung fehlgeschlagen'
+      : seg.error.includes('OFFLINE_NO_MODEL')
+        ? 'Offline — kein Modell'
+        : seg.error.length > 60 ? seg.error.slice(0, 60) + '…' : seg.error
+    return (
+      <span
+        className="text-destructive text-sm cursor-pointer underline decoration-dotted inline-flex items-center gap-1"
+        title={seg.error}
+        onClick={() => alert(seg.error)}
+      >
+        [!] <span className="text-xs opacity-75">{shortError}</span>
+      </span>
+    )
   }
   return <>{seg.translatedText}{!isLast && seg.translatedText ? ' ' : ''}</>
 })
@@ -273,14 +286,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : ''
-      const errorMap: Record<string, string> = {
-        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
-        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
-      }
       setSegments(prev => prev.map(s =>
         s.id === segmentId ? { ...s, isTranslating: false } : s
       ))
-      setError(errorMap[msg] || msg || t('error.unknown'))
+      // Show provider-specific error details for debugging
+      if (msg.startsWith('ALL_PROVIDERS_FAILED')) {
+        setError(msg) // includes [Google: ..., MyMemory: ..., etc.]
+      } else if (msg === 'OFFLINE_NO_MODEL') {
+        setError(t('error.offlineNoModel'))
+      } else {
+        setError(msg || t('error.unknown'))
+      }
     }
   }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
@@ -497,7 +513,7 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
     setError(null)
   }
 
-  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send
+  // Keyboard shortcuts: Ctrl+M = mic toggle, Ctrl+Enter = send (during recording)
   const handleMicToggleRef = useRef(handleMicToggle)
   handleMicToggleRef.current = handleMicToggle
   const handleSendRef = useRef(handleSend)
