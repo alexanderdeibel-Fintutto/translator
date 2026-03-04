@@ -82,16 +82,16 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    // Create gt_users profile
+    // Create or update gt_users profile (trigger may have already created the row)
     const { error: profileError } = await adminClient
       .from('gt_users')
-      .insert({
+      .upsert({
         id: newUser.user.id,
         email,
         display_name: displayName ?? email,
         tier_id: tierId,
         role: 'user',
-      })
+      }, { onConflict: 'id' })
 
     if (profileError) {
       return new Response(JSON.stringify({ error: `Profile creation failed: ${profileError.message}` }), {
