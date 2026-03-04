@@ -353,11 +353,12 @@ async function translateTextInner(
   const networkStatus = getNetworkStatus()
 
   // 3-5. Online providers (only if network available)
-  if (networkStatus.isOnline) {
-    let lastError: Error | null = null
+  const providerErrors: string[] = []
 
+  if (networkStatus.isOnline) {
     for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
+        providerErrors.push(`${provider.name}: circuit-open`)
         continue
       }
 
@@ -379,17 +380,20 @@ async function translateTextInner(
 
         return result
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        providerErrors.push(`${provider.name}: ${msg.slice(0, 80)}`)
         console.warn(`[Translate] ${provider.name} failed:`, err)
         const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
         if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
-        lastError = err instanceof Error ? err : new Error(String(err))
       }
     }
 
     // All online providers failed — log but continue to offline
-    if (lastError) {
+    if (providerErrors.length > 0) {
       console.warn('[Translate] All online providers failed, trying offline engine...')
     }
+  } else {
+    providerErrors.push('Network: offline')
   }
 
   // 6. Offline translation engine (Opus-MT via Transformers.js)
@@ -408,9 +412,14 @@ async function translateTextInner(
     console.warn('[Translate] Offline engine failed:', err)
   }
 
+  // Include provider details so the user can see WHY it failed
+  const detail = providerErrors.length > 0
+    ? providerErrors.join(' | ')
+    : 'no providers available'
+
   throw new Error(
     networkStatus.isOffline
       ? 'OFFLINE_NO_MODEL'
-      : 'ALL_PROVIDERS_FAILED'
+      : `ALL_PROVIDERS_FAILED [${detail}]`
   )
 }

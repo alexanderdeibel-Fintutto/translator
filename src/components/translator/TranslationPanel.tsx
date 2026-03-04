@@ -286,14 +286,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : ''
-      const errorMap: Record<string, string> = {
-        OFFLINE_NO_MODEL: t('error.offlineNoModel'),
-        ALL_PROVIDERS_FAILED: t('error.allProvidersFailed'),
-      }
       setSegments(prev => prev.map(s =>
         s.id === segmentId ? { ...s, isTranslating: false } : s
       ))
-      setError(errorMap[msg] || msg || t('error.unknown'))
+      // Show provider-specific error details for debugging
+      if (msg.startsWith('ALL_PROVIDERS_FAILED')) {
+        setError(msg) // includes [Google: ..., MyMemory: ..., etc.]
+      } else if (msg === 'OFFLINE_NO_MODEL') {
+        setError(t('error.offlineNoModel'))
+      } else {
+        setError(msg || t('error.unknown'))
+      }
     }
   }, [sourceLang, targetLang, autoDetect, addEntry, t])
 
