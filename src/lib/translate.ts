@@ -352,10 +352,10 @@ async function translateTextInner(
 
   const networkStatus = getNetworkStatus()
 
-  // 3-5. Online providers (only if network available)
+  // 3-5. Online providers (try unless definitely offline)
   const providerErrors: string[] = []
 
-  if (networkStatus.isOnline) {
+  if (!networkStatus.isOffline) {
     for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
         providerErrors.push(`${provider.name}: circuit-open`)
