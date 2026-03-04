@@ -50,6 +50,7 @@ interface CircuitState {
 }
 
 const circuits: Record<string, CircuitState> = {
+  proxy: { failCount: 0, isOpen: false, resetAt: 0 },
   azure: { failCount: 0, isOpen: false, resetAt: 0 },
   google: { failCount: 0, isOpen: false, resetAt: 0 },
   mymemory: { failCount: 0, isOpen: false, resetAt: 0 },
@@ -102,6 +103,35 @@ function recordSuccess(provider: string) {
 }
 
 // --- Provider implementations ---
+
+/** Server-side proxy (Vercel Edge Function) — hides API keys, bypasses CSP/ad-blockers */
+async function translateWithProxy(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const response = await fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, source: sourceLang, target: targetLang }),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(`Proxy failed (${response.status}): ${err}`)
+  }
+
+  const data = await response.json()
+  if (!data.translatedText) {
+    throw new Error('Proxy returned empty result')
+  }
+
+  return {
+    translatedText: data.translatedText,
+    match: data.match ?? 1.0,
+    provider: (data.provider as TranslationResult['provider']) || 'google',
+  }
+}
 
 async function translateWithGoogle(
   text: string,
@@ -258,8 +288,10 @@ type ProviderDef = {
   circuitKey?: string
 }
 
-// Provider cascade: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free)
+// Provider cascade: Proxy (server-side, hides keys) → direct fallbacks
+// Proxy internally cascades: Azure → Google → MyMemory
 const paidProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
   { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
@@ -267,6 +299,7 @@ const paidProviders: ProviderDef[] = [
 ]
 
 const freeProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
