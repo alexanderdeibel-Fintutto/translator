@@ -95,10 +95,14 @@ class NetworkStatusManager {
       }
     } catch {
       this.consecutiveFailures++
-      if (this.consecutiveFailures >= 2) {
+      // Trust navigator.onLine when heartbeat fails (may be blocked by CSP)
+      // Only go offline after 3+ failures AND navigator.onLine is false
+      if (this.consecutiveFailures >= 3 && !navigator.onLine) {
         this.setMode('offline')
-      } else {
-        this.setMode('degraded')
+      } else if (this.consecutiveFailures >= 2) {
+        // Heartbeat failed but browser says online — stay degraded, not offline
+        // This prevents CSP-blocked heartbeats from breaking all translations
+        this.setMode(navigator.onLine ? 'degraded' : 'offline')
       }
     }
   }
