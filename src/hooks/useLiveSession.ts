@@ -12,6 +12,7 @@ import { generateSessionCode } from '@/lib/session'
 import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import { TIERS, type TierId } from '@/lib/tiers'
 import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
+import { ORIGINAL_LANG_CODE } from '@/components/live/LanguageChips'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
 import type { ConnectionConfig } from '@/lib/transport/types'
 
@@ -178,9 +179,27 @@ export function useLiveSession(userTierId: TierId = 'free') {
       setLanguageLimitReached(false)
     }
 
+    // Separate "original" listeners (no translation needed) from translation targets
+    const needsOriginal = targetLangs.includes(ORIGINAL_LANG_CODE)
+    const translateLangs = targetLangs.filter(lang => lang !== ORIGINAL_LANG_CODE)
+
+    // Build results: original pass-through + translated chunks
+    const originalChunks: TranslationChunk[] = []
+    if (needsOriginal) {
+      originalChunks.push({
+        id: generateChunkId(),
+        sourceText: text,
+        translatedText: text,
+        sourceLang: sourceLanguage,
+        targetLanguage: ORIGINAL_LANG_CODE,
+        isFinal: true,
+        timestamp: Date.now(),
+      })
+    }
+
     // Translate to all requested languages in parallel (resilient — individual failures don't block others)
     const settled = await Promise.allSettled(
-      targetLangs.map(async (targetLang) => {
+      translateLangs.map(async (targetLang) => {
         const result = await translateText(text, sourceLanguage, targetLang)
         const chunk: TranslationChunk = {
           id: generateChunkId(),
@@ -195,9 +214,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
       })
     )
 
-    const results = settled
+    const translatedResults = settled
       .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
       .map(r => r.value)
+
+    const results = [...originalChunks, ...translatedResults]
 
     // Broadcast each successful translation
     for (const chunk of results) {
@@ -311,10 +332,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
             return next.length > 100 ? next.slice(-100) : next
           })
 
-          // Auto-TTS
+          // Auto-TTS — for "original" mode, speak in the source language
           if (autoTTSRef.current && chunk.translatedText) {
-            const lang = getLanguageByCode(selectedLanguageRef.current)
-            ttsRef.current(chunk.translatedText, lang?.speechCode || selectedLanguageRef.current)
+            const ttsLangCode = selectedLanguageRef.current === ORIGINAL_LANG_CODE
+              ? chunk.sourceLang
+              : selectedLanguageRef.current
+            const lang = getLanguageByCode(ttsLangCode)
+            ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
           }
         }
       },

@@ -258,6 +258,7 @@ const strings: Record<string, string> = {
   'live.leave': 'Leave',
   'live.fullscreen': 'Fullscreen',
   'live.closeFullscreen': 'Close fullscreen',
+  'live.originalLanguage': 'Original (no translation)',
   'live.chooseTargetLang': 'Choose target language',
   'pwa.install': 'Install app',
   'pwa.installDesc': 'Use offline, start faster',

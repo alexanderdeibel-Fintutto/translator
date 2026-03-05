@@ -208,6 +208,7 @@ const strings: Record<string, string> = {
   'live.leave': 'Вийти',
   'live.fullscreen': 'На весь екран',
   'live.closeFullscreen': 'Закрити повний екран',
+  'live.originalLanguage': 'Оригінал (без перекладу)',
   'live.chooseTargetLang': 'Оберіть мову перекладу',
   'live.enterCode': 'Введіть код сесії',
 

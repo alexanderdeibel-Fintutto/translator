@@ -311,6 +311,7 @@ const de: TranslationStrings = {
   'live.leave': 'Verlassen',
   'live.fullscreen': 'Vollbild',
   'live.closeFullscreen': 'Vollbild schließen',
+  'live.originalLanguage': 'Original (ohne Übersetzung)',
   'live.chooseTargetLang': 'Zielsprache wählen',
 
   // PWA

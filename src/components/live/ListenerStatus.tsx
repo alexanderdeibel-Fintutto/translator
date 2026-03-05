@@ -1,6 +1,7 @@
 import { Users, Globe, Radio } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { getLanguageByCode } from '@/lib/languages'
+import { ORIGINAL_LANG_CODE } from './LanguageChips'
 import { useI18n } from '@/context/I18nContext'
 import type { PresenceState } from '@/lib/session'
 
@@ -53,13 +54,14 @@ export default function ListenerStatus({ listeners, listenersByLanguage }: Liste
       {langEntries.length > 0 ? (
         <div className="space-y-1.5">
           {langEntries.map(([lang, count]) => {
-            const langData = getLanguageByCode(lang)
+            const isOriginal = lang === ORIGINAL_LANG_CODE
+            const langData = isOriginal ? null : getLanguageByCode(lang)
             const pct = totalListeners > 0 ? Math.round((count / totalListeners) * 100) : 0
             return (
               <div key={lang} className="flex items-center gap-2">
-                <span className="text-sm shrink-0 w-6">{langData?.flag}</span>
+                <span className="text-sm shrink-0 w-6">{isOriginal ? '🔊' : langData?.flag}</span>
                 <span className="text-xs flex-1 min-w-0 truncate">
-                  {langData?.nativeName || lang}
+                  {isOriginal ? t('live.originalLanguage') : (langData?.nativeName || lang)}
                 </span>
                 {/* Visual bar */}
                 <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">

@@ -208,6 +208,7 @@ const strings: Record<string, string> = {
   'live.leave': 'خروج',
   'live.fullscreen': 'تمام صفحه',
   'live.closeFullscreen': 'بستن تمام صفحه',
+  'live.originalLanguage': 'اصلی (بدون ترجمه)',
   'live.chooseTargetLang': 'زبان مقصد را انتخاب کنید',
   'live.enterCode': 'کد جلسه را وارد کنید',
 

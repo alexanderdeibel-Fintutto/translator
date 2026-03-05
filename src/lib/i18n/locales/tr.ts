@@ -208,6 +208,7 @@ const strings: Record<string, string> = {
   'live.leave': 'Ayrıl',
   'live.fullscreen': 'Tam ekran',
   'live.closeFullscreen': 'Tam ekranı kapat',
+  'live.originalLanguage': 'Orijinal (çeviri yok)',
   'live.chooseTargetLang': 'Hedef dil seçin',
   'live.enterCode': 'Oturum kodunu girin',
 

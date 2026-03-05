@@ -208,6 +208,7 @@ const strings: Record<string, string> = {
   'live.leave': 'مغادرة',
   'live.fullscreen': 'ملء الشاشة',
   'live.closeFullscreen': 'إغلاق ملء الشاشة',
+  'live.originalLanguage': 'الأصلي (بدون ترجمة)',
   'live.chooseTargetLang': 'اختر لغة الهدف',
   'live.enterCode': 'أدخل رمز الجلسة',
 

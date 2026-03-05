@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import LanguageChips from './LanguageChips'
+import LanguageChips, { ORIGINAL_LANG_CODE } from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
 import { getLanguageByCode } from '@/lib/languages'
@@ -17,7 +17,8 @@ interface ListenerViewProps {
 
 export default function ListenerView({ session }: ListenerViewProps) {
   const { t } = useI18n()
-  const langData = getLanguageByCode(session.selectedLanguage)
+  const isOriginalMode = session.selectedLanguage === ORIGINAL_LANG_CODE
+  const langData = isOriginalMode ? null : getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
 
@@ -195,7 +196,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
         <div className="flex-1" />
 
         <span className="text-sm text-muted-foreground">
-          {langData?.flag} {langData?.name}
+          {isOriginalMode ? t('live.originalLanguage') : `${langData?.flag} ${langData?.name}`}
         </span>
 
         <Button variant="ghost" size="sm" onClick={session.leaveSession} className="gap-1.5 text-destructive" aria-label={t('live.leave')}>
@@ -211,6 +212,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
           selected={session.selectedLanguage}
           onSelect={session.selectLanguage}
           exclude={session.sourceLanguage}
+          showOriginal
         />
       </Card>
 
