@@ -30,6 +30,10 @@ const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
 const SalesLandingPage = lazy(() => import('@/pages/SalesLandingPage'))
 const AdminPage = lazy(() => import('@/pages/AdminPage'))
+const TechnologyPage = lazy(() => import('@/pages/TechnologyPage'))
+const FeaturesPage = lazy(() => import('@/pages/FeaturesPage'))
+const CompetitorPage = lazy(() => import('@/pages/CompetitorPage'))
+const InvestorPage = lazy(() => import('@/pages/InvestorPage'))
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -73,6 +77,10 @@ function App() {
                   <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
                   <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />
                   <Route path="sales/:segment" element={<Suspense fallback={<PageLoader />}><SalesLandingPage /></Suspense>} />
+                  <Route path="technology" element={<Suspense fallback={<PageLoader />}><TechnologyPage /></Suspense>} />
+                  <Route path="features" element={<Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />
+                  <Route path="compare" element={<Suspense fallback={<PageLoader />}><CompetitorPage /></Suspense>} />
+                  <Route path="investors" element={<Suspense fallback={<PageLoader />}><InvestorPage /></Suspense>} />
                   <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
                   <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />

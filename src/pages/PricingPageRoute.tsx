@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 import { useUser } from '@/context/UserContext'
 import { PricingPage } from '@/components/pricing/PricingPage'
 import { redirectToCheckout, isStripeConfigured } from '@/lib/stripe'
-import type { TierId } from '@/lib/tiers'
+import { TIERS, type TierId } from '@/lib/tiers'
 
 export default function PricingPageRoute() {
-  const { tierId, isAuthenticated } = useUser()
+  const { tierId, isAuthenticated, setTier } = useUser()
   const navigate = useNavigate()
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
 
@@ -21,15 +21,19 @@ export default function PricingPageRoute() {
       return
     }
 
+    // When Stripe is not configured, activate tier directly for testing
+    if (!isStripeConfigured()) {
+      const tier = TIERS[selectedTierId]
+      setTier(selectedTierId)
+      toast.success(`${tier?.displayName ?? selectedTierId} wurde aktiviert (Testmodus — Stripe noch nicht verbunden)`)
+      return
+    }
+
     try {
       await redirectToCheckout({ tierId: selectedTierId, billingCycle })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Fehler beim Checkout'
-      if (!isStripeConfigured()) {
-        toast.info('Stripe ist noch nicht konfiguriert. Bitte kontaktiere uns unter sales@guidetranslator.com')
-      } else {
-        toast.error(msg)
-      }
+      toast.error(msg)
     }
   }
 
@@ -41,6 +45,13 @@ export default function PricingPageRoute() {
           Von kostenlos bis Enterprise — finde den Plan, der zu dir passt.
         </p>
       </div>
+
+      {/* Test mode banner */}
+      {!isStripeConfigured() && (
+        <div className="max-w-2xl mx-auto mb-6 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+          <strong>Testmodus:</strong> Stripe ist noch nicht verbunden. Du kannst Pläne zum Testen direkt aktivieren — es wird nichts berechnet.
+        </div>
+      )}
 
       {/* Billing cycle toggle */}
       <div className="flex justify-center mb-8">

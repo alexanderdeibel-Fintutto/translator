@@ -6,6 +6,7 @@ import WifiQRCode from './WifiQRCode'
 import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
+import EndSessionConfirmDialog from './EndSessionConfirmDialog'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
@@ -33,6 +34,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [showEndConfirm, setShowEndConfirm] = useState(false)
   const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
 
   // Poll latency stats while recording
@@ -264,11 +266,24 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           <Button
             variant="outline"
             className="w-full gap-2 text-destructive hover:text-destructive"
-            onClick={session.endSession}
+            onClick={() => {
+              if (session.listenerCount > 0) {
+                setShowEndConfirm(true)
+              } else {
+                session.endSession()
+              }
+            }}
           >
             <StopCircle className="h-4 w-4" />
             {t('live.endSession')}
           </Button>
+
+          <EndSessionConfirmDialog
+            open={showEndConfirm}
+            onOpenChange={setShowEndConfirm}
+            listenerCount={session.listenerCount}
+            onConfirm={session.endSession}
+          />
 
           <ListenerStatus
             listeners={session.listeners}
