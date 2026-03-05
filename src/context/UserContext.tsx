@@ -131,13 +131,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
       }
     )
 
-    // Initial session check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) setIsLoading(false)
-      // onAuthStateChange will handle the rest
-    })
+    // Initial session check — with safety timeout so the app never stays
+    // stuck on the loading spinner if Supabase auth hangs or times out.
+    let resolved = false
+    const finish = () => { if (!resolved) { resolved = true; setIsLoading(false) } }
 
-    return () => subscription.unsubscribe()
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) finish()
+      // onAuthStateChange will handle the rest
+    }).catch(finish)
+
+    // Safety: if nothing responds within 4 s, stop loading anyway
+    const timeout = setTimeout(finish, 4000)
+    return () => { subscription.unsubscribe(); clearTimeout(timeout) }
   }, [])
 
   const signIn = useCallback(async (email: string, password: string) => {
