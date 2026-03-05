@@ -4,6 +4,7 @@
 
 import { getTranslation, type UILanguage } from '@/lib/i18n'
 import { getGoogleApiKey } from '@/lib/api-key'
+import { Capacitor } from '@capacitor/core'
 
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
@@ -246,7 +247,7 @@ export function createAppleSpeechAnalyzerEngine(): STTEngine {
   }
 }
 
-// --- iOS detection ---
+// --- Platform detection ---
 // All iOS browsers (Safari, Chrome, Firefox) use WebKit under the hood.
 // WebKit exposes webkitSpeechRecognition but .start() fires 'service-not-allowed'.
 
@@ -254,6 +255,16 @@ function isIOS(): boolean {
   if (typeof navigator === 'undefined') return false
   return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
+// Android WebView (Capacitor) does not reliably support Web Speech API.
+// The constructor may exist but the service won't respond or requires Google Play Services.
+function isAndroidNative(): boolean {
+  try {
+    return Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
+  } catch {
+    return false
+  }
 }
 
 // --- Google Cloud Speech-to-Text engine ---
@@ -439,6 +450,20 @@ export function createGoogleCloudSTTEngine(): STTEngine {
           }
         } catch (err) {
           console.error('[STT] Recognition error:', err)
+          const isNetworkError = err instanceof Error && (
+            err.name === 'AbortError' ||
+            err.message.includes('Failed to fetch') ||
+            err.message.includes('NetworkError') ||
+            err.message.includes('network') ||
+            err.message.includes('ERR_INTERNET_DISCONNECTED')
+          )
+          if (isNetworkError) {
+            // Network/offline error — stop recording and inform user
+            const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+            onError(getTranslation(uiLang, 'error.sttOffline'))
+            isActive = false
+            return
+          }
           if (err instanceof Error && (err.message.includes('403') || err.message.includes('401') || err.message.includes('400'))) {
             // Extract the actual Google API error message for better diagnostics
             let detail = ''
@@ -505,13 +530,15 @@ export function getBestSTTEngine(): STTEngine {
   const apple = createAppleSpeechAnalyzerEngine()
   if (apple.isSupported) return apple
 
-  // 2. On iOS: use Google Cloud STT (Web Speech API is broken on all iOS browsers)
-  if (isIOS()) {
+  // 2. On iOS or Android native: use Google Cloud STT directly
+  //    - iOS: Web Speech API is broken on all iOS browsers (WebKit service-not-allowed)
+  //    - Android WebView: Web Speech API is not reliably available in Capacitor WebView
+  if (isIOS() || isAndroidNative()) {
     const googleSTT = createGoogleCloudSTTEngine()
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. Web Speech API (streaming, real-time — Chrome/Edge/Android)
+  // 3. Web Speech API (streaming, real-time — Chrome/Edge desktop browsers)
   const webSpeech = createWebSpeechEngine()
   if (webSpeech.isSupported) return webSpeech
 

@@ -374,6 +374,7 @@ const de: TranslationStrings = {
   'error.sttGeneric': 'Spracheingabe-Fehler: {error}',
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer ist noch nicht verfügbar. Wird mit der nativen iOS-App freigeschaltet.',
   'error.cloudSttNotAvailable': 'Spracheingabe nicht verfügbar. Bitte Cloud Speech-to-Text API im Google Cloud Console aktivieren.',
+  'error.sttOffline': 'Spracheingabe benötigt eine Internetverbindung. Bitte verbinden Sie sich mit dem Internet oder laden Sie das Whisper-Modell für Offline-Nutzung herunter.',
   'error.whisperNotAvailable': 'Offline-Spracherkennung nicht verfügbar. Bitte Whisper-Modell unter Einstellungen herunterladen.',
   'error.bluetoothNotEnabled': 'Bluetooth ist nicht aktiviert',
 

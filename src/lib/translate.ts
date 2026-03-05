@@ -5,6 +5,7 @@ import { getCachedTranslation, cacheTranslation } from './offline/translation-ca
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
 import { getGoogleApiKey } from './api-key'
+import { getApiBaseUrl } from './api-base'
 import { TIERS, type TierId } from './tiers'
 import { recordTranslation } from './usage-tracker'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
@@ -110,7 +111,7 @@ async function translateWithProxy(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch('/api/translate', {
+  const response = await fetch(`${getApiBaseUrl()}/api/translate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, source: sourceLang, target: targetLang }),

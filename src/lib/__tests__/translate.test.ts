@@ -19,9 +19,22 @@ vi.mock('../api-key', () => ({
   getGoogleApiKey: vi.fn().mockReturnValue(''),
 }))
 
+vi.mock('../api-base', () => ({
+  getApiBaseUrl: vi.fn().mockReturnValue(''),
+}))
+
 // Mock fetch globally
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
+
+/** Helper: mock a failed proxy response (first call in cascade) */
+function mockProxyFailure() {
+  mockFetch.mockResolvedValueOnce({
+    ok: false,
+    status: 502,
+    text: () => Promise.resolve('Proxy unavailable'),
+  })
+}
 
 import { translateText, _resetInternals } from '../translate'
 import { getGoogleApiKey } from '../api-key'
@@ -57,7 +70,10 @@ describe('translateText cascade', () => {
   it('skips Google when no API key is configured', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
 
-    // MyMemory responds
+    // Proxy fails
+    mockProxyFailure()
+
+    // MyMemory responds (Google is skipped — no API key)
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({
@@ -73,6 +89,9 @@ describe('translateText cascade', () => {
 
   it('falls back to MyMemory when Google fails', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('fake-key')
+
+    // Proxy fails
+    mockProxyFailure()
 
     // Google fails
     mockFetch.mockResolvedValueOnce({
@@ -97,6 +116,9 @@ describe('translateText cascade', () => {
 
   it('falls back to LibreTranslate when Google and MyMemory fail', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('fake-key')
+
+    // Proxy fails
+    mockProxyFailure()
 
     // Google fails
     mockFetch.mockResolvedValueOnce({
@@ -125,7 +147,10 @@ describe('translateText cascade', () => {
   it('falls back to offline engine when all online providers fail', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
 
-    // MyMemory fails
+    // Proxy fails
+    mockProxyFailure()
+
+    // MyMemory fails (Google skipped — no key)
     mockFetch.mockResolvedValueOnce({
       ok: false,
       statusText: 'Service Unavailable',
@@ -153,7 +178,10 @@ describe('translateText cascade', () => {
   it('throws when all providers fail and offline unavailable', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
 
-    // MyMemory fails
+    // Proxy fails
+    mockProxyFailure()
+
+    // MyMemory fails (Google skipped — no key)
     mockFetch.mockResolvedValueOnce({
       ok: false,
       statusText: 'Error',

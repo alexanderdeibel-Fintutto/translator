@@ -10,7 +10,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     // Use a simple in-process lock instead of navigator.locks to prevent
     // timeout errors in PWA environments with Service Workers.
     // navigator.locks can deadlock when the SW holds stale locks.
-    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<unknown>) => {
+    lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
       return await fn()
     },
   },

@@ -315,6 +315,7 @@ const strings: Record<string, string> = {
   'error.sttGeneric': 'Speech input error: {error}',
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer is not yet available. Will be enabled with the native iOS app.',
   'error.cloudSttNotAvailable': 'Speech input not available. Please enable Cloud Speech-to-Text API in Google Cloud Console.',
+  'error.sttOffline': 'Speech input requires an internet connection. Please connect to the internet or download the Whisper model for offline use.',
   'error.whisperNotAvailable': 'Offline speech recognition not available. Please download the Whisper model in Settings.',
   'error.bluetoothNotEnabled': 'Bluetooth is not enabled',
 

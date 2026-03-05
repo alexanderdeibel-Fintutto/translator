@@ -333,6 +333,7 @@ const strings: Record<string, string> = {
   'error.sttGeneric': 'خطأ في الإدخال الصوتي: {error}',
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer غير متاح بعد. سيتم تفعيله مع تطبيق iOS الأصلي.',
   'error.cloudSttNotAvailable': 'الإدخال الصوتي غير متاح. يرجى تفعيل Cloud Speech-to-Text API في Google Cloud Console.',
+  'error.sttOffline': 'الإدخال الصوتي يتطلب اتصالاً بالإنترنت. يرجى الاتصال بالإنترنت أو تنزيل نموذج Whisper للاستخدام بدون اتصال.',
   'error.whisperNotAvailable': 'التعرف على الكلام بدون اتصال غير متاح. يرجى تنزيل نموذج Whisper من الإعدادات.',
   'error.bluetoothNotEnabled': 'البلوتوث غير مفعّل',
 

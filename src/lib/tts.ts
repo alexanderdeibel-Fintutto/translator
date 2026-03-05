@@ -4,6 +4,7 @@
 
 import { getCachedTTSAudio, cacheTTSAudio } from './offline/tts-cache'
 import { getGoogleApiKey } from './api-key'
+import { getApiBaseUrl } from './api-base'
 const API_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 const API_URL_BETA = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'
 
@@ -227,7 +228,7 @@ async function fetchTTSFromProxy(
   voiceConfig: { languageCode: string; name: string },
   useBeta: boolean,
 ): Promise<string> {
-  const res = await fetch('/api/tts', {
+  const res = await fetch(`${getApiBaseUrl()}/api/tts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

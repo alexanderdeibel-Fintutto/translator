@@ -333,6 +333,7 @@ const strings: Record<string, string> = {
   'error.sttGeneric': 'Error de entrada de voz: {error}',
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer aún no está disponible. Se activará con la aplicación iOS nativa.',
   'error.cloudSttNotAvailable': 'Entrada de voz no disponible. Por favor, active la API Cloud Speech-to-Text en Google Cloud Console.',
+  'error.sttOffline': 'La entrada de voz requiere conexión a Internet. Por favor, conéctese a Internet o descargue el modelo Whisper para uso sin conexión.',
   'error.whisperNotAvailable': 'Reconocimiento de voz sin conexión no disponible. Por favor, descargue el modelo Whisper en Ajustes.',
   'error.bluetoothNotEnabled': 'Bluetooth no está activado',
 

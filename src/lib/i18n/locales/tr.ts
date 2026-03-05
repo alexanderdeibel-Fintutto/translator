@@ -333,6 +333,7 @@ const strings: Record<string, string> = {
   'error.sttGeneric': 'Sesli giriş hatası: {error}',
   'error.appleSpeechNotAvailable': 'Apple SpeechAnalyzer henüz kullanılamıyor. Yerel iOS uygulaması ile etkinleştirilecek.',
   'error.cloudSttNotAvailable': 'Sesli giriş kullanılamıyor. Lütfen Google Cloud Console\'da Cloud Speech-to-Text API\'yi etkinleştirin.',
+  'error.sttOffline': 'Sesli giriş internet bağlantısı gerektirir. Lütfen internete bağlanın veya çevrimdışı kullanım için Whisper modelini indirin.',
   'error.whisperNotAvailable': 'Çevrimdışı konuşma tanıma kullanılamıyor. Lütfen Ayarlar\'dan Whisper modelini indirin.',
   'error.bluetoothNotEnabled': 'Bluetooth etkin değil',
 
