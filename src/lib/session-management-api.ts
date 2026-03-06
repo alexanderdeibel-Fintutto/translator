@@ -275,8 +275,10 @@ export async function createManagedUser(
     // Extract detailed error from Edge Function response body
     let detail = error.message
     try {
-      if (error.context instanceof Response) {
-        const body = await error.context.json()
+      // error.context may be a Response — use duck-typing to avoid cross-realm instanceof issues
+      const ctx = error.context as Response | undefined
+      if (ctx && typeof ctx.json === 'function') {
+        const body = await ctx.json()
         detail = body.error || detail
       }
     } catch { /* ignore parse errors */ }
