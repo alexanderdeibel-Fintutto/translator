@@ -10,6 +10,45 @@ import { setUsageTier, getUsage, type UsageRecord } from '../lib/usage-tracker'
 import { startUsageSync, stopUsageSync } from '../lib/usage-sync'
 import type { UserRole } from '../lib/admin-types'
 
+// Supabase URL and anon key for direct REST API calls
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://aaefocdqgdgexkcrjhks.supabase.co'
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZWZvY2RxZ2RnZXhrY3JqaGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNTU2NzYsImV4cCI6MjA1MzgzMTY3Nn0.KzAlgorLEJf_yfPY4RFEs1MERPyt5sYjIEvVPmPsWH4'
+
+/** Fetch user profile via the SECURITY DEFINER RPC function get_my_profile().
+ *  This bypasses RLS entirely and avoids the race condition / self-referencing
+ *  policy issue that was blocking the direct SELECT on gt_users. */
+async function fetchProfileRpc(accessToken: string) {
+  const url = `${SUPABASE_URL}/rest/v1/rpc/get_my_profile`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: '{}',
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return data || null
+}
+
+/** Fallback: fetch profile directly via REST API with access token. */
+async function fetchProfileDirect(userId: string, accessToken: string) {
+  const url = `${SUPABASE_URL}/rest/v1/gt_users?id=eq.${userId}&select=tier_id,organization_id,stripe_customer_id,display_name,role`
+  const res = await fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${accessToken}`,
+      'Accept': 'application/json',
+    },
+  })
+  if (!res.ok) return null
+  const rows = await res.json()
+  return Array.isArray(rows) && rows.length === 1 ? rows[0] : null
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -83,33 +122,31 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          // Fetch user profile with tier from database.
-          // Retry once after a short delay to handle the race condition where
-          // onAuthStateChange fires before the client has the session token set
-          // (which would cause RLS to block the SELECT).
-          let { data: profile, error: profileError } = await supabase
-            .from('gt_users')
-            .select('tier_id, organization_id, stripe_customer_id, display_name, role')
-            .eq('id', session.user.id)
-            .single()
+          // Strategy: try multiple approaches to load the user profile.
+          // 1. RPC function (SECURITY DEFINER, bypasses RLS entirely)
+          // 2. Direct REST API with access token
+          // 3. Supabase client (may fail due to auth race condition)
+          // 4. Auto-create if user truly doesn't exist
+          let profile = await fetchProfileRpc(session.access_token)
 
-          if (!profile && profileError) {
-            // Retry once after a brief delay (auth token may not be ready yet)
-            await new Promise(r => setTimeout(r, 500))
-            const retry = await supabase
+          if (!profile) {
+            profile = await fetchProfileDirect(session.user.id, session.access_token)
+          }
+
+          if (!profile) {
+            // Try via Supabase client as last resort
+            const { data } = await supabase
               .from('gt_users')
               .select('tier_id, organization_id, stripe_customer_id, display_name, role')
               .eq('id', session.user.id)
               .single()
-            profile = retry.data
-            profileError = retry.error
+            profile = data
           }
 
-          // Auto-create profile if the row truly doesn't exist (not just an RLS/auth error).
-          // IMPORTANT: Use INSERT (not upsert) to avoid overwriting existing role/tier
-          // if the SELECT failed due to a transient auth issue.
-          if (!profile && profileError?.code === 'PGRST116') {
-            const { data: created } = await supabase
+          // Auto-create profile if the row truly doesn't exist.
+          // Use INSERT (not upsert) to avoid overwriting existing role/tier.
+          if (!profile) {
+            await supabase
               .from('gt_users')
               .insert({
                 id: session.user.id,
@@ -118,9 +155,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 tier_id: 'free',
                 role: 'user',
               })
-              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
-              .single()
-            profile = created
+            // After insert, try to read it back
+            profile = await fetchProfileRpc(session.access_token)
+              || await fetchProfileDirect(session.user.id, session.access_token)
           }
 
           const dbTier = (profile?.tier_id as TierId) || 'free'
