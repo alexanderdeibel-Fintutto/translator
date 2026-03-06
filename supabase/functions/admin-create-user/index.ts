@@ -22,7 +22,7 @@ Deno.serve(async (req: Request) => {
   try {
     // Validate required env vars
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !SUPABASE_ANON_KEY) {
-      console.error('Missing env vars:', {
+      console.log('ERROR: Missing env vars:', {
         SUPABASE_URL: !!SUPABASE_URL,
         SUPABASE_SERVICE_ROLE_KEY: !!SUPABASE_SERVICE_ROLE_KEY,
         SUPABASE_ANON_KEY: !!SUPABASE_ANON_KEY,
@@ -105,7 +105,7 @@ Deno.serve(async (req: Request) => {
     })
 
     if (createError || !newUser?.user) {
-      console.error('Auth user creation failed:', createError?.message ?? 'no user returned')
+      console.log('ERROR: Auth user creation failed:', createError?.message ?? 'no user returned')
       return new Response(JSON.stringify({ error: createError?.message ?? 'Failed to create user' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -126,7 +126,7 @@ Deno.serve(async (req: Request) => {
       }, { onConflict: 'id' })
 
     if (profileError) {
-      console.error('Profile creation failed:', profileError.message)
+      console.log('ERROR: Profile creation failed:', profileError.message)
       return new Response(JSON.stringify({ error: `Profile creation failed: ${profileError.message}` }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -147,7 +147,7 @@ Deno.serve(async (req: Request) => {
         .eq('id', leadId)
 
       if (leadError) {
-        console.error('Lead update failed:', leadError)
+        console.log('ERROR: Lead update failed:', leadError)
       }
     }
 
@@ -188,7 +188,7 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    console.error('Unhandled error:', error.message, error.stack)
+    console.log('ERROR: Unhandled exception:', error.message, error.stack)
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

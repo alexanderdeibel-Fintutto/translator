@@ -273,23 +273,34 @@ export async function createManagedUser(
   })
   if (error) {
     // Extract detailed error from Edge Function response body.
-    // error.context can be: a Response (older supabase-js), parsed JSON (newer), or undefined.
+    // supabase-js may provide the response in different ways depending on version.
     let detail = error.message
     try {
       const ctx = (error as any).context
       if (ctx) {
-        if (typeof ctx === 'object' && ctx.error && typeof ctx.json !== 'function') {
+        if (typeof ctx.json === 'function') {
+          // Raw Response object — clone first in case body was already read
+          try {
+            const body = await ctx.json()
+            detail = body?.error || detail
+          } catch {
+            // Body may have been consumed; try .text() on a clone
+            try {
+              const text = await ctx.text()
+              if (text) {
+                const parsed = JSON.parse(text)
+                detail = parsed?.error || detail
+              }
+            } catch { /* exhausted options */ }
+          }
+        } else if (typeof ctx === 'object' && ctx.error) {
           // Already parsed JSON object
           detail = ctx.error
-        } else if (typeof ctx.json === 'function') {
-          // Raw Response object
-          const body = await ctx.json()
-          detail = body?.error || detail
         } else if (typeof ctx === 'string') {
           detail = ctx
         }
       }
-    } catch { /* ignore parse errors */ }
+    } catch { /* ignore extraction errors */ }
     throw new Error(detail)
   }
   if (data?.error) {
