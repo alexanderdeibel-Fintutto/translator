@@ -1,11 +1,27 @@
 # FFplus Generative AI fuer KMU — Foerderantrag
 
 **Programm:** Digital Europe Programme — FFplus: Generative AI for European SMEs/Startups
-**Call:** DIGITAL-2026-AI-09 (voraussichtlich)
+**Call:** FFplus 3. Open Call (EuroHPC Joint Undertaking)
 **Antragsteller:** Fintutto UG (i.G.) / Alexander Deibel
 **Beantragter Betrag:** 300.000 EUR (100% Foerderung, kein Eigenanteil)
 **Laufzeit:** 10 Monate
-**Voraussichtlicher Start:** Juli 2026
+**Voraussichtlicher Call-Start:** Fruehjahr/Sommer 2027 (3. und letzter Call)
+
+> **HINWEIS (06.03.2026):** Der 2. FFplus Call (Feb. 2026) war innerhalb von
+> 24 Stunden voll (250 Antraege Limit). Der 3. und letzte Call wird erst
+> **Fruehjahr/Sommer 2027** erwartet -- nicht wie urspruenglich vermutet
+> Sommer 2026.
+>
+> **Dieses Dokument dient als Vorbereitung**, damit der Antrag sofort
+> eingereicht werden kann, wenn der 3. Call oeffnet. Schnelligkeit ist
+> entscheidend (24h Fenster beim letzten Call!).
+>
+> **Wichtige Anforderungen aus dem 2. Call:**
+> - Max. 3 Partner (1 KMU + bis zu 2 Supporting Participants)
+> - Proposal: ~10 Seiten (3,5 + 3 + 2 + 1 Seite)
+> - Bewertung: Excellence + Impact + Implementation (je 0-5, mind. 3 pro Kriterium)
+> - HPC-Nutzung (EuroHPC Supercomputer) ist Pflicht
+> - Min. 50% Budget beim Hauptteilnehmer (KMU)
 
 ---
 

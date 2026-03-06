@@ -1,9 +1,21 @@
 # ACCELERATE:MV — Bewerbung Fintutto Translator
 
 **Programm:** ACCELERATE:MV (ESF+ gefoerdert)
+**Betreiber:** Zentrum fuer Entrepreneurship (ZfE), Universitaet Rostock
 **Antragsteller:** Alexander Deibel / Fintutto UG (i.G.)
 **Standort:** Mecklenburg-Vorpommern
-**Programmlaenge:** 5 Monate Accelerator-Programm
+**Programmlaenge:** Flirt-Phase (12 Wochen) + Accelerator-Phase (5-6 Monate)
+
+**Kontakt:**
+- **Paul Westphal** (Koordinator ACCELERATE:MV)
+- E-Mail: paul.westphal@uni-rostock.de
+- Tel.: +49 (0) 381 498 11 63
+- ZfE: Albert-Einstein-Strasse 21, 18059 Rostock
+- Bewerbung: https://www.zfe.uni-rostock.de/accelerator/anmeldeformular-batches/
+
+> **Bewerbungen sind jederzeit willkommen** (kein fester Deadline-Druck).
+> Pro Jahr: 2 Accelerator-Phasen + 2 Flirt-Phasen.
+> Keine Beteiligung (0% Equity) -- rein Coaching/Mentoring/Netzwerk.
 
 ---
 

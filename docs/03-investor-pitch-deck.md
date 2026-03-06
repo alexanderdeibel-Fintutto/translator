@@ -464,7 +464,7 @@ MODULARER FINANZIERUNGSPLAN (24 Monate):
 │      + Forschungszulage (35% FuE-Kosten)     24.600 EUR │
 │                                                         │
 │  PHASE 2: WACHSTUMSFOERDERUNG (Monat 6-12) 200.000 EUR │
-│  ├── EIT Digital SPIN:Rise                  200.000 EUR │
+│  ├── ZIM Einzelprojekt (bis 690k, 25-60%)  200.000 EUR │
 │  └── (oder EIC Accelerator Grant)                       │
 │                                                         │
 │  PHASE 3: SEED-INVESTMENT (Monat 6-12)      250.000 EUR │
@@ -568,7 +568,7 @@ Voraussetzung: 100K+ EUR MRR, 500+ B2B-Kunden, <3% monatliche Churn, Profitabili
 - Google Play Ready (v3.1)
 - Einzigartiges 4-Tier-Transport-System (patentfaehig)
 - Erster im Markt fuer Offline-Gruppen-Uebersetzung
-- 500.000 EUR Foerderung bereits in Pipeline (EFRE, FFplus, EIT Digital)
+- 500.000 EUR Foerderung bereits in Pipeline (EFRE/ZIM, Gruenderstipendium, Forschungszulage)
 - 24-Monats-Cashflow-Planung mit Break-even in Monat 21
 
 **Was wir brauchen**:

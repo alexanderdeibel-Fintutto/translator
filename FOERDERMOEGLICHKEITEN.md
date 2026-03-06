@@ -144,22 +144,32 @@ Produkte: Translator, Bescheid Boxer, Mietrecht Portal, weitere Apps
 ## EBENE 3: EU-FOERDERUNG
 
 ### 3.1 EFRE MV (Regionale Strukturfoerderung) -- BESTE EU-OPTION
-- **Was:** Foerderquoten bis 60% fuer kleine Unternehmen
-- **Gesamttopf MV:** 924,5 Mio. EUR
+- **Was:** Foerderquoten bis 60% (exp. Entwicklung) bzw. 80% (ind. Forschung) fuer kleine Unternehmen
+- **Gesamttopf MV:** 924,5 Mio. EUR, davon 266 Mio. EUR fuer wirtschaftsnahe Forschung
 - **Fuer:** FuE-Foerderung und KMU-Wettbewerbsfaehigkeit
-- **Anlaufstelle:** LFI MV (www.lfi-mv.de), TBI GmbH (www.tbi-mv.de)
-- **Bewertung:** Beste realistische EU-Option, sofort angehen
+- **Bewilligungsbehoerde:** TBI GmbH, Schwerin (www.tbi-mv.de) -- NICHT LFI
+- **Richtlinie:** 09.11.2023, gueltig bis 30.06.2027
+- **ZIM-Vorrang:** TBI prueft ob ZIM (bis 690k EUR) vorrangig in Frage kommt
+- **IKT:** Explizit als Querschnittsbereich genannt
+- **Schwerpunkte:** Medizintechnik, Maschinenbau, Erneuerbare Energien, IKT, Biooekonomie
+- **Bewertung:** Beste realistische EU-Option, sofort TBI Rostock kontaktieren
 
-### 3.2 EIT Digital SPIN:Rise 2026 -- DEADLINE BEACHTEN!
+### 3.2 EIT Digital SPIN:Rise 2026 -- EINGESCHRAENKT GEEIGNET
 - **Was:** Bis 400.000 EUR plus Mentoring und Investorenzugang
-- **Fuer wen:** Fruehe Digital-Deep-Tech-Startups
-- **DEADLINE: 17. Maerz 2026!**
+- **Fuer wen:** Primaer **Forscher (PhD, Postdocs, MSc)** an Universitaeten -- NICHT direkt fuer Startups
+- **Deadline 17. Maerz 2026** betrifft Call for Proposals fuer **Programmtraeger**, nicht fuer Teilnehmer
+- **Teilnehmer-Bewerbung:** Rolling, Ergebnis in 2-3 Wochen
+- **Bewertung:** Fuer Fintutto als Startup mit MVP **nicht optimal**. Alternative: Kooperation mit Uni Rostock
+- **Bessere EIT-Alternativen:** Venture Incubation Program 2026 oder 28DIGITAL Champions
 
-### 3.3 FFplus Generative AI fuer KMU (Digital Europe Programme)
+### 3.3 FFplus Generative AI fuer KMU (EuroHPC Joint Undertaking)
 - **Was:** Bis 300.000 EUR bei 100% Foerderung (KEIN Eigenanteil!)
-- **Laufzeit:** 10 Monate, Start ca. Juli 2026
-- **Inklusive:** HPC-Zugang fuer NLP-Modellentwicklung
-- **Bewertung:** Perfekt fuer Dokumentenuebersetzung/NLP
+- **Laufzeit:** 10 Monate
+- **ACHTUNG:** 2. Call (Feb. 2026) war **innerhalb von 24 Stunden voll** (250 Antraege Limit!)
+- **3. und letzter Call:** Erwartet **Fruehjahr/Sommer 2027** (NICHT Sommer 2026 wie zuvor angenommen)
+- **Inklusive:** HPC-Zugang (EuroHPC Supercomputer) fuer NLP-Modellentwicklung
+- **Antrag:** ~10 Seiten, max. 3 Partner, min. 50% Budget bei KMU
+- **Bewertung:** Perfekt fuer NLP/Translation -- aber erst 2027 und extrem kompetitiv (sofort einreichen!)
 
 ### 3.4 EIC Accelerator -- GenAI Challenge
 - **Was:** Bis 2,5 Mio. EUR Grant (oder bis 10 Mio. EUR mit Equity)
@@ -251,10 +261,11 @@ Produkte: Translator, Bescheid Boxer, Mietrecht Portal, weitere Apps
 ## PRIORISIERTE AKTIONSLISTE
 
 ### SOFORT (diese Woche / naechste Woche)
-1. **EIT Digital SPIN:Rise bewerben** -- Deadline 17. Maerz 2026! Bis 400.000 EUR
-2. **GSA Schwerin anrufen** (0385 55775-0) -- Gruendungsstipendium MV besprechen
+1. **GSA Schwerin anrufen** (0385 55775-0) -- Gruendungsstipendium MV besprechen (1.200 EUR/Mon, 18 Mon.)
+2. **TBI GmbH Rostock kontaktieren** (www.tbi-mv.de) -- EFRE-Beratung + ZIM-Pruefung (NICHT LFI!)
 3. **Forschungszulage pruefen** -- 35% der FuE-Kosten zurueck, rueckwirkend moeglich!
-4. **LFI MV kontaktieren** -- EFRE-Beratung (beste EU-Option)
+4. **ACCELERATE:MV bewerben** -- Paul Westphal, paul.westphal@uni-rostock.de, +49 381 498 1163
+5. ~~EIT Digital SPIN:Rise~~ -- Fuer Forscher, nicht fuer Startups. Stattdessen: EIT Digital Venture Incubation oder 28DIGITAL Champions pruefen
 
 ### NAECHSTE 4 WOCHEN
 5. **IHK-Erstberatung buchen** (kostenlos)
@@ -264,9 +275,9 @@ Produkte: Translator, Bescheid Boxer, Mietrecht Portal, weitere Apps
 
 ### NAECHSTE 3 MONATE
 9. **Gruendungswettbewerb Digitale Innovationen** -- Bewerbung ab April 2026
-10. **FFplus Generative AI Call beobachten** -- bis 300.000 EUR, 100% Foerderung
-11. **ZIM-Einzelprojekt pruefen** -- KI-gestuetzte Dokumentenuebersetzung
-12. **Businessplan/Unternehmenskonzept erstellen** (wird fuer viele Programme benoetigt)
+10. **ZIM-Einzelprojekt beantragen** -- Bis 690.000 EUR, hat Vorrang vor EFRE! (www.zim.de)
+11. **Businessplan/Unternehmenskonzept erstellen** (wird fuer viele Programme benoetigt)
+12. **FFplus Generative AI Antrag vorbereiten** -- 3. Call erst Fruehjahr/Sommer 2027, aber Antrag schon fertig haben (24h Fenster!)
 
 ### MITTELFRISTIG (6-12 MONATE)
 13. **EIC Accelerator GenAI Challenge** vorbereiten -- bis 2,5 Mio. EUR

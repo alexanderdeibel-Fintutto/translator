@@ -3,8 +3,18 @@
 **Programm:** EFRE MV 2021-2027, Prioritaet 1: Innovation und intelligenter Wandel
 **Antragsteller:** Fintutto UG (i.G.) / Alexander Deibel
 **Beantragter Zuschuss:** 150.000 EUR (bei 60% Foerderquote = 250.000 EUR Gesamtkosten)
-**Anlaufstelle:** LFI MV (Landesfoerderinstitut Mecklenburg-Vorpommern)
-**Beratung:** TBI GmbH (Technologie-Beratungs-Institut)
+**Bewilligungsbehoerde:** TBI Technologie-Beratungs-Institut GmbH, Schwerin
+**Beratung:** TBI GmbH (www.tbi-mv.de) + LFI MV (www.lfi-mv.de)
+
+> **HINWEIS:** TBI ist die Bewilligungsbehoerde (nicht LFI). LFI ist uebergeordnet.
+> TBI hat Geschaeftsstellen in Schwerin, Rostock und Neubrandenburg.
+> Antragsformulare: Download auf www.tbi-mv.de
+>
+> **ZIM hat Vorrang:** Die EFRE-Richtlinie legt fest, dass das Zentrale
+> Innovationsprogramm Mittelstand (ZIM) vorrangig genutzt werden soll.
+> ZIM foerdert bis 690.000 EUR bei 25-60% Foerderquote.
+> TBI wird bei Antragstellung pruefen, ob ZIM in Frage kommt.
+> → Empfehlung: **Parallel ZIM-Antrag pruefen** (www.zim.de)
 
 ---
 
@@ -104,11 +114,17 @@ AP 5: IP-Schutz              █████████████████
 
 | Kostenart | Betrag | Foerderquote | Zuschuss |
 |-----------|--------|-------------|---------|
-| **Personalkosten** | 150.000 EUR | 60% | 90.000 EUR |
-| **Sachkosten** | 50.000 EUR | 60% | 30.000 EUR |
-| **Fremdleistungen** | 37.500 EUR | 60% | 22.500 EUR |
-| **Gemeinkosten (15% auf Personal)** | 12.500 EUR | 60% | 7.500 EUR |
-| **TOTAL** | **250.000 EUR** | **60%** | **150.000 EUR** |
+| **Personalkosten** | 150.000 EUR | 60%* | 90.000 EUR |
+| **Sachkosten** | 50.000 EUR | 60%* | 30.000 EUR |
+| **Fremdleistungen** | 37.500 EUR | 60%* | 22.500 EUR |
+| **Gemeinkosten (15% auf Personal)** | 12.500 EUR | 60%* | 7.500 EUR |
+| **TOTAL** | **250.000 EUR** | **60%*** | **150.000 EUR** |
+
+> *Foerderquote: Kleine Unternehmen erhalten bis 60% bei experimenteller
+> Entwicklung, bis 80% bei industrieller Forschung. In Verbundprojekten
+> mit Forschungseinrichtungen kommen zusaetzlich +15% Verbundbonus.
+> Forschungseinrichtungen koennen bis zu 100% erhalten.
+> Max. Stundensaetze: 143 produktive Stunden/Monat bei Vollzeit.
 
 ### 3.2 Personalkosten (Detail)
 

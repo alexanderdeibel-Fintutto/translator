@@ -1,9 +1,24 @@
 # EIT Digital SPIN:Rise 2026 — Bewerbung Fintutto Translator
 
+> **HINWEIS (06.03.2026):** SPIN:Rise richtet sich primaer an **Forscher
+> (PhD, Postdocs, MSc)** an Universitaeten, die ihre Forschung kommerzialisieren
+> wollen. Die Deadline 17.03.2026 betrifft den Call for Proposals fuer
+> **Organisationen**, die das Programm durchfuehren. Fuer Fintutto als Startup
+> mit fertigem MVP ist dieses Programm **nicht optimal geeignet**.
+>
+> **Alternative:** EIT Digital **Venture Incubation Program 2026** oder
+> **28DIGITAL Champions** waeren passender. Oder: Kontakt zu einer Hochschule
+> in MV (Uni Rostock, HS Wismar) fuer eine gemeinsame SPIN:Rise-Bewerbung
+> als Forscher mit Kommerzialisierungs-Vorhaben.
+>
+> Dieses Dokument bleibt als Vorlage erhalten -- die Inhalte koennen fuer
+> andere Bewerbungen (EIT Digital, EIC, Investoren) wiederverwendet werden.
+
 **Programm:** EIT Digital SPIN:Rise 2026
 **Antragsteller:** Fintutto UG (i.G.) / Alexander Deibel
-**Beantragter Betrag:** 400.000 EUR
-**Deadline:** 17. Maerz 2026
+**Beantragter Betrag:** bis 400.000 EUR
+**Deadline Call for Proposals (Programmtraeger):** 17. Maerz 2026
+**Teilnehmer-Bewerbung (Forscher):** Rolling, Ergebnis in 2-3 Wochen
 **Themenbereich:** Digital Tech / Digital Industry
 
 ---

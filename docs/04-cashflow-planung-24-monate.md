@@ -12,15 +12,20 @@
 
 | Szenario | Gesamtbetrag | Hauptquellen | Break-even |
 |----------|-------------|--------------|------------|
-| **A: Basis** | 300.000 EUR | EFRE MV + FFplus + ACCELERATE:MV | Monat 18-20 |
-| **B: Mittel** | 500.000 EUR | Szenario A + EIT Digital SPIN:Rise | Monat 14-16 |
-| **C: Voll** | 750.000 EUR | Szenario B + EIC Accelerator / Seed | Monat 12-14 |
+| **A: Basis** | 300.000 EUR | EFRE MV (oder ZIM) + Gruenderstipendium + ACCELERATE:MV | Monat 18-20 |
+| **B: Mittel** | 500.000 EUR | Szenario A + Business Angels + MBMV | Monat 14-16 |
+| **C: Voll** | 750.000 EUR | Szenario B + EIC Accelerator / weitere Seed | Monat 12-14 |
+
+> **Korrektur (06.03.2026):** EIT Digital SPIN:Rise ist primaer fuer Forscher,
+> nicht fuer Startups -- aus Szenario B entfernt. FFplus naechster Call erst
+> Fruehjahr/Sommer 2027 -- verschoben in langfristige Planung. ZIM (bis 690k EUR)
+> als starke Alternative zu EFRE ergaenzt.
 
 ### Kernannahmen
 
 - **Standort:** Coworking-Space in MV (Rostock/Schwerin) + Remote-Team
 - **Gruender-Gehalt:** 4.500 EUR/Monat brutto (marktkonform Geschaeftsfuehrer Startup MV)
-- **Arbeitgeber-Nebenkosten:** 21% auf Bruttogehaelter (SV-Beitraege AG-Anteil)
+- **Arbeitgeber-Nebenkosten:** 23% auf Bruttogehaelter (SV-Beitraege AG-Anteil inkl. Umlagen)
 - **Waehrung:** Alle Betraege in EUR, brutto inkl. MwSt wo anwendbar
 
 ---
