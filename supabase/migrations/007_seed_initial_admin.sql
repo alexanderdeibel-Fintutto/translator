@@ -1,13 +1,20 @@
--- Seed the initial admin account
--- This ensures admin@guidetranslator.com has the 'admin' role
--- Uses ILIKE for case-insensitive match and no role condition
+-- 1. Fix: Allow users to insert their own gt_users profile row.
+--    The DB trigger (handle_new_user) runs as SECURITY DEFINER and normally
+--    handles this, but if it didn't fire the client-side fallback in
+--    UserContext needs INSERT permission to auto-create the profile.
 
--- First try to update existing gt_users row
-UPDATE gt_users
-SET role = 'admin'
-WHERE LOWER(email) = LOWER('admin@guidetranslator.com');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE policyname = 'Users insert own profile' AND tablename = 'gt_users'
+  ) THEN
+    CREATE POLICY "Users insert own profile" ON gt_users
+      FOR INSERT WITH CHECK (auth.uid() = id);
+  END IF;
+END $$;
 
--- If no gt_users row exists yet, create one from auth.users
+-- 2. Seed the initial admin account from auth.users
 INSERT INTO gt_users (id, email, display_name, tier_id, role)
 SELECT
   au.id,
