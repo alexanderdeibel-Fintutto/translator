@@ -3,7 +3,7 @@ import { useUser } from '@/context/UserContext'
 import { Loader2 } from 'lucide-react'
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
-  const { isLoading, isAuthenticated, isSalesAgent } = useUser()
+  const { isLoading, isAuthenticated, isSalesAgent, user } = useUser()
 
   if (isLoading) {
     return (
@@ -17,7 +17,9 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     return <Navigate to="/auth?redirect=/admin" replace />
   }
 
-  if (!isSalesAgent) {
+  // Allow admin, sales_agent, and session_manager roles
+  const hasAccess = isSalesAgent || user?.role === 'session_manager'
+  if (!hasAccess) {
     return <Navigate to="/" replace />
   }
 
