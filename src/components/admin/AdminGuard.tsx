@@ -1,9 +1,10 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useUser } from '@/context/UserContext'
 import { Loader2 } from 'lucide-react'
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   const { isLoading, isAuthenticated, isSalesAgent, user } = useUser()
+  const { pathname } = useLocation()
 
   if (isLoading) {
     return (
@@ -14,7 +15,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth?redirect=/admin" replace />
+    return <Navigate to={`/auth?redirect=${encodeURIComponent(pathname)}`} replace />
   }
 
   // Allow admin, sales_agent, and session_manager roles

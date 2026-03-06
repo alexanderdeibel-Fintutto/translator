@@ -82,6 +82,7 @@ function App() {
                   <Route path="compare" element={<Suspense fallback={<PageLoader />}><CompetitorPage /></Suspense>} />
                   <Route path="investors" element={<Suspense fallback={<PageLoader />}><InvestorPage /></Suspense>} />
                   <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
+                  <Route path="account/admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
                   <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
                   <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />
