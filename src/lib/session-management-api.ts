@@ -271,7 +271,20 @@ export async function createManagedUser(
   const { data, error } = await supabase.functions.invoke('admin-create-user', {
     body: { email, password, displayName, role },
   })
-  if (error) throw error
+  if (error) {
+    // Extract detailed error from Edge Function response body
+    let detail = error.message
+    try {
+      if (error.context instanceof Response) {
+        const body = await error.context.json()
+        detail = body.error || detail
+      }
+    } catch { /* ignore parse errors */ }
+    throw new Error(detail)
+  }
+  if (data?.error) {
+    throw new Error(data.error)
+  }
   return data as ManagedUser
 }
 

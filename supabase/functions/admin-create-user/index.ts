@@ -45,14 +45,23 @@ Deno.serve(async (req: Request) => {
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
     // Check caller's role using service role client to bypass RLS
-    const { data: callerProfile } = await adminClient
+    const { data: callerProfile, error: profileLookupError } = await adminClient
       .from('gt_users')
       .select('role')
       .eq('id', callerUser.id)
       .single()
 
+    console.log('Caller:', callerUser.id, 'Profile:', callerProfile, 'Error:', profileLookupError)
+
+    if (profileLookupError) {
+      return new Response(JSON.stringify({ error: `Profile lookup failed: ${profileLookupError.message}` }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
     if (!callerProfile || callerProfile.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Admin role required' }), {
+      return new Response(JSON.stringify({ error: `Admin role required. Your role: ${callerProfile?.role ?? 'not found'}` }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
