@@ -41,7 +41,11 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    const { data: callerProfile } = await userClient
+    // Use service role client for admin operations (bypasses RLS)
+    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+
+    // Check caller's role using service role client to bypass RLS
+    const { data: callerProfile } = await adminClient
       .from('gt_users')
       .select('role')
       .eq('id', callerUser.id)
@@ -66,9 +70,6 @@ Deno.serve(async (req: Request) => {
 
     const effectiveTier = tierId || 'free'
     const effectiveRole = requestedRole || 'user'
-
-    // Use service role client for admin operations
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
     // Create auth user — use provided password or generate temp one
     const tempPassword = providedPassword || crypto.randomUUID()
