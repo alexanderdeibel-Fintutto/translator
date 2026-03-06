@@ -1,6 +1,14 @@
 // GuideTranslator — Central Tier Configuration
-// All 11 plans defined in one place. Every limit, feature flag and price lives here.
+// All plans defined in one place. Every limit, feature flag and price lives here.
 // Both the app and the sales site import from this single source of truth.
+//
+// STRIPE SETUP:
+// 1. Create products + prices in Stripe Dashboard (or via CLI)
+// 2. Copy the Price IDs (price_xxx) into stripePriceIdMonthly / stripePriceIdYearly below
+// 3. Set VITE_STRIPE_PUBLISHABLE_KEY in .env
+// 4. Set STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET in Supabase secrets
+// 5. Deploy edge functions: supabase functions deploy stripe-checkout stripe-portal stripe-webhook
+// 6. Configure webhook endpoint in Stripe Dashboard → Developers → Webhooks
 
 export type TierId =
   | 'free'
@@ -14,8 +22,12 @@ export type TierId =
   | 'cruise_starter'
   | 'cruise_fleet'
   | 'cruise_armada'
+  // Internal tiers (not shown on pricing page, assigned by role)
+  | 'internal_admin'
+  | 'internal_tester'
+  | 'internal_sales'
 
-export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise'
+export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'internal'
 
 export type TtsQuality = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
 
@@ -171,6 +183,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 49.90,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_48h',
   },
@@ -218,6 +233,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 199,
       overagePerMinuteEur: 0.15,
       additionalLanguageEur: 2.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_24h',
   },
@@ -264,6 +282,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 399,
       overagePerMinuteEur: 0.12,
       additionalLanguageEur: 1.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_12h',
   },
@@ -311,6 +332,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 990,
       overagePerMinuteEur: 0.10,
       additionalLanguageEur: 1.49,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_12h',
   },
@@ -358,6 +382,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 2_490,
       overagePerMinuteEur: 0.08,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'priority_4h',
   },
@@ -599,13 +626,155 @@ export const TIERS: Record<TierId, TierDefinition> = {
     sla: '99.9%',
     supportLevel: 'dedicated',
   },
+
+  // ── SEGMENT: INTERNAL (not shown on pricing page) ──────────────────
+  // These tiers are assigned automatically based on user role.
+  // They bypass all limits and enable all features at zero cost.
+
+  internal_admin: {
+    id: 'internal_admin',
+    segment: 'internal',
+    name: 'Admin',
+    displayName: 'Admin (Intern)',
+    description: 'Voller Zugriff auf alle Dienste — fuer Administratoren.',
+    limits: {
+      maxListeners: 0,
+      maxLanguages: 0,
+      sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0,
+      maxGlossaries: 0,
+      preTranslationScripts: 0,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 100_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'chirp3hd',
+      ttsChirpAvailable: true,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: true,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: true,
+      apiAccess: 'full',
+      analytics: 'enterprise',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 0,
+      yearlyEur: 0,
+      overagePerMinuteEur: 0,
+      additionalLanguageEur: 0,
+    },
+    supportLevel: 'dedicated',
+  },
+
+  internal_tester: {
+    id: 'internal_tester',
+    segment: 'internal',
+    name: 'Tester',
+    displayName: 'Tester (Intern)',
+    description: 'Test-Account mit vollen Features — fuer QA und Beta-Tester.',
+    limits: {
+      maxListeners: 0,
+      maxLanguages: 0,
+      sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0,
+      maxGlossaries: 0,
+      preTranslationScripts: 0,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 100_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'chirp3hd',
+      ttsChirpAvailable: true,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: true,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'read',
+      analytics: 'dashboard',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 0,
+      yearlyEur: 0,
+      overagePerMinuteEur: 0,
+      additionalLanguageEur: 0,
+    },
+    supportLevel: 'email_24h',
+  },
+
+  internal_sales: {
+    id: 'internal_sales',
+    segment: 'internal',
+    name: 'Sales',
+    displayName: 'Vertrieb (Intern)',
+    description: 'Vertriebskonto mit vollen Demo-Features — fuer Sales-Team.',
+    limits: {
+      maxListeners: 0,
+      maxLanguages: 0,
+      sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0,
+      maxGlossaries: 0,
+      preTranslationScripts: 0,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 100_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'chirp3hd',
+      ttsChirpAvailable: true,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: true,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: true,
+      apiAccess: 'full',
+      analytics: 'enterprise',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 0,
+      yearlyEur: 0,
+      overagePerMinuteEur: 0,
+      additionalLanguageEur: 0,
+    },
+    supportLevel: 'dedicated',
+  },
 }
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** All tier IDs, ordered from cheapest to most expensive */
+/** All tier IDs, ordered from cheapest to most expensive (public tiers only) */
 export const TIER_ORDER: TierId[] = [
   'free', 'personal_pro',
   'guide_basic', 'guide_pro',
@@ -613,6 +782,16 @@ export const TIER_ORDER: TierId[] = [
   'event_basic', 'event_pro',
   'cruise_starter', 'cruise_fleet', 'cruise_armada',
 ]
+
+/** Internal tier IDs (not shown on pricing page, assigned by role) */
+export const INTERNAL_TIERS: TierId[] = [
+  'internal_admin', 'internal_tester', 'internal_sales',
+]
+
+/** Check if a tier is an internal (non-purchasable) tier */
+export function isInternalTier(tierId: TierId): boolean {
+  return tierId.startsWith('internal_')
+}
 
 /** Get tiers for a specific segment (for pricing page tabs) */
 export function getTiersBySegment(segment: Segment): TierDefinition[] {

@@ -105,6 +105,7 @@ export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],
+  internal: ['Admin', 'Entwickler', 'QA', 'Sales-Team'],
 }
 
 // ---------------------------------------------------------------------------
@@ -142,4 +143,117 @@ export interface AdminStatsData {
   openRequests: number
 }
 
-export type UserRole = 'user' | 'admin' | 'sales_agent'
+export type UserRole = 'user' | 'admin' | 'sales_agent' | 'session_manager' | 'tester'
+
+// ---------------------------------------------------------------------------
+// Event Session Management
+// ---------------------------------------------------------------------------
+
+export type EventSessionType = 'session' | 'panel' | 'tour' | 'conference' | 'workshop'
+
+export const EVENT_SESSION_TYPES: { id: EventSessionType; label: string }[] = [
+  { id: 'session', label: 'Session / Vortrag' },
+  { id: 'panel', label: 'Panel-Diskussion' },
+  { id: 'tour', label: 'Tour / Fuehrung' },
+  { id: 'conference', label: 'Konferenz' },
+  { id: 'workshop', label: 'Workshop' },
+]
+
+export type EventSessionStatus = 'draft' | 'prepared' | 'active' | 'completed' | 'archived'
+
+export const EVENT_SESSION_STATUSES: { id: EventSessionStatus; label: string; color: string }[] = [
+  { id: 'draft', label: 'Entwurf', color: 'bg-slate-500' },
+  { id: 'prepared', label: 'Vorbereitet', color: 'bg-blue-500' },
+  { id: 'active', label: 'Aktiv', color: 'bg-emerald-500' },
+  { id: 'completed', label: 'Abgeschlossen', color: 'bg-violet-500' },
+  { id: 'archived', label: 'Archiviert', color: 'bg-gray-400' },
+]
+
+export interface EventSession {
+  id: string
+  organization_id: string | null
+  created_by: string
+  title: string
+  description: string | null
+  type: EventSessionType
+  status: EventSessionStatus
+  session_code: string | null
+  source_language: string
+  target_languages: string[]
+  scheduled_start: string | null
+  scheduled_end: string | null
+  venue: string | null
+  notes: string | null
+  settings: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export type ParticipantRole = 'speaker' | 'moderator' | 'panelist' | 'interpreter' | 'guest'
+
+export const PARTICIPANT_ROLES: { id: ParticipantRole; label: string }[] = [
+  { id: 'speaker', label: 'Sprecher/in' },
+  { id: 'moderator', label: 'Moderator/in' },
+  { id: 'panelist', label: 'Panelist/in' },
+  { id: 'interpreter', label: 'Dolmetscher/in' },
+  { id: 'guest', label: 'Gast' },
+]
+
+export interface SessionParticipant {
+  id: string
+  session_id: string
+  name: string
+  email: string | null
+  role: ParticipantRole
+  biography: string | null
+  organization: string | null
+  notes: string | null
+  sort_order: number
+  created_at: string
+}
+
+export type PreTranslationType = 'speech' | 'questions' | 'biography' | 'glossary' | 'agenda' | 'notes'
+
+export const PRE_TRANSLATION_TYPES: { id: PreTranslationType; label: string }[] = [
+  { id: 'speech', label: 'Vortrag / Rede' },
+  { id: 'questions', label: 'Fragen' },
+  { id: 'biography', label: 'Biografie' },
+  { id: 'glossary', label: 'Glossar / Fachbegriffe' },
+  { id: 'agenda', label: 'Agenda / Programm' },
+  { id: 'notes', label: 'Notizen' },
+]
+
+export type TranslationStatus = 'pending' | 'translating' | 'completed' | 'error'
+
+export interface PreTranslation {
+  id: string
+  session_id: string
+  participant_id: string | null
+  title: string
+  type: PreTranslationType
+  content: string
+  source_language: string
+  translations: Record<string, string>
+  translation_status: TranslationStatus
+  uploaded_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface SessionManager {
+  id: string
+  user_id: string
+  session_id: string
+  can_edit: boolean
+  can_invite: boolean
+  assigned_by: string | null
+  created_at: string
+}
+
+export interface ManagedUser {
+  id: string
+  email: string | null
+  display_name: string | null
+  role: UserRole
+  created_at: string
+}

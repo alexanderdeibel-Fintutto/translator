@@ -3,7 +3,7 @@
 // The actual Stripe Price IDs must be set in the tier config after Stripe product setup.
 // The Edge Functions handle session creation server-side; the client just redirects.
 
-import { TIERS, type TierId } from './tiers'
+import { TIERS, isInternalTier, type TierId } from './tiers'
 import { supabase } from './supabase'
 
 export function isStripeConfigured(): boolean {
@@ -25,6 +25,11 @@ export interface CheckoutOptions {
 export async function redirectToCheckout(options: CheckoutOptions): Promise<void> {
   const tier = TIERS[options.tierId]
   if (!tier) throw new Error(`Unknown tier: ${options.tierId}`)
+
+  // Internal tiers are free and never go through Stripe
+  if (isInternalTier(options.tierId)) {
+    return
+  }
 
   const priceId = options.billingCycle === 'yearly'
     ? tier.pricing.stripePriceIdYearly

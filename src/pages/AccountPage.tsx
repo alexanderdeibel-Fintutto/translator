@@ -1,15 +1,15 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useUser } from '@/context/UserContext'
-import { formatPrice } from '@/lib/tiers'
+import { formatPrice, isInternalTier } from '@/lib/tiers'
 import { getRemainingSessionMinutes, getOverageCost } from '@/lib/usage-tracker'
 import { openCustomerPortal } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
-import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings } from 'lucide-react'
+import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings, Shield } from 'lucide-react'
 import { toast } from 'sonner'
 import OrganizationSettings from '@/components/settings/OrganizationSettings'
 
 export default function AccountPage() {
-  const { user, tier, tierId, usage, isAuthenticated, signOut } = useUser()
+  const { user, tier, tierId, usage, isAuthenticated, isSalesAgent, signOut } = useUser()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const checkoutStatus = searchParams.get('checkout')
@@ -79,6 +79,12 @@ export default function AccountPage() {
         </div>
 
         <div className="text-sm text-muted-foreground mb-4">{tier.description}</div>
+
+        {isInternalTier(tierId) && (
+          <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-3">
+            Internes Konto — alle Features freigeschaltet, keine Kosten
+          </div>
+        )}
 
         {tier.pricing.monthlyEur > 0 && (
           <div className="flex items-center gap-2 text-sm mb-3">
@@ -170,6 +176,27 @@ export default function AccountPage() {
           )}
         </div>
       </div>
+
+      {/* Admin access */}
+      {isSalesAgent && (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold">Administration</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-3">
+            Du hast Admin-Zugang. Verwalte Benutzer, Leads und Sessions.
+          </p>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => navigate('/admin')}
+            className="gap-2"
+          >
+            <Shield className="w-4 h-4" /> Admin CRM öffnen <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
 
       {/* Organization */}
       {user?.organizationId && <OrganizationSettings />}
