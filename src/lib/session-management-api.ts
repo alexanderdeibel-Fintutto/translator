@@ -246,7 +246,16 @@ export async function fetchManagedUsers(): Promise<ManagedUser[]> {
   const { data, error } = await supabase
     .from('gt_users')
     .select('id, email, display_name, role, created_at')
-    .in('role', ['session_manager', 'admin', 'sales_agent'])
+    .in('role', ['session_manager', 'admin', 'sales_agent', 'tester'])
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data as ManagedUser[]
+}
+
+export async function fetchAllUsers(): Promise<ManagedUser[]> {
+  const { data, error } = await supabase
+    .from('gt_users')
+    .select('id, email, display_name, role, created_at')
     .order('created_at', { ascending: false })
   if (error) throw error
   return data as ManagedUser[]
@@ -256,11 +265,11 @@ export async function createManagedUser(
   email: string,
   password: string,
   displayName: string,
-  role: 'session_manager' | 'admin' | 'sales_agent' = 'session_manager'
+  role: 'session_manager' | 'admin' | 'sales_agent' | 'tester' = 'session_manager'
 ): Promise<ManagedUser> {
   // Use Supabase admin function to create user
   const { data, error } = await supabase.functions.invoke('admin-create-user', {
-    body: { email, password, display_name: displayName, role },
+    body: { email, password, displayName, role },
   })
   if (error) throw error
   return data as ManagedUser

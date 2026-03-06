@@ -54,21 +54,24 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    // Parse request
-    const { leadId, tierId, email, displayName } = await req.json()
+    // Parse request — leadId is optional (direct user creation vs lead conversion)
+    const { leadId, tierId, email, displayName, password: providedPassword, role: requestedRole } = await req.json()
 
-    if (!leadId || !tierId || !email) {
-      return new Response(JSON.stringify({ error: 'Missing required fields: leadId, tierId, email' }), {
+    if (!email) {
+      return new Response(JSON.stringify({ error: 'Missing required field: email' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
+    const effectiveTier = tierId || 'free'
+    const effectiveRole = requestedRole || 'user'
+
     // Use service role client for admin operations
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-    // Create auth user with random password (they'll use password reset)
-    const tempPassword = crypto.randomUUID()
+    // Create auth user — use provided password or generate temp one
+    const tempPassword = providedPassword || crypto.randomUUID()
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
       password: tempPassword,
@@ -89,8 +92,8 @@ Deno.serve(async (req: Request) => {
         id: newUser.user.id,
         email,
         display_name: displayName ?? email,
-        tier_id: tierId,
-        role: 'user',
+        tier_id: effectiveTier,
+        role: effectiveRole,
       }, { onConflict: 'id' })
 
     if (profileError) {
@@ -100,18 +103,20 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    // Update lead as converted
-    const { error: leadError } = await adminClient
-      .from('gt_leads')
-      .update({
-        converted_user_id: newUser.user.id,
-        converted_at: new Date().toISOString(),
-        pipeline_stage: 'gewonnen',
-      })
-      .eq('id', leadId)
+    // Update lead as converted (only if leadId was provided)
+    if (leadId) {
+      const { error: leadError } = await adminClient
+        .from('gt_leads')
+        .update({
+          converted_user_id: newUser.user.id,
+          converted_at: new Date().toISOString(),
+          pipeline_stage: 'gewonnen',
+        })
+        .eq('id', leadId)
 
-    if (leadError) {
-      console.error('Lead update failed:', leadError)
+      if (leadError) {
+        console.error('Lead update failed:', leadError)
+      }
     }
 
     // Generate password reset link
@@ -139,6 +144,11 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({
       success: true,
+      id: newUser.user.id,
+      email,
+      display_name: displayName ?? email,
+      role: effectiveRole,
+      created_at: new Date().toISOString(),
       userId: newUser.user.id,
       resetLink: resetData?.properties?.action_link ?? null,
     }), {
