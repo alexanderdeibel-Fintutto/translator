@@ -18,8 +18,12 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     return <Navigate to={`/auth?redirect=${encodeURIComponent(pathname)}`} replace />
   }
 
-  // Allow admin, sales_agent, and session_manager roles
-  const hasAccess = isSalesAgent || user?.role === 'session_manager'
+  // Allow admin, sales_agent, session_manager, and tester roles
+  const hasAccess =
+    user?.role === 'admin' ||
+    isSalesAgent ||
+    user?.role === 'session_manager' ||
+    user?.role === 'tester'
   if (!hasAccess) {
     return <Navigate to="/" replace />
   }
