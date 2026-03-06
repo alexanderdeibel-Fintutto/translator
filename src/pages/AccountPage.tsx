@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useUser } from '@/context/UserContext'
-import { formatPrice } from '@/lib/tiers'
+import { formatPrice, isInternalTier } from '@/lib/tiers'
 import { getRemainingSessionMinutes, getOverageCost } from '@/lib/usage-tracker'
 import { openCustomerPortal } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
@@ -79,6 +79,12 @@ export default function AccountPage() {
         </div>
 
         <div className="text-sm text-muted-foreground mb-4">{tier.description}</div>
+
+        {isInternalTier(tierId) && (
+          <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-3">
+            Internes Konto — alle Features freigeschaltet, keine Kosten
+          </div>
+        )}
 
         {tier.pricing.monthlyEur > 0 && (
           <div className="flex items-center gap-2 text-sm mb-3">

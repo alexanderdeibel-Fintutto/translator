@@ -5,7 +5,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
-import { TIERS, type TierId, type TierDefinition } from '../lib/tiers'
+import { TIERS, isInternalTier, type TierId, type TierDefinition } from '../lib/tiers'
 import { setUsageTier, getUsage, type UsageRecord } from '../lib/usage-tracker'
 import { startUsageSync, stopUsageSync } from '../lib/usage-sync'
 import type { UserRole } from '../lib/admin-types'
@@ -107,18 +107,30 @@ export function UserProvider({ children }: { children: ReactNode }) {
             profile = created
           }
 
-          const userTier = (profile?.tier_id as TierId) || 'free'
+          const dbTier = (profile?.tier_id as TierId) || 'free'
+          const userRole = (profile?.role as UserRole) || 'user'
+
+          // Internal roles get their internal tier automatically (all features, no cost).
+          // If the DB already has the correct internal tier, keep it; otherwise override.
+          let effectiveTier: TierId = dbTier
+          if (userRole === 'admin' && !isInternalTier(dbTier)) {
+            effectiveTier = 'internal_admin'
+          } else if (userRole === 'sales_agent' && !isInternalTier(dbTier)) {
+            effectiveTier = 'internal_sales'
+          } else if (userRole === 'tester' && !isInternalTier(dbTier)) {
+            effectiveTier = 'internal_tester'
+          }
 
           setUser({
             id: session.user.id,
             email: session.user.email ?? null,
             displayName: profile?.display_name ?? session.user.email ?? null,
-            tierId: userTier,
+            tierId: effectiveTier,
             organizationId: profile?.organization_id ?? null,
             stripeCustomerId: profile?.stripe_customer_id ?? null,
-            role: (profile?.role as UserRole) || 'user',
+            role: userRole,
           })
-          setTierId(userTier)
+          setTierId(effectiveTier)
 
           // Start syncing usage to server
           startUsageSync(session.user.id)

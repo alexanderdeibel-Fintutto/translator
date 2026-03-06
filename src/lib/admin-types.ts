@@ -105,6 +105,7 @@ export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],
+  internal: ['Admin', 'Entwickler', 'QA', 'Sales-Team'],
 }
 
 // ---------------------------------------------------------------------------
@@ -142,7 +143,7 @@ export interface AdminStatsData {
   openRequests: number
 }
 
-export type UserRole = 'user' | 'admin' | 'sales_agent' | 'session_manager'
+export type UserRole = 'user' | 'admin' | 'sales_agent' | 'session_manager' | 'tester'
 
 // ---------------------------------------------------------------------------
 // Event Session Management
