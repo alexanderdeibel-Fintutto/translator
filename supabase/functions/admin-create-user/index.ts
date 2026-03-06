@@ -81,7 +81,9 @@ Deno.serve(async (req: Request) => {
     }
 
     // Parse request — leadId is optional (direct user creation vs lead conversion)
-    const { leadId, tierId, email, displayName, password: providedPassword, role: requestedRole } = await req.json()
+    const body = await req.json()
+    const { leadId, tierId, email, displayName, password: providedPassword, role: requestedRole } = body
+    console.log('Request body:', JSON.stringify({ leadId, tierId, email, displayName, role: requestedRole, hasPassword: !!providedPassword }))
 
     if (!email) {
       return new Response(JSON.stringify({ error: 'Missing required field: email' }), {
@@ -95,18 +97,22 @@ Deno.serve(async (req: Request) => {
 
     // Create auth user — use provided password or generate temp one
     const tempPassword = providedPassword || crypto.randomUUID()
+    console.log('Creating auth user for:', email)
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
       password: tempPassword,
       email_confirm: true,
     })
 
-    if (createError || !newUser.user) {
+    if (createError || !newUser?.user) {
+      console.error('Auth user creation failed:', createError?.message ?? 'no user returned')
       return new Response(JSON.stringify({ error: createError?.message ?? 'Failed to create user' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
+
+    console.log('Auth user created:', newUser.user.id)
 
     // Create or update gt_users profile (trigger may have already created the row)
     const { error: profileError } = await adminClient
@@ -120,11 +126,14 @@ Deno.serve(async (req: Request) => {
       }, { onConflict: 'id' })
 
     if (profileError) {
+      console.error('Profile creation failed:', profileError.message)
       return new Response(JSON.stringify({ error: `Profile creation failed: ${profileError.message}` }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
+
+    console.log('Profile created/updated')
 
     // Update lead as converted (only if leadId was provided)
     if (leadId) {
@@ -179,6 +188,7 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
+    console.error('Unhandled error:', error.message, error.stack)
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
