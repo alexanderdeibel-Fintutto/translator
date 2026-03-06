@@ -14,9 +14,27 @@ import type { UserRole } from '../lib/admin-types'
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://aaefocdqgdgexkcrjhks.supabase.co'
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZWZvY2RxZ2RnZXhrY3JqaGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNTU2NzYsImV4cCI6MjA1MzgzMTY3Nn0.KzAlgorLEJf_yfPY4RFEs1MERPyt5sYjIEvVPmPsWH4'
 
-/** Fetch user profile directly via Supabase REST API using the session's access token.
- *  This avoids the race condition where onAuthStateChange fires before the
- *  Supabase JS client has internally set the session (causing RLS to block). */
+/** Fetch user profile via the SECURITY DEFINER RPC function get_my_profile().
+ *  This bypasses RLS entirely and avoids the race condition / self-referencing
+ *  policy issue that was blocking the direct SELECT on gt_users. */
+async function fetchProfileRpc(accessToken: string) {
+  const url = `${SUPABASE_URL}/rest/v1/rpc/get_my_profile`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: '{}',
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return data || null
+}
+
+/** Fallback: fetch profile directly via REST API with access token. */
 async function fetchProfileDirect(userId: string, accessToken: string) {
   const url = `${SUPABASE_URL}/rest/v1/gt_users?id=eq.${userId}&select=tier_id,organization_id,stripe_customer_id,display_name,role`
   const res = await fetch(url, {
@@ -104,16 +122,31 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          // Fetch profile using the session's access token directly via REST API.
-          // This avoids the race condition where onAuthStateChange fires before
-          // the Supabase JS client has internally stored the session token
-          // (which would cause auth.uid() to be null in RLS policies).
-          let profile = await fetchProfileDirect(session.user.id, session.access_token)
+          // Strategy: try multiple approaches to load the user profile.
+          // 1. RPC function (SECURITY DEFINER, bypasses RLS entirely)
+          // 2. Direct REST API with access token
+          // 3. Supabase client (may fail due to auth race condition)
+          // 4. Auto-create if user truly doesn't exist
+          let profile = await fetchProfileRpc(session.access_token)
+
+          if (!profile) {
+            profile = await fetchProfileDirect(session.user.id, session.access_token)
+          }
+
+          if (!profile) {
+            // Try via Supabase client as last resort
+            const { data } = await supabase
+              .from('gt_users')
+              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
+              .eq('id', session.user.id)
+              .single()
+            profile = data
+          }
 
           // Auto-create profile if the row truly doesn't exist.
           // Use INSERT (not upsert) to avoid overwriting existing role/tier.
           if (!profile) {
-            const { data: created } = await supabase
+            await supabase
               .from('gt_users')
               .insert({
                 id: session.user.id,
@@ -122,15 +155,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 tier_id: 'free',
                 role: 'user',
               })
-              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
-              .single()
-            profile = created
-
-            // If insert also failed (row existed but SELECT was blocked), try once more
-            if (!profile) {
-              await new Promise(r => setTimeout(r, 1000))
-              profile = await fetchProfileDirect(session.user.id, session.access_token)
-            }
+            // After insert, try to read it back
+            profile = await fetchProfileRpc(session.access_token)
+              || await fetchProfileDirect(session.user.id, session.access_token)
           }
 
           const dbTier = (profile?.tier_id as TierId) || 'free'
