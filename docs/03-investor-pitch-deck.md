@@ -413,74 +413,120 @@ Gross Margin:         85% (SaaS-typisch)
 
 | Rolle | Person | Hintergrund |
 |-------|--------|-------------|
-| **CEO / Product** | Alexander Deibel | Fintutto GmbH, Product Strategy |
-| **CTO / Lead Dev** | [zu besetzen] | Full-Stack, Native Mobile, ML/AI |
-| **Sales / BD** | [zu besetzen] | B2B SaaS, Behoerden, Bildung |
+| **CEO / Product** | Alexander Deibel | Fintutto UG, Product Strategy, Solo-Development v3.1 |
+| **CTO / Lead Dev** | [zu besetzen, Monat 3] | Full-Stack, Native Mobile, ML/AI |
+| **Sales / BD** | [zu besetzen, Monat 4] | B2B SaaS, Behoerden, Tourismus |
+
+### Advisor
+
+| Rolle | Person | Hintergrund |
+|-------|--------|-------------|
+| **Tourism Industry Advisor** | Ulrich [Nachname] | Mitgruender AI Tour Guide UG, Branchenexpertise Tourismus |
 
 ### Aktuelle Teamgroesse
 - 1 Gruender + KI-unterstuetzte Entwicklung
 - Komplette v3.1 Codebase (13.296 Zeilen) in weniger als 6 Monaten gebaut
+- AI Tour Guide UG (Rostock, seit 2024) als Referenz und erster Pilot-Partner
 
 ### Einstellungsplan (mit Finanzierung)
 
-| Rolle | Zeitpunkt | Jahresgehalt |
-|-------|-----------|-------------|
-| CTO | Monat 1 | 90-110K EUR |
-| Sales Lead (DACH) | Monat 2 | 70-90K EUR |
-| Mobile Developer (iOS) | Monat 3 | 70-85K EUR |
-| Customer Success | Monat 6 | 50-60K EUR |
-| Marketing | Monat 9 | 55-70K EUR |
+| Rolle | Zeitpunkt | Jahresgehalt (brutto) | AG-Kosten (23%) | Gesamt/Jahr |
+|-------|-----------|----------------------|-----------------|-------------|
+| CTO / Lead Developer | Monat 3 | 96.000 EUR | 22.080 EUR | 118.080 EUR |
+| Sales & BD Manager | Monat 4 | 78.000 EUR | 17.940 EUR | 95.940 EUR |
+| AI/ML Engineer (NLP) | Monat 6 | 84.000 EUR | 19.320 EUR | 103.320 EUR |
+| Mobile Developer (iOS) | Monat 7 | 78.000 EUR | 17.940 EUR | 95.940 EUR |
+| UX/UI Designer | Monat 9 | 66.000 EUR | 15.180 EUR | 81.180 EUR |
+| Marketing Manager | Monat 10 | 66.000 EUR | 15.180 EUR | 81.180 EUR |
+| Customer Success Manager | Monat 12 | 54.000 EUR | 12.420 EUR | 66.420 EUR |
+| DevOps / Cloud Engineer | Monat 14 | 78.000 EUR | 17.940 EUR | 95.940 EUR |
+
+> Gehaelter am oberen Marktniveau fuer Startups in MV/Remote (Quellen: Stepstone, Glassdoor, 2025/2026)
 
 ---
 
 ## SLIDE 14: Finanzierungsbedarf
 
-### Seed-Runde: 750.000 EUR
+### Finanzierungsstrategie: Foerdermittel + Seed-Investment
 
 ```
-USE OF FUNDS:
+MODULARER FINANZIERUNGSPLAN (24 Monate):
 
-Team (65%):                           487.500 EUR
-  ├── CTO (12 Monate)                 100.000 EUR
-  ├── Sales Lead (10 Monate)           75.000 EUR
-  ├── Mobile Dev (9 Monate)            67.500 EUR
-  ├── Customer Success (6 Monate)      30.000 EUR
-  ├── Marketing (3 Monate)             17.500 EUR
-  ├── Freelancer/Extern                50.000 EUR
-  └── Lohnnebenkosten (~30%)          147.500 EUR
+┌─────────────────────────────────────────────────────────┐
+│  PHASE 1: FOERDERMITTEL (Monat 1-6)         300.000 EUR │
+│  ├── EFRE MV (FuE-Zuschuss, 60%)           150.000 EUR │
+│  ├── ACCELERATE:MV (ESF+)                        0 EUR │
+│  │   (Coaching, Mentoring -- kein Cash)                 │
+│  ├── FFplus Generative AI (100% EU)         100.000 EUR │
+│  └── Gruenderstipendium MV (18 Mon.)         21.600 EUR │
+│      + Beratungsfoerderung BAFA               2.800 EUR │
+│      + SME Fund IP-Schutz                     1.000 EUR │
+│      + Forschungszulage (35% FuE-Kosten)     24.600 EUR │
+│                                                         │
+│  PHASE 2: WACHSTUMSFOERDERUNG (Monat 6-12) 200.000 EUR │
+│  ├── EIT Digital SPIN:Rise                  200.000 EUR │
+│  └── (oder EIC Accelerator Grant)                       │
+│                                                         │
+│  PHASE 3: SEED-INVESTMENT (Monat 6-12)      250.000 EUR │
+│  ├── Business Angels (BAIN, BAND)           150.000 EUR │
+│  ├── MBMV innoPRO / Genius VC              100.000 EUR │
+│  └── (INVEST-Zuschuss macht Angels                      │
+│       attraktiver: 15% Erwerbszuschuss)                 │
+│                                                         │
+│  TOTAL FINANZIERUNG:                        750.000 EUR │
+│                                                         │
+│  + EIGENE UMSAETZE (M1-M24):              ~680.000 EUR │
+│  = TOTAL VERFUEGBAR:                     ~1.430.000 EUR │
+└─────────────────────────────────────────────────────────┘
+```
 
-Produkt (15%):                        112.500 EUR
-  ├── Google Cloud APIs                40.000 EUR
-  ├── Supabase Scaling                 15.000 EUR
-  ├── Apple Developer Account           5.000 EUR
-  ├── Testing-Geraete                  10.000 EUR
-  └── Infrastruktur/DevOps            42.500 EUR
+### Use of Funds (750.000 EUR, 24 Monate)
+
+```
+Team (64%):                           480.000 EUR
+  ├── Gruender/CEO (24 Monate)        130.680 EUR
+  ├── CTO (22 Monate, ab M3)          213.000 EUR
+  ├── Sales Manager (20 Mon., ab M4)  159.900 EUR
+  ├── AI/ML Engineer (anteilig)        50.000 EUR
+  ├── Externe Dienstleister            50.000 EUR
+  │   (Patentanwalt, Rechtsberatung,
+  │    Steuerberatung, PR-Agentur)
+  └── Inkl. AG-Nebenkosten (23%)      (enthalten)
+
+Produkt & Infrastruktur (16%):       120.000 EUR
+  ├── Cloud APIs (Google, Azure)       40.000 EUR
+  ├── Hosting (Supabase, Vercel)       15.000 EUR
+  ├── Hardware (Laptops, Testgeraete)  27.000 EUR
+  ├── Software-Lizenzen & Tools        15.000 EUR
+  ├── HPC-Zugang (ML-Training)        10.000 EUR
+  └── Sonstige Infrastruktur          13.000 EUR
 
 Go-to-Market (15%):                   112.500 EUR
-  ├── Content Marketing                25.000 EUR
-  ├── Google Ads / ASO                 30.000 EUR
-  ├── Messen / Konferenzen             20.000 EUR
-  ├── Pilot-Programme (Hardware)       20.000 EUR
-  └── PR / Branding                    17.500 EUR
+  ├── Google Ads / ASO                 35.000 EUR
+  ├── Content Marketing & SEO          20.000 EUR
+  ├── Messen & Konferenzen             20.000 EUR
+  ├── PR & Branding                    20.000 EUR
+  └── Pilot-Programme & Demos          17.500 EUR
 
 Reserve (5%):                          37.500 EUR
 
 TOTAL:                                750.000 EUR
 ```
 
-### Meilensteine der Seed-Runde
+### Meilensteine
 
 | Meilenstein | Zeitpunkt | KPI |
 |-------------|-----------|-----|
-| Google Play Launch | Monat 1 | App im Store |
-| 1.000 Free-Nutzer | Monat 3 | Organic Growth |
-| 50 B2B-Piloten | Monat 6 | Pipeline |
-| 10K EUR MRR | Monat 9 | Revenue |
-| 100 zahlende B2B-Kunden | Monat 12 | Product-Market Fit |
-| 150K EUR ARR | Monat 12 | Series A Readiness |
+| UG-Gruendung + Google Play Launch | Monat 1 | Handelsregister, App im Store |
+| 500 Free-Nutzer, CTO eingestellt | Monat 3 | Organic Growth, Team = 2 |
+| 20 B2B-Piloten, EFRE bewilligt | Monat 6 | Pipeline, Foerderzusage |
+| 8K EUR MRR, 3.000 Nutzer | Monat 9 | Revenue Traction |
+| 23K EUR MRR, 100 B2B-Kunden | Monat 12 | Product-Market Fit |
+| 65K EUR MRR, Break-even in Sicht | Monat 18 | Unit Economics bewiesen |
+| 148K EUR MRR, profitabel | Monat 24 | Series A Readiness |
 
-### Naechste Runde: Series A (~3M EUR, Monat 15-18)
-Voraussetzung: 150K+ EUR ARR, 100+ B2B-Kunden, <3% monatliche Churn
+### Naechste Runde: Series A (~3M EUR, Monat 18-24)
+Voraussetzung: 100K+ EUR MRR, 500+ B2B-Kunden, <3% monatliche Churn, Profitabilitaet bewiesen
 
 ---
 
@@ -512,7 +558,7 @@ Voraussetzung: 150K+ EUR ARR, 100+ B2B-Kunden, <3% monatliche Churn
 
 ## SLIDE 16: Ask
 
-### Wir suchen 750.000 EUR Seed-Finanzierung
+### Wir suchen 250.000 EUR Seed-Investment (ergaenzend zu 500.000 EUR Foerdermitteln)
 
 **Bewertung**: 3 Mio EUR Pre-Money (verhandelbar)
 
@@ -522,18 +568,26 @@ Voraussetzung: 150K+ EUR ARR, 100+ B2B-Kunden, <3% monatliche Churn
 - Google Play Ready (v3.1)
 - Einzigartiges 4-Tier-Transport-System (patentfaehig)
 - Erster im Markt fuer Offline-Gruppen-Uebersetzung
+- 500.000 EUR Foerderung bereits in Pipeline (EFRE, FFplus, EIT Digital)
+- 24-Monats-Cashflow-Planung mit Break-even in Monat 21
 
 **Was wir brauchen**:
-- Team aufbauen (CTO, Sales, Mobile)
-- Go-to-Market in DACH starten
-- 100 B2B-Pilotkunden gewinnen
-- Series A Readiness in 12-15 Monaten
+- 250.000 EUR Seed-Investment fuer Team-Aufbau und Go-to-Market
+- Team: CTO (M3), Sales (M4), AI Engineer (M6), Mobile Dev (M7)
+- 100 B2B-Pilotkunden in DACH gewinnen
+- 148K EUR MRR in 24 Monaten
+- Series A Readiness in 18-24 Monaten
+
+**Warum jetzt investieren?**
+- INVEST-Zuschuss: Business Angels erhalten 15% Erwerbszuschuss (steuerfrei)
+- Foerdermittel hebeln das Investment: 250K EUR privat + 500K EUR Foerderung = 750K EUR Gesamt
+- Fruehe Phase = niedrige Bewertung = hoeherer Return
 
 ---
 
 ## KONTAKT
 
-**Fintutto GmbH**
+**Fintutto UG (i.G.)**
 Alexander Deibel
 [E-Mail einfuegen]
 [Telefon einfuegen]
