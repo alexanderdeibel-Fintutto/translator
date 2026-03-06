@@ -83,25 +83,41 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          // Fetch user profile with tier from database
-          let { data: profile } = await supabase
+          // Fetch user profile with tier from database.
+          // Retry once after a short delay to handle the race condition where
+          // onAuthStateChange fires before the client has the session token set
+          // (which would cause RLS to block the SELECT).
+          let { data: profile, error: profileError } = await supabase
             .from('gt_users')
             .select('tier_id, organization_id, stripe_customer_id, display_name, role')
             .eq('id', session.user.id)
             .single()
 
-          // Auto-create profile if missing (fallback for users who signed up
-          // before the DB trigger existed, or if the trigger didn't fire)
-          if (!profile) {
+          if (!profile && profileError) {
+            // Retry once after a brief delay (auth token may not be ready yet)
+            await new Promise(r => setTimeout(r, 500))
+            const retry = await supabase
+              .from('gt_users')
+              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
+              .eq('id', session.user.id)
+              .single()
+            profile = retry.data
+            profileError = retry.error
+          }
+
+          // Auto-create profile if the row truly doesn't exist (not just an RLS/auth error).
+          // IMPORTANT: Use INSERT (not upsert) to avoid overwriting existing role/tier
+          // if the SELECT failed due to a transient auth issue.
+          if (!profile && profileError?.code === 'PGRST116') {
             const { data: created } = await supabase
               .from('gt_users')
-              .upsert({
+              .insert({
                 id: session.user.id,
                 email: session.user.email,
                 display_name: session.user.email,
                 tier_id: 'free',
                 role: 'user',
-              }, { onConflict: 'id' })
+              })
               .select('tier_id, organization_id, stripe_customer_id, display_name, role')
               .single()
             profile = created

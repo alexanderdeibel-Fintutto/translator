@@ -136,6 +136,23 @@ export default function Header() {
                 >
                   {t('nav.settings')}
                 </Link>
+                {isSalesAgent && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                      location.pathname.startsWith('/admin')
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-primary hover:text-foreground hover:bg-accent/50'
+                    )}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Shield className="h-4 w-4" />
+                      Admin CRM
+                    </span>
+                  </Link>
+                )}
               </nav>
             </div>
           )}
