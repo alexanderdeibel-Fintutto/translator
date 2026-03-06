@@ -272,14 +272,22 @@ export async function createManagedUser(
     body: { email, password, displayName, role },
   })
   if (error) {
-    // Extract detailed error from Edge Function response body
+    // Extract detailed error from Edge Function response body.
+    // error.context can be: a Response (older supabase-js), parsed JSON (newer), or undefined.
     let detail = error.message
     try {
-      // error.context may be a Response — use duck-typing to avoid cross-realm instanceof issues
-      const ctx = error.context as Response | undefined
-      if (ctx && typeof ctx.json === 'function') {
-        const body = await ctx.json()
-        detail = body.error || detail
+      const ctx = (error as any).context
+      if (ctx) {
+        if (typeof ctx === 'object' && ctx.error && typeof ctx.json !== 'function') {
+          // Already parsed JSON object
+          detail = ctx.error
+        } else if (typeof ctx.json === 'function') {
+          // Raw Response object
+          const body = await ctx.json()
+          detail = body?.error || detail
+        } else if (typeof ctx === 'string') {
+          detail = ctx
+        }
       }
     } catch { /* ignore parse errors */ }
     throw new Error(detail)
