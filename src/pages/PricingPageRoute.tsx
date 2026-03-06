@@ -7,7 +7,7 @@ import { redirectToCheckout, isStripeConfigured } from '@/lib/stripe'
 import { TIERS, isInternalTier, type TierId } from '@/lib/tiers'
 
 export default function PricingPageRoute() {
-  const { tierId, isAuthenticated, setTier } = useUser()
+  const { tierId, isAuthenticated, isAdmin, setTier } = useUser()
   const navigate = useNavigate()
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
 
@@ -21,11 +21,19 @@ export default function PricingPageRoute() {
       return
     }
 
+    // Admins can activate any tier directly (no Stripe needed)
+    if (isAdmin) {
+      const tier = TIERS[selectedTierId]
+      setTier(selectedTierId)
+      toast.success(`${tier?.displayName ?? selectedTierId} wurde aktiviert (Admin-Modus)`)
+      return
+    }
+
     // When Stripe is not configured, activate tier directly for testing
     if (!isStripeConfigured()) {
       const tier = TIERS[selectedTierId]
       setTier(selectedTierId)
-      toast.success(`${tier?.displayName ?? selectedTierId} wurde aktiviert (Testmodus — Stripe noch nicht verbunden)`)
+      toast.success(`${tier?.displayName ?? selectedTierId} wurde aktiviert (Testmodus)`)
       return
     }
 
@@ -53,8 +61,8 @@ export default function PricingPageRoute() {
         </div>
       )}
 
-      {/* Test mode banner */}
-      {!isStripeConfigured() && !isInternalTier(tierId) && (
+      {/* Test mode banner — hidden for admins and internal tiers */}
+      {!isStripeConfigured() && !isInternalTier(tierId) && !isAdmin && (
         <div className="max-w-2xl mx-auto mb-6 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
           <strong>Testmodus:</strong> Stripe ist noch nicht verbunden. Du kannst Plaene zum Testen direkt aktivieren — es wird nichts berechnet.
         </div>
