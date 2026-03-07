@@ -14,7 +14,8 @@
     "cap:android": "npx cap open android",
     "build:native": "vite build && npx cap sync",
     "build:enterprise": "tsc && vite build",
-    "build:consumer": "tsc && vite build"
+    "build:consumer": "tsc && vite build",
+    "build:listener": "tsc && vite build"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
