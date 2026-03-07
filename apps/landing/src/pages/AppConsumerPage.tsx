@@ -61,7 +61,7 @@ export default function AppConsumerPage() {
           { value: '0 EUR', label: 'Einstiegspreis' },
           { value: '<1s', label: 'Latenz' },
         ].map((stat, i) => (
-          <div key={i} className="text-center p-4 rounded-lg bg-muted/50">
+          <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm">
             <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
             <div className="text-sm text-white/70">{stat.label}</div>
           </div>
@@ -76,10 +76,10 @@ export default function AppConsumerPage() {
             const Icon = feat.icon
             return (
               <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
-                <div className="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-sky-300" />
                 </div>
-                <h3 className="font-semibold">{feat.title}</h3>
+                <h3 className="font-semibold drop-shadow-lg">{feat.title}</h3>
                 <p className="text-sm text-white/70 leading-relaxed">{feat.desc}</p>
               </Card>
             )
@@ -92,7 +92,7 @@ export default function AppConsumerPage() {
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Preise</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
           <Card className="p-6 space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-bold text-lg">Free</h3>
+            <h3 className="font-bold text-lg drop-shadow-lg">Free</h3>
             <div className="text-3xl font-bold">0 EUR</div>
             <ul className="space-y-2 text-sm">
               {['22 Sprachen + Offline', '500 Übersetzungen/Tag', 'Gesprächsmodus', 'Kamera-OCR', 'Phrasebook'].map((h, j) => (
@@ -104,7 +104,7 @@ export default function AppConsumerPage() {
             </ul>
           </Card>
           <Card className="p-6 space-y-4 border-sky-300 dark:border-sky-700 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-bold text-lg">Personal Pro</h3>
+            <h3 className="font-bold text-lg drop-shadow-lg">Personal Pro</h3>
             <div className="flex items-baseline gap-1">
               <span className="text-3xl font-bold">4,99 EUR</span>
               <span className="text-white/70">/Mo</span>

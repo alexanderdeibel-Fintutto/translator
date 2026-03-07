@@ -55,7 +55,7 @@ export default function AppListenerPage() {
                   {s.step}
                 </div>
                 <Icon className="w-6 h-6 text-emerald-600 mx-auto" />
-                <h3 className="font-semibold">{s.title}</h3>
+                <h3 className="font-semibold drop-shadow-lg">{s.title}</h3>
                 <p className="text-sm text-white/70">{s.desc}</p>
               </div>
             )
@@ -79,7 +79,7 @@ export default function AppListenerPage() {
                 <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-emerald-600" />
                 </div>
-                <h3 className="font-semibold">{feat.title}</h3>
+                <h3 className="font-semibold drop-shadow-lg">{feat.title}</h3>
                 <p className="text-sm text-white/70">{feat.desc}</p>
               </Card>
             )
@@ -89,7 +89,7 @@ export default function AppListenerPage() {
 
       {/* Einsatz */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Wann brauche ich diese App?</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Wann brauche ich diese App?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
           {[
             'Du bist Gast bei einer Stadtführung und willst in deiner Sprache mitlesen',
@@ -97,7 +97,7 @@ export default function AppListenerPage() {
             'Du bist Passagier auf einem Kreuzfahrtschiff bei einer Exkursion',
             'Du bist bei einer Bürgerversammlung und verstehst die Landessprache nicht',
           ].map((uc, i) => (
-            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-muted/30">
+            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-black/30 backdrop-blur-sm">
               <Check className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
               <span className="text-sm">{uc}</span>
             </div>

@@ -51,7 +51,7 @@ export default function AppEnterprisePage() {
 
       {/* Features */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Alles für Profis</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Alles für Profis</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { icon: Radio, title: 'Session-Management', desc: 'Sessions erstellen, konfigurieren und mit einem Klick live schalten. QR-Code wird automatisch generiert.' },
@@ -63,11 +63,11 @@ export default function AppEnterprisePage() {
           ].map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-5 space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-sky-300" />
                 </div>
-                <h3 className="font-semibold">{feat.title}</h3>
+                <h3 className="font-semibold drop-shadow-lg">{feat.title}</h3>
                 <p className="text-sm text-white/70 leading-relaxed">{feat.desc}</p>
               </Card>
             )
@@ -77,7 +77,7 @@ export default function AppEnterprisePage() {
 
       {/* Zielgruppen */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Für wen?</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Fuer wen?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { icon: Users, title: 'Guides & Museen', desc: 'Stadtführungen, Museumsführungen, Architektur-Touren — ohne Vox-Geräte.' },
@@ -86,9 +86,9 @@ export default function AppEnterprisePage() {
           ].map((seg, i) => {
             const Icon = seg.icon
             return (
-              <Card key={i} className="p-5 space-y-2 text-center">
+              <Card key={i} className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
                 <Icon className="w-6 h-6 text-sky-300 mx-auto" />
-                <h3 className="font-semibold">{seg.title}</h3>
+                <h3 className="font-semibold drop-shadow-lg">{seg.title}</h3>
                 <p className="text-xs text-white/70">{seg.desc}</p>
               </Card>
             )
@@ -98,7 +98,7 @@ export default function AppEnterprisePage() {
 
       {/* Preise */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Pläne ab 19,90 EUR/Monat</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Plaene ab 19,90 EUR/Monat</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-3xl mx-auto">
           {[
             { name: 'Guide Basic', price: '19,90 EUR/Mo', highlight: '10 Hörer' },
@@ -106,7 +106,7 @@ export default function AppEnterprisePage() {
             { name: 'Event', price: 'ab 199 EUR/Mo', highlight: '500 Hörer' },
             { name: 'Cruise', price: 'ab 1.990 EUR/Mo', highlight: 'Unbegrenzt' },
           ].map((p, i) => (
-            <Card key={i} className="p-4 text-center space-y-1">
+            <Card key={i} className="p-4 text-center space-y-1 bg-black/30 backdrop-blur-sm border-white/10">
               <p className="font-semibold text-sm">{p.name}</p>
               <p className="text-lg font-bold text-sky-300">{p.price}</p>
               <p className="text-xs text-white/70">{p.highlight}</p>

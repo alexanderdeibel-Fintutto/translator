@@ -13,10 +13,10 @@ import { Button } from '@/components/ui/button'
 
 export default function InvestorPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -51,9 +51,9 @@ export default function InvestorPage() {
           const Icon = stat.icon
           return (
             <div key={i} className="text-center p-4 rounded-lg bg-muted/50 space-y-1">
-              <Icon className="w-5 h-5 text-primary mx-auto" />
-              <div className="text-2xl font-bold text-primary">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
+              <Icon className="w-5 h-5 text-sky-300 mx-auto" />
+              <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
+              <div className="text-xs text-white/70">{stat.label}</div>
             </div>
           )
         })}
@@ -62,7 +62,7 @@ export default function InvestorPage() {
       {/* Das Problem */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Das Problem</h2>
-        <Card className="p-6 bg-muted/30">
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <p className="text-center text-lg font-medium mb-6">
             1,2 Milliarden Menschen reisen jährlich international. 68% sprechen die Landessprache nicht.
           </p>
@@ -75,15 +75,15 @@ export default function InvestorPage() {
             ].map((item, i) => (
               <div key={i} className="p-4 rounded-lg bg-background space-y-1">
                 <p className="font-semibold text-sm">{item.problem}</p>
-                <p className="text-xs text-primary">{item.affected}</p>
-                <p className="text-xs text-muted-foreground">{item.today}</p>
+                <p className="text-xs text-sky-300">{item.affected}</p>
+                <p className="text-xs text-white/70">{item.today}</p>
               </div>
             ))}
           </div>
         </Card>
-        <Card className="p-6 border-primary/30 text-center">
+        <Card className="p-6 border-primary/30 text-center bg-black/30 backdrop-blur-sm border-white/10">
           <p className="font-semibold">Der blinde Fleck aller Wettbewerber:</p>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-sm text-white/70 mt-2">
             Google Translate, DeepL, Microsoft — sie alle setzen Internet voraus.
             An den Orten, wo Übersetzung am meisten gebraucht wird, gibt es keins.
             Ruinen. Berge. Flüchtlingscamps. Boote. Schulen in ländlichen Gebieten.
@@ -103,11 +103,11 @@ export default function InvestorPage() {
           ].map((item, i) => {
             const Icon = item.icon
             return (
-              <Card key={i} className="p-4 flex items-start gap-3">
-                <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <Card key={i} className="p-4 flex items-start gap-3 bg-black/30 backdrop-blur-sm border-white/10">
+                <Icon className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-sm">{item.tier}</p>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  <p className="text-xs text-white/70">{item.desc}</p>
                 </div>
               </Card>
             )
@@ -136,10 +136,10 @@ export default function InvestorPage() {
             { name: 'BLE-Transport', desc: 'Custom GATT Protocol, Bluetooth-only' },
           ].map((item, i) => (
             <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-muted/30">
-              <span className="text-xs font-mono text-primary shrink-0 mt-0.5">{i + 1}.</span>
+              <span className="text-xs font-mono text-sky-300 shrink-0 mt-0.5">{i + 1}.</span>
               <div>
                 <span className="font-medium text-sm">{item.name}</span>
-                <span className="text-xs text-muted-foreground"> — {item.desc}</span>
+                <span className="text-xs text-white/70"> — {item.desc}</span>
               </div>
             </div>
           ))}
@@ -151,25 +151,25 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold text-center">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-5 space-y-2 text-center">
-            <p className="text-xs font-medium text-muted-foreground">TAM</p>
-            <p className="text-3xl font-bold text-primary">$65 Mrd</p>
-            <p className="text-xs text-muted-foreground">Globaler Übersetzungsmarkt (2025)</p>
-            <p className="text-xs text-muted-foreground">Davon maschinell: $8 Mrd</p>
-            <p className="text-xs text-primary font-medium">15% CAGR bis 2030</p>
+            <p className="text-xs font-medium text-white/70">TAM</p>
+            <p className="text-3xl font-bold text-sky-300">$65 Mrd</p>
+            <p className="text-xs text-white/70">Globaler Übersetzungsmarkt (2025)</p>
+            <p className="text-xs text-white/70">Davon maschinell: $8 Mrd</p>
+            <p className="text-xs text-sky-300 font-medium">15% CAGR bis 2030</p>
           </Card>
           <Card className="p-5 space-y-2 text-center">
-            <p className="text-xs font-medium text-muted-foreground">SAM</p>
-            <p className="text-3xl font-bold text-primary">$4,4 Mrd</p>
-            <p className="text-xs text-muted-foreground">Live-Übersetzung: $2,4 Mrd</p>
-            <p className="text-xs text-muted-foreground">Behörden/NGO: $1,2 Mrd</p>
-            <p className="text-xs text-muted-foreground">Tourismus: $0,8 Mrd</p>
+            <p className="text-xs font-medium text-white/70">SAM</p>
+            <p className="text-3xl font-bold text-sky-300">$4,4 Mrd</p>
+            <p className="text-xs text-white/70">Live-Übersetzung: $2,4 Mrd</p>
+            <p className="text-xs text-white/70">Behörden/NGO: $1,2 Mrd</p>
+            <p className="text-xs text-white/70">Tourismus: $0,8 Mrd</p>
           </Card>
           <Card className="p-5 space-y-2 text-center">
-            <p className="text-xs font-medium text-muted-foreground">SOM (3 Jahre)</p>
-            <p className="text-3xl font-bold text-primary">$12 Mio</p>
-            <p className="text-xs text-muted-foreground">ARR-Ziel in 3 Jahren</p>
-            <p className="text-xs text-muted-foreground">DACH-Region zuerst: $180 Mio</p>
-            <p className="text-xs text-primary font-medium">Bei 5.000 zahlenden Kunden</p>
+            <p className="text-xs font-medium text-white/70">SOM (3 Jahre)</p>
+            <p className="text-3xl font-bold text-sky-300">$12 Mio</p>
+            <p className="text-xs text-white/70">ARR-Ziel in 3 Jahren</p>
+            <p className="text-xs text-white/70">DACH-Region zuerst: $180 Mio</p>
+            <p className="text-xs text-sky-300 font-medium">Bei 5.000 zahlenden Kunden</p>
           </Card>
         </div>
 
@@ -183,7 +183,7 @@ export default function InvestorPage() {
           ].map((item, i) => (
             <div key={i} className="p-3 rounded-lg bg-muted/30">
               <p className="font-medium text-sm">{item.title}</p>
-              <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+              <p className="text-xs text-white/70 mt-1">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -192,7 +192,7 @@ export default function InvestorPage() {
       {/* Geschäftsmodell & Preise */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Geschäftsmodell: Freemium + B2B SaaS</h2>
-        <p className="text-center text-muted-foreground">
+        <p className="text-center text-white/70">
           11 Pläne in 5 Segmenten — von 0 EUR (Free) bis 19.990 EUR/Monat (Cruise Armada Enterprise)
         </p>
 
@@ -205,15 +205,15 @@ export default function InvestorPage() {
             { segment: 'Cruise', plans: 'Starter (1.990 EUR) · Fleet (6.990 EUR) · Armada (19.990 EUR/Mo)', target: 'Reedereien, Kreuzfahrt-Flotten', arpu: '~10.000 EUR' },
           ].map((seg, i) => (
             <Card key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center">
-              <div className="sm:w-1/6 font-bold text-sm text-primary">{seg.segment}</div>
+              <div className="sm:w-1/6 font-bold text-sm text-sky-300">{seg.segment}</div>
               <div className="sm:w-2/6 text-xs">{seg.plans}</div>
-              <div className="sm:w-2/6 text-xs text-muted-foreground">{seg.target}</div>
+              <div className="sm:w-2/6 text-xs text-white/70">{seg.target}</div>
               <div className="sm:w-1/6 text-xs text-right font-medium">ARPU: {seg.arpu}</div>
             </Card>
           ))}
         </div>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-white/70">
           Jährlich zahlen = 2 Monate gratis (17% Rabatt) · Overage-Abrechnung pro Minute
         </p>
       </div>
@@ -224,26 +224,26 @@ export default function InvestorPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary" />
+              <DollarSign className="w-4 h-4 text-sky-300" />
               B2C (Personal)
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">CAC</span><span className="font-medium">15 EUR</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">LTV (12 Mo)</span><span className="font-medium">60 EUR</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">LTV/CAC</span><span className="font-medium text-primary">4x</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Payback</span><span className="font-medium">3 Monate</span></div>
+              <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium">15 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV (12 Mo)</span><span className="font-medium">60 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">4x</span></div>
+              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">3 Monate</span></div>
             </div>
           </Card>
           <Card className="p-5 space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
-              <Building className="w-4 h-4 text-primary" />
+              <Building className="w-4 h-4 text-sky-300" />
               B2B (Guide/Agentur/Event)
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">CAC</span><span className="font-medium">800 EUR</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">LTV (24 Mo)</span><span className="font-medium">3.576 EUR</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">LTV/CAC</span><span className="font-medium text-primary">4,5x</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Payback</span><span className="font-medium">5,4 Monate</span></div>
+              <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium">800 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV (24 Mo)</span><span className="font-medium">3.576 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">4,5x</span></div>
+              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">5,4 Monate</span></div>
             </div>
           </Card>
         </div>
@@ -252,12 +252,12 @@ export default function InvestorPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Bruttomarge (SaaS-typisch)</span>
-              <span className="font-bold text-primary">85%</span>
+              <span className="font-bold text-sky-300">85%</span>
             </div>
             <div className="h-3 rounded-full bg-muted overflow-hidden">
               <div className="h-full rounded-full bg-primary" style={{ width: '85%' }} />
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
+            <div className="grid grid-cols-3 gap-2 text-xs text-white/70">
               <div>API-Kosten: 8%</div>
               <div>Infrastruktur: 4%</div>
               <div>Support: 3%</div>
@@ -277,7 +277,7 @@ export default function InvestorPage() {
                   <th className="text-left py-2 font-semibold"></th>
                   <th className="text-right py-2 font-semibold">Jahr 1</th>
                   <th className="text-right py-2 font-semibold">Jahr 2</th>
-                  <th className="text-right py-2 font-semibold text-primary">Jahr 3</th>
+                  <th className="text-right py-2 font-semibold text-sky-300">Jahr 3</th>
                 </tr>
               </thead>
               <tbody>
@@ -292,10 +292,10 @@ export default function InvestorPage() {
                   { label: 'Monatliche Churn', y1: '5%', y2: '3%', y3: '2%' },
                 ].map((row, i) => (
                   <tr key={i} className={`border-b last:border-0 ${row.label === 'ARR' ? 'font-bold' : ''}`}>
-                    <td className="py-2 text-muted-foreground">{row.label}</td>
+                    <td className="py-2 text-white/70">{row.label}</td>
                     <td className="py-2 text-right">{row.y1}</td>
                     <td className="py-2 text-right">{row.y2}</td>
-                    <td className="py-2 text-right text-primary">{row.y3}</td>
+                    <td className="py-2 text-right text-sky-300">{row.y3}</td>
                   </tr>
                 ))}
               </tbody>
@@ -330,13 +330,13 @@ export default function InvestorPage() {
           ].map((phase, i) => (
             <Card key={i} className="p-5 space-y-3">
               <div>
-                <span className="text-xs font-mono text-primary">{phase.phase} · {phase.period}</span>
+                <span className="text-xs font-mono text-sky-300">{phase.phase} · {phase.period}</span>
                 <h3 className="font-bold text-lg">{phase.title}</h3>
               </div>
               <ul className="space-y-1.5">
                 {phase.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />
+                  <li key={j} className="flex items-start gap-2 text-xs text-white/70">
+                    <Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -390,11 +390,11 @@ export default function InvestorPage() {
             ].map((item, i) => (
               <div key={i} className="flex justify-between items-center p-3 rounded bg-muted/30">
                 <span className="text-sm font-medium">{item.name}</span>
-                <span className="text-xs text-muted-foreground">{item.time} Nachahmung</span>
+                <span className="text-xs text-white/70">{item.time} Nachahmung</span>
               </div>
             ))}
           </div>
-          <p className="text-sm text-primary font-medium mt-4 text-center">
+          <p className="text-sm text-sky-300 font-medium mt-4 text-center">
             Gesamt-Nachahmungsaufwand: 12-18 Monate
           </p>
         </Card>
@@ -407,12 +407,12 @@ export default function InvestorPage() {
           <Card className="p-5 space-y-2">
             <h3 className="font-semibold">Gründer & CEO</h3>
             <p className="text-sm font-medium">Alexander Deibel</p>
-            <p className="text-xs text-muted-foreground">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
-            <p className="text-xs text-muted-foreground">Komplette v3.1 Codebase in weniger als 6 Monaten gebaut</p>
+            <p className="text-xs text-white/70">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
+            <p className="text-xs text-white/70">Komplette v3.1 Codebase in weniger als 6 Monaten gebaut</p>
           </Card>
           <Card className="p-5 space-y-2">
             <h3 className="font-semibold">Fintutto Ecosystem</h3>
-            <ul className="space-y-1 text-xs text-muted-foreground">
+            <ul className="space-y-1 text-xs text-white/70">
               <li>• ai tour Portal — Tourismusplattform</li>
               <li>• Vermietify — Vermietungssoftware</li>
               <li>• Ablesung — Smart Metering</li>
@@ -432,8 +432,8 @@ export default function InvestorPage() {
             ].map((item, i) => (
               <div key={i} className="text-center p-2 rounded bg-muted/30">
                 <p className="font-medium text-xs">{item.role}</p>
-                <p className="text-xs text-primary">{item.month}</p>
-                <p className="text-xs text-muted-foreground">{item.salary} EUR</p>
+                <p className="text-xs text-sky-300">{item.month}</p>
+                <p className="text-xs text-white/70">{item.salary} EUR</p>
               </div>
             ))}
           </div>
@@ -443,22 +443,22 @@ export default function InvestorPage() {
       {/* Ask */}
       <Card className="p-8 border-primary text-center space-y-4">
         <h2 className="text-2xl font-bold">Seed-Runde: 750.000 EUR</h2>
-        <p className="text-sm text-muted-foreground">Pre-Money Bewertung: 3 Mio EUR (verhandelbar)</p>
+        <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar)</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-lg mx-auto">
           <div>
             <h3 className="font-semibold text-sm mb-2">Was wir bieten:</h3>
-            <ul className="space-y-1.5 text-xs text-muted-foreground">
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Production-Ready v3.1</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />87 Tests, 100% Pass Rate</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Google Play Ready</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />4-Tier-Transport (patentfähig)</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Sales CRM + Stripe integriert</li>
+            <ul className="space-y-1.5 text-xs text-white/70">
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Production-Ready v3.1</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />87 Tests, 100% Pass Rate</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Google Play Ready</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />4-Tier-Transport (patentfähig)</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Sales CRM + Stripe integriert</li>
             </ul>
           </div>
           <div>
             <h3 className="font-semibold text-sm mb-2">Use of Funds:</h3>
-            <ul className="space-y-1.5 text-xs text-muted-foreground">
+            <ul className="space-y-1.5 text-xs text-white/70">
               <li>Team (65%): 487.500 EUR</li>
               <li>Produkt (15%): 112.500 EUR</li>
               <li>Go-to-Market (15%): 112.500 EUR</li>
@@ -477,11 +477,11 @@ export default function InvestorPage() {
             ].map((m, i) => (
               <div key={i} className="p-2 rounded bg-muted/30">
                 <p className="text-xs font-medium">{m.milestone}</p>
-                <p className="text-xs text-primary">{m.time}</p>
+                <p className="text-xs text-sky-300">{m.time}</p>
               </div>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-white/70">
             Series A (~3M EUR) geplant bei 150K+ EUR ARR, 100+ B2B-Kunden, &lt;3% monatliche Churn
           </p>
         </div>
@@ -492,9 +492,9 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold">Kontakt</h2>
         <div className="space-y-1">
           <p className="font-semibold">fintutto ug (haftungsbeschränkt)</p>
-          <p className="text-sm text-muted-foreground">Alexander Deibel · Geschäftsführer</p>
-          <p className="text-sm text-muted-foreground">info@guidetranslator.com</p>
-          <p className="text-sm text-muted-foreground">Kolonie 2, 18317 Saal, Deutschland</p>
+          <p className="text-sm text-white/70">Alexander Deibel · Geschäftsführer</p>
+          <p className="text-sm text-white/70">info@guidetranslator.com</p>
+          <p className="text-sm text-white/70">Kolonie 2, 18317 Saal, Deutschland</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
           <Link to="/compare">
@@ -518,7 +518,7 @@ export default function InvestorPage() {
         </div>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground pb-4">
+      <p className="text-center text-xs text-white/70 pb-4">
         Stand: März 2026 · GuideTranslator v3.1.0 · Vertraulich
       </p>
     </div>
