@@ -11,7 +11,7 @@ const APPS = [
   {
     name: 'Translator',
     desc: 'Fuer alle. Kostenlos uebersetzen, sprechen, fotografieren — in 45 Sprachen.',
-    url: 'https://translatorconsumer.vercel.app',
+    url: 'https://consumer.guidetranslator.com',
     color: 'bg-sky-600',
     icon: Languages,
     link: '/apps/translator',
@@ -19,7 +19,7 @@ const APPS = [
   {
     name: 'Live',
     desc: 'Fuer Zuhoerer. QR-Code scannen, Sprache waehlen, Live-Uebersetzung empfangen.',
-    url: 'https://translatorlistener.vercel.app',
+    url: 'https://translator.fintutto.cloud',
     color: 'bg-emerald-600',
     icon: Radio,
     link: '/apps/live',
@@ -27,7 +27,7 @@ const APPS = [
   {
     name: 'Enterprise',
     desc: 'Fuer Guides, Speaker & Techniker. Sessions erstellen, verwalten und live gehen.',
-    url: 'https://translatorenterprise.vercel.app',
+    url: 'https://enterprise.guidetranslator.com',
     color: 'bg-violet-600',
     icon: Building,
     link: '/apps/enterprise',
@@ -68,31 +68,31 @@ export default function LandingHomePage() {
           <img
             src="/fintutto-logo.svg"
             alt=""
-            className="w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] opacity-10 dark:opacity-15"
+            className="w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] opacity-95"
           />
         </div>
         <div className="relative z-10 space-y-6">
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
             Die Uebersetzungsplattform
           </span>
-          <h1 className="text-4xl sm:text-6xl font-bold leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-bold leading-tight text-white drop-shadow-lg">
             Sprache darf keine<br />
-            <span className="text-primary">Mauer</span> sein.
+            <span className="text-sky-300">Mauer</span> sein.
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
             Fintutto Translator ist die Plattform fuer mehrsprachige Kommunikation —
             fuer Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-faehig,
             Live-Sessions fuer bis zu 500 Personen.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <a href="https://translatorconsumer.vercel.app" target="_blank" rel="noopener noreferrer">
+            <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="gap-2 w-full sm:w-auto">
                 Kostenlos uebersetzen
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
             <Link to="/investors">
-              <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
                 Fuer Investoren
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -282,7 +282,7 @@ export default function LandingHomePage() {
           Kostenlos. Keine Registrierung. Keine Installation.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="https://translatorconsumer.vercel.app" target="_blank" rel="noopener noreferrer">
+          <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
               Uebersetzer oeffnen
               <ArrowRight className="h-4 w-4" />

@@ -5,7 +5,7 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const APP_URL = 'https://translatorlistener.vercel.app'
+const APP_URL = 'https://translator.fintutto.cloud'
 
 export default function AppListenerPage() {
   return (

@@ -17,7 +17,7 @@ const FEATURES = [
   { icon: Volume2, title: 'HD-Sprachausgabe', desc: 'Google Neural2 + Chirp 3 HD. Natuerliche Stimmen in 24+ Sprachen.' },
 ]
 
-const APP_URL = 'https://translatorconsumer.vercel.app'
+const APP_URL = 'https://consumer.guidetranslator.com'
 
 export default function AppConsumerPage() {
   return (

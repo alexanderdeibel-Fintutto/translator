@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const APP_URL = 'https://translatorenterprise.vercel.app'
+const APP_URL = 'https://enterprise.guidetranslator.com'
 
 export default function AppEnterprisePage() {
   return (
