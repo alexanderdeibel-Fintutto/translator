@@ -15,6 +15,7 @@
     "build:native": "vite build && npx cap sync",
     "build:enterprise": "tsc && vite build",
     "build:consumer": "tsc && vite build",
+    "build:landing": "tsc && vite build",
     "build:listener": "tsc && vite build"
   },
   "dependencies": {
