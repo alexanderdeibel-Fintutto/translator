@@ -71,7 +71,7 @@ export default function NewsPage() {
     <div className="relative max-w-3xl mx-auto py-8 px-4 space-y-8">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
       </div>
       <div className="relative text-center space-y-2 py-10 sm:py-14 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

@@ -63,7 +63,7 @@ export default function LandingHomePage() {
     <div className="relative max-w-5xl mx-auto space-y-20 py-12 px-4">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-6 py-12 sm:py-20 overflow-hidden rounded-2xl">
