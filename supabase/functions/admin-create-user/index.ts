@@ -98,27 +98,52 @@ Deno.serve(async (req: Request) => {
     // Create auth user — use provided password or generate temp one
     const tempPassword = providedPassword || crypto.randomUUID()
     console.log('Creating auth user for:', email)
+    let userId: string
+
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
       password: tempPassword,
       email_confirm: true,
     })
 
-    if (createError || !newUser?.user) {
-      console.log('ERROR: Auth user creation failed:', createError?.message ?? 'no user returned')
-      return new Response(JSON.stringify({ error: createError?.message ?? 'Failed to create user' }), {
+    if (createError) {
+      // If user already exists, look them up and continue (profile may be missing)
+      if (createError.message?.includes('already been registered') || createError.message?.includes('already exists')) {
+        console.log('Auth user already exists, looking up by email:', email)
+        const { data: existingUsers } = await adminClient.auth.admin.listUsers()
+        const existing = existingUsers?.users?.find((u: any) => u.email === email)
+        if (!existing) {
+          console.log('ERROR: User reported as existing but not found via listUsers')
+          return new Response(JSON.stringify({ error: 'User already registered but could not be found. Please contact support.' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+        userId = existing.id
+        console.log('Found existing auth user:', userId)
+      } else {
+        console.log('ERROR: Auth user creation failed:', createError.message)
+        return new Response(JSON.stringify({ error: createError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    } else if (!newUser?.user) {
+      console.log('ERROR: Auth user creation returned no user')
+      return new Response(JSON.stringify({ error: 'Failed to create user' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
+    } else {
+      userId = newUser.user.id
+      console.log('Auth user created:', userId)
     }
-
-    console.log('Auth user created:', newUser.user.id)
 
     // Create or update gt_users profile (trigger may have already created the row)
     const { error: profileError } = await adminClient
       .from('gt_users')
       .upsert({
-        id: newUser.user.id,
+        id: userId,
         email,
         display_name: displayName ?? email,
         tier_id: effectiveTier,
@@ -140,7 +165,7 @@ Deno.serve(async (req: Request) => {
       const { error: leadError } = await adminClient
         .from('gt_leads')
         .update({
-          converted_user_id: newUser.user.id,
+          converted_user_id: userId,
           converted_at: new Date().toISOString(),
           pipeline_stage: 'gewonnen',
         })
@@ -176,12 +201,12 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({
       success: true,
-      id: newUser.user.id,
+      id: userId,
       email,
       display_name: displayName ?? email,
       role: effectiveRole,
       created_at: new Date().toISOString(),
-      userId: newUser.user.id,
+      userId: userId,
       resetLink: resetData?.properties?.action_link ?? null,
     }), {
       status: 200,
