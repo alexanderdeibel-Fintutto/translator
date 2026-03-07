@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build:enterprise",
+  "outputDirectory": "apps/enterprise/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
