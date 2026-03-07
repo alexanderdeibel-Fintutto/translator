@@ -3,14 +3,20 @@ import { Card } from '@/components/ui/card'
 const NEWS = [
   {
     date: 'März 2026',
-    title: 'v3.1 — Multi-App-Architektur & Vercel Deployment',
-    content: 'GuideTranslator wird zu Fintutto Translator und splittet sich in 3 spezialisierte Apps: Consumer (Übersetzer), Listener (Live-Empfänger) und Enterprise (Session-Management). Jede App wird eigenständig auf Vercel deployed.',
+    title: 'v4.1 — Multi-Market Landing & Lösungs-Seiten',
+    content: 'Neue Marketing-Landingpage mit zielgruppenspezifischen Lösungs-Seiten für Stadtführer, Agenturen, Kreuzfahrt-Reedereien und Großveranstalter. Dunkles Glasmorphism-Design mit optimierter Lesbarkeit.',
     tag: 'Release',
   },
   {
     date: 'März 2026',
-    title: 'Landingpage translator.fintutto.de live',
-    content: 'Die neue Produkt-Landingpage bündelt alle Informationen: App-Übersicht, Features, Preise, Investor Relations und Neuigkeiten.',
+    title: 'v4.0 — Multi-App-Architektur & Vercel Deployment',
+    content: 'GuideTranslator wird zu Fintutto Translator und splittet sich in 3 spezialisierte Apps: Consumer (consumer.guidetranslator.com), Listener (listener.guidetranslator.com) und Enterprise (enterprise.guidetranslator.com). Jede App wird eigenständig auf Vercel deployed.',
+    tag: 'Release',
+  },
+  {
+    date: 'März 2026',
+    title: 'Landingpage translator.fintutto.cloud live',
+    content: 'Die neue Produkt-Landingpage bündelt alle Informationen: App-Übersicht, Features, Preise, Investor Relations und Neuigkeiten. Verfügbar unter translator.fintutto.cloud.',
     tag: 'Website',
   },
   {
@@ -71,7 +77,7 @@ export default function NewsPage() {
     <div className="relative max-w-3xl mx-auto py-8 px-4 space-y-8 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.80]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
       </div>
       <div className="relative text-center space-y-2 py-10 sm:py-14 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

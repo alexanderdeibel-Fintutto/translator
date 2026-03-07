@@ -63,7 +63,7 @@ export default function LandingHomePage() {
     <div className="relative max-w-5xl mx-auto space-y-20 py-12 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.80]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-6 py-12 sm:py-20 overflow-hidden rounded-2xl">
@@ -266,7 +266,7 @@ export default function LandingHomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { date: 'März 2026', title: 'v3.1 Release — Multi-App-Architektur', desc: '3 spezialisierte Apps: Consumer, Listener und Enterprise. Vercel-Deployment für alle Varianten.' },
+            { date: 'März 2026', title: 'v4.1 Release — Multi-Market Landing', desc: 'Zielgruppenspezifische Lösungs-Seiten, dunkles Glasmorphism-Design und optimierte App-Verlinkung.' },
             { date: 'Februar 2026', title: '45 Sprachen + 10 Migrationssprachen', desc: 'Dari, Paschtu, Tigrinya, Somali und weitere Migrationssprachen ab sofort verfügbar.' },
             { date: 'Januar 2026', title: 'BLE-Transport & Hotspot-Modus', desc: 'Live-Übersetzung per Bluetooth und lokalem WLAN — komplett ohne Internet.' },
           ].map((news, i) => (
