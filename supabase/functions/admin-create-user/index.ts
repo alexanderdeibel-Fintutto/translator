@@ -15,6 +15,7 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
 function jsonResponse(body: Record<string, unknown>) {
@@ -110,7 +111,7 @@ Deno.serve(async (req: Request) => {
         console.log('Auth user already exists, looking up by email:', email)
         const { data: listData } = await adminClient.auth.admin.listUsers({
           page: 1,
-          perPage: 5,
+          perPage: 1000,
         })
         const existing = listData?.users?.find((u: any) => u.email === email)
 
@@ -209,8 +210,10 @@ Deno.serve(async (req: Request) => {
       userId: userId,
       resetLink: resetData?.properties?.action_link ?? null,
     })
-  } catch (error) {
-    console.log('Unhandled exception:', error.message, error.stack)
-    return errorResponse(`Unerwarteter Fehler: ${error.message}`, 'UNHANDLED')
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    const stack = err instanceof Error ? err.stack : ''
+    console.log('Unhandled exception:', msg, stack)
+    return errorResponse(`Unerwarteter Fehler: ${msg}`, 'UNHANDLED')
   }
 })

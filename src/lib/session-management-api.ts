@@ -273,17 +273,34 @@ export async function createManagedUser(
     body: { email, password, displayName, role },
   })
 
-  // Network-level or invocation error (function not found, CORS, etc.)
+  // Network-level or invocation error (function not found, CORS, non-2xx, etc.)
   if (error) {
-    console.error('[createManagedUser] invoke error:', error.message)
-    throw new Error(error.message || 'Edge Function konnte nicht aufgerufen werden')
+    // Extract detailed error info from FunctionsHttpError
+    let detail = error.message || 'Edge Function konnte nicht aufgerufen werden'
+    try {
+      // supabase-js FunctionsHttpError has a context (Response) we can read
+      const ctx = (error as any).context
+      if (ctx && typeof ctx.json === 'function') {
+        const body = await ctx.json()
+        if (body?.error) detail = body.error
+        if (body?.code) detail = `[${body.code}] ${detail}`
+      } else if (ctx && typeof ctx.text === 'function') {
+        const text = await ctx.text()
+        if (text) detail = text
+      }
+    } catch {
+      // Could not read response body — use original message
+    }
+    console.error('[createManagedUser] invoke error:', detail, error)
+    throw new Error(detail)
   }
 
   // Application-level error from the Edge Function
   if (!data?.success) {
     const detail = data?.error || 'Unbekannter Fehler bei der Benutzererstellung'
-    console.error('[createManagedUser] function error:', detail)
-    throw new Error(detail)
+    const code = data?.code ? `[${data.code}] ` : ''
+    console.error('[createManagedUser] function error:', code + detail)
+    throw new Error(code + detail)
   }
 
   return data as ManagedUser
