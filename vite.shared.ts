@@ -119,7 +119,7 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
       }),
     ],
     build: {
-      outDir: path.resolve(appDir, 'dist'),
+      outDir: path.resolve(rootDir, 'dist'),
       chunkSizeWarningLimit: 550,
       rollupOptions: {
         output: {
