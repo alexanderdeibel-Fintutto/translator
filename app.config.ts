@@ -10,7 +10,7 @@
  * - enterprise: Session management console for speakers/technicians
  */
 
-export type AppVariant = 'consumer' | 'listener' | 'enterprise'
+export type AppVariant = 'consumer' | 'listener' | 'enterprise' | 'landing'
 
 export interface AppConfig {
   /** Internal variant identifier */
@@ -66,6 +66,17 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5182,
     startUrl: '/',
     iosScheme: 'fintuttoenterprise',
+  },
+  landing: {
+    variant: 'landing',
+    appName: 'Fintutto Translator',
+    shortName: 'Fintutto',
+    description: 'Die Uebersetzungsplattform fuer Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-faehig, Live-Sessions.',
+    appId: 'de.fintutto.translator',
+    themeColor: '#0369a1',
+    devPort: 5183,
+    startUrl: '/',
+    iosScheme: 'fintuttolanding',
   },
 }
 
