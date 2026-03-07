@@ -46,7 +46,15 @@ export default function AuthPage() {
         setSuccess('Bestaetigungs-E-Mail gesendet! Bitte pruefe dein Postfach.')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten.')
+      const msg = err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten.'
+      // Supabase returns "Invalid API key" when the anon key is wrong/expired.
+      // Surface a user-friendly hint so admins can diagnose the issue quickly.
+      if (msg.toLowerCase().includes('invalid api key')) {
+        setError('Serverfehler: API-Schluessel ungueltig. Bitte den Administrator kontaktieren.')
+        console.error('[Auth] Invalid API key — check VITE_SUPABASE_ANON_KEY env variable or hardcoded key in supabase.ts')
+      } else {
+        setError(msg)
+      }
     } finally {
       setLoading(false)
     }

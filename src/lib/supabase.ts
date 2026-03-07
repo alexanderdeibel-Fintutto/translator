@@ -1,7 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://aaefocdqgdgexkcrjhks.supabase.co'
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZWZvY2RxZ2RnZXhrY3JqaGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNTU2NzYsImV4cCI6MjA1MzgzMTY3Nn0.KzAlgorLEJf_yfPY4RFEs1MERPyt5sYjIEvVPmPsWH4'
+const HARDCODED_URL = 'https://aaefocdqgdgexkcrjhks.supabase.co'
+const HARDCODED_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZWZvY2RxZ2RnZXhrY3JqaGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNTU2NzYsImV4cCI6MjA1MzgzMTY3Nn0.KzAlgorLEJf_yfPY4RFEs1MERPyt5sYjIEvVPmPsWH4'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || HARDCODED_URL
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || HARDCODED_KEY
+
+// Warn if env var overrides the hardcoded key (common source of "Invalid API key" errors)
+if (import.meta.env.VITE_SUPABASE_ANON_KEY && import.meta.env.VITE_SUPABASE_ANON_KEY !== HARDCODED_KEY) {
+  console.warn('[Supabase] VITE_SUPABASE_ANON_KEY env var overrides hardcoded key. If auth fails with "Invalid API key", check this env var.')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
