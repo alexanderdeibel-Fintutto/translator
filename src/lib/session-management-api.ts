@@ -268,38 +268,45 @@ export async function createManagedUser(
   role: 'session_manager' | 'admin' | 'sales_agent' | 'tester' = 'session_manager'
 ): Promise<ManagedUser> {
   // Use Supabase admin function to create user
+  // supabase-js v2 functions.invoke returns { data, error }.
+  // On non-2xx, error.message is generic; the real body is in error.context (a Response).
   const { data, error } = await supabase.functions.invoke('admin-create-user', {
     body: { email, password, displayName, role },
   })
+
   if (error) {
-    // Extract detailed error from Edge Function response body.
-    // supabase-js wraps the response differently depending on version.
     let detail = error.message || 'Unbekannter Fehler'
+    // Try every known way to extract the real error from the Edge Function response
     try {
       const ctx = (error as any).context
-      if (ctx) {
-        if (ctx instanceof Response || typeof ctx.json === 'function') {
+      if (ctx instanceof Response) {
+        try {
+          const body = await ctx.json()
+          if (body?.error) detail = body.error
+        } catch {
           try {
-            const cloned = typeof ctx.clone === 'function' ? ctx.clone() : ctx
-            const body = await cloned.json()
-            if (body?.error) detail = body.error
-          } catch {
-            try {
-              const text = typeof ctx.clone === 'function' ? await ctx.clone().text() : await ctx.text()
-              if (text) {
-                try { detail = JSON.parse(text)?.error || text } catch { detail = text }
-              }
-            } catch { /* exhausted */ }
-          }
-        } else if (typeof ctx === 'object' && ctx.error) {
-          detail = ctx.error
-        } else if (typeof ctx === 'string') {
-          try { detail = JSON.parse(ctx)?.error || ctx } catch { detail = ctx }
+            const text = await ctx.text()
+            if (text) {
+              try { detail = JSON.parse(text)?.error || text } catch { detail = text }
+            }
+          } catch { /* body already consumed */ }
         }
+      } else if (ctx && typeof ctx === 'object' && ctx.error) {
+        detail = ctx.error
+      } else if (typeof ctx === 'string') {
+        try { detail = JSON.parse(ctx)?.error || ctx } catch { detail = ctx }
       }
     } catch { /* ignore extraction errors */ }
+
+    // Also check if data somehow contains the error (some versions put it there)
+    if (detail === error.message && data && typeof data === 'object' && data.error) {
+      detail = data.error
+    }
+
+    console.error('[createManagedUser] Edge Function error:', { message: error.message, detail, data })
     throw new Error(detail)
   }
+
   if (data?.error) {
     throw new Error(data.error)
   }
