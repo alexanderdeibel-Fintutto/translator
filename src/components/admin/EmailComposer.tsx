@@ -80,7 +80,7 @@ export default function EmailComposer({ lead, open, onOpenChange, onSent }: Emai
             <Label>Vorlage</Label>
             <Select value={templateIdx} onValueChange={applyTemplate}>
               <SelectTrigger>
-                <SelectValue placeholder="Vorlage waehlen..." />
+                <SelectValue placeholder="Vorlage wählen..." />
               </SelectTrigger>
               <SelectContent>
                 {EMAIL_TEMPLATES.map((t, i) => (

@@ -99,9 +99,9 @@ export interface ContactRequest {
 // ---------------------------------------------------------------------------
 
 export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
-  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Prioritaet-Hoch'],
+  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Priorität-Hoch'],
   personal: [],
-  guide: ['Stadtfuehrer', 'Freelancer', 'Tourismus-Verband'],
+  guide: ['Stadtführer', 'Freelancer', 'Tourismus-Verband'],
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],
@@ -115,7 +115,7 @@ export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
 export const FOLLOW_UP_PRESETS = [
   { label: 'Morgen', days: 1 },
   { label: 'In 3 Tagen', days: 3 },
-  { label: 'Naechste Woche', days: 7 },
+  { label: 'Nächste Woche', days: 7 },
   { label: 'In 2 Wochen', days: 14 },
 ]
 
@@ -154,7 +154,7 @@ export type EventSessionType = 'session' | 'panel' | 'tour' | 'conference' | 'wo
 export const EVENT_SESSION_TYPES: { id: EventSessionType; label: string }[] = [
   { id: 'session', label: 'Session / Vortrag' },
   { id: 'panel', label: 'Panel-Diskussion' },
-  { id: 'tour', label: 'Tour / Fuehrung' },
+  { id: 'tour', label: 'Tour / Führung' },
   { id: 'conference', label: 'Konferenz' },
   { id: 'workshop', label: 'Workshop' },
 ]

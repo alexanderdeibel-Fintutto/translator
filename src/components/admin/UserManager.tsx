@@ -389,8 +389,8 @@ function CreateUserForm({
 
       <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
         <strong>Rollen-Info:</strong><br />
-        <strong>Tester</strong> = Alle Features freigeschaltet, kein Stripe noetig<br />
-        <strong>Vertrieb</strong> = CRM + alle Features fuer Demos (z.B. Ulrich)<br />
+        <strong>Tester</strong> = Alle Features freigeschaltet, kein Stripe nötig<br />
+        <strong>Vertrieb</strong> = CRM + alle Features für Demos (z.B. Ulrich)<br />
         <strong>Admin</strong> = Voller Zugriff auf alles inkl. Benutzerverwaltung
       </div>
 

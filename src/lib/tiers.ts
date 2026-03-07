@@ -636,7 +636,7 @@ export const TIERS: Record<TierId, TierDefinition> = {
     segment: 'internal',
     name: 'Admin',
     displayName: 'Admin (Intern)',
-    description: 'Voller Zugriff auf alle Dienste — fuer Administratoren.',
+    description: 'Voller Zugriff auf alle Dienste — für Administratoren.',
     limits: {
       maxListeners: 0,
       maxLanguages: 0,
@@ -682,7 +682,7 @@ export const TIERS: Record<TierId, TierDefinition> = {
     segment: 'internal',
     name: 'Tester',
     displayName: 'Tester (Intern)',
-    description: 'Test-Account mit vollen Features — fuer QA und Beta-Tester.',
+    description: 'Test-Account mit vollen Features — für QA und Beta-Tester.',
     limits: {
       maxListeners: 0,
       maxLanguages: 0,
@@ -728,7 +728,7 @@ export const TIERS: Record<TierId, TierDefinition> = {
     segment: 'internal',
     name: 'Sales',
     displayName: 'Vertrieb (Intern)',
-    description: 'Vertriebskonto mit vollen Demo-Features — fuer Sales-Team.',
+    description: 'Vertriebskonto mit vollen Demo-Features — für Sales-Team.',
     limits: {
       maxListeners: 0,
       maxLanguages: 0,

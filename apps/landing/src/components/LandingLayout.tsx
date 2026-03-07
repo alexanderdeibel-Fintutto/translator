@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Languages, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 const NAV_ITEMS = [
@@ -22,9 +22,7 @@ export default function LandingLayout() {
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex items-center justify-between h-14 px-4">
           <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Languages className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <img src="/fintutto-logo.svg" alt="Fintutto Logo" className="w-8 h-8 rounded-lg" />
             <span><span className="text-primary">fintutto</span>translator</span>
           </Link>
 
@@ -117,8 +115,8 @@ export default function LandingLayout() {
             </div>
           </div>
           <div className="mt-8 pt-4 border-t text-center text-xs text-muted-foreground">
-            <p>ai tour ug (haftungsbeschraenkt) · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
-            <p className="mt-1">Fintutto Translator v3.1 · Stand: Maerz 2026</p>
+            <p>fintutto ug (haftungsbeschränkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
+            <p className="mt-1">Fintutto Translator v4.1 · Stand: März 2026</p>
           </div>
         </div>
       </footer>

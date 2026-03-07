@@ -37,13 +37,13 @@ export default function AuthPage() {
           redirectTo: `${window.location.origin}/auth`,
         })
         if (resetError) throw resetError
-        setSuccess('Link zum Zuruecksetzen gesendet! Bitte pruefe dein Postfach.')
+        setSuccess('Link zum Zurücksetzen gesendet! Bitte prüfe dein Postfach.')
       } else if (mode === 'login') {
         await signIn(email, password)
         navigate(redirect, { replace: true })
       } else {
         await signUp(email, password)
-        setSuccess('Bestaetigungs-E-Mail gesendet! Bitte pruefe dein Postfach.')
+        setSuccess('Bestätigungs-E-Mail gesendet! Bitte prüfe dein Postfach.')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten.')
@@ -58,7 +58,7 @@ export default function AuthPage() {
     setSuccess(null)
   }
 
-  const title = mode === 'login' ? 'Anmelden' : mode === 'signup' ? 'Konto erstellen' : 'Passwort zuruecksetzen'
+  const title = mode === 'login' ? 'Anmelden' : mode === 'signup' ? 'Konto erstellen' : 'Passwort zurücksetzen'
   const subtitle = mode === 'login'
     ? 'Melde dich an, um alle Funktionen zu nutzen.'
     : mode === 'signup'

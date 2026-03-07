@@ -267,11 +267,25 @@ export async function createManagedUser(
   displayName: string,
   role: 'session_manager' | 'admin' | 'sales_agent' | 'tester' = 'session_manager'
 ): Promise<ManagedUser> {
-  // Use Supabase admin function to create user
+  // Edge Function always returns HTTP 200 with { success, error? } in body,
+  // because supabase-js discards the response body on non-2xx status codes.
   const { data, error } = await supabase.functions.invoke('admin-create-user', {
     body: { email, password, displayName, role },
   })
-  if (error) throw error
+
+  // Network-level or invocation error (function not found, CORS, etc.)
+  if (error) {
+    console.error('[createManagedUser] invoke error:', error.message)
+    throw new Error(error.message || 'Edge Function konnte nicht aufgerufen werden')
+  }
+
+  // Application-level error from the Edge Function
+  if (!data?.success) {
+    const detail = data?.error || 'Unbekannter Fehler bei der Benutzererstellung'
+    console.error('[createManagedUser] function error:', detail)
+    throw new Error(detail)
+  }
+
   return data as ManagedUser
 }
 

@@ -19,19 +19,19 @@ interface CompetitorRow {
 }
 
 const FEATURE_MATRIX: CompetitorRow[] = [
-  { feature: 'Offline-Uebersetzung', guidetranslator: 'WASM (54 Paare)', google: 'Begrenzt', deepl: false, microsoft: 'Begrenzt', itranslate: false },
-  { feature: '1→N Live Broadcast', guidetranslator: '500 Hoerer, 45 Spr.', google: false, deepl: false, microsoft: '10 Sprachen', itranslate: false },
+  { feature: 'Offline-Übersetzung', guidetranslator: 'WASM (54 Paare)', google: 'Begrenzt', deepl: false, microsoft: 'Begrenzt', itranslate: false },
+  { feature: '1→N Live Broadcast', guidetranslator: '500 Hörer, 45 Spr.', google: false, deepl: false, microsoft: '10 Sprachen', itranslate: false },
   { feature: 'BLE-Transport', guidetranslator: true, google: false, deepl: false, microsoft: false, itranslate: false },
   { feature: 'WiFi-Hotspot-Modus', guidetranslator: true, google: false, deepl: false, microsoft: false, itranslate: false },
-  { feature: 'E2E-Verschluesselung', guidetranslator: 'AES-256-GCM', google: false, deepl: false, microsoft: false, itranslate: false },
+  { feature: 'E2E-Verschlüsselung', guidetranslator: 'AES-256-GCM', google: false, deepl: false, microsoft: false, itranslate: false },
   { feature: 'Migrationssprachen', guidetranslator: '10 Sprachen', google: 'Teilweise', deepl: false, microsoft: 'Teilweise', itranslate: false },
   { feature: 'PWA (kein Download)', guidetranslator: true, google: false, deepl: false, microsoft: false, itranslate: false },
-  { feature: 'Gespraechsmodus', guidetranslator: '180-Grad Split', google: true, deepl: false, microsoft: true, itranslate: true },
+  { feature: 'Gesprächsmodus', guidetranslator: '180-Grad Split', google: true, deepl: false, microsoft: true, itranslate: true },
   { feature: 'Kamera-OCR', guidetranslator: true, google: true, deepl: false, microsoft: true, itranslate: true },
   { feature: 'Phrasebook', guidetranslator: '18 Kategorien', google: 'Begrenzt', deepl: false, microsoft: false, itranslate: true },
   { feature: 'Kontextmodi', guidetranslator: '6 Modi', google: false, deepl: false, microsoft: false, itranslate: false },
   { feature: 'QR-Code Join', guidetranslator: true, google: false, deepl: false, microsoft: false, itranslate: false },
-  { feature: 'Untertitel-Modus', guidetranslator: '6xl Grossschrift', google: false, deepl: false, microsoft: false, itranslate: false },
+  { feature: 'Untertitel-Modus', guidetranslator: '6xl Großschrift', google: false, deepl: false, microsoft: false, itranslate: false },
   { feature: 'Session-Protokoll', guidetranslator: 'TXT/MD Export', google: false, deepl: false, microsoft: false, itranslate: false },
   { feature: 'Kostenlos (Basis)', guidetranslator: true, google: true, deepl: 'Freemium', microsoft: true, itranslate: 'Freemium' },
 ]
@@ -46,13 +46,13 @@ const PRICE_COMPARISONS = [
   {
     segment: 'Guided Tours',
     icon: Globe2,
-    competitor: 'Vox-Hardware (Fluesterkofferset)',
-    competitorPrice: '3.000-8.000 EUR Anschaffung + 3,50 EUR/Geraet/Tag',
+    competitor: 'Vox-Hardware (Flüsterkofferset)',
+    competitorPrice: '3.000-8.000 EUR Anschaffung + 3,50 EUR/Gerät/Tag',
     competitorMonthly: '~700 EUR/Monat (20 Touren)',
     our: 'Guide Basic',
     ourPrice: '19,90 EUR/Monat',
     savings: '97%',
-    details: 'Keine Hardware-Investition, keine Wartung, keine Desinfektion. Gaeste nutzen eigene Smartphones. 45 Sprachen statt 3-5.',
+    details: 'Keine Hardware-Investition, keine Wartung, keine Desinfektion. Gäste nutzen eigene Smartphones. 45 Sprachen statt 3-5.',
   },
   {
     segment: 'Agenturen',
@@ -63,7 +63,7 @@ const PRICE_COMPARISONS = [
     our: 'Agentur Standard',
     ourPrice: '99 EUR/Monat',
     savings: '80%',
-    details: '1.500 Session-Minuten inklusive. Zentrale Guide-Verwaltung. Keine Pro-Event-Gebuehr.',
+    details: '1.500 Session-Minuten inklusive. Zentrale Guide-Verwaltung. Keine Pro-Event-Gebühr.',
   },
   {
     segment: 'Events',
@@ -74,7 +74,7 @@ const PRICE_COMPARISONS = [
     our: 'Event Basic',
     ourPrice: '199 EUR/Monat',
     savings: '91%',
-    details: '2.000 Session-Minuten inklusive (~33h). 100 Hoerer. QR-Code auf Leinwand — 500 Teilnehmer joinen in 30 Sekunden.',
+    details: '2.000 Session-Minuten inklusive (~33h). 100 Hörer. QR-Code auf Leinwand — 500 Teilnehmer joinen in 30 Sekunden.',
   },
   {
     segment: 'Konferenzen (Premium)',
@@ -85,7 +85,7 @@ const PRICE_COMPARISONS = [
     our: 'Event Pro',
     ourPrice: '499 EUR/Monat',
     savings: '97%',
-    details: '500 Hoerer, alle 130+ Sprachen, Chirp 3 HD Audio. Session-Protokoll und White-Label inklusive.',
+    details: '500 Hörer, alle 130+ Sprachen, Chirp 3 HD Audio. Session-Protokoll und White-Label inklusive.',
   },
   {
     segment: 'Kreuzfahrt',
@@ -96,10 +96,10 @@ const PRICE_COMPARISONS = [
     our: 'Cruise Starter',
     ourPrice: '1.990 EUR/Monat',
     savings: '95%',
-    details: 'Unbegrenzte Hoerer, 8 Sprachen inklusive. Funktioniert ueber Bord-WLAN auch auf hoher See.',
+    details: 'Unbegrenzte Hörer, 8 Sprachen inklusive. Funktioniert über Bord-WLAN auch auf hoher See.',
   },
   {
-    segment: 'Persoenlich',
+    segment: 'Persönlich',
     icon: Smartphone,
     competitor: 'iTranslate / DeepL',
     competitorPrice: 'iTranslate: 5,99 EUR/Mo · DeepL: 8,74 EUR/Mo',
@@ -107,7 +107,7 @@ const PRICE_COMPARISONS = [
     our: 'Personal Pro',
     ourPrice: '4,99 EUR/Monat',
     savings: '17-43%',
-    details: 'Guenstiger + Offline-Modus + Gespraechsmodus + Kamera-OCR + Phrasebook + Live-Session. Alles in einer App.',
+    details: 'Günstiger + Offline-Modus + Gesprächsmodus + Kamera-OCR + Phrasebook + Live-Session. Alles in einer App.',
   },
 ]
 
@@ -115,7 +115,7 @@ const MOATS = [
   {
     category: 'Technischer Moat',
     items: [
-      'BLE GATT Protocol (proprietaer, patentfaehig)',
+      'BLE GATT Protocol (proprietär, patentfähig)',
       '4-Tier Transport mit Auto-Fallback',
       'Embedded Relay Server (Java/Swift)',
       'On-Device ML Pipeline (Opus-MT + Whisper)',
@@ -132,9 +132,9 @@ const MOATS = [
   {
     category: 'Markt-Moat',
     items: [
-      'Erste Loesung fuer Offline-Gruppen-Uebersetzung',
+      'Erste Lösung für Offline-Gruppen-Übersetzung',
       'Migrationssprachen-Fokus (unterversorgter Markt)',
-      'B2B-Beziehungen zu Behoerden und Schulen',
+      'B2B-Beziehungen zu Behörden und Schulen',
     ],
   },
 ]
@@ -151,16 +151,16 @@ export default function CompetitorPage() {
           Was uns einzigartig macht.
         </h1>
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          GuideTranslator ist die weltweit einzige Uebersetzungsplattform mit 1→N-Broadcasting,
-          4-Tier-Transport und vollstaendiger Offline-Faehigkeit — zu einem Bruchteil der Kosten.
+          GuideTranslator ist die weltweit einzige Übersetzungsplattform mit 1→N-Broadcasting,
+          4-Tier-Transport und vollständiger Offline-Fähigkeit — zu einem Bruchteil der Kosten.
         </p>
       </div>
 
       {/* Unique selling points */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { icon: Bluetooth, title: 'Einziger Anbieter mit BLE-Transport', desc: 'Kein anderer Uebersetzer bietet Bluetooth Low Energy fuer Gruppen-Uebersetzung. Null Infrastruktur — funktioniert ueberall.' },
-          { icon: Users, title: 'Einziger Anbieter mit 1→N Broadcast', desc: 'Ein Sprecher, 500 Zuhoerer, 45 Sprachen gleichzeitig. Kein Wettbewerber bietet das als Software-Loesung.' },
+          { icon: Bluetooth, title: 'Einziger Anbieter mit BLE-Transport', desc: 'Kein anderer Übersetzer bietet Bluetooth Low Energy für Gruppen-Übersetzung. Null Infrastruktur — funktioniert überall.' },
+          { icon: Users, title: 'Einziger Anbieter mit 1→N Broadcast', desc: 'Ein Sprecher, 500 Zuhörer, 45 Sprachen gleichzeitig. Kein Wettbewerber bietet das als Software-Lösung.' },
           { icon: Wifi, title: 'Einziger Anbieter mit Hotspot-Modus', desc: 'Das Smartphone erstellt ein eigenes WLAN. Keine Infrastruktur, kein Internet — die App bringt alles mit.' },
         ].map((item, i) => {
           const Icon = item.icon
@@ -210,7 +210,7 @@ export default function CompetitorPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Preisvergleich nach Segment</h2>
           <p className="text-muted-foreground">
-            80-97% guenstiger als traditionelle Loesungen — bei mehr Features und Sprachen.
+            80-97% günstiger als traditionelle Lösungen — bei mehr Features und Sprachen.
           </p>
         </div>
 
@@ -245,7 +245,7 @@ export default function CompetitorPage() {
                       <div className="p-3 rounded-lg bg-primary/10 space-y-1 flex flex-col items-center justify-center">
                         <TrendingDown className="w-5 h-5 text-primary" />
                         <p className="text-2xl font-bold text-primary">{comp.savings}</p>
-                        <p className="text-xs text-muted-foreground">guenstiger</p>
+                        <p className="text-xs text-muted-foreground">günstiger</p>
                       </div>
                     </div>
                   </div>
@@ -275,7 +275,7 @@ export default function CompetitorPage() {
           ))}
         </div>
         <p className="text-center text-sm text-muted-foreground">
-          Geschaetzter Nachahmungsaufwand fuer Wettbewerber: <strong className="text-primary">12-18 Monate</strong>
+          Geschätzter Nachahmungsaufwand für Wettbewerber: <strong className="text-primary">12-18 Monate</strong>
         </p>
       </div>
 
@@ -284,10 +284,10 @@ export default function CompetitorPage() {
         <h2 className="text-xl font-bold">Der blinde Fleck aller Wettbewerber</h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Google Translate, DeepL, Microsoft Translator — sie alle setzen Internet voraus.
-          An den Orten, wo Uebersetzung am meisten gebraucht wird, gibt es keins.
+          An den Orten, wo Übersetzung am meisten gebraucht wird, gibt es keins.
         </p>
         <p className="text-sm text-muted-foreground">
-          Ruinen. Berge. Fluechtlingscamps. Boote. Busse. Schulen in laendlichen Gebieten. Behoerden mit gesperrten Netzwerken.
+          Ruinen. Berge. Flüchtlingscamps. Boote. Busse. Schulen in ländlichen Gebieten. Behörden mit gesperrten Netzwerken.
         </p>
         <p className="font-semibold text-primary">
           GuideTranslator funktioniert auch dort — dank 4-Tier-Transport und On-Device KI.
@@ -296,7 +296,7 @@ export default function CompetitorPage() {
 
       {/* CTA */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold">Ueberzeugen Sie sich selbst</h2>
+        <h2 className="text-2xl font-bold">Überzeugen Sie sich selbst</h2>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/">
             <Button size="lg" className="gap-2 w-full sm:w-auto">

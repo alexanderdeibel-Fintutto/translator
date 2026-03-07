@@ -44,14 +44,14 @@ export default function SessionStatsView() {
       <h2 className="text-lg font-semibold">Session-Statistiken</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Sessions gesamt" value={stats.totalSessions} icon={Calendar} color="bg-blue-500" />
-        <StatCard label="Entwuerfe" value={stats.draftSessions} icon={Clock} color="bg-slate-500" />
+        <StatCard label="Entwürfe" value={stats.draftSessions} icon={Clock} color="bg-slate-500" />
         <StatCard label="Vorbereitet" value={stats.preparedSessions} icon={CheckCircle} color="bg-emerald-500" />
         <StatCard label="Aktiv" value={stats.activeSessions} icon={AlertCircle} color="bg-amber-500" />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <StatCard label="Teilnehmer" value={stats.totalParticipants} icon={Users} color="bg-violet-500" />
         <StatCard label="Pre-Translations" value={stats.totalPreTranslations} icon={FileText} color="bg-indigo-500" />
-        <StatCard label="Ausstehende Uebersetzungen" value={stats.pendingTranslations} icon={Clock} color="bg-orange-500" />
+        <StatCard label="Ausstehende Übersetzungen" value={stats.pendingTranslations} icon={Clock} color="bg-orange-500" />
       </div>
     </div>
   )

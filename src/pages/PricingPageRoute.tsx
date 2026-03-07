@@ -57,14 +57,14 @@ export default function PricingPageRoute() {
       {/* Internal tier banner */}
       {isInternalTier(tierId) && (
         <div className="max-w-2xl mx-auto mb-6 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/20 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200">
-          <strong>{TIERS[tierId]?.displayName}:</strong> Du hast vollen Zugriff auf alle Features. Kein Upgrade noetig.
+          <strong>{TIERS[tierId]?.displayName}:</strong> Du hast vollen Zugriff auf alle Features. Kein Upgrade nötig.
         </div>
       )}
 
       {/* Test mode banner — hidden for admins and internal tiers */}
       {!isStripeConfigured() && !isInternalTier(tierId) && !isAdmin && (
         <div className="max-w-2xl mx-auto mb-6 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-          <strong>Testmodus:</strong> Stripe ist noch nicht verbunden. Du kannst Plaene zum Testen direkt aktivieren — es wird nichts berechnet.
+          <strong>Testmodus:</strong> Stripe ist noch nicht verbunden. Du kannst Pläne zum Testen direkt aktivieren — es wird nichts berechnet.
         </div>
       )}
 

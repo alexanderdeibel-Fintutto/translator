@@ -40,7 +40,7 @@ interface SliderDef {
 
 const SEGMENT_SLIDERS: Record<CalcSegment, SliderDef[]> = {
   guide: [
-    { key: 'listenersPerTour', label: 'Hoerer pro Tour', min: 5, max: 100, step: 5, defaultValue: 25, unit: '' },
+    { key: 'listenersPerTour', label: 'Hörer pro Tour', min: 5, max: 100, step: 5, defaultValue: 25, unit: '' },
     { key: 'toursPerMonth', label: 'Touren pro Monat', min: 1, max: 60, step: 1, defaultValue: 12, unit: '' },
   ],
   agency: [

@@ -77,7 +77,7 @@ export default function ParticipantForm({ sessionId, onSaved, onCancel }: Partic
         <div className="col-span-2 space-y-1.5">
           <Label htmlFor="part-bio">Biografie</Label>
           <Textarea id="part-bio" value={biography} onChange={e => setBiography(e.target.value)}
-            placeholder="Kurzbiografie des Teilnehmers (verbessert die Uebersetzungsqualitaet)..." rows={3} />
+            placeholder="Kurzbiografie des Teilnehmers (verbessert die Übersetzungsqualität)..." rows={3} />
         </div>
         <div className="col-span-2 space-y-1.5">
           <Label htmlFor="part-notes">Notizen</Label>
@@ -87,7 +87,7 @@ export default function ParticipantForm({ sessionId, onSaved, onCancel }: Partic
       </div>
       <div className="flex gap-2 justify-end">
         <Button type="button" variant="outline" onClick={onCancel}>Abbrechen</Button>
-        <Button type="submit" disabled={saving}>{saving ? 'Speichern...' : 'Hinzufuegen'}</Button>
+        <Button type="submit" disabled={saving}>{saving ? 'Speichern...' : 'Hinzufügen'}</Button>
       </div>
     </form>
   )
