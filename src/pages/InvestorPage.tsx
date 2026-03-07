@@ -13,11 +13,15 @@ import { Button } from '@/components/ui/button'
 
 export default function InvestorPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+      {/* Page Background Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+      </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-95" />
         </div>
         <div className="relative z-10 space-y-4">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
@@ -27,8 +31,8 @@ export default function InvestorPage() {
             Sprache darf keine Mauer sein.
           </h1>
           <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            GuideTranslator ist die weltweit erste Uebersetzungsplattform, die auch ohne Internet funktioniert —
-            per Bluetooth, WiFi-Hotspot oder lokale KI-Modelle. Live, in Echtzeit, fuer Gruppen bis 500 Personen.
+            GuideTranslator ist die weltweit erste Übersetzungsplattform, die auch ohne Internet funktioniert —
+            per Bluetooth, WiFi-Hotspot oder lokale KI-Modelle. Live, in Echtzeit, für Gruppen bis 500 Personen.
           </p>
           <p className="text-sm font-medium text-white/90 drop-shadow">
             v3.1 · Production-Ready · 87 Tests · Google Play Ready
@@ -39,7 +43,7 @@ export default function InvestorPage() {
       {/* Key metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { value: '11', label: 'Tarif-Plaene', icon: Layers },
+          { value: '11', label: 'Tarif-Pläne', icon: Layers },
           { value: '45', label: 'Sprachen', icon: Globe2 },
           { value: '5', label: 'Zielgruppen-Segmente', icon: Target },
           { value: '85%', label: 'Bruttomarge (Ziel)', icon: TrendingUp },
@@ -60,14 +64,14 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold text-center">Das Problem</h2>
         <Card className="p-6 bg-muted/30">
           <p className="text-center text-lg font-medium mb-6">
-            1,2 Milliarden Menschen reisen jaehrlich international. 68% sprechen die Landessprache nicht.
+            1,2 Milliarden Menschen reisen jährlich international. 68% sprechen die Landessprache nicht.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { problem: 'Tourist versteht Guide nicht', affected: '600 Mio Touristen/Jahr', today: 'Audio-Guide (3-5 Sprachen) — teuer, starr, keine Interaktion' },
-              { problem: 'Gefluechteter versteht Sachbearbeiter nicht', affected: '110 Mio Gefluechtete weltweit', today: 'Dolmetscher (80-120 EUR/h) — nicht verfuegbar, nicht skalierbar' },
+              { problem: 'Geflüchteter versteht Sachbearbeiter nicht', affected: '110 Mio Geflüchtete weltweit', today: 'Dolmetscher (80-120 EUR/h) — nicht verfügbar, nicht skalierbar' },
               { problem: 'Konferenz hat nur 3 Sprachen', affected: '30.000 int. Konferenzen/Jahr', today: 'Simultan-Dolmetscher — 10.000+ EUR/Tag, nur 3-4 Sprachen' },
-              { problem: 'Kein Internet am touristischen Ort', affected: 'Millionen Orte weltweit', today: 'Keine Loesung — bisherige Translator-Apps versagen komplett' },
+              { problem: 'Kein Internet am touristischen Ort', affected: 'Millionen Orte weltweit', today: 'Keine Lösung — bisherige Translator-Apps versagen komplett' },
             ].map((item, i) => (
               <div key={i} className="p-4 rounded-lg bg-background space-y-1">
                 <p className="font-semibold text-sm">{item.problem}</p>
@@ -81,20 +85,20 @@ export default function InvestorPage() {
           <p className="font-semibold">Der blinde Fleck aller Wettbewerber:</p>
           <p className="text-sm text-muted-foreground mt-2">
             Google Translate, DeepL, Microsoft — sie alle setzen Internet voraus.
-            An den Orten, wo Uebersetzung am meisten gebraucht wird, gibt es keins.
-            Ruinen. Berge. Fluechtlingscamps. Boote. Schulen in laendlichen Gebieten.
+            An den Orten, wo Übersetzung am meisten gebraucht wird, gibt es keins.
+            Ruinen. Berge. Flüchtlingscamps. Boote. Schulen in ländlichen Gebieten.
           </p>
         </Card>
       </div>
 
-      {/* Die Loesung */}
+      {/* Die Lösung */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Die Loesung: 4-Tier Architektur</h2>
+        <h2 className="text-2xl font-bold text-center">Die Lösung: 4-Tier Architektur</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { icon: Globe2, tier: 'Tier 1: Cloud', desc: 'Supabase Realtime — globale Reichweite, <1s Latenz' },
-            { icon: Wifi, tier: 'Tier 2: Hotspot', desc: 'Eigenes WLAN + Embedded Relay — kein Internet noetig' },
-            { icon: Bluetooth, tier: 'Tier 3: BLE', desc: 'Bluetooth GATT — null Infrastruktur, ueberall' },
+            { icon: Wifi, tier: 'Tier 2: Hotspot', desc: 'Eigenes WLAN + Embedded Relay — kein Internet nötig' },
+            { icon: Bluetooth, tier: 'Tier 3: BLE', desc: 'Bluetooth GATT — null Infrastruktur, überall' },
             { icon: Smartphone, tier: 'Tier 4: Offline', desc: 'Opus-MT + Whisper WASM — komplett lokal' },
           ].map((item, i) => {
             const Icon = item.icon
@@ -123,10 +127,10 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold text-center">7 Kernprodukte in einer App</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { name: 'Text-Uebersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
+            { name: 'Text-Übersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
             { name: 'Live-Broadcasting', desc: '1→N Echtzeit-Broadcast, QR-Join, Untertitel-Modus' },
-            { name: 'Gespraechsmodus', desc: 'Split-Screen, 180-Grad, Auto-Speak fuer 2 Personen' },
-            { name: 'Kamera-OCR', desc: 'Foto → Text → Uebersetzung (Google Vision)' },
+            { name: 'Gesprächsmodus', desc: 'Split-Screen, 180-Grad, Auto-Speak für 2 Personen' },
+            { name: 'Kamera-OCR', desc: 'Foto → Text → Übersetzung (Google Vision)' },
             { name: 'Phrasebook', desc: '18 Kategorien, 4 Packs, 16 Zielsprachen' },
             { name: 'Offline-Engine', desc: '54 Sprachpaare, Opus-MT + Whisper WASM' },
             { name: 'BLE-Transport', desc: 'Custom GATT Protocol, Bluetooth-only' },
@@ -142,22 +146,22 @@ export default function InvestorPage() {
         </div>
       </div>
 
-      {/* Marktgroesse */}
+      {/* Marktgröße */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Marktgroesse (TAM / SAM / SOM)</h2>
+        <h2 className="text-2xl font-bold text-center">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-5 space-y-2 text-center">
             <p className="text-xs font-medium text-muted-foreground">TAM</p>
             <p className="text-3xl font-bold text-primary">$65 Mrd</p>
-            <p className="text-xs text-muted-foreground">Globaler Uebersetzungsmarkt (2025)</p>
+            <p className="text-xs text-muted-foreground">Globaler Übersetzungsmarkt (2025)</p>
             <p className="text-xs text-muted-foreground">Davon maschinell: $8 Mrd</p>
             <p className="text-xs text-primary font-medium">15% CAGR bis 2030</p>
           </Card>
           <Card className="p-5 space-y-2 text-center">
             <p className="text-xs font-medium text-muted-foreground">SAM</p>
             <p className="text-3xl font-bold text-primary">$4,4 Mrd</p>
-            <p className="text-xs text-muted-foreground">Live-Uebersetzung: $2,4 Mrd</p>
-            <p className="text-xs text-muted-foreground">Behoerden/NGO: $1,2 Mrd</p>
+            <p className="text-xs text-muted-foreground">Live-Übersetzung: $2,4 Mrd</p>
+            <p className="text-xs text-muted-foreground">Behörden/NGO: $1,2 Mrd</p>
             <p className="text-xs text-muted-foreground">Tourismus: $0,8 Mrd</p>
           </Card>
           <Card className="p-5 space-y-2 text-center">
@@ -172,10 +176,10 @@ export default function InvestorPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <h3 className="font-semibold text-sm sm:col-span-2">Markttreiber</h3>
           {[
-            { title: 'Migration', desc: '110 Mio Gefluechtete weltweit (UNHCR 2025), steigend. EU-Aufnahmerichtlinie fordert Kommunikation in Muttersprache.' },
-            { title: 'Tourismus-Rebound', desc: '+15% internationaler Tourismus post-COVID. Asiatische Maerkte wachsen am schnellsten.' },
+            { title: 'Migration', desc: '110 Mio Geflüchtete weltweit (UNHCR 2025), steigend. EU-Aufnahmerichtlinie fordert Kommunikation in Muttersprache.' },
+            { title: 'Tourismus-Rebound', desc: '+15% internationaler Tourismus post-COVID. Asiatische Märkte wachsen am schnellsten.' },
             { title: 'KI-Disruption', desc: 'ML-Modelle werden kleiner, schneller, besser — On-Device Inferenz wird Standard.' },
-            { title: 'PWA-Akzeptanz', desc: 'Progressive Web Apps sind etabliert. Kein App-Store-Download = niedrigste Einstiegshuerde.' },
+            { title: 'PWA-Akzeptanz', desc: 'Progressive Web Apps sind etabliert. Kein App-Store-Download = niedrigste Einstiegshürde.' },
           ].map((item, i) => (
             <div key={i} className="p-3 rounded-lg bg-muted/30">
               <p className="font-medium text-sm">{item.title}</p>
@@ -185,18 +189,18 @@ export default function InvestorPage() {
         </div>
       </div>
 
-      {/* Geschaeftsmodell & Preise */}
+      {/* Geschäftsmodell & Preise */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Geschaeftsmodell: Freemium + B2B SaaS</h2>
+        <h2 className="text-2xl font-bold text-center">Geschäftsmodell: Freemium + B2B SaaS</h2>
         <p className="text-center text-muted-foreground">
-          11 Plaene in 5 Segmenten — von 0 EUR (Free) bis 19.990 EUR/Monat (Cruise Armada Enterprise)
+          11 Pläne in 5 Segmenten — von 0 EUR (Free) bis 19.990 EUR/Monat (Cruise Armada Enterprise)
         </p>
 
         <div className="space-y-3">
           {[
             { segment: 'Personal', plans: 'Free (0 EUR) · Personal Pro (4,99 EUR/Mo)', target: 'Reisende, Expats, Alltag', arpu: '~2,50 EUR' },
-            { segment: 'Guide', plans: 'Basic (19,90 EUR) · Pro (39,90 EUR/Mo)', target: 'Freelance-Guides, Museumsfuehrer', arpu: '~30 EUR' },
-            { segment: 'Agentur', plans: 'Standard (99 EUR) · Premium (249 EUR/Mo)', target: 'Reiseagenturen, Tourismusverbaende', arpu: '~175 EUR' },
+            { segment: 'Guide', plans: 'Basic (19,90 EUR) · Pro (39,90 EUR/Mo)', target: 'Freelance-Guides, Museumsführer', arpu: '~30 EUR' },
+            { segment: 'Agentur', plans: 'Standard (99 EUR) · Premium (249 EUR/Mo)', target: 'Reiseagenturen, Tourismusverbände', arpu: '~175 EUR' },
             { segment: 'Event', plans: 'Basic (199 EUR) · Pro (499 EUR/Mo)', target: 'Konferenzen, Messen, Hochschulen', arpu: '~350 EUR' },
             { segment: 'Cruise', plans: 'Starter (1.990 EUR) · Fleet (6.990 EUR) · Armada (19.990 EUR/Mo)', target: 'Reedereien, Kreuzfahrt-Flotten', arpu: '~10.000 EUR' },
           ].map((seg, i) => (
@@ -210,7 +214,7 @@ export default function InvestorPage() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
-          Jaehrlich zahlen = 2 Monate gratis (17% Rabatt) · Overage-Abrechnung pro Minute
+          Jährlich zahlen = 2 Monate gratis (17% Rabatt) · Overage-Abrechnung pro Minute
         </p>
       </div>
 
@@ -315,13 +319,13 @@ export default function InvestorPage() {
               phase: 'Phase 2',
               period: 'Monat 12-24',
               title: 'Europa',
-              items: ['Lokalisierung (9 UI-Sprachen fertig)', 'EU-Foerderprogramme', 'Partnerschaften mit Reiseveranstaltern', '2.000 Pro, 500 B2B', '2,5 Mio EUR ARR'],
+              items: ['Lokalisierung (9 UI-Sprachen fertig)', 'EU-Förderprogramme', 'Partnerschaften mit Reiseveranstaltern', '2.000 Pro, 500 B2B', '2,5 Mio EUR ARR'],
             },
             {
               phase: 'Phase 3',
               period: 'Monat 24-36',
               title: 'Global',
-              items: ['iOS App Store', 'API/SDK fuer Drittanbieter', 'White-Label fuer Grossunternehmen', '10.000 Pro, 2.000 B2B', '12 Mio EUR ARR'],
+              items: ['iOS App Store', 'API/SDK für Drittanbieter', 'White-Label für Großunternehmen', '10.000 Pro, 2.000 B2B', '12 Mio EUR ARR'],
             },
           ].map((phase, i) => (
             <Card key={i} className="p-5 space-y-3">
@@ -344,17 +348,17 @@ export default function InvestorPage() {
 
       {/* Technologie-Status */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Technologie-Status (v3.1, Maerz 2026)</h2>
+        <h2 className="text-2xl font-bold text-center">Technologie-Status (v3.1, März 2026)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             'PWA Frontend (React 18 + TypeScript) — Production',
-            '45 Sprachen + RTL-Unterstuetzung — Production',
+            '45 Sprachen + RTL-Unterstützung — Production',
             '6-Provider Translation Cascade — Production (87 Tests)',
             'Live-Session mit Cloud-Transport — Production',
-            'Gespraechsmodus (180-Grad Split) — Production',
+            'Gesprächsmodus (180-Grad Split) — Production',
             'Kamera-OCR (Google Vision) — Production',
             'Phrasebook (18 Kategorien, 16 Sprachen) — Production',
-            'E2E-Verschluesselung (AES-256-GCM) — Production',
+            'E2E-Verschlüsselung (AES-256-GCM) — Production',
             'Offline Translation (54 Opus-MT Paare) — Production',
             'HD-TTS (Neural2 + Chirp 3 HD) — Production',
             '9 UI-Sprachen (DE, EN, FR, ES, RU, UK, AR, FA, TR) — Production',
@@ -376,7 +380,7 @@ export default function InvestorPage() {
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center">Wettbewerbsvorteile & IP</h2>
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">Patentfaehige Innovationen</h3>
+          <h3 className="font-semibold mb-4">Patentfähige Innovationen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { name: '4-Tier Auto-Fallback Transport', time: '3-4 Monate' },
@@ -401,9 +405,9 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold text-center">Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-2">
-            <h3 className="font-semibold">Gruender & CEO</h3>
+            <h3 className="font-semibold">Gründer & CEO</h3>
             <p className="text-sm font-medium">Alexander Deibel</p>
-            <p className="text-xs text-muted-foreground">ai tour ug (haftungsbeschraenkt) · Fintutto-Ecosystem</p>
+            <p className="text-xs text-muted-foreground">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
             <p className="text-xs text-muted-foreground">Komplette v3.1 Codebase in weniger als 6 Monaten gebaut</p>
           </Card>
           <Card className="p-5 space-y-2">
@@ -448,7 +452,7 @@ export default function InvestorPage() {
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Production-Ready v3.1</li>
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />87 Tests, 100% Pass Rate</li>
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Google Play Ready</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />4-Tier-Transport (patentfaehig)</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />4-Tier-Transport (patentfähig)</li>
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-primary mt-0.5 shrink-0" />Sales CRM + Stripe integriert</li>
             </ul>
           </div>
@@ -487,8 +491,8 @@ export default function InvestorPage() {
       <div className="text-center space-y-4 py-4">
         <h2 className="text-2xl font-bold">Kontakt</h2>
         <div className="space-y-1">
-          <p className="font-semibold">ai tour ug (haftungsbeschraenkt)</p>
-          <p className="text-sm text-muted-foreground">Alexander Deibel · Geschaeftsfuehrer</p>
+          <p className="font-semibold">fintutto ug (haftungsbeschränkt)</p>
+          <p className="text-sm text-muted-foreground">Alexander Deibel · Geschäftsführer</p>
           <p className="text-sm text-muted-foreground">info@guidetranslator.com</p>
           <p className="text-sm text-muted-foreground">Kolonie 2, 18317 Saal, Deutschland</p>
         </div>
@@ -507,7 +511,7 @@ export default function InvestorPage() {
           </Link>
           <Link to="/pricing">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Alle 11 Plaene
+              Alle 11 Pläne
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -515,7 +519,7 @@ export default function InvestorPage() {
       </div>
 
       <p className="text-center text-xs text-muted-foreground pb-4">
-        Stand: Maerz 2026 · GuideTranslator v3.1.0 · Vertraulich
+        Stand: März 2026 · GuideTranslator v3.1.0 · Vertraulich
       </p>
     </div>
   )

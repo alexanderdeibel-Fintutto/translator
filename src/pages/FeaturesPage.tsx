@@ -17,12 +17,12 @@ const PRODUCTS = [
     name: 'Live-Broadcasting',
     tagline: '1→N Echtzeit-Broadcast',
     icon: Radio,
-    description: 'Ein Sprecher, unbegrenzt viele Zuhoerer. Jeder waehlt seine Sprache und liest/hoert die Uebersetzung in Echtzeit auf dem eigenen Smartphone.',
+    description: 'Ein Sprecher, unbegrenzt viele Zuhörer. Jeder wählt seine Sprache und liest/hört die Übersetzung in Echtzeit auf dem eigenen Smartphone.',
     features: [
       'QR-Code scannen — keine App-Installation',
-      'Bis zu 500 gleichzeitige Hoerer',
+      'Bis zu 500 gleichzeitige Hörer',
       '45 Sprachen parallel',
-      'Untertitel-Modus (6xl Grossschrift)',
+      'Untertitel-Modus (6xl Großschrift)',
       'Session-Protokoll-Export (TXT/MD)',
       'Latenz-Monitoring in Echtzeit',
       '3 Verbindungsmodi: Cloud, Hotspot, BLE',
@@ -30,48 +30,48 @@ const PRODUCTS = [
     segment: 'guide',
   },
   {
-    name: 'Text-Uebersetzer',
+    name: 'Text-Übersetzer',
     tagline: '45 Sprachen, 6 Provider',
     icon: Languages,
-    description: 'Professionelle Uebersetzung mit 6-Provider-Kaskade und automatischem Fallback. Von Cloud-APIs bis On-Device ML — immer die beste verfuegbare Qualitaet.',
+    description: 'Professionelle Übersetzung mit 6-Provider-Kaskade und automatischem Fallback. Von Cloud-APIs bis On-Device ML — immer die beste verfügbare Qualität.',
     features: [
       '6 Kontextmodi (Reise, Medizin, Recht, Business...)',
-      'Sie/Du-Formalitaet (9 Sprachen)',
+      'Sie/Du-Formalität (9 Sprachen)',
       'Wort-Alternativen (Top 5 Matches)',
       'Romanisierung nicht-lateinischer Schriften',
-      'Qualitaets-Score pro Uebersetzung',
+      'Qualitäts-Score pro Übersetzung',
       '3-Tier-Cache (Memory, IndexedDB, Offline)',
-      'RTL-Unterstuetzung (Arabisch, Farsi, Urdu, Hebraeisch)',
+      'RTL-Unterstützung (Arabisch, Farsi, Urdu, Hebräisch)',
     ],
     segment: 'personal',
   },
   {
-    name: 'Gespraechsmodus',
-    tagline: 'Face-to-Face-Uebersetzung',
+    name: 'Gesprächsmodus',
+    tagline: 'Face-to-Face-Übersetzung',
     icon: MessageSquare,
-    description: 'Split-Screen mit 180-Grad-Rotation. Zwei Personen sprechen abwechselnd — beide verstehen. Ideal beim Arzt, auf der Behoerde oder im Hotel.',
+    description: 'Split-Screen mit 180-Grad-Rotation. Zwei Personen sprechen abwechselnd — beide verstehen. Ideal beim Arzt, auf der Behörde oder im Hotel.',
     features: [
       '180-Grad-Split-Screen',
-      'Zwei unabhaengige Spracherkennungen',
-      'Auto-Speak: Uebersetzung wird vorgelesen',
+      'Zwei unabhängige Spracherkennungen',
+      'Auto-Speak: Übersetzung wird vorgelesen',
       '6 Nachrichten pro Person sichtbar',
-      'RTL-Text-Unterstuetzung',
-      'Offline-faehig',
-      'Perfekt fuer 1:1-Situationen',
+      'RTL-Text-Unterstützung',
+      'Offline-fähig',
+      'Perfekt für 1:1-Situationen',
     ],
     segment: 'personal',
   },
   {
-    name: 'Kamera-Uebersetzer',
-    tagline: 'Foto → Text → Uebersetzung',
+    name: 'Kamera-Übersetzer',
+    tagline: 'Foto → Text → Übersetzung',
     icon: Camera,
-    description: 'Fotografieren Sie Schilder, Speisekarten, Dokumente oder Formulare — die Uebersetzung erscheint sofort. Powered by Google Cloud Vision OCR.',
+    description: 'Fotografieren Sie Schilder, Speisekarten, Dokumente oder Formulare — die Übersetzung erscheint sofort. Powered by Google Cloud Vision OCR.',
     features: [
       'Google Cloud Vision OCR',
       'Kamera-Aufnahme oder Galerie-Upload',
-      'Sofortige Uebersetzung des erkannten Texts',
+      'Sofortige Übersetzung des erkannten Texts',
       'Kopieren oder vorlesen lassen',
-      'Ideal fuer Reisen und Behoerdengaenge',
+      'Ideal für Reisen und Behördengänge',
     ],
     segment: 'personal',
   },
@@ -79,15 +79,15 @@ const PRODUCTS = [
     name: 'Phrasebook',
     tagline: '18 Kategorien, 16 Sprachen',
     icon: BookOpen,
-    description: 'Vorgefertigte Saetze fuer typische Situationen — von der Behoerde ueber den Arztbesuch bis zum Notfall. In 16 Zielsprachen sofort abrufbar.',
+    description: 'Vorgefertigte Sätze für typische Situationen — von der Behörde über den Arztbesuch bis zum Notfall. In 16 Zielsprachen sofort abrufbar.',
     features: [
-      '18 Kategorien (Behoerde, Medizin, Unterkunft, Notfall...)',
+      '18 Kategorien (Behörde, Medizin, Unterkunft, Notfall...)',
       '4 Phrase-Packs: Alltag, Mittelmeer, Nordland, Migration',
       '62 Migrations-Phrasen (7 Kategorien)',
-      'Batch-Uebersetzung in Zielsprache',
+      'Batch-Übersetzung in Zielsprache',
       'Favoriten speichern',
-      'Offline verfuegbar',
-      'Ideal fuer Gefluechtete und Expats',
+      'Offline verfügbar',
+      'Ideal für Geflüchtete und Expats',
     ],
     segment: 'personal',
   },
@@ -95,13 +95,13 @@ const PRODUCTS = [
     name: 'Offline-Engine',
     tagline: '100% ohne Netzwerk',
     icon: Download,
-    description: '54 Offline-Sprachpaare via Opus-MT WASM-Modelle (~35 MB pro Paar). Whisper fuer Spracherkennung (~40 MB). Keine Daten verlassen das Geraet.',
+    description: '54 Offline-Sprachpaare via Opus-MT WASM-Modelle (~35 MB pro Paar). Whisper für Spracherkennung (~40 MB). Keine Daten verlassen das Gerät.',
     features: [
       '54 herunterladbare Sprachpaare',
       'Opus-MT via Transformers.js (WASM)',
       'Whisper STT (multilingual, ~40 MB)',
       'Browser-native TTS (alle Sprachen)',
-      'English-Pivot fuer indirekte Paare',
+      'English-Pivot für indirekte Paare',
       'Service Worker + IndexedDB Caching',
       'Persistent Storage (Safari-safe)',
     ],
@@ -109,41 +109,41 @@ const PRODUCTS = [
   },
   {
     name: 'BLE-Transport',
-    tagline: 'Bluetooth-only Uebersetzung',
+    tagline: 'Bluetooth-only Übersetzung',
     icon: Bluetooth,
-    description: 'Proprietaeres Bluetooth Low Energy GATT Protocol fuer Gruppen-Uebersetzung. Null Infrastruktur — funktioniert an jedem Ort der Welt.',
+    description: 'Proprietäres Bluetooth Low Energy GATT Protocol für Gruppen-Übersetzung. Null Infrastruktur — funktioniert an jedem Ort der Welt.',
     features: [
       'Custom GATT Server (Android + iOS)',
       '180-Byte Chunking (MTU-safe)',
-      'Automatische Geraete-Discovery',
+      'Automatische Geräte-Discovery',
       'Session-Management + Presence',
       '10-30m Reichweite',
       'Max 5 gleichzeitige Verbindungen',
-      'E2E-Verschluesselung auch ueber BLE',
+      'E2E-Verschlüsselung auch über BLE',
     ],
     segment: 'guide',
   },
 ]
 
 const PLATFORM_FEATURES = [
-  { icon: Shield, title: 'E2E-Verschluesselung', desc: 'AES-256-GCM mit PBKDF2 Key Derivation' },
+  { icon: Shield, title: 'E2E-Verschlüsselung', desc: 'AES-256-GCM mit PBKDF2 Key Derivation' },
   { icon: Globe2, title: '9 UI-Sprachen', desc: 'DE, EN, FR, ES, RU, UK, AR, FA, TR' },
   { icon: Eye, title: 'DSGVO-konform', desc: 'Offline-First, kein Cloud-Zwang' },
-  { icon: Heart, title: 'Favoriten', desc: 'Uebersetzungen speichern und wiederverwenden' },
-  { icon: History, title: 'Verlauf', desc: 'Alle Uebersetzungen mit Export (JSON/CSV)' },
+  { icon: Heart, title: 'Favoriten', desc: 'Übersetzungen speichern und wiederverwenden' },
+  { icon: History, title: 'Verlauf', desc: 'Alle Übersetzungen mit Export (JSON/CSV)' },
   { icon: FileText, title: 'Session-Protokoll', desc: 'Touren als Transkript exportieren' },
   { icon: Settings, title: 'Einstellungen', desc: 'API-Key, Offline-Modelle, Cache, Storage' },
   { icon: Smartphone, title: 'PWA + Native', desc: 'Browser, Android (Play Store), iOS' },
   { icon: Zap, title: 'Echtzeit', desc: '<1s End-to-End-Latenz' },
   { icon: Lock, title: 'Security Headers', desc: 'CSP, HSTS, X-Frame-Options' },
-  { icon: Star, title: 'RTL-Unterstuetzung', desc: 'Arabisch, Farsi, Urdu, Hebraeisch' },
+  { icon: Star, title: 'RTL-Unterstützung', desc: 'Arabisch, Farsi, Urdu, Hebräisch' },
   { icon: Layers, title: '4-Tier Transport', desc: 'Cloud → Hotspot → BLE → Offline' },
 ]
 
 const LANGUAGE_CATEGORIES = [
   {
-    name: 'Europaeische Kernsprachen (22)',
-    languages: 'Deutsch, Englisch, Franzoesisch, Spanisch, Italienisch, Portugiesisch, Niederlaendisch, Polnisch, Tuerkisch, Russisch, Ukrainisch, Arabisch, Chinesisch, Japanisch, Koreanisch, Hindi, Schwedisch, Daenisch, Tschechisch, Rumaenisch, Griechisch, Ungarisch',
+    name: 'Europäische Kernsprachen (22)',
+    languages: 'Deutsch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Niederländisch, Polnisch, Türkisch, Russisch, Ukrainisch, Arabisch, Chinesisch, Japanisch, Koreanisch, Hindi, Schwedisch, Dänisch, Tschechisch, Rumänisch, Griechisch, Ungarisch',
   },
   {
     name: 'Migrationssprachen (10)',
@@ -151,28 +151,32 @@ const LANGUAGE_CATEGORIES = [
   },
   {
     name: 'Tourismussprachen (13)',
-    languages: 'Kroatisch, Bulgarisch, Serbisch, Slowakisch, Norwegisch, Finnisch, Thai, Vietnamesisch, Indonesisch, Malaiisch, Filipino, Hebraeisch, Georgisch',
+    languages: 'Kroatisch, Bulgarisch, Serbisch, Slowakisch, Norwegisch, Finnisch, Thai, Vietnamesisch, Indonesisch, Malaiisch, Filipino, Hebräisch, Georgisch',
   },
 ]
 
 export default function FeaturesPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+      {/* Page Background Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+      </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-95" />
         </div>
         <div className="relative z-10 space-y-4">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
             7 Produkte in einer App
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
-            Alles, was Sie fuer mehrsprachige Kommunikation brauchen.
+            Alles, was Sie für mehrsprachige Kommunikation brauchen.
           </h1>
           <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            Von Live-Broadcasting fuer 500 Personen bis zum persoenlichen Gespraechsmodus beim Arzt.
-            45 Sprachen, Offline-faehig, E2E-verschluesselt.
+            Von Live-Broadcasting für 500 Personen bis zum persönlichen Gesprächsmodus beim Arzt.
+            45 Sprachen, Offline-fähig, E2E-verschlüsselt.
           </p>
         </div>
       </div>
@@ -235,7 +239,7 @@ export default function FeaturesPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">45 Sprachen in 3 Kategorien</h2>
           <p className="text-muted-foreground">
-            Inkl. 10 Migrationssprachen und vollstaendige RTL-Unterstuetzung fuer Arabisch, Farsi, Paschtu, Kurdisch, Urdu und Hebraeisch.
+            Inkl. 10 Migrationssprachen und vollständige RTL-Unterstützung für Arabisch, Farsi, Paschtu, Kurdisch, Urdu und Hebräisch.
           </p>
         </div>
         <div className="space-y-4">
@@ -247,7 +251,7 @@ export default function FeaturesPage() {
           ))}
         </div>
         <p className="text-center text-sm text-muted-foreground">
-          + 54 Offline-Sprachpaare via Opus-MT WASM-Modelle + Romanisierung fuer nicht-lateinische Schriften
+          + 54 Offline-Sprachpaare via Opus-MT WASM-Modelle + Romanisierung für nicht-lateinische Schriften
         </p>
       </div>
 
@@ -255,18 +259,18 @@ export default function FeaturesPage() {
       <div className="text-center space-y-4 py-4">
         <h2 className="text-2xl font-bold">Jetzt testen</h2>
         <p className="text-muted-foreground">
-          Alle Features sind im Free-Plan verfuegbar. Keine Registrierung noetig.
+          Alle Features sind im Free-Plan verfügbar. Keine Registrierung nötig.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Uebersetzer oeffnen
+              Übersetzer öffnen
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
           <Link to="/pricing">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Preise & Plaene
+              Preise & Pläne
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>

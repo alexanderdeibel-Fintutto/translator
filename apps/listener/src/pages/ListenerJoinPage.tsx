@@ -37,7 +37,7 @@ export default function ListenerJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">Fintutto Live</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {t('listener.subtitle') || 'Live-Uebersetzung empfangen'}
+          {t('listener.subtitle') || 'Live-Übersetzung empfangen'}
         </p>
       </div>
 

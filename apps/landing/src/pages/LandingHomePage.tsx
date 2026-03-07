@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 const APPS = [
   {
     name: 'Translator',
-    desc: 'Fuer alle. Kostenlos uebersetzen, sprechen, fotografieren — in 45 Sprachen.',
+    desc: 'Für alle. Kostenlos übersetzen, sprechen, fotografieren — in 45 Sprachen.',
     url: 'https://consumer.guidetranslator.com',
     color: 'bg-sky-600',
     icon: Languages,
@@ -18,7 +18,7 @@ const APPS = [
   },
   {
     name: 'Live',
-    desc: 'Fuer Zuhoerer. QR-Code scannen, Sprache waehlen, Live-Uebersetzung empfangen.',
+    desc: 'Für Zuhörer. QR-Code scannen, Sprache wählen, Live-Übersetzung empfangen.',
     url: 'https://translator.fintutto.cloud',
     color: 'bg-emerald-600',
     icon: Radio,
@@ -26,7 +26,7 @@ const APPS = [
   },
   {
     name: 'Enterprise',
-    desc: 'Fuer Guides, Speaker & Techniker. Sessions erstellen, verwalten und live gehen.',
+    desc: 'Für Guides, Speaker & Techniker. Sessions erstellen, verwalten und live gehen.',
     url: 'https://enterprise.guidetranslator.com',
     color: 'bg-violet-600',
     icon: Building,
@@ -35,20 +35,20 @@ const APPS = [
 ]
 
 const PRODUCTS = [
-  { icon: Languages, name: 'Text-Uebersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
-  { icon: Radio, name: 'Live-Broadcasting', desc: '1→N Echtzeit-Broadcast fuer bis zu 500 Zuhoerer' },
-  { icon: MessageSquare, name: 'Gespraechsmodus', desc: 'Face-to-Face mit 180-Grad Split-Screen' },
-  { icon: Camera, name: 'Kamera-OCR', desc: 'Foto → Text → Uebersetzung (Google Vision)' },
+  { icon: Languages, name: 'Text-Übersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
+  { icon: Radio, name: 'Live-Broadcasting', desc: '1→N Echtzeit-Broadcast für bis zu 500 Zuhörer' },
+  { icon: MessageSquare, name: 'Gesprächsmodus', desc: 'Face-to-Face mit 180-Grad Split-Screen' },
+  { icon: Camera, name: 'Kamera-OCR', desc: 'Foto → Text → Übersetzung (Google Vision)' },
   { icon: BookOpen, name: 'Phrasebook', desc: '18 Kategorien, 4 Packs, 16 Zielsprachen' },
   { icon: Wifi, name: 'Offline-Engine', desc: '54 Sprachpaare, Opus-MT + Whisper WASM' },
   { icon: Bluetooth, name: 'BLE-Transport', desc: 'Custom GATT Protocol, Bluetooth-only' },
 ]
 
 const SEGMENTS = [
-  { icon: Smartphone, name: 'Reisende & Expats', desc: 'Kostenlos uebersetzen, offline-faehig, Kamera-OCR', plan: 'Free / 4,99 EUR/Mo' },
-  { icon: Users, name: 'Guides & Museen', desc: 'Live-Broadcasting fuer Touren, QR-Code-Join', plan: 'Ab 19,90 EUR/Mo' },
+  { icon: Smartphone, name: 'Reisende & Expats', desc: 'Kostenlos übersetzen, offline-fähig, Kamera-OCR', plan: 'Free / 4,99 EUR/Mo' },
+  { icon: Users, name: 'Guides & Museen', desc: 'Live-Broadcasting für Touren, QR-Code-Join', plan: 'Ab 19,90 EUR/Mo' },
   { icon: Building, name: 'Agenturen & Events', desc: 'Team-Verwaltung, bis zu 500 Teilnehmer', plan: 'Ab 99 EUR/Mo' },
-  { icon: Ship, name: 'Reedereien & Flotten', desc: 'Multi-Schiff-Management, unbegrenzte Hoerer', plan: 'Ab 1.990 EUR/Mo' },
+  { icon: Ship, name: 'Reedereien & Flotten', desc: 'Multi-Schiff-Management, unbegrenzte Hörer', plan: 'Ab 1.990 EUR/Mo' },
 ]
 
 const STATS = [
@@ -60,7 +60,11 @@ const STATS = [
 
 export default function LandingHomePage() {
   return (
-    <div className="max-w-5xl mx-auto space-y-20 py-12 px-4">
+    <div className="relative max-w-5xl mx-auto space-y-20 py-12 px-4">
+      {/* Page Background Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+      </div>
       {/* Hero */}
       <div className="relative text-center space-y-6 py-12 sm:py-20 overflow-hidden rounded-2xl">
         {/* Background Logo */}
@@ -73,27 +77,27 @@ export default function LandingHomePage() {
         </div>
         <div className="relative z-10 space-y-6">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
-            Die Uebersetzungsplattform
+            Die Übersetzungsplattform
           </span>
           <h1 className="text-4xl sm:text-6xl font-bold leading-tight text-white drop-shadow-lg">
             Sprache darf keine<br />
             <span className="text-sky-300">Mauer</span> sein.
           </h1>
           <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            Fintutto Translator ist die Plattform fuer mehrsprachige Kommunikation —
-            fuer Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-faehig,
-            Live-Sessions fuer bis zu 500 Personen.
+            Fintutto Translator ist die Plattform für mehrsprachige Kommunikation —
+            für Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-fähig,
+            Live-Sessions für bis zu 500 Personen.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="gap-2 w-full sm:w-auto">
-                Kostenlos uebersetzen
+                Kostenlos übersetzen
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
             <Link to="/investors">
               <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
-                Fuer Investoren
+                Für Investoren
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -114,7 +118,7 @@ export default function LandingHomePage() {
       {/* 3 Apps */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold">3 Apps, ein Oekosystem</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold">3 Apps, ein Ökosystem</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Jede App ist auf einen Anwendungsfall optimiert — zusammen bilden sie die komplette Plattform.
           </p>
@@ -139,7 +143,7 @@ export default function LandingHomePage() {
                   </Link>
                   <a href={app.url} target="_blank" rel="noopener noreferrer">
                     <Button size="sm" className="gap-1">
-                      Oeffnen <ArrowRight className="w-3 h-3" />
+                      Öffnen <ArrowRight className="w-3 h-3" />
                     </Button>
                   </a>
                 </div>
@@ -153,7 +157,7 @@ export default function LandingHomePage() {
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl sm:text-3xl font-bold">7 Produkte in einer Plattform</h2>
-          <p className="text-muted-foreground">Von Text-Uebersetzung bis Bluetooth-Transport</p>
+          <p className="text-muted-foreground">Von Text-Übersetzung bis Bluetooth-Transport</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {PRODUCTS.map((prod, i) => {
@@ -181,8 +185,8 @@ export default function LandingHomePage() {
       {/* Zielgruppen */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold">Fuer jede Zielgruppe der richtige Plan</h2>
-          <p className="text-muted-foreground">Von Free bis Enterprise — 11 Plaene in 5 Segmenten</p>
+          <h2 className="text-2xl sm:text-3xl font-bold">Für jede Zielgruppe der richtige Plan</h2>
+          <p className="text-muted-foreground">Von Free bis Enterprise — 11 Pläne in 5 Segmenten</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {SEGMENTS.map((seg, i) => {
@@ -208,12 +212,12 @@ export default function LandingHomePage() {
         <h2 className="text-2xl sm:text-3xl font-bold text-center">Warum Fintutto Translator?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { icon: Wifi, title: 'Offline-faehig', desc: '54 Sprachpaare via On-Device KI (Opus-MT + Whisper). Keine Daten verlassen das Geraet.' },
+            { icon: Wifi, title: 'Offline-fähig', desc: '54 Sprachpaare via On-Device KI (Opus-MT + Whisper). Keine Daten verlassen das Gerät.' },
             { icon: Bluetooth, title: '4-Tier Transport', desc: 'Cloud → Hotspot → BLE → Offline. Automatischer Fallback — funktioniert immer.' },
-            { icon: Shield, title: 'E2E-verschluesselt', desc: 'AES-256-GCM mit PBKDF2. Auch im Offline-Modus verschluesselt.' },
-            { icon: Zap, title: '<1s Latenz', desc: 'Echtzeit-Uebersetzung dank Supabase Realtime und lokaler KI-Pipeline.' },
-            { icon: Globe2, title: '45 Sprachen', desc: 'Inkl. 10 Migrationssprachen, RTL-Unterstuetzung, Romanisierung.' },
-            { icon: Mic, title: 'HD-Sprachausgabe', desc: 'Google Neural2 + Chirp 3 HD. Natuerliche Stimmen in 24+ Sprachen.' },
+            { icon: Shield, title: 'E2E-verschlüsselt', desc: 'AES-256-GCM mit PBKDF2. Auch im Offline-Modus verschlüsselt.' },
+            { icon: Zap, title: '<1s Latenz', desc: 'Echtzeit-Übersetzung dank Supabase Realtime und lokaler KI-Pipeline.' },
+            { icon: Globe2, title: '45 Sprachen', desc: 'Inkl. 10 Migrationssprachen, RTL-Unterstützung, Romanisierung.' },
+            { icon: Mic, title: 'HD-Sprachausgabe', desc: 'Google Neural2 + Chirp 3 HD. Natürliche Stimmen in 24+ Sprachen.' },
           ].map((feat, i) => {
             const Icon = feat.icon
             return (
@@ -237,7 +241,7 @@ export default function LandingHomePage() {
       {/* Trust */}
       <div className="flex flex-wrap justify-center gap-3">
         {[
-          'E2E-verschluesselt (AES-256-GCM)',
+          'E2E-verschlüsselt (AES-256-GCM)',
           'DSGVO-konform',
           '87 automatisierte Tests',
           'Made in Germany',
@@ -262,9 +266,9 @@ export default function LandingHomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { date: 'Maerz 2026', title: 'v3.1 Release — Multi-App-Architektur', desc: '3 spezialisierte Apps: Consumer, Listener und Enterprise. Vercel-Deployment fuer alle Varianten.' },
-            { date: 'Februar 2026', title: '45 Sprachen + 10 Migrationssprachen', desc: 'Dari, Paschtu, Tigrinya, Somali und weitere Migrationssprachen ab sofort verfuegbar.' },
-            { date: 'Januar 2026', title: 'BLE-Transport & Hotspot-Modus', desc: 'Live-Uebersetzung per Bluetooth und lokalem WLAN — komplett ohne Internet.' },
+            { date: 'März 2026', title: 'v3.1 Release — Multi-App-Architektur', desc: '3 spezialisierte Apps: Consumer, Listener und Enterprise. Vercel-Deployment für alle Varianten.' },
+            { date: 'Februar 2026', title: '45 Sprachen + 10 Migrationssprachen', desc: 'Dari, Paschtu, Tigrinya, Somali und weitere Migrationssprachen ab sofort verfügbar.' },
+            { date: 'Januar 2026', title: 'BLE-Transport & Hotspot-Modus', desc: 'Live-Übersetzung per Bluetooth und lokalem WLAN — komplett ohne Internet.' },
           ].map((news, i) => (
             <Card key={i} className="p-5 space-y-2">
               <p className="text-xs text-primary font-medium">{news.date}</p>
@@ -284,7 +288,7 @@ export default function LandingHomePage() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Uebersetzer oeffnen
+              Übersetzer öffnen
               <ArrowRight className="h-4 w-4" />
             </Button>
           </a>

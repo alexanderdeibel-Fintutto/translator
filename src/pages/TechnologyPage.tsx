@@ -13,22 +13,26 @@ import { Button } from '@/components/ui/button'
 
 export default function TechnologyPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+      {/* Page Background Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.65]" />
+      </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-95" />
         </div>
         <div className="relative z-10 space-y-4">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
             Technische Architektur v3.1
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
-            Offline-First. Echtzeit. Verschluesselt.
+            Offline-First. Echtzeit. Verschlüsselt.
           </h1>
           <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            GuideTranslator ist die einzige Uebersetzungsplattform mit 4-Tier-Transport, On-Device KI
-            und E2E-Verschluesselung — gebaut fuer Orte, an denen andere Loesungen versagen.
+            GuideTranslator ist die einzige Übersetzungsplattform mit 4-Tier-Transport, On-Device KI
+            und E2E-Verschlüsselung — gebaut für Orte, an denen andere Lösungen versagen.
           </p>
         </div>
       </div>
@@ -57,7 +61,7 @@ export default function TechnologyPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">4-Tier Transport-Architektur</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Automatischer Fallback von Cloud bis voellig ohne Netzwerk. Jedes Tier degradiert transparent zum naechsten.
+            Automatischer Fallback von Cloud bis völlig ohne Netzwerk. Jedes Tier degradiert transparent zum nächsten.
           </p>
         </div>
 
@@ -80,8 +84,8 @@ export default function TechnologyPage() {
               color: 'text-green-500',
               bg: 'bg-green-500/10',
               tech: 'Embedded WebSocket Relay + WiFi AP',
-              description: 'Das Speaker-Geraet erstellt ein eigenes WLAN-Netzwerk mit integriertem WebSocket-Server. Auto-Discovery ueber 6 gaengige Router-IPs. WiFi-QR-Code fuer automatische Verbindung.',
-              requires: 'Kein Internet — nur WiFi-faehige Geraete',
+              description: 'Das Speaker-Gerät erstellt ein eigenes WLAN-Netzwerk mit integriertem WebSocket-Server. Auto-Discovery über 6 gängige Router-IPs. WiFi-QR-Code für automatische Verbindung.',
+              requires: 'Kein Internet — nur WiFi-fähige Geräte',
             },
             {
               tier: 'Tier 3',
@@ -90,8 +94,8 @@ export default function TechnologyPage() {
               color: 'text-indigo-500',
               bg: 'bg-indigo-500/10',
               tech: 'Custom Bluetooth GATT Protocol',
-              description: 'Proprietaeres BLE-Protokoll mit 180-Byte-Chunking (MTU-safe), automatischer Reassembly und Presence Management. Advertising-Name: GT-TR-XXXX. 10-30m Reichweite.',
-              requires: 'Null Infrastruktur — funktioniert ueberall',
+              description: 'Proprietäres BLE-Protokoll mit 180-Byte-Chunking (MTU-safe), automatischer Reassembly und Presence Management. Advertising-Name: GT-TR-XXXX. 10-30m Reichweite.',
+              requires: 'Null Infrastruktur — funktioniert überall',
             },
             {
               tier: 'Tier 4',
@@ -100,7 +104,7 @@ export default function TechnologyPage() {
               color: 'text-amber-500',
               bg: 'bg-amber-500/10',
               tech: 'Opus-MT + Whisper WASM (On-Device ML)',
-              description: '54 Offline-Sprachpaare via Transformers.js (~35 MB pro Paar). Whisper fuer Spracherkennung (~40 MB). Alles lokal — keine Daten verlassen das Geraet. 0 externe Abhaengigkeiten.',
+              description: '54 Offline-Sprachpaare via Transformers.js (~35 MB pro Paar). Whisper für Spracherkennung (~40 MB). Alles lokal — keine Daten verlassen das Gerät. 0 externe Abhängigkeiten.',
               requires: 'Kein Netzwerk jeglicher Art',
             },
           ].map((tier, i) => {
@@ -135,7 +139,7 @@ export default function TechnologyPage() {
       {/* Translation Pipeline */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Uebersetzungs-Pipeline</h2>
+          <h2 className="text-2xl font-bold">Übersetzungs-Pipeline</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             6-Provider-Kaskade mit 3-Tier-Cache, Circuit Breaker und automatischer Offline-Degradierung.
           </p>
@@ -148,8 +152,8 @@ export default function TechnologyPage() {
               <h3 className="font-semibold">3-Tier-Cache</h3>
             </div>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />In-Memory Cache (5 Min TTL, 500 Eintraege)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />IndexedDB Cache (30 Tage TTL, 10.000 Eintraege)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />In-Memory Cache (5 Min TTL, 500 Einträge)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />IndexedDB Cache (30 Tage TTL, 10.000 Einträge)</li>
               <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />In-Flight Request Deduplication</li>
             </ul>
           </Card>
@@ -160,7 +164,7 @@ export default function TechnologyPage() {
               <h3 className="font-semibold">Provider-Kaskade</h3>
             </div>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">1.</span>Vercel Edge Proxy (API-Key geschuetzt)</li>
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">1.</span>Vercel Edge Proxy (API-Key geschützt)</li>
               <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">2.</span>Azure NMT / Google Cloud Translation</li>
               <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">3.</span>MyMemory Translation Memory (kostenlos)</li>
               <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">4.</span>LibreTranslate (Open Source)</li>
@@ -184,13 +188,13 @@ export default function TechnologyPage() {
           <Card className="p-5 space-y-3">
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Uebersetzungs-Features</h3>
+              <h3 className="font-semibold">Übersetzungs-Features</h3>
             </div>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />6 Kontextmodi (Reise, Medizin, Recht...)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Sie/Du-Formalitaet (9 Sprachen)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Sie/Du-Formalität (9 Sprachen)</li>
               <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Wort-Alternativen (Top 5 Matches)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Romanisierung fuer nicht-lat. Schriften</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Romanisierung für nicht-lat. Schriften</li>
             </ul>
           </Card>
         </div>
@@ -213,7 +217,7 @@ export default function TechnologyPage() {
               <li>4. Google Cloud STT (allg. Fallback)</li>
               <li>5. Whisper WASM (~40 MB, offline)</li>
             </ul>
-            <p className="text-xs text-muted-foreground">+ Satz-Boundary-Erkennung fuer Echtzeit-Uebersetzung</p>
+            <p className="text-xs text-muted-foreground">+ Satz-Boundary-Erkennung für Echtzeit-Übersetzung</p>
           </Card>
 
           <Card className="p-5 space-y-3">
@@ -221,10 +225,10 @@ export default function TechnologyPage() {
               <Zap className="w-5 h-5 text-primary" />
               Text-to-Speech (TTS)
             </h3>
-            <p className="text-sm text-muted-foreground">4-stufige Qualitaetshierarchie:</p>
+            <p className="text-sm text-muted-foreground">4-stufige Qualitätshierarchie:</p>
             <div className="space-y-2">
               {[
-                { name: 'Chirp 3 HD', quality: 'Hoechste', langs: '24 Sprachen', latency: '~500ms' },
+                { name: 'Chirp 3 HD', quality: 'Höchste', langs: '24 Sprachen', latency: '~500ms' },
                 { name: 'Neural2', quality: 'Hoch', langs: '10 Sprachen', latency: '~300ms' },
                 { name: 'Standard', quality: 'Mittel', langs: '36 Sprachen', latency: '~200ms' },
                 { name: 'Browser TTS', quality: 'Basis', langs: 'Alle', latency: '~50ms' },
@@ -245,7 +249,7 @@ export default function TechnologyPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Sicherheit & Datenschutz</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            DSGVO-konform by Design. Kein Cloud-Zwang. E2E-Verschluesselung auch im Offline-Modus.
+            DSGVO-konform by Design. Kein Cloud-Zwang. E2E-Verschlüsselung auch im Offline-Modus.
           </p>
         </div>
 
@@ -253,14 +257,14 @@ export default function TechnologyPage() {
           <Card className="p-5 space-y-3">
             <div className="flex items-center gap-2">
               <Lock className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">E2E-Verschluesselung</h3>
+              <h3 className="font-semibold">E2E-Verschlüsselung</h3>
             </div>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li>• AES-256-GCM (Web Crypto API)</li>
               <li>• PBKDF2 Key Derivation (100.000 Iterationen)</li>
               <li>• 12-Byte Random IV pro Nachricht</li>
               <li>• Key aus Session-Code abgeleitet</li>
-              <li>• Kein externer Krypto-Abhaengigkeit</li>
+              <li>• Kein externer Krypto-Abhängigkeit</li>
             </ul>
           </Card>
 
@@ -286,9 +290,9 @@ export default function TechnologyPage() {
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li>• Offline-Modus = keine Daten an Server</li>
               <li>• Keine Nutzerregistrierung erforderlich</li>
-              <li>• Keine Speicherung von Gespraechen</li>
+              <li>• Keine Speicherung von Gesprächen</li>
               <li>• EU-Hosting (Supabase, Vercel)</li>
-              <li>• Export & Loeschung jederzeit</li>
+              <li>• Export & Löschung jederzeit</li>
             </ul>
           </Card>
 
@@ -302,7 +306,7 @@ export default function TechnologyPage() {
               <li>• iOS 15+ mit CoreBluetooth</li>
               <li>• Granulare Berechtigungen (optional)</li>
               <li>• Kein Hardware-Zwang</li>
-              <li>• PWA: Kein App-Store-Download noetig</li>
+              <li>• PWA: Kein App-Store-Download nötig</li>
             </ul>
           </Card>
         </div>
@@ -317,7 +321,7 @@ export default function TechnologyPage() {
           <div className="space-y-3">
             {[
               { step: 'STT (Web Speech)', target: '<200ms', typical: '50-150ms', pct: 15 },
-              { step: 'Uebersetzung (Google)', target: '<300ms', typical: '100-250ms', pct: 25 },
+              { step: 'Übersetzung (Google)', target: '<300ms', typical: '100-250ms', pct: 25 },
               { step: 'Broadcast (Cloud)', target: '<50ms', typical: '10-30ms', pct: 5 },
               { step: 'TTS (Neural2)', target: '<500ms', typical: '200-400ms', pct: 40 },
             ].map((item, i) => (
@@ -340,7 +344,7 @@ export default function TechnologyPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-3">
-            <h3 className="font-semibold">Bundle-Groessen</h3>
+            <h3 className="font-semibold">Bundle-Größen</h3>
             <div className="space-y-2">
               {[
                 { name: 'Main Bundle', size: '369 KB', gzip: '116 KB' },
@@ -427,7 +431,7 @@ export default function TechnologyPage() {
 
       {/* Testing */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Qualitaetssicherung</h2>
+        <h2 className="text-2xl font-bold text-center">Qualitätssicherung</h2>
         <Card className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
@@ -465,7 +469,7 @@ export default function TechnologyPage() {
       {/* Patentable Innovations */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Patentfaehige Innovationen</h2>
+          <h2 className="text-2xl font-bold">Patentfähige Innovationen</h2>
           <p className="text-muted-foreground">Technische Barrieren, die Wettbewerber 12-18 Monate zur Nachahmung brauchen</p>
         </div>
 
@@ -478,12 +482,12 @@ export default function TechnologyPage() {
             },
             {
               title: 'BLE GATT Translation Protocol',
-              desc: 'Custom Bluetooth-Protokoll fuer Echtzeit-Uebersetzungs-Broadcast mit Chunking, Presence und Session-Management.',
+              desc: 'Custom Bluetooth-Protokoll für Echtzeit-Übersetzungs-Broadcast mit Chunking, Presence und Session-Management.',
               time: '6-12 Monate Nachahmungsaufwand',
             },
             {
               title: 'Embedded Relay Server',
-              desc: 'WebSocket-Server als native App-Komponente, der ein lokales Netzwerk fuer Gruppen-Uebersetzung erstellt.',
+              desc: 'WebSocket-Server als native App-Komponente, der ein lokales Netzwerk für Gruppen-Übersetzung erstellt.',
               time: '3-6 Monate Nachahmungsaufwand',
             },
             {
@@ -503,9 +507,9 @@ export default function TechnologyPage() {
 
       {/* CTA */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold">Ueberzeugt?</h2>
+        <h2 className="text-2xl font-bold">Überzeugt?</h2>
         <p className="text-muted-foreground">
-          Testen Sie die Technologie selbst oder erfahren Sie mehr ueber unser Produkt.
+          Testen Sie die Technologie selbst oder erfahren Sie mehr über unser Produkt.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/pricing">
@@ -522,7 +526,7 @@ export default function TechnologyPage() {
           </Link>
           <Link to="/investors">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Fuer Investoren
+              Für Investoren
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
