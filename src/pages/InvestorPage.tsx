@@ -15,20 +15,25 @@ export default function InvestorPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-          Investor Relations
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Sprache darf keine Mauer sein.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          GuideTranslator ist die weltweit erste Uebersetzungsplattform, die auch ohne Internet funktioniert —
-          per Bluetooth, WiFi-Hotspot oder lokale KI-Modelle. Live, in Echtzeit, fuer Gruppen bis 500 Personen.
-        </p>
-        <p className="text-sm font-medium text-primary">
-          v3.1 · Production-Ready · 87 Tests · Google Play Ready
-        </p>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Investor Relations
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Sprache darf keine Mauer sein.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            GuideTranslator ist die weltweit erste Uebersetzungsplattform, die auch ohne Internet funktioniert —
+            per Bluetooth, WiFi-Hotspot oder lokale KI-Modelle. Live, in Echtzeit, fuer Gruppen bis 500 Personen.
+          </p>
+          <p className="text-sm font-medium text-white/90 drop-shadow">
+            v3.1 · Production-Ready · 87 Tests · Google Play Ready
+          </p>
+        </div>
       </div>
 
       {/* Key metrics */}

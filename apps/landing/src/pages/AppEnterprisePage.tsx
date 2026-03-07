@@ -12,31 +12,36 @@ export default function AppEnterprisePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400">
-          Fintutto Enterprise
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Live-Sessions verwalten.<br />
-          Fuer Guides, Speaker & Events.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Erstelle und steuere Live-Uebersetzungssessions fuer dein Publikum.
-          Teilnehmer-Management, Pre-Translation Uploads und Echtzeit-Kontrolle.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <a href={APP_URL} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="gap-2 bg-violet-600 hover:bg-violet-700">
-              Session starten
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </a>
-          <a href={APP_URL} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="outline" className="gap-2">
-              Anmelden
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </a>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Fintutto Enterprise
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Live-Sessions verwalten.<br />
+            Fuer Guides, Speaker & Events.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            Erstelle und steuere Live-Uebersetzungssessions fuer dein Publikum.
+            Teilnehmer-Management, Pre-Translation Uploads und Echtzeit-Kontrolle.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="gap-2 bg-violet-600 hover:bg-violet-700">
+                Session starten
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </a>
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="outline" className="gap-2 border-white/30 text-white hover:bg-white/10">
+                Anmelden
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 

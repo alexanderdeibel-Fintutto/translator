@@ -15,17 +15,22 @@ export default function TechnologyPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-          Technische Architektur v3.1
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Offline-First. Echtzeit. Verschluesselt.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          GuideTranslator ist die einzige Uebersetzungsplattform mit 4-Tier-Transport, On-Device KI
-          und E2E-Verschluesselung — gebaut fuer Orte, an denen andere Loesungen versagen.
-        </p>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Technische Architektur v3.1
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Offline-First. Echtzeit. Verschluesselt.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            GuideTranslator ist die einzige Uebersetzungsplattform mit 4-Tier-Transport, On-Device KI
+            und E2E-Verschluesselung — gebaut fuer Orte, an denen andere Loesungen versagen.
+          </p>
+        </div>
       </div>
 
       {/* Key metrics */}

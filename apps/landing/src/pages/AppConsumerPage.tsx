@@ -23,24 +23,29 @@ export default function AppConsumerPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
-          Fintutto Translator
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Uebersetze sofort. In 45 Sprachen.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Der kostenlose Uebersetzer mit Spracheingabe, Kamera-OCR, Live-Sessions
-          und Offline-Modus. Als PWA direkt im Browser — keine Installation noetig.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <a href={APP_URL} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="gap-2 w-full sm:w-auto bg-sky-600 hover:bg-sky-700">
-              Jetzt uebersetzen — kostenlos
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </a>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Fintutto Translator
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Uebersetze sofort. In 45 Sprachen.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            Der kostenlose Uebersetzer mit Spracheingabe, Kamera-OCR, Live-Sessions
+            und Offline-Modus. Als PWA direkt im Browser — keine Installation noetig.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="gap-2 w-full sm:w-auto bg-sky-600 hover:bg-sky-700">
+                Jetzt uebersetzen — kostenlos
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 

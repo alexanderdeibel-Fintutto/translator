@@ -69,9 +69,14 @@ const TAG_COLORS: Record<string, string> = {
 export default function NewsPage() {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 space-y-8">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Neuigkeiten</h1>
-        <p className="text-muted-foreground">Updates, Releases und Meilensteine</p>
+      <div className="relative text-center space-y-2 py-10 sm:py-14 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[350px] h-[350px] sm:w-[450px] sm:h-[450px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-2">
+          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Neuigkeiten</h1>
+          <p className="text-white/80 drop-shadow">Updates, Releases und Meilensteine</p>
+        </div>
       </div>
 
       <div className="space-y-4">

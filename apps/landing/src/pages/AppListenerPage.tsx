@@ -11,23 +11,28 @@ export default function AppListenerPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-          Fintutto Live
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Live-Uebersetzung empfangen.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Session-Code eingeben, Sprache waehlen, zuhoeren. So einfach.
-          Keine Installation, kein Account — einfach QR-Code scannen und mitlesen.
-        </p>
-        <a href={APP_URL} target="_blank" rel="noopener noreferrer">
-          <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
-            Session beitreten
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </a>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Fintutto Live
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Live-Uebersetzung empfangen.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            Session-Code eingeben, Sprache waehlen, zuhoeren. So einfach.
+            Keine Installation, kein Account — einfach QR-Code scannen und mitlesen.
+          </p>
+          <a href={APP_URL} target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+              Session beitreten
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </a>
+        </div>
       </div>
 
       {/* So funktioniert es */}

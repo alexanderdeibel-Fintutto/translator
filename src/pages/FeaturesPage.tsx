@@ -159,17 +159,22 @@ export default function FeaturesPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
       {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-          7 Produkte in einer App
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Alles, was Sie fuer mehrsprachige Kommunikation brauchen.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Von Live-Broadcasting fuer 500 Personen bis zum persoenlichen Gespraechsmodus beim Arzt.
-          45 Sprachen, Offline-faehig, E2E-verschluesselt.
-        </p>
+      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-[0.65]" />
+        </div>
+        <div className="relative z-10 space-y-4">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            7 Produkte in einer App
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
+            Alles, was Sie fuer mehrsprachige Kommunikation brauchen.
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+            Von Live-Broadcasting fuer 500 Personen bis zum persoenlichen Gespraechsmodus beim Arzt.
+            45 Sprachen, Offline-faehig, E2E-verschluesselt.
+          </p>
+        </div>
       </div>
 
       {/* Products */}
