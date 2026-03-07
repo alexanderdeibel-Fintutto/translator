@@ -157,10 +157,10 @@ const LANGUAGE_CATEGORIES = [
 
 export default function FeaturesPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -186,17 +186,17 @@ export default function FeaturesPage() {
         {PRODUCTS.map((product, i) => {
           const Icon = product.icon
           return (
-            <Card key={i} className="p-6 sm:p-8">
+            <Card key={i} className="p-6 sm:p-8 bg-black/30 backdrop-blur-sm border-white/10">
               <div className="flex flex-col sm:flex-row gap-6">
                 <div className="sm:w-2/5 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-sky-300" />
                   </div>
-                  <h2 className="text-xl font-bold">{product.name}</h2>
-                  <p className="text-sm font-medium text-primary">{product.tagline}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
+                  <h2 className="text-xl font-bold drop-shadow-lg">{product.name}</h2>
+                  <p className="text-sm font-medium text-sky-300">{product.tagline}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{product.description}</p>
                   <Link to={`/sales/${product.segment}`}>
-                    <Button variant="link" className="px-0 gap-1 text-sm">
+                    <Button variant="link" className="px-0 gap-1 text-sm text-sky-300">
                       Mehr erfahren <ChevronRight className="w-3 h-3" />
                     </Button>
                   </Link>
@@ -205,7 +205,7 @@ export default function FeaturesPage() {
                   <ul className="space-y-2">
                     {product.features.map((feat, j) => (
                       <li key={j} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                        <Check className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -219,15 +219,15 @@ export default function FeaturesPage() {
 
       {/* Platform features grid */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Plattform-Features</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Plattform-Features</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {PLATFORM_FEATURES.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <div key={i} className="p-3 rounded-lg bg-muted/30 space-y-1">
-                <Icon className="w-4 h-4 text-primary" />
+              <div key={i} className="p-3 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
+                <Icon className="w-4 h-4 text-sky-300" />
                 <div className="font-medium text-sm">{feat.title}</div>
-                <div className="text-xs text-muted-foreground">{feat.desc}</div>
+                <div className="text-xs text-white/70">{feat.desc}</div>
               </div>
             )
           })}
@@ -237,28 +237,28 @@ export default function FeaturesPage() {
       {/* Languages */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">45 Sprachen in 3 Kategorien</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-bold drop-shadow-lg">45 Sprachen in 3 Kategorien</h2>
+          <p className="text-white/70">
             Inkl. 10 Migrationssprachen und vollständige RTL-Unterstützung für Arabisch, Farsi, Paschtu, Kurdisch, Urdu und Hebräisch.
           </p>
         </div>
         <div className="space-y-4">
           {LANGUAGE_CATEGORIES.map((cat, i) => (
-            <Card key={i} className="p-5 space-y-2">
+            <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
               <h3 className="font-semibold">{cat.name}</h3>
-              <p className="text-sm text-muted-foreground">{cat.languages}</p>
+              <p className="text-sm text-white/70">{cat.languages}</p>
             </Card>
           ))}
         </div>
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-white/70">
           + 54 Offline-Sprachpaare via Opus-MT WASM-Modelle + Romanisierung für nicht-lateinische Schriften
         </p>
       </div>
 
       {/* CTA */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold">Jetzt testen</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl font-bold drop-shadow-lg">Jetzt testen</h2>
+        <p className="text-white/70">
           Alle Features sind im Free-Plan verfügbar. Keine Registrierung nötig.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -269,13 +269,13 @@ export default function FeaturesPage() {
             </Button>
           </Link>
           <Link to="/pricing">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Preise & Pläne
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
           <Link to="/technology">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Technische Architektur
               <ChevronRight className="h-4 w-4" />
             </Button>

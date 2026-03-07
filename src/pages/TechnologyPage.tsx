@@ -13,10 +13,10 @@ import { Button } from '@/components/ui/button'
 
 export default function TechnologyPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -47,10 +47,10 @@ export default function TechnologyPage() {
         ].map((stat, i) => {
           const Icon = stat.icon
           return (
-            <div key={i} className="text-center p-4 rounded-lg bg-muted/50 space-y-1">
-              <Icon className="w-5 h-5 text-primary mx-auto" />
-              <div className="text-2xl font-bold text-primary">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
+            <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
+              <Icon className="w-5 h-5 text-sky-300 mx-auto" />
+              <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
+              <div className="text-xs text-white/70">{stat.label}</div>
             </div>
           )
         })}
@@ -59,8 +59,8 @@ export default function TechnologyPage() {
       {/* 4-Tier Transport Architecture */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">4-Tier Transport-Architektur</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <h2 className="text-2xl font-bold drop-shadow-lg">4-Tier Transport-Architektur</h2>
+          <p className="text-white/70 max-w-xl mx-auto">
             Automatischer Fallback von Cloud bis völlig ohne Netzwerk. Jedes Tier degradiert transparent zum nächsten.
           </p>
         </div>
@@ -110,24 +110,24 @@ export default function TechnologyPage() {
           ].map((tier, i) => {
             const Icon = tier.icon
             return (
-              <Card key={i} className="p-6">
+              <Card key={i} className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-lg ${tier.bg} flex items-center justify-center shrink-0`}>
                     <Icon className={`w-6 h-6 ${tier.color}`} />
                   </div>
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-semibold text-muted-foreground">{tier.tier}</span>
+                      <span className="text-xs font-mono font-semibold text-white/70">{tier.tier}</span>
                       <h3 className="font-bold text-lg">{tier.name}</h3>
                     </div>
-                    <p className="text-xs font-mono text-muted-foreground">{tier.tech}</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{tier.description}</p>
-                    <p className="text-xs text-primary font-medium">Voraussetzung: {tier.requires}</p>
+                    <p className="text-xs font-mono text-white/70">{tier.tech}</p>
+                    <p className="text-sm text-white/70 leading-relaxed">{tier.description}</p>
+                    <p className="text-xs text-sky-300 font-medium">Voraussetzung: {tier.requires}</p>
                   </div>
                 </div>
                 {i < 3 && (
                   <div className="flex justify-center mt-3">
-                    <span className="text-xs text-muted-foreground">↓ Automatischer Fallback ↓</span>
+                    <span className="text-xs text-white/70">↓ Automatischer Fallback ↓</span>
                   </div>
                 )}
               </Card>
@@ -139,62 +139,62 @@ export default function TechnologyPage() {
       {/* Translation Pipeline */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Übersetzungs-Pipeline</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <h2 className="text-2xl font-bold drop-shadow-lg">Übersetzungs-Pipeline</h2>
+          <p className="text-white/70 max-w-xl mx-auto">
             6-Provider-Kaskade mit 3-Tier-Cache, Circuit Breaker und automatischer Offline-Degradierung.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Database className="w-5 h-5 text-primary" />
+              <Database className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">3-Tier-Cache</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />In-Memory Cache (5 Min TTL, 500 Einträge)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />IndexedDB Cache (30 Tage TTL, 10.000 Einträge)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />In-Flight Request Deduplication</li>
+            <ul className="space-y-1.5 text-sm text-white/70">
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />In-Memory Cache (5 Min TTL, 500 Einträge)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />IndexedDB Cache (30 Tage TTL, 10.000 Einträge)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />In-Flight Request Deduplication</li>
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Layers className="w-5 h-5 text-primary" />
+              <Layers className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Provider-Kaskade</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">1.</span>Vercel Edge Proxy (API-Key geschützt)</li>
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">2.</span>Azure NMT / Google Cloud Translation</li>
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">3.</span>MyMemory Translation Memory (kostenlos)</li>
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">4.</span>LibreTranslate (Open Source)</li>
-              <li className="flex items-start gap-2"><span className="text-xs font-mono text-primary shrink-0">5.</span>Opus-MT WASM (On-Device, offline)</li>
+            <ul className="space-y-1.5 text-sm text-white/70">
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-sky-300 shrink-0">1.</span>Vercel Edge Proxy (API-Key geschützt)</li>
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-sky-300 shrink-0">2.</span>Azure NMT / Google Cloud Translation</li>
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-sky-300 shrink-0">3.</span>MyMemory Translation Memory (kostenlos)</li>
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-sky-300 shrink-0">4.</span>LibreTranslate (Open Source)</li>
+              <li className="flex items-start gap-2"><span className="text-xs font-mono text-sky-300 shrink-0">5.</span>Opus-MT WASM (On-Device, offline)</li>
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
+              <Shield className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Resilienz</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Circuit Breaker pro Provider (3 Fehler → 30s Pause)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />HTTP 429 Retry-After Parsing</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Automatische Cache-Eviction</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Graceful Degradation → Offline</li>
+            <ul className="space-y-1.5 text-sm text-white/70">
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Circuit Breaker pro Provider (3 Fehler → 30s Pause)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />HTTP 429 Retry-After Parsing</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Automatische Cache-Eviction</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Graceful Degradation → Offline</li>
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
+              <Zap className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Übersetzungs-Features</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />6 Kontextmodi (Reise, Medizin, Recht...)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Sie/Du-Formalität (9 Sprachen)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Wort-Alternativen (Top 5 Matches)</li>
-              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />Romanisierung für nicht-lat. Schriften</li>
+            <ul className="space-y-1.5 text-sm text-white/70">
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />6 Kontextmodi (Reise, Medizin, Recht...)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Sie/Du-Formalität (9 Sprachen)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Wort-Alternativen (Top 5 Matches)</li>
+              <li className="flex items-start gap-2"><Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />Romanisierung für nicht-lat. Schriften</li>
             </ul>
           </Card>
         </div>
@@ -202,30 +202,30 @@ export default function TechnologyPage() {
 
       {/* Speech Engines */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Sprach-Engines</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Sprach-Engines</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <Radio className="w-5 h-5 text-primary" />
+              <Radio className="w-5 h-5 text-sky-300" />
               Speech-to-Text (STT)
             </h3>
-            <p className="text-sm text-muted-foreground">5-Engine-Kaskade mit automatischer Auswahl:</p>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <p className="text-sm text-white/70">5-Engine-Kaskade mit automatischer Auswahl:</p>
+            <ul className="space-y-1.5 text-sm text-white/70">
               <li>1. Apple SpeechAnalyzer (iOS nativ)</li>
               <li>2. Google Cloud STT (iOS Fallback)</li>
               <li>3. Web Speech API (Chrome/Edge/Android)</li>
               <li>4. Google Cloud STT (allg. Fallback)</li>
               <li>5. Whisper WASM (~40 MB, offline)</li>
             </ul>
-            <p className="text-xs text-muted-foreground">+ Satz-Boundary-Erkennung für Echtzeit-Übersetzung</p>
+            <p className="text-xs text-white/70">+ Satz-Boundary-Erkennung für Echtzeit-Übersetzung</p>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
+              <Zap className="w-5 h-5 text-sky-300" />
               Text-to-Speech (TTS)
             </h3>
-            <p className="text-sm text-muted-foreground">4-stufige Qualitätshierarchie:</p>
+            <p className="text-sm text-white/70">4-stufige Qualitätshierarchie:</p>
             <div className="space-y-2">
               {[
                 { name: 'Chirp 3 HD', quality: 'Höchste', langs: '24 Sprachen', latency: '~500ms' },
@@ -235,11 +235,11 @@ export default function TechnologyPage() {
               ].map((v, i) => (
                 <div key={i} className="flex justify-between text-xs">
                   <span className="font-medium">{v.name}</span>
-                  <span className="text-muted-foreground">{v.langs} · {v.latency}</span>
+                  <span className="text-white/70">{v.langs} · {v.latency}</span>
                 </div>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground">+ TTS-Audio wird in IndexedDB gecacht (Offline-Wiedergabe)</p>
+            <p className="text-xs text-white/70">+ TTS-Audio wird in IndexedDB gecacht (Offline-Wiedergabe)</p>
           </Card>
         </div>
       </div>
@@ -247,19 +247,19 @@ export default function TechnologyPage() {
       {/* Security */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Sicherheit & Datenschutz</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <h2 className="text-2xl font-bold drop-shadow-lg">Sicherheit & Datenschutz</h2>
+          <p className="text-white/70 max-w-xl mx-auto">
             DSGVO-konform by Design. Kein Cloud-Zwang. E2E-Verschlüsselung auch im Offline-Modus.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Lock className="w-5 h-5 text-primary" />
+              <Lock className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">E2E-Verschlüsselung</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1.5 text-sm text-white/70">
               <li>• AES-256-GCM (Web Crypto API)</li>
               <li>• PBKDF2 Key Derivation (100.000 Iterationen)</li>
               <li>• 12-Byte Random IV pro Nachricht</li>
@@ -268,12 +268,12 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
+              <Shield className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Security Headers</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1.5 text-sm text-white/70">
               <li>• Strict Content Security Policy (CSP)</li>
               <li>• HSTS mit Preload (2 Jahre)</li>
               <li>• X-Frame-Options: DENY</li>
@@ -282,12 +282,12 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Eye className="w-5 h-5 text-primary" />
+              <Eye className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">DSGVO-Compliance</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1.5 text-sm text-white/70">
               <li>• Offline-Modus = keine Daten an Server</li>
               <li>• Keine Nutzerregistrierung erforderlich</li>
               <li>• Keine Speicherung von Gesprächen</li>
@@ -296,12 +296,12 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <Smartphone className="w-5 h-5 text-primary" />
+              <Smartphone className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Native Security</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1.5 text-sm text-white/70">
               <li>• Capacitor 8 (Android API 24-36)</li>
               <li>• iOS 15+ mit CoreBluetooth</li>
               <li>• Granulare Berechtigungen (optional)</li>
@@ -314,9 +314,9 @@ export default function TechnologyPage() {
 
       {/* Performance */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Performance-Metriken</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Performance-Metriken</h2>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <h3 className="font-semibold mb-4">Latenz-Pipeline (typische Werte)</h3>
           <div className="space-y-3">
             {[
@@ -328,7 +328,7 @@ export default function TechnologyPage() {
               <div key={i} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="font-medium">{item.step}</span>
-                  <span className="text-muted-foreground">{item.typical} (Ziel: {item.target})</span>
+                  <span className="text-white/70">{item.typical} (Ziel: {item.target})</span>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
                   <div className="h-full rounded-full bg-primary" style={{ width: `${item.pct}%` }} />
@@ -337,13 +337,13 @@ export default function TechnologyPage() {
             ))}
             <div className="flex justify-between text-sm font-bold pt-2 border-t">
               <span>Total End-to-End</span>
-              <span className="text-primary">400-800ms (Ziel: &lt;1000ms)</span>
+              <span className="text-sky-300">400-800ms (Ziel: &lt;1000ms)</span>
             </div>
           </div>
         </Card>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Bundle-Größen</h3>
             <div className="space-y-2">
               {[
@@ -355,13 +355,13 @@ export default function TechnologyPage() {
               ].map((item, i) => (
                 <div key={i} className="flex justify-between text-xs">
                   <span>{item.name}</span>
-                  <span className="text-muted-foreground font-mono">{item.gzip} gzip</span>
+                  <span className="text-white/70 font-mono">{item.gzip} gzip</span>
                 </div>
               ))}
             </div>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Speicheranforderungen</h3>
             <div className="space-y-2">
               {[
@@ -373,7 +373,7 @@ export default function TechnologyPage() {
               ].map((item, i) => (
                 <div key={i} className="flex justify-between text-xs">
                   <span>{item.name}</span>
-                  <span className="text-muted-foreground font-mono">{item.size}</span>
+                  <span className="text-white/70 font-mono">{item.size}</span>
                 </div>
               ))}
             </div>
@@ -383,14 +383,14 @@ export default function TechnologyPage() {
 
       {/* Tech Stack */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Tech Stack</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Tech Stack</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <Monitor className="w-4 h-4 text-primary" />
+              <Monitor className="w-4 h-4 text-sky-300" />
               Frontend
             </h3>
-            <ul className="space-y-1 text-xs text-muted-foreground">
+            <ul className="space-y-1 text-xs text-white/70">
               <li>React 18.2 + TypeScript 5</li>
               <li>Vite 6.4 (Build: 12 Sekunden)</li>
               <li>Tailwind CSS 3.4 + Radix UI</li>
@@ -399,12 +399,12 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-primary" />
+              <Cpu className="w-4 h-4 text-sky-300" />
               AI / ML
             </h3>
-            <ul className="space-y-1 text-xs text-muted-foreground">
+            <ul className="space-y-1 text-xs text-white/70">
               <li>Transformers.js 3.8 (Opus-MT)</li>
               <li>ONNX Runtime WASM (~21 MB)</li>
               <li>Whisper Small (multilingual)</li>
@@ -413,12 +413,12 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <Server className="w-4 h-4 text-primary" />
+              <Server className="w-4 h-4 text-sky-300" />
               Backend / Cloud
             </h3>
-            <ul className="space-y-1 text-xs text-muted-foreground">
+            <ul className="space-y-1 text-xs text-white/70">
               <li>Supabase (Auth, Realtime, DB)</li>
               <li>Vercel (Hosting + Edge Functions)</li>
               <li>Stripe (Billing, Webhooks)</li>
@@ -431,15 +431,15 @@ export default function TechnologyPage() {
 
       {/* Testing */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Qualitätssicherung</h2>
-        <Card className="p-6">
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Qualitätssicherung</h2>
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <TestTube className="w-4 h-4 text-primary" />
+                <TestTube className="w-4 h-4 text-sky-300" />
                 87 Tests in 7 Suiten
               </h3>
-              <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <ul className="space-y-1.5 text-sm text-white/70">
                 <li>• connection-manager (17 Tests)</li>
                 <li>• crypto (9 Tests)</li>
                 <li>• local-ws-transport (14 Tests)</li>
@@ -451,10 +451,10 @@ export default function TechnologyPage() {
             </div>
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-primary" />
+                <FileCode className="w-4 h-4 text-sky-300" />
                 Build-Pipeline
               </h3>
-              <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <ul className="space-y-1.5 text-sm text-white/70">
                 <li>• <code className="text-xs bg-muted px-1 rounded">tsc && vite build</code> — 12 Sekunden</li>
                 <li>• <code className="text-xs bg-muted px-1 rounded">vitest run</code> — 2,2 Sekunden</li>
                 <li>• 100% Pass Rate</li>
@@ -469,8 +469,8 @@ export default function TechnologyPage() {
       {/* Patentable Innovations */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Patentfähige Innovationen</h2>
-          <p className="text-muted-foreground">Technische Barrieren, die Wettbewerber 12-18 Monate zur Nachahmung brauchen</p>
+          <h2 className="text-2xl font-bold drop-shadow-lg">Patentfähige Innovationen</h2>
+          <p className="text-white/70">Technische Barrieren, die Wettbewerber 12-18 Monate zur Nachahmung brauchen</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -496,10 +496,10 @@ export default function TechnologyPage() {
               time: '2-3 Monate Nachahmungsaufwand',
             },
           ].map((item, i) => (
-            <Card key={i} className="p-5 space-y-2">
+            <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
               <h3 className="font-semibold">{item.title}</h3>
-              <p className="text-sm text-muted-foreground">{item.desc}</p>
-              <p className="text-xs text-primary font-medium">{item.time}</p>
+              <p className="text-sm text-white/70">{item.desc}</p>
+              <p className="text-xs text-sky-300 font-medium">{item.time}</p>
             </Card>
           ))}
         </div>
@@ -507,8 +507,8 @@ export default function TechnologyPage() {
 
       {/* CTA */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold">Überzeugt?</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl font-bold drop-shadow-lg">Überzeugt?</h2>
+        <p className="text-white/70">
           Testen Sie die Technologie selbst oder erfahren Sie mehr über unser Produkt.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -519,13 +519,13 @@ export default function TechnologyPage() {
             </Button>
           </Link>
           <Link to="/features">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Alle Features
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
           <Link to="/investors">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Für Investoren
               <ChevronRight className="h-4 w-4" />
             </Button>
