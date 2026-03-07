@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build:listener",
-  "outputDirectory": "apps/listener/dist",
+  "buildCommand": "cd ../.. && npm run build:listener",
+  "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
