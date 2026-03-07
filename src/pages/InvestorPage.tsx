@@ -50,7 +50,7 @@ export default function InvestorPage() {
         ].map((stat, i) => {
           const Icon = stat.icon
           return (
-            <div key={i} className="text-center p-4 rounded-lg bg-muted/50 space-y-1">
+            <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
               <Icon className="w-5 h-5 text-sky-300 mx-auto" />
               <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
               <div className="text-xs text-white/70">{stat.label}</div>
@@ -61,7 +61,7 @@ export default function InvestorPage() {
 
       {/* Das Problem */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Das Problem</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Das Problem</h2>
         <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <p className="text-center text-lg font-medium mb-6">
             1,2 Milliarden Menschen reisen jährlich international. 68% sprechen die Landessprache nicht.
@@ -93,7 +93,7 @@ export default function InvestorPage() {
 
       {/* Die Lösung */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Die Lösung: 4-Tier Architektur</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Die Lösung: 4-Tier Architektur</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { icon: Globe2, tier: 'Tier 1: Cloud', desc: 'Supabase Realtime — globale Reichweite, <1s Latenz' },
@@ -115,7 +115,7 @@ export default function InvestorPage() {
         </div>
         <div className="text-center">
           <Link to="/technology">
-            <Button variant="link" className="gap-1">
+            <Button variant="link" className="gap-1 text-sky-300">
               Technische Architektur im Detail <ArrowRight className="w-3 h-3" />
             </Button>
           </Link>
@@ -124,7 +124,7 @@ export default function InvestorPage() {
 
       {/* 7 Produkte */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">7 Kernprodukte in einer App</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">7 Kernprodukte in einer App</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { name: 'Text-Übersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
@@ -135,7 +135,7 @@ export default function InvestorPage() {
             { name: 'Offline-Engine', desc: '54 Sprachpaare, Opus-MT + Whisper WASM' },
             { name: 'BLE-Transport', desc: 'Custom GATT Protocol, Bluetooth-only' },
           ].map((item, i) => (
-            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-muted/30">
+            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-black/30 backdrop-blur-sm">
               <span className="text-xs font-mono text-sky-300 shrink-0 mt-0.5">{i + 1}.</span>
               <div>
                 <span className="font-medium text-sm">{item.name}</span>
@@ -148,7 +148,7 @@ export default function InvestorPage() {
 
       {/* Marktgröße */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Marktgröße (TAM / SAM / SOM)</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">TAM</p>
@@ -181,7 +181,7 @@ export default function InvestorPage() {
             { title: 'KI-Disruption', desc: 'ML-Modelle werden kleiner, schneller, besser — On-Device Inferenz wird Standard.' },
             { title: 'PWA-Akzeptanz', desc: 'Progressive Web Apps sind etabliert. Kein App-Store-Download = niedrigste Einstiegshürde.' },
           ].map((item, i) => (
-            <div key={i} className="p-3 rounded-lg bg-muted/30">
+            <div key={i} className="p-3 rounded-lg bg-black/30 backdrop-blur-sm">
               <p className="font-medium text-sm">{item.title}</p>
               <p className="text-xs text-white/70 mt-1">{item.desc}</p>
             </div>
@@ -191,7 +191,7 @@ export default function InvestorPage() {
 
       {/* Geschäftsmodell & Preise */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Geschäftsmodell: Freemium + B2B SaaS</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Geschäftsmodell: Freemium + B2B SaaS</h2>
         <p className="text-center text-white/70">
           11 Pläne in 5 Segmenten — von 0 EUR (Free) bis 19.990 EUR/Monat (Cruise Armada Enterprise)
         </p>
@@ -220,7 +220,7 @@ export default function InvestorPage() {
 
       {/* Unit Economics */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Unit Economics (Ziel Jahr 2)</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Unit Economics (Ziel Jahr 2)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
@@ -268,7 +268,7 @@ export default function InvestorPage() {
 
       {/* 3-Jahres-Projektion */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">3-Jahres-Projektion</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">3-Jahres-Projektion</h2>
         <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -306,7 +306,7 @@ export default function InvestorPage() {
 
       {/* Go-to-Market */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Go-to-Market Strategie</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Go-to-Market Strategie</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             {
@@ -348,7 +348,7 @@ export default function InvestorPage() {
 
       {/* Technologie-Status */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Technologie-Status (v3.1, März 2026)</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Technologie-Status (v3.1, März 2026)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             'PWA Frontend (React 18 + TypeScript) — Production',
@@ -378,7 +378,7 @@ export default function InvestorPage() {
 
       {/* Wettbewerbsvorteile */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Wettbewerbsvorteile & IP</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Wettbewerbsvorteile & IP</h2>
         <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <h3 className="font-semibold mb-4">Patentfähige Innovationen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -388,7 +388,7 @@ export default function InvestorPage() {
               { name: 'Embedded Relay Server', time: '3-6 Monate' },
               { name: 'Hybrid ML Pipeline', time: '2-3 Monate' },
             ].map((item, i) => (
-              <div key={i} className="flex justify-between items-center p-3 rounded bg-muted/30">
+              <div key={i} className="flex justify-between items-center p-3 rounded bg-black/30 backdrop-blur-sm">
                 <span className="text-sm font-medium">{item.name}</span>
                 <span className="text-xs text-white/70">{item.time} Nachahmung</span>
               </div>
@@ -402,7 +402,7 @@ export default function InvestorPage() {
 
       {/* Team */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Team</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Gründer & CEO</h3>
@@ -430,7 +430,7 @@ export default function InvestorPage() {
               { role: 'Customer Success', month: 'Mo 6', salary: '50-60K' },
               { role: 'Marketing', month: 'Mo 9', salary: '55-70K' },
             ].map((item, i) => (
-              <div key={i} className="text-center p-2 rounded bg-muted/30">
+              <div key={i} className="text-center p-2 rounded bg-black/30 backdrop-blur-sm">
                 <p className="font-medium text-xs">{item.role}</p>
                 <p className="text-xs text-sky-300">{item.month}</p>
                 <p className="text-xs text-white/70">{item.salary} EUR</p>
@@ -442,7 +442,7 @@ export default function InvestorPage() {
 
       {/* Ask */}
       <Card className="p-8 border-primary text-center space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
-        <h2 className="text-2xl font-bold">Seed-Runde: 750.000 EUR</h2>
+        <h2 className="text-2xl font-bold drop-shadow-lg">Seed-Runde: 750.000 EUR</h2>
         <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar)</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-lg mx-auto">
@@ -475,7 +475,7 @@ export default function InvestorPage() {
               { milestone: '10K EUR MRR', time: 'Monat 9' },
               { milestone: '150K EUR ARR', time: 'Monat 12' },
             ].map((m, i) => (
-              <div key={i} className="p-2 rounded bg-muted/30">
+              <div key={i} className="p-2 rounded bg-black/30 backdrop-blur-sm">
                 <p className="text-xs font-medium">{m.milestone}</p>
                 <p className="text-xs text-sky-300">{m.time}</p>
               </div>
@@ -489,7 +489,7 @@ export default function InvestorPage() {
 
       {/* Kontakt */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold">Kontakt</h2>
+        <h2 className="text-2xl font-bold drop-shadow-lg">Kontakt</h2>
         <div className="space-y-1">
           <p className="font-semibold">fintutto ug (haftungsbeschränkt)</p>
           <p className="text-sm text-white/70">Alexander Deibel · Geschäftsführer</p>
@@ -498,13 +498,13 @@ export default function InvestorPage() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
           <Link to="/compare">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Wettbewerbervergleich
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
           <Link to="/technology">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Technische Architektur
               <ChevronRight className="h-4 w-4" />
             </Button>
