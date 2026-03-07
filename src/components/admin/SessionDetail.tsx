@@ -70,7 +70,7 @@ export default function SessionDetail() {
   useEffect(() => { loadData() }, [loadData])
 
   async function handleDelete() {
-    if (!session || !confirm('Session wirklich loeschen?')) return
+    if (!session || !confirm('Session wirklich löschen?')) return
     await deleteEventSession(session.id)
     navigate('/admin/sessions')
   }
@@ -104,7 +104,7 @@ export default function SessionDetail() {
         <div className="space-y-1">
           <Button variant="ghost" size="sm" className="gap-1 -ml-2 mb-1"
             onClick={() => navigate('/admin/sessions')}>
-            <ArrowLeft className="h-4 w-4" /> Zurueck
+            <ArrowLeft className="h-4 w-4" /> Zurück
           </Button>
           <h2 className="text-xl font-bold">{session.title}</h2>
           <div className="flex items-center gap-2 flex-wrap">
@@ -130,7 +130,7 @@ export default function SessionDetail() {
             <Edit2 className="h-4 w-4" /> Bearbeiten
           </Button>
           <Button variant="outline" size="sm" className="gap-1 text-destructive" onClick={handleDelete}>
-            <Trash2 className="h-4 w-4" /> Loeschen
+            <Trash2 className="h-4 w-4" /> Löschen
           </Button>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function SessionDetail() {
         </Card>
 
         <Card className="p-4 space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Status aendern</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">Status ändern</h3>
           <Select value={session.status} onValueChange={v => handleStatusChange(v as EventSessionStatus)}>
             <SelectTrigger>
               <SelectValue />
@@ -214,12 +214,12 @@ export default function SessionDetail() {
         {expandedSections.participants && (
           <div className="px-4 pb-4 space-y-3">
             <Button size="sm" variant="outline" className="gap-1" onClick={() => setShowParticipantForm(true)}>
-              <UserPlus className="h-4 w-4" /> Teilnehmer hinzufuegen
+              <UserPlus className="h-4 w-4" /> Teilnehmer hinzufügen
             </Button>
 
             {participants.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
-                Noch keine Teilnehmer hinzugefuegt
+                Noch keine Teilnehmer hinzugefügt
               </p>
             ) : (
               <div className="space-y-2">
@@ -267,12 +267,12 @@ export default function SessionDetail() {
         {expandedSections.preTranslations && (
           <div className="px-4 pb-4 space-y-3">
             <Button size="sm" variant="outline" className="gap-1" onClick={() => setShowPreTranslation(true)}>
-              <Plus className="h-4 w-4" /> Dokument hinzufuegen
+              <Plus className="h-4 w-4" /> Dokument hinzufügen
             </Button>
 
             {preTranslations.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
-                Noch keine Dokumente hochgeladen. Laden Sie Vortraege, Fragen oder Biografien hoch, um die Uebersetzungsqualitaet zu verbessern und Kosten zu sparen.
+                Noch keine Dokumente hochgeladen. Laden Sie Vorträge, Fragen oder Biografien hoch, um die Übersetzungsqualität zu verbessern und Kosten zu sparen.
               </p>
             ) : (
               <div className="space-y-2">
@@ -305,7 +305,7 @@ export default function SessionDetail() {
                             )}
                           >
                             {doc.translation_status === 'completed' ? 'Fertig' :
-                             doc.translation_status === 'translating' ? 'Wird uebersetzt...' :
+                             doc.translation_status === 'translating' ? 'Wird übersetzt...' :
                              doc.translation_status === 'error' ? 'Fehler' : 'Ausstehend'}
                           </Badge>
                           {targetCount > 0 && (
@@ -352,7 +352,7 @@ export default function SessionDetail() {
       <Dialog open={showParticipantForm} onOpenChange={setShowParticipantForm}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Teilnehmer hinzufuegen</DialogTitle>
+            <DialogTitle>Teilnehmer hinzufügen</DialogTitle>
           </DialogHeader>
           <ParticipantForm
             sessionId={session.id}
@@ -368,7 +368,7 @@ export default function SessionDetail() {
       <Dialog open={showPreTranslation} onOpenChange={setShowPreTranslation}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Pre-Translation Dokument hinzufuegen</DialogTitle>
+            <DialogTitle>Pre-Translation Dokument hinzufügen</DialogTitle>
           </DialogHeader>
           <PreTranslationUpload
             sessionId={session.id}

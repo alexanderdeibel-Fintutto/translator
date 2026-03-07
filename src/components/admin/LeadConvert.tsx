@@ -49,12 +49,12 @@ export default function LeadConvert({ lead, open, onOpenChange, onConverted }: L
         <DialogHeader>
           <DialogTitle>Lead zum Kunden konvertieren</DialogTitle>
           <DialogDescription>
-            Ein neues Benutzerkonto fuer {lead.name} ({lead.email}) wird erstellt. Der Benutzer erhaelt eine E-Mail mit einem Link zum Setzen des Passworts.
+            Ein neues Benutzerkonto für {lead.name} ({lead.email}) wird erstellt. Der Benutzer erhält eine E-Mail mit einem Link zum Setzen des Passworts.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label>Plan auswaehlen</Label>
+            <Label>Plan auswählen</Label>
             <Select value={tierId} onValueChange={v => setTierId(v as TierId)}>
               <SelectTrigger>
                 <SelectValue />

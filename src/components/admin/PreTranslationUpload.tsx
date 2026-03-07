@@ -77,7 +77,7 @@ export default function PreTranslationUpload({
         <div className="col-span-2 space-y-1.5">
           <Label htmlFor="pt-title">Titel *</Label>
           <Input id="pt-title" value={title} onChange={e => setTitle(e.target.value)} required
-            placeholder="z.B. Keynote-Rede Prof. Mueller" />
+            placeholder="z.B. Keynote-Rede Prof. Müller" />
         </div>
 
         <div className="space-y-1.5">
@@ -115,7 +115,7 @@ export default function PreTranslationUpload({
             <label className="cursor-pointer flex flex-col items-center gap-2">
               <Upload className="h-8 w-8 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                Textdatei auswaehlen (.txt, .md, .csv)
+                Textdatei auswählen (.txt, .md, .csv)
               </span>
               <input
                 type="file"
@@ -139,9 +139,9 @@ export default function PreTranslationUpload({
             id="pt-content"
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder="Fuegen Sie hier den Text des Vortrags, der Fragen, der Biografie oder des Glossars ein...
+            placeholder="Fügen Sie hier den Text des Vortrags, der Fragen, der Biografie oder des Glossars ein...
 
-Durch Pre-Translation werden Uebersetzungen vorab vorbereitet. Das verbessert die Qualitaet erheblich und spart Kosten, da die Live-Uebersetzung auf vorbereitete Texte zurueckgreifen kann."
+Durch Pre-Translation werden Übersetzungen vorab vorbereitet. Das verbessert die Qualität erheblich und spart Kosten, da die Live-Übersetzung auf vorbereitete Texte zurückgreifen kann."
             rows={10}
             required
           />
@@ -149,9 +149,9 @@ Durch Pre-Translation werden Uebersetzungen vorab vorbereitet. Das verbessert di
       </div>
 
       <div className="bg-muted/50 rounded-lg p-3 text-sm text-muted-foreground">
-        <strong>Tipp:</strong> Je mehr Kontext Sie bereitstellen, desto besser wird die Uebersetzung.
-        Laden Sie Vortraege, Biografien, Fachbegriffe und Moderationsfragen hoch.
-        Die Texte werden vorab uebersetzt und stehen waehrend der Live-Session als Referenz zur Verfuegung.
+        <strong>Tipp:</strong> Je mehr Kontext Sie bereitstellen, desto besser wird die Übersetzung.
+        Laden Sie Vorträge, Biografien, Fachbegriffe und Moderationsfragen hoch.
+        Die Texte werden vorab übersetzt und stehen während der Live-Session als Referenz zur Verfügung.
       </div>
 
       <div className="flex gap-2 justify-end">

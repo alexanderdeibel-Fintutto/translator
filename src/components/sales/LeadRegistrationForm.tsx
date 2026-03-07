@@ -146,7 +146,7 @@ export default function LeadRegistrationForm({ segment, inviteToken, source }: L
         </h3>
         <p className="text-sm text-muted-foreground">
           {mode === 'register'
-            ? 'Bitte bestaetigen Sie Ihre E-Mail-Adresse. Danach koennen Sie sich anmelden und die App testen.'
+            ? 'Bitte bestätigen Sie Ihre E-Mail-Adresse. Danach können Sie sich anmelden und die App testen.'
             : 'Wir haben Ihre Anfrage erhalten und melden uns innerhalb von 24 Stunden bei Ihnen.'}
         </p>
         {mode === 'register' && (
@@ -161,13 +161,13 @@ export default function LeadRegistrationForm({ segment, inviteToken, source }: L
       <div className="flex items-center gap-2">
         <UserPlus className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold">
-          {mode === 'register' ? 'Testzugang erstellen' : 'Persoenliche Beratung anfordern'}
+          {mode === 'register' ? 'Testzugang erstellen' : 'Persönliche Beratung anfordern'}
         </h3>
       </div>
       <p className="text-sm text-muted-foreground">
         {mode === 'register'
           ? 'Erstellen Sie Ihr kostenloses Konto und testen Sie die App sofort.'
-          : 'Wir erstellen Ihnen ein individuelles Angebot und zeigen Ihnen die Loesung in einer kurzen Demo.'}
+          : 'Wir erstellen Ihnen ein individuelles Angebot und zeigen Ihnen die Lösung in einer kurzen Demo.'}
       </p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
