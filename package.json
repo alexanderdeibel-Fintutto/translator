@@ -12,7 +12,15 @@
     "cap:sync": "npx cap sync",
     "cap:ios": "npx cap open ios",
     "cap:android": "npx cap open android",
-    "build:native": "vite build && npx cap sync"
+    "build:native": "vite build && npx cap sync",
+
+    "dev:consumer": "vite --config apps/consumer/vite.config.ts",
+    "dev:listener": "vite --config apps/listener/vite.config.ts",
+    "dev:enterprise": "vite --config apps/enterprise/vite.config.ts",
+    "build:consumer": "vite build --config apps/consumer/vite.config.ts",
+    "build:listener": "vite build --config apps/listener/vite.config.ts",
+    "build:enterprise": "vite build --config apps/enterprise/vite.config.ts",
+    "build:all": "npm run build:consumer && npm run build:listener && npm run build:enterprise"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
