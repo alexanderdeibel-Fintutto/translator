@@ -150,21 +150,21 @@ export default function InvestorPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-5 space-y-2 text-center">
+          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">TAM</p>
             <p className="text-3xl font-bold text-sky-300">$65 Mrd</p>
             <p className="text-xs text-white/70">Globaler Übersetzungsmarkt (2025)</p>
             <p className="text-xs text-white/70">Davon maschinell: $8 Mrd</p>
             <p className="text-xs text-sky-300 font-medium">15% CAGR bis 2030</p>
           </Card>
-          <Card className="p-5 space-y-2 text-center">
+          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">SAM</p>
             <p className="text-3xl font-bold text-sky-300">$4,4 Mrd</p>
             <p className="text-xs text-white/70">Live-Übersetzung: $2,4 Mrd</p>
             <p className="text-xs text-white/70">Behörden/NGO: $1,2 Mrd</p>
             <p className="text-xs text-white/70">Tourismus: $0,8 Mrd</p>
           </Card>
-          <Card className="p-5 space-y-2 text-center">
+          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">SOM (3 Jahre)</p>
             <p className="text-3xl font-bold text-sky-300">$12 Mio</p>
             <p className="text-xs text-white/70">ARR-Ziel in 3 Jahren</p>
@@ -204,7 +204,7 @@ export default function InvestorPage() {
             { segment: 'Event', plans: 'Basic (199 EUR) · Pro (499 EUR/Mo)', target: 'Konferenzen, Messen, Hochschulen', arpu: '~350 EUR' },
             { segment: 'Cruise', plans: 'Starter (1.990 EUR) · Fleet (6.990 EUR) · Armada (19.990 EUR/Mo)', target: 'Reedereien, Kreuzfahrt-Flotten', arpu: '~10.000 EUR' },
           ].map((seg, i) => (
-            <Card key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center">
+            <Card key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center bg-black/30 backdrop-blur-sm border-white/10">
               <div className="sm:w-1/6 font-bold text-sm text-sky-300">{seg.segment}</div>
               <div className="sm:w-2/6 text-xs">{seg.plans}</div>
               <div className="sm:w-2/6 text-xs text-white/70">{seg.target}</div>
@@ -222,7 +222,7 @@ export default function InvestorPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Unit Economics (Ziel Jahr 2)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-sky-300" />
               B2C (Personal)
@@ -234,7 +234,7 @@ export default function InvestorPage() {
               <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">3 Monate</span></div>
             </div>
           </Card>
-          <Card className="p-5 space-y-3">
+          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Building className="w-4 h-4 text-sky-300" />
               B2B (Guide/Agentur/Event)
@@ -247,7 +247,7 @@ export default function InvestorPage() {
             </div>
           </Card>
         </div>
-        <Card className="p-5">
+        <Card className="p-5 bg-black/30 backdrop-blur-sm border-white/10">
           <h3 className="font-semibold mb-3">Gross Margin Breakdown</h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
@@ -269,7 +269,7 @@ export default function InvestorPage() {
       {/* 3-Jahres-Projektion */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">3-Jahres-Projektion</h2>
-        <Card className="p-6">
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -328,7 +328,7 @@ export default function InvestorPage() {
               items: ['iOS App Store', 'API/SDK für Drittanbieter', 'White-Label für Großunternehmen', '10.000 Pro, 2.000 B2B', '12 Mio EUR ARR'],
             },
           ].map((phase, i) => (
-            <Card key={i} className="p-5 space-y-3">
+            <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
               <div>
                 <span className="text-xs font-mono text-sky-300">{phase.phase} · {phase.period}</span>
                 <h3 className="font-bold text-lg">{phase.title}</h3>
@@ -379,7 +379,7 @@ export default function InvestorPage() {
       {/* Wettbewerbsvorteile */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center">Wettbewerbsvorteile & IP</h2>
-        <Card className="p-6">
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <h3 className="font-semibold mb-4">Patentfähige Innovationen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
@@ -404,13 +404,13 @@ export default function InvestorPage() {
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center">Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-2">
+          <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Gründer & CEO</h3>
             <p className="text-sm font-medium">Alexander Deibel</p>
             <p className="text-xs text-white/70">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
             <p className="text-xs text-white/70">Komplette v3.1 Codebase in weniger als 6 Monaten gebaut</p>
           </Card>
-          <Card className="p-5 space-y-2">
+          <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Fintutto Ecosystem</h3>
             <ul className="space-y-1 text-xs text-white/70">
               <li>• ai tour Portal — Tourismusplattform</li>
@@ -420,7 +420,7 @@ export default function InvestorPage() {
             </ul>
           </Card>
         </div>
-        <Card className="p-5">
+        <Card className="p-5 bg-black/30 backdrop-blur-sm border-white/10">
           <h3 className="font-semibold mb-3">Einstellungsplan (mit Finanzierung)</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
@@ -441,7 +441,7 @@ export default function InvestorPage() {
       </div>
 
       {/* Ask */}
-      <Card className="p-8 border-primary text-center space-y-4">
+      <Card className="p-8 border-primary text-center space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
         <h2 className="text-2xl font-bold">Seed-Runde: 750.000 EUR</h2>
         <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar)</p>
 
