@@ -62,32 +62,42 @@ export default function LandingHomePage() {
   return (
     <div className="max-w-5xl mx-auto space-y-20 py-12 px-4">
       {/* Hero */}
-      <div className="text-center space-y-6">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-          Die Uebersetzungsplattform
-        </span>
-        <h1 className="text-4xl sm:text-6xl font-bold leading-tight">
-          Sprache darf keine<br />
-          <span className="text-primary">Mauer</span> sein.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Fintutto Translator ist die Plattform fuer mehrsprachige Kommunikation —
-          fuer Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-faehig,
-          Live-Sessions fuer bis zu 500 Personen.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <a href="https://translatorconsumer.vercel.app" target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Kostenlos uebersetzen
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </a>
-          <Link to="/investors">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Fuer Investoren
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
+      <div className="relative text-center space-y-6 py-12 sm:py-20 overflow-hidden rounded-2xl">
+        {/* Background Logo */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img
+            src="/fintutto-logo.svg"
+            alt=""
+            className="w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] opacity-10 dark:opacity-15"
+          />
+        </div>
+        <div className="relative z-10 space-y-6">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+            Die Uebersetzungsplattform
+          </span>
+          <h1 className="text-4xl sm:text-6xl font-bold leading-tight">
+            Sprache darf keine<br />
+            <span className="text-primary">Mauer</span> sein.
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+            Fintutto Translator ist die Plattform fuer mehrsprachige Kommunikation —
+            fuer Tourismus, Events, Migration und Alltag. 45 Sprachen, Offline-faehig,
+            Live-Sessions fuer bis zu 500 Personen.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <a href="https://translatorconsumer.vercel.app" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="gap-2 w-full sm:w-auto">
+                Kostenlos uebersetzen
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </a>
+            <Link to="/investors">
+              <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+                Fuer Investoren
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
