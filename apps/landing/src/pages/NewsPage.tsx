@@ -68,10 +68,10 @@ const TAG_COLORS: Record<string, string> = {
 
 export default function NewsPage() {
   return (
-    <div className="relative max-w-3xl mx-auto py-8 px-4 space-y-8">
+    <div className="relative max-w-3xl mx-auto py-8 px-4 space-y-8 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       <div className="relative text-center space-y-2 py-10 sm:py-14 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -85,15 +85,15 @@ export default function NewsPage() {
 
       <div className="space-y-4">
         {NEWS.map((item, i) => (
-          <Card key={i} className="p-5 space-y-2">
+          <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <div className="flex items-center gap-2">
-              <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${TAG_COLORS[item.tag] || 'bg-muted text-muted-foreground'}`}>
+              <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${TAG_COLORS[item.tag] || 'bg-black/30 backdrop-blur-sm text-white/70'}`}>
                 {item.tag}
               </span>
-              <span className="text-xs text-muted-foreground">{item.date}</span>
+              <span className="text-xs text-white/70">{item.date}</span>
             </div>
-            <h2 className="font-semibold">{item.title}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">{item.content}</p>
+            <h2 className="font-semibold drop-shadow-lg">{item.title}</h2>
+            <p className="text-sm text-white/70 leading-relaxed">{item.content}</p>
           </Card>
         ))}
       </div>

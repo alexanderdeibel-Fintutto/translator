@@ -9,10 +9,10 @@ const APP_URL = 'https://translator.fintutto.cloud'
 
 export default function AppListenerPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -41,7 +41,7 @@ export default function AppListenerPage() {
 
       {/* So funktioniert es */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">So funktioniert es</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">So funktioniert es</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
             { step: '1', icon: QrCode, title: 'Code eingeben oder QR scannen', desc: 'Der Speaker zeigt einen QR-Code. Scannen oder 6-stelligen Code eingeben.' },
@@ -56,7 +56,7 @@ export default function AppListenerPage() {
                 </div>
                 <Icon className="w-6 h-6 text-emerald-600 mx-auto" />
                 <h3 className="font-semibold">{s.title}</h3>
-                <p className="text-sm text-muted-foreground">{s.desc}</p>
+                <p className="text-sm text-white/70">{s.desc}</p>
               </div>
             )
           })}
@@ -65,7 +65,7 @@ export default function AppListenerPage() {
 
       {/* Features */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Features</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Features</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { icon: Smartphone, title: 'Kein Download nötig', desc: 'Läuft als PWA direkt im Browser — auf jedem Smartphone, Tablet oder Laptop.' },
@@ -75,12 +75,12 @@ export default function AppListenerPage() {
           ].map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-5 space-y-3">
+              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
                 <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-emerald-600" />
                 </div>
                 <h3 className="font-semibold">{feat.title}</h3>
-                <p className="text-sm text-muted-foreground">{feat.desc}</p>
+                <p className="text-sm text-white/70">{feat.desc}</p>
               </Card>
             )
           })}
@@ -113,7 +113,7 @@ export default function AppListenerPage() {
             <ArrowRight className="h-4 w-4" />
           </Button>
         </a>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-white/70">
           Kostenlos. Kein Account nötig.
         </p>
       </div>

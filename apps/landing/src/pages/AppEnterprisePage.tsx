@@ -10,10 +10,10 @@ const APP_URL = 'https://enterprise.guidetranslator.com'
 
 export default function AppEnterprisePage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -65,10 +65,10 @@ export default function AppEnterprisePage() {
             return (
               <Card key={i} className="p-5 space-y-3">
                 <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-violet-600" />
+                  <Icon className="w-5 h-5 text-sky-300" />
                 </div>
                 <h3 className="font-semibold">{feat.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feat.desc}</p>
+                <p className="text-sm text-white/70 leading-relaxed">{feat.desc}</p>
               </Card>
             )
           })}
@@ -87,9 +87,9 @@ export default function AppEnterprisePage() {
             const Icon = seg.icon
             return (
               <Card key={i} className="p-5 space-y-2 text-center">
-                <Icon className="w-6 h-6 text-violet-600 mx-auto" />
+                <Icon className="w-6 h-6 text-sky-300 mx-auto" />
                 <h3 className="font-semibold">{seg.title}</h3>
-                <p className="text-xs text-muted-foreground">{seg.desc}</p>
+                <p className="text-xs text-white/70">{seg.desc}</p>
               </Card>
             )
           })}
@@ -108,8 +108,8 @@ export default function AppEnterprisePage() {
           ].map((p, i) => (
             <Card key={i} className="p-4 text-center space-y-1">
               <p className="font-semibold text-sm">{p.name}</p>
-              <p className="text-lg font-bold text-violet-600">{p.price}</p>
-              <p className="text-xs text-muted-foreground">{p.highlight}</p>
+              <p className="text-lg font-bold text-sky-300">{p.price}</p>
+              <p className="text-xs text-white/70">{p.highlight}</p>
             </Card>
           ))}
         </div>
@@ -126,7 +126,7 @@ export default function AppEnterprisePage() {
       </div>
 
       {/* Impressum Enterprise */}
-      <div className="text-center text-xs text-muted-foreground border-t pt-6">
+      <div className="text-center text-xs text-white/70 border-t pt-6">
         <p>ai tour guide ug (haftungsbeschränkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
       </div>
     </div>

@@ -21,10 +21,10 @@ const APP_URL = 'https://consumer.guidetranslator.com'
 
 export default function AppConsumerPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
@@ -62,25 +62,25 @@ export default function AppConsumerPage() {
           { value: '<1s', label: 'Latenz' },
         ].map((stat, i) => (
           <div key={i} className="text-center p-4 rounded-lg bg-muted/50">
-            <div className="text-2xl font-bold text-sky-600">{stat.value}</div>
-            <div className="text-sm text-muted-foreground">{stat.label}</div>
+            <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
+            <div className="text-sm text-white/70">{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Features */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Alles, was du brauchst</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Alles, was du brauchst</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {FEATURES.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-5 space-y-3">
+              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
                 <div className="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-sky-600" />
+                  <Icon className="w-5 h-5 text-sky-300" />
                 </div>
                 <h3 className="font-semibold">{feat.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feat.desc}</p>
+                <p className="text-sm text-white/70 leading-relaxed">{feat.desc}</p>
               </Card>
             )
           })}
@@ -89,30 +89,30 @@ export default function AppConsumerPage() {
 
       {/* Preise */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Preise</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Preise</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-bold text-lg">Free</h3>
             <div className="text-3xl font-bold">0 EUR</div>
             <ul className="space-y-2 text-sm">
               {['22 Sprachen + Offline', '500 Übersetzungen/Tag', 'Gesprächsmodus', 'Kamera-OCR', 'Phrasebook'].map((h, j) => (
                 <li key={j} className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-sky-600 mt-0.5 shrink-0" />
+                  <Check className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
                   <span>{h}</span>
                 </li>
               ))}
             </ul>
           </Card>
-          <Card className="p-6 space-y-4 border-sky-300 dark:border-sky-700">
+          <Card className="p-6 space-y-4 border-sky-300 dark:border-sky-700 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-bold text-lg">Personal Pro</h3>
             <div className="flex items-baseline gap-1">
               <span className="text-3xl font-bold">4,99 EUR</span>
-              <span className="text-muted-foreground">/Mo</span>
+              <span className="text-white/70">/Mo</span>
             </div>
             <ul className="space-y-2 text-sm">
               {['30 Sprachen', 'Azure-Qualität', 'Unbegrenzte Übersetzungen', 'Live-Session (3 Hörer)', 'Kein Werbebanner'].map((h, j) => (
                 <li key={j} className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-sky-600 mt-0.5 shrink-0" />
+                  <Check className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
                   <span>{h}</span>
                 </li>
               ))}
@@ -129,7 +129,7 @@ export default function AppConsumerPage() {
             <ArrowRight className="h-4 w-4" />
           </Button>
         </a>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-white/70">
           Keine Registrierung nötig. Öffne die App und leg los.
         </p>
       </div>

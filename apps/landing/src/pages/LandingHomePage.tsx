@@ -60,10 +60,10 @@ const STATS = [
 
 export default function LandingHomePage() {
   return (
-    <div className="relative max-w-5xl mx-auto space-y-20 py-12 px-4">
+    <div className="relative max-w-5xl mx-auto space-y-20 py-12 px-4 text-white">
       {/* Page Background Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.04]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
       {/* Hero */}
       <div className="relative text-center space-y-6 py-12 sm:py-20 overflow-hidden rounded-2xl">
@@ -108,9 +108,9 @@ export default function LandingHomePage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {STATS.map((stat, i) => (
-          <div key={i} className="text-center p-4 rounded-lg bg-muted/50">
-            <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
-            <div className="text-sm text-muted-foreground">{stat.label}</div>
+          <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm">
+            <div className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</div>
+            <div className="text-sm text-white/70">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -118,8 +118,8 @@ export default function LandingHomePage() {
       {/* 3 Apps */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold">3 Apps, ein Ökosystem</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">3 Apps, ein Ökosystem</h2>
+          <p className="text-white/70 max-w-xl mx-auto drop-shadow">
             Jede App ist auf einen Anwendungsfall optimiert — zusammen bilden sie die komplette Plattform.
           </p>
         </div>
@@ -127,17 +127,17 @@ export default function LandingHomePage() {
           {APPS.map((app, i) => {
             const Icon = app.icon
             return (
-              <Card key={i} className="p-6 space-y-4 hover:shadow-md transition-shadow">
+              <Card key={i} className="p-6 space-y-4 hover:shadow-md transition-shadow bg-black/30 backdrop-blur-sm border-white/10">
                 <div className={`w-12 h-12 rounded-lg ${app.color} flex items-center justify-center`}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">Fintutto {app.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{app.desc}</p>
+                  <h3 className="font-bold text-lg text-white">Fintutto {app.name}</h3>
+                  <p className="text-sm text-white/70 mt-1">{app.desc}</p>
                 </div>
                 <div className="flex gap-2">
                   <Link to={app.link}>
-                    <Button variant="outline" size="sm" className="gap-1">
+                    <Button variant="outline" size="sm" className="gap-1 border-white/30 text-white hover:bg-white/10">
                       Mehr erfahren <ChevronRight className="w-3 h-3" />
                     </Button>
                   </Link>
@@ -156,18 +156,18 @@ export default function LandingHomePage() {
       {/* 7 Produkte */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold">7 Produkte in einer Plattform</h2>
-          <p className="text-muted-foreground">Von Text-Übersetzung bis Bluetooth-Transport</p>
+          <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">7 Produkte in einer Plattform</h2>
+          <p className="text-white/70 drop-shadow">Von Text-Übersetzung bis Bluetooth-Transport</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {PRODUCTS.map((prod, i) => {
             const Icon = prod.icon
             return (
-              <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-                <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-black/30 backdrop-blur-sm">
+                <Icon className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-medium text-sm">{prod.name}</span>
-                  <p className="text-xs text-muted-foreground mt-0.5">{prod.desc}</p>
+                  <span className="font-medium text-sm text-white">{prod.name}</span>
+                  <p className="text-xs text-white/70 mt-0.5">{prod.desc}</p>
                 </div>
               </div>
             )
@@ -175,7 +175,7 @@ export default function LandingHomePage() {
         </div>
         <div className="text-center">
           <Link to="/features">
-            <Button variant="link" className="gap-1">
+            <Button variant="link" className="gap-1 text-sky-300">
               Alle Features im Detail <ArrowRight className="w-3 h-3" />
             </Button>
           </Link>
@@ -185,21 +185,21 @@ export default function LandingHomePage() {
       {/* Zielgruppen */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold">Für jede Zielgruppe der richtige Plan</h2>
-          <p className="text-muted-foreground">Von Free bis Enterprise — 11 Pläne in 5 Segmenten</p>
+          <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">Für jede Zielgruppe der richtige Plan</h2>
+          <p className="text-white/70 drop-shadow">Von Free bis Enterprise — 11 Pläne in 5 Segmenten</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {SEGMENTS.map((seg, i) => {
             const Icon = seg.icon
             return (
-              <Card key={i} className="p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-primary" />
+              <Card key={i} className="p-5 flex items-start gap-4 bg-black/30 backdrop-blur-sm border-white/10">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-sky-300" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-semibold">{seg.name}</h3>
-                  <p className="text-sm text-muted-foreground">{seg.desc}</p>
-                  <p className="text-xs font-medium text-primary">{seg.plan}</p>
+                  <h3 className="font-semibold text-white">{seg.name}</h3>
+                  <p className="text-sm text-white/70">{seg.desc}</p>
+                  <p className="text-xs font-medium text-sky-300">{seg.plan}</p>
                 </div>
               </Card>
             )
@@ -209,7 +209,7 @@ export default function LandingHomePage() {
 
       {/* Technische Highlights */}
       <div className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center">Warum Fintutto Translator?</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-center drop-shadow-lg">Warum Fintutto Translator?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             { icon: Wifi, title: 'Offline-fähig', desc: '54 Sprachpaare via On-Device KI (Opus-MT + Whisper). Keine Daten verlassen das Gerät.' },
@@ -221,17 +221,17 @@ export default function LandingHomePage() {
           ].map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-5 space-y-2">
-                <Icon className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold text-sm">{feat.title}</h3>
-                <p className="text-xs text-muted-foreground">{feat.desc}</p>
+              <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
+                <Icon className="w-5 h-5 text-sky-300" />
+                <h3 className="font-semibold text-sm text-white">{feat.title}</h3>
+                <p className="text-xs text-white/70">{feat.desc}</p>
               </Card>
             )
           })}
         </div>
         <div className="text-center">
           <Link to="/technology">
-            <Button variant="link" className="gap-1">
+            <Button variant="link" className="gap-1 text-sky-300">
               Technische Architektur im Detail <ArrowRight className="w-3 h-3" />
             </Button>
           </Link>
@@ -247,8 +247,8 @@ export default function LandingHomePage() {
           'Made in Germany',
           'PWA + Android',
         ].map((signal, i) => (
-          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-xs font-medium">
-            <Check className="w-3 h-3 text-primary" />
+          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-sm text-xs font-medium text-white">
+            <Check className="w-3 h-3 text-sky-300" />
             {signal}
           </span>
         ))}
@@ -257,9 +257,9 @@ export default function LandingHomePage() {
       {/* News-Teaser */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Neuigkeiten</h2>
+          <h2 className="text-2xl font-bold drop-shadow-lg">Neuigkeiten</h2>
           <Link to="/news">
-            <Button variant="link" className="gap-1">
+            <Button variant="link" className="gap-1 text-sky-300">
               Alle News <ChevronRight className="w-3 h-3" />
             </Button>
           </Link>
@@ -270,10 +270,10 @@ export default function LandingHomePage() {
             { date: 'Februar 2026', title: '45 Sprachen + 10 Migrationssprachen', desc: 'Dari, Paschtu, Tigrinya, Somali und weitere Migrationssprachen ab sofort verfügbar.' },
             { date: 'Januar 2026', title: 'BLE-Transport & Hotspot-Modus', desc: 'Live-Übersetzung per Bluetooth und lokalem WLAN — komplett ohne Internet.' },
           ].map((news, i) => (
-            <Card key={i} className="p-5 space-y-2">
-              <p className="text-xs text-primary font-medium">{news.date}</p>
-              <h3 className="font-semibold text-sm">{news.title}</h3>
-              <p className="text-xs text-muted-foreground">{news.desc}</p>
+            <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
+              <p className="text-xs text-sky-300 font-medium">{news.date}</p>
+              <h3 className="font-semibold text-sm text-white">{news.title}</h3>
+              <p className="text-xs text-white/70">{news.desc}</p>
             </Card>
           ))}
         </div>
@@ -281,8 +281,8 @@ export default function LandingHomePage() {
 
       {/* CTA */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl sm:text-3xl font-bold">Jetzt starten</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">Jetzt starten</h2>
+        <p className="text-white/70 drop-shadow">
           Kostenlos. Keine Registrierung. Keine Installation.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -293,13 +293,13 @@ export default function LandingHomePage() {
             </Button>
           </a>
           <Link to="/investors">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Investor Relations
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
           <Link to="/apps/translator">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
               Apps entdecken
               <ChevronRight className="h-4 w-4" />
             </Button>
