@@ -115,6 +115,11 @@ export default function AppEnterprisePage() {
           </Button>
         </a>
       </div>
+
+      {/* Impressum Enterprise */}
+      <div className="text-center text-xs text-muted-foreground border-t pt-6">
+        <p>ai tour guide ug (haftungsbeschraenkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
+      </div>
     </div>
   )
 }

@@ -115,7 +115,7 @@ export default function LandingLayout() {
             </div>
           </div>
           <div className="mt-8 pt-4 border-t text-center text-xs text-muted-foreground">
-            <p>ai tour ug (haftungsbeschraenkt) · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
+            <p>fintutto ug (haftungsbeschraenkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
             <p className="mt-1">Fintutto Translator v3.1 · Stand: Maerz 2026</p>
           </div>
         </div>
