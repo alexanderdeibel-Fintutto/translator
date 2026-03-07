@@ -24,7 +24,9 @@
 ### Kernannahmen
 
 - **Standort:** Coworking-Space in MV (Rostock/Schwerin) + Remote-Team
-- **Gruender-Gehalt:** 4.500 EUR/Monat brutto (marktkonform Geschaeftsfuehrer Startup MV)
+- **Gruender-Gehalt:** 7.000 EUR/Monat brutto (GF + CTO Doppelrolle, marktkonform)
+- **Zusaetzliche Verguetung:** Tantieme (bis 25% Gewinn), bAV (604 EUR/Mon), Dienstwagen, Sachbezuege
+- **Details:** Siehe docs/09-verguetungsstruktur-steuerberater.md
 - **Arbeitgeber-Nebenkosten:** 23% auf Bruttogehaelter (SV-Beitraege AG-Anteil inkl. Umlagen)
 - **Waehrung:** Alle Betraege in EUR, brutto inkl. MwSt wo anwendbar
 
@@ -34,19 +36,28 @@
 
 ### 2.1 Gehaltsstruktur nach Rollen
 
-| Rolle | Brutto/Jahr | Brutto/Monat | + AG-Kosten (21%) | Gesamt/Monat | Eintritt |
+| Rolle | Brutto/Jahr | Brutto/Monat | + AG-Kosten (23%) | Gesamt/Monat | Eintritt |
 |-------|------------|-------------|-------------------|-------------|----------|
-| **Gruender/CEO** (Alexander Deibel) | 54.000 | 4.500 | 945 | **5.445** | Monat 1 |
-| **CTO / Lead Developer** | 96.000 | 8.000 | 1.680 | **9.680** | Monat 3 |
-| **AI/ML Engineer (NLP)** | 84.000 | 7.000 | 1.470 | **8.470** | Monat 6 |
-| **Sales & BD Manager** | 78.000 | 6.500 | 1.365 | **7.865** | Monat 4 |
-| **Mobile Developer (iOS)** | 78.000 | 6.500 | 1.365 | **7.865** | Monat 7 |
-| **UX/UI Designer** | 66.000 | 5.500 | 1.155 | **6.655** | Monat 9 |
-| **Marketing Manager** | 66.000 | 5.500 | 1.155 | **6.655** | Monat 10 |
-| **Customer Success Manager** | 54.000 | 4.500 | 945 | **5.445** | Monat 12 |
-| **DevOps / Cloud Engineer** | 78.000 | 6.500 | 1.365 | **7.865** | Monat 14 |
+| **Gruender/GF+CTO** (Alexander Deibel) | 84.000 | 7.000 | 1.610 | **8.610** | Monat 1 |
+| **Senior Developer** | 90.000 | 7.500 | 1.725 | **9.225** | Monat 6 |
+| **AI/ML Engineer (NLP)** | 84.000 | 7.000 | 1.610 | **8.610** | Monat 8 |
+| **Sales & BD Manager** | 78.000 | 6.500 | 1.495 | **7.995** | Monat 4 |
+| **Mobile Developer (iOS)** | 78.000 | 6.500 | 1.495 | **7.995** | Monat 9 |
+| **UX/UI Designer** | 66.000 | 5.500 | 1.265 | **6.765** | Monat 10 |
+| **Marketing Manager** | 66.000 | 5.500 | 1.265 | **6.765** | Monat 12 |
+| **Customer Success Manager** | 54.000 | 4.500 | 1.035 | **5.535** | Monat 14 |
 
-> **Hinweis:** Gehaelter orientiert am oberen Marktniveau fuer Startups in MV mit Remote-Optionen. Quellen: Stepstone Gehaltsreport 2025/2026, Glassdoor, Kununu, Destatis. MV-Standort mit Remote-Zuschlag, da Fachkraefte teils ueberregional rekrutiert werden.
+> **Hinweis:** Der Gruender uebernimmt die GF- und CTO-Rolle in Personalunion.
+> Dadurch entfaellt die separate CTO-Einstellung (Einsparung ~115.000 EUR/Jahr).
+> Gehaelter orientiert am oberen Marktniveau fuer Startups in MV mit Remote-Optionen.
+> Quellen: Stepstone Gehaltsreport 2025/2026, Glassdoor, Kununu, Destatis.
+>
+> **Zusaetzliche GF-Verguetung (nicht in Tabelle):**
+> - Tantieme: bis 25% des Jahresgewinns (erst ab Gewinn relevant)
+> - bAV: 604 EUR/Mon (steuer-/SV-frei)
+> - Dienstwagen: ~800 EUR/Mon UG-Kosten (nach Foerdermitteleingang)
+> - Sachbezuege: ~350 EUR/Mon steuerfrei
+> - Siehe Details: docs/09-verguetungsstruktur-steuerberater.md
 
 ### 2.2 Freelancer / Externe Dienstleister
 
@@ -386,15 +397,19 @@ Annahmen:
 
 ## 11. FOERDER-SPEZIFISCHE KOSTENAUFSTELLUNGEN
 
-### 11.1 EFRE MV — Zuwendungsfaehige Kosten (150.000 EUR Antrag)
+### 11.1 EFRE MV — Zuwendungsfaehige Kosten (~172.000 EUR Antrag)
 
 | Kostenart | Betrag | Anteil |
 |-----------|--------|--------|
-| Personalkosten (direkt F&E) | 90.000 EUR | 60% |
-| Sachkosten (Cloud-Infrastruktur, Hardware) | 30.000 EUR | 20% |
-| Fremdleistungen (Patentanwalt, UX-Research) | 22.500 EUR | 15% |
-| Gemeinkosten-Pauschale (15% auf Personalkosten) | 7.500 EUR | 5% |
-| **TOTAL** | **150.000 EUR** | **100%** |
+| Personalkosten (FuE-Anteil GF/CTO + Mitarbeiter) | 173.000 EUR | 60% |
+| Sachkosten (Cloud-Infrastruktur, Hardware) | 50.000 EUR | 18% |
+| Fremdleistungen (Patentanwalt, UX-Research) | 37.500 EUR | 13% |
+| Gemeinkosten-Pauschale (15% auf Personalkosten) | 25.950 EUR | 9% |
+| **Zuwendungsfaehige Kosten TOTAL** | **286.450 EUR** | **100%** |
+| **EFRE-Zuschuss (60%)** | **171.870 EUR** | |
+
+> GF/CTO-Personalkosten: 7.000 EUR brutto x 1,23 AG x 70% FuE x 12 Mon = 72.324 EUR
+> Nicht-FuE-Verguetung (Tantieme, bAV, Dienstwagen) ist NICHT enthalten.
 
 ### 11.2 FFplus Generative AI — Zuwendungsfaehige Kosten (100.000 EUR Antrag)
 
@@ -406,15 +421,22 @@ Annahmen:
 | Sonstige direkte Kosten | 7.000 EUR | 7% |
 | **TOTAL** | **100.000 EUR** | **100%** |
 
-### 11.3 EIT Digital SPIN:Rise — Budget (200.000 EUR Antrag)
+### 11.3 ZIM Einzelprojekt — Budget (bis 690.000 EUR, Alternative zu EFRE)
 
 | Kostenart | Betrag | Anteil |
 |-----------|--------|--------|
-| Produktentwicklung (Personal + Infra) | 100.000 EUR | 50% |
-| Go-to-Market (Marketing, Sales) | 60.000 EUR | 30% |
-| Business Development (Messen, Reisen) | 25.000 EUR | 12.5% |
-| IP-Schutz und Rechtsberatung | 15.000 EUR | 7.5% |
-| **TOTAL** | **200.000 EUR** | **100%** |
+| Personalkosten FuE (GF/CTO + Team) | 280.000 EUR | 56% |
+| Fremdleistungen (FuE-Dienstleister) | 80.000 EUR | 16% |
+| Sachkosten (Cloud, HPC, Hardware) | 90.000 EUR | 18% |
+| Gemeinkosten (Pauschale) | 50.000 EUR | 10% |
+| **Zuwendungsfaehige Kosten TOTAL** | **500.000 EUR** | **100%** |
+| **ZIM-Zuschuss (45% kleine Unternehmen)** | **225.000 EUR** | |
+
+> ZIM hat VORRANG vor EFRE (siehe EFRE-Richtlinie). Bei ZIM gibt es
+> keinen Stundensatz-Deckel wie bei TBI/EFRE. Das hoehere GF+CTO-Gehalt
+> (7.000 EUR) ist bei ZIM leichter darstellbar.
+> **ACHTUNG:** EFRE und ZIM schliessen sich gegenseitig aus fuer
+> die gleichen Kostenpositionen.
 
 ### 11.4 EIC Accelerator — Budget (250.000 EUR Grant-Anteil)
 

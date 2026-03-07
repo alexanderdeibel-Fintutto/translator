@@ -2,7 +2,7 @@
 
 **Programm:** EFRE MV 2021-2027, Prioritaet 1: Innovation und intelligenter Wandel
 **Antragsteller:** Fintutto UG (i.G.) / Alexander Deibel
-**Beantragter Zuschuss:** 150.000 EUR (bei 60% Foerderquote = 250.000 EUR Gesamtkosten)
+**Beantragter Zuschuss:** 171.870 EUR (bei 60% Foerderquote = 286.450 EUR Gesamtkosten)
 **Bewilligungsbehoerde:** TBI Technologie-Beratungs-Institut GmbH, Schwerin
 **Beratung:** TBI GmbH (www.tbi-mv.de) + LFI MV (www.lfi-mv.de)
 
@@ -52,7 +52,7 @@ Das Produkt adressiert eine erhebliche Marktluecke: Bestehende Uebersetzungsloes
 ### 1.5 Bezug zu MV
 
 - **Firmensitz:** Mecklenburg-Vorpommern (Coworking-Space in Rostock/Schwerin)
-- **Arbeitsplaetze:** Bis zu 5 neue Arbeitsplaetze in MV innerhalb von 12 Monaten (CTO, Sales, AI Engineer, Mobile Dev, UX Designer — teils remote mit MV-Anbindung)
+- **Arbeitsplaetze:** Bis zu 4 neue Arbeitsplaetze in MV innerhalb von 12 Monaten (Senior Developer, Sales, AI Engineer, UX Designer — teils remote mit MV-Anbindung). CTO-Rolle wird vom Gruender/GF wahrgenommen.
 - **Regionale Wertschoepfung:** Nutzung regionaler Dienstleister (Steuerberatung, Rechtsberatung, TBI-Beratung)
 - **Tourismus-Bezug:** MV als Tourismusland profitiert direkt — Guide-Translation fuer Ruegen, Usedom, Wismar, Stralsund (UNESCO-Welterbe)
 - **Pilotprojekte:** Geplante B2B-Piloten mit Tourismus-Unternehmen in MV
@@ -114,11 +114,11 @@ AP 5: IP-Schutz              █████████████████
 
 | Kostenart | Betrag | Foerderquote | Zuschuss |
 |-----------|--------|-------------|---------|
-| **Personalkosten** | 150.000 EUR | 60%* | 90.000 EUR |
+| **Personalkosten (nur FuE-Anteil)** | 173.000 EUR | 60%* | 103.800 EUR |
 | **Sachkosten** | 50.000 EUR | 60%* | 30.000 EUR |
 | **Fremdleistungen** | 37.500 EUR | 60%* | 22.500 EUR |
-| **Gemeinkosten (15% auf Personal)** | 12.500 EUR | 60%* | 7.500 EUR |
-| **TOTAL** | **250.000 EUR** | **60%*** | **150.000 EUR** |
+| **Gemeinkosten (15% auf Personal)** | 25.950 EUR | 60%* | 15.570 EUR |
+| **TOTAL** | **286.450 EUR** | **60%*** | **171.870 EUR** |
 
 > *Foerderquote: Kleine Unternehmen erhalten bis 60% bei experimenteller
 > Entwicklung, bis 80% bei industrieller Forschung. In Verbundprojekten
@@ -128,14 +128,21 @@ AP 5: IP-Schutz              █████████████████
 
 ### 3.2 Personalkosten (Detail)
 
-| Position | Monate | Brutto/Monat | AG-Kosten (23%) | Gesamt |
-|----------|--------|-------------|-----------------|--------|
-| Gruender/Projektleiter (50% FuE-Anteil) | 12 | 2.250 | 518 | 33.216 EUR |
-| CTO / Lead Developer (80% FuE) | 10 | 6.400 | 1.472 | 78.720 EUR |
-| AI/ML Engineer (100% FuE) | 5 | 7.000 | 1.610 | 43.050 EUR |
-| **SUMME Personal** | | | | **~150.000 EUR** |
+| Position | Monate | Brutto/Monat | AG-Kosten (23%) | FuE-Anteil | Foerderfaehig/Mon | Gesamt |
+|----------|--------|-------------|-----------------|------------|-------------------|--------|
+| **GF + CTO** (Alexander Deibel) | 12 | 7.000 | 1.610 | 70% | 6.027 | 72.324 EUR |
+| Senior Developer (extern, ab M6) | 7 | 7.500 | 1.725 | 90% | 8.303 | 58.118 EUR |
+| AI/ML Engineer (ab M8) | 5 | 7.000 | 1.610 | 100% | 8.610 | 43.050 EUR |
+| **SUMME Personal (foerderfaehig)** | | | | | | **~173.000 EUR** |
 
-> **Hinweis:** Personalkosten beziehen sich ausschliesslich auf den FuE-Anteil der Taetigkeit. Nicht-FuE-Taetigkeiten (Vertrieb, Marketing, Administration) sind nicht enthalten.
+> **Hinweis:** Der Gruender/GF uebernimmt gleichzeitig die Rolle des technischen
+> Leiters (CTO). Dies ist im GF-Anstellungsvertrag dokumentiert. Der FuE-Anteil
+> (70%) wird durch Stundennachweis belegt (max. 143 produktive Stunden/Monat).
+> Nicht-FuE-Taetigkeiten (30%: Geschaeftsfuehrung, Vertrieb, Finanzen) sind
+> nicht in den foerderfaehigen Kosten enthalten.
+>
+> Der Senior Developer wird als Angestellter (nicht Freelancer) eingestellt.
+> Alternativ: Fremdleistung ueber externe Dienstleister (siehe 3.4).
 
 ### 3.3 Sachkosten (Detail)
 
@@ -165,12 +172,18 @@ AP 5: IP-Schutz              █████████████████
 
 | Finanzierungsquelle | Betrag | Anteil |
 |--------------------|--------|--------|
-| **EFRE-Zuschuss (beantragt)** | 150.000 EUR | 60% |
-| **Eigenmittel / Eigenleistung** | 50.000 EUR | 20% |
-| **Weitere Foerderung (FFplus, EIT Digital)** | 50.000 EUR | 20% |
-| **TOTAL** | **250.000 EUR** | **100%** |
+| **EFRE-Zuschuss (beantragt)** | 171.870 EUR | 60% |
+| **Eigenmittel / Eigenleistung** | 64.580 EUR | 22,5% |
+| **Weitere Foerderung (ZIM, Forschungszulage)** | 50.000 EUR | 17,5% |
+| **TOTAL** | **286.450 EUR** | **100%** |
 
-> **Hinweis:** Der Eigenanteil wird durch Eigenleistung des Gruenders und geplante weitere Foerdermittel (FFplus Generative AI, EIT Digital SPIN:Rise) abgedeckt. Eine Doppelfoerderung gleicher Kostenpositionen wird ausgeschlossen.
+> **Hinweis:** Der Eigenanteil wird durch Eigenleistung des Gruenders und
+> geplante weitere Foerdermittel abgedeckt. Die Personalkosten des GF/CTO
+> (Alexander Deibel) umfassen nur den dokumentierten FuE-Anteil (70%).
+> Nicht-FuE-Verguetungsbestandteile (Tantieme, Sachbezuege) sind nicht
+> in den foerderfaehigen Kosten enthalten. Verbundene Unternehmen:
+> AI Tour Guide UG, Rostock (Mitgruender Alexander Deibel).
+> Eine Doppelfoerderung gleicher Kostenpositionen wird ausgeschlossen.
 
 ---
 

@@ -201,26 +201,29 @@ Revenue projections ensure financial sustainability beyond the funding period:
 
 | Cost Category | Amount | Share |
 |--------------|--------|-------|
-| **Personnel** | 180.000 EUR | 60% |
-| **Cloud & HPC** | 55.000 EUR | 18% |
-| **Equipment** | 20.000 EUR | 7% |
+| **Personnel** | 164.000 EUR | 55% |
+| **Cloud & HPC** | 60.000 EUR | 20% |
+| **Equipment** | 25.000 EUR | 8% |
 | **Travel & Dissemination** | 18.000 EUR | 6% |
-| **Subcontracting** | 15.000 EUR | 5% |
-| **Other Direct Costs** | 12.000 EUR | 4% |
+| **Subcontracting** | 18.000 EUR | 6% |
+| **Other Direct Costs** | 15.000 EUR | 5% |
 | **TOTAL** | **300.000 EUR** | **100%** |
 
 ### 5.2 Personnel (Detail)
 
 | Role | Months | Monthly Cost | Total |
 |------|--------|-------------|-------|
-| CEO / Project Coordinator (40%) | 10 | 2.180 | 21.800 EUR |
-| CTO / Lead Developer (80%) | 8 | 7.744 | 61.952 EUR |
+| CEO + CTO / Project Coordinator & Tech Lead (60%) | 10 | 5.166 | 51.660 EUR |
 | AI/ML Engineer (100%) | 7 | 8.610 | 60.270 EUR |
-| Mobile Developer (60%) | 5 | 4.719 | 23.595 EUR |
+| Senior Developer (80%) | 6 | 7.380 | 44.280 EUR |
 | UX/UI Designer (30%) | 4 | 1.997 | 7.986 EUR |
-| **TOTAL Personnel** | | | **~180.000 EUR** |
+| **TOTAL Personnel** | | | **~164.000 EUR** |
 
 > All personnel costs include employer social security contributions (23%).
+> The CEO simultaneously serves as CTO (technical leadership). The FuE share
+> of 60% for this role reflects the split between technical work (model
+> integration, architecture) and project coordination/management.
+> No separate CTO hire is planned — the founder covers both roles.
 
 ### 5.3 Cloud & HPC
 
@@ -274,14 +277,16 @@ Revenue projections ensure financial sustainability beyond the funding period:
 
 ### 6.2 Key Personnel
 
-**Alexander Deibel — CEO / Project Coordinator**
+**Alexander Deibel — CEO + CTO / Project Coordinator & Technical Lead**
 - Solo-built production-ready translation platform (13.296 lines, 87 tests)
 - Co-founder AI Tour Guide UG (tourism tech, since 2024)
-- Deep domain knowledge in translation technology and tourism
+- Deep domain knowledge in translation technology, AI/ML, and tourism
+- Technical expertise: React/TypeScript, ML/AI (NMT, Whisper), BLE protocols, WASM
+- Responsible for: Project coordination, platform architecture, model integration
 
-**CTO (to be hired, Month 3)**
-- Required profile: Senior Full-Stack (React/TypeScript/Node.js), ML experience
-- Responsible for: Platform architecture, model integration, deployment
+**Senior Developer (to be hired, Month 6)**
+- Required profile: Senior Full-Stack (React/TypeScript/Node.js)
+- Responsible for: Platform development, mobile deployment, testing
 
 **AI/ML Engineer (to be hired, Month 6)**
 - Required profile: NLP specialization, experience with NMT fine-tuning, WASM deployment
