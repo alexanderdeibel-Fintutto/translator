@@ -18,8 +18,8 @@ export default function LeadList() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filterSegment, setFilterSegment] = useState('')
-  const [filterStage, setFilterStage] = useState('')
+  const [filterSegment, setFilterSegment] = useState('__all__')
+  const [filterStage, setFilterStage] = useState('__all__')
   const [showForm, setShowForm] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
 
@@ -32,8 +32,8 @@ export default function LeadList() {
 
   const filtered = useMemo(() => {
     return leads.filter(l => {
-      if (filterSegment && l.segment !== filterSegment) return false
-      if (filterStage && l.pipeline_stage !== filterStage) return false
+      if (filterSegment !== '__all__' && l.segment !== filterSegment) return false
+      if (filterStage !== '__all__' && l.pipeline_stage !== filterStage) return false
       if (search) {
         const q = search.toLowerCase()
         if (!l.name.toLowerCase().includes(q) && !l.email.toLowerCase().includes(q) && !(l.company?.toLowerCase().includes(q))) return false
@@ -91,7 +91,7 @@ export default function LeadList() {
             <SelectValue placeholder="Segment" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Alle Segmente</SelectItem>
+            <SelectItem value="__all__">Alle Segmente</SelectItem>
             {SEGMENTS.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
           </SelectContent>
         </Select>
@@ -100,7 +100,7 @@ export default function LeadList() {
             <SelectValue placeholder="Pipeline-Stufe" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Alle Stufen</SelectItem>
+            <SelectItem value="__all__">Alle Stufen</SelectItem>
             {PIPELINE_STAGES.map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
           </SelectContent>
         </Select>

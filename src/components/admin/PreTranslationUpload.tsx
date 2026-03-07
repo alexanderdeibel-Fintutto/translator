@@ -33,7 +33,7 @@ export default function PreTranslationUpload({
   const [title, setTitle] = useState('')
   const [type, setType] = useState<PreTranslationType>('speech')
   const [content, setContent] = useState('')
-  const [participantId, setParticipantId] = useState('')
+  const [participantId, setParticipantId] = useState('__none__')
   const [saving, setSaving] = useState(false)
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,7 +54,7 @@ export default function PreTranslationUpload({
     try {
       const doc = await createPreTranslation({
         session_id: sessionId,
-        participant_id: participantId || null,
+        participant_id: participantId === '__none__' ? null : participantId,
         title,
         type,
         content,
@@ -101,7 +101,7 @@ export default function PreTranslationUpload({
               <SelectValue placeholder="Keiner" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Keiner</SelectItem>
+              <SelectItem value="__none__">Keiner</SelectItem>
               {participants.map(p => (
                 <SelectItem key={p.id} value={p.id}>{p.name} ({p.role})</SelectItem>
               ))}

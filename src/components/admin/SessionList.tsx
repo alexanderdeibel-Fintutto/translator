@@ -20,8 +20,8 @@ export default function SessionList() {
   const [sessions, setSessions] = useState<EventSession[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filterType, setFilterType] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
+  const [filterType, setFilterType] = useState('__all__')
+  const [filterStatus, setFilterStatus] = useState('__all__')
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
@@ -33,8 +33,8 @@ export default function SessionList() {
 
   const filtered = useMemo(() => {
     return sessions.filter(s => {
-      if (filterType && s.type !== filterType) return false
-      if (filterStatus && s.status !== filterStatus) return false
+      if (filterType !== '__all__' && s.type !== filterType) return false
+      if (filterStatus !== '__all__' && s.status !== filterStatus) return false
       if (search) {
         const q = search.toLowerCase()
         if (
@@ -71,7 +71,7 @@ export default function SessionList() {
             <SelectValue placeholder="Typ" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Alle Typen</SelectItem>
+            <SelectItem value="__all__">Alle Typen</SelectItem>
             {EVENT_SESSION_TYPES.map(t => (
               <SelectItem key={t.id} value={t.id}>{t.label}</SelectItem>
             ))}
@@ -82,7 +82,7 @@ export default function SessionList() {
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Alle Status</SelectItem>
+            <SelectItem value="__all__">Alle Status</SelectItem>
             {EVENT_SESSION_STATUSES.map(s => (
               <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
             ))}

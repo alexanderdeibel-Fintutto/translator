@@ -62,12 +62,12 @@ export default function NoteForm({ leadId, onCreated }: NoteFormProps) {
         </div>
         <div className="flex-1 space-y-1.5">
           <Label>Follow-up</Label>
-          <Select value={followUpDays?.toString() ?? ''} onValueChange={v => setFollowUpDays(v ? parseInt(v, 10) : null)}>
+          <Select value={followUpDays?.toString() ?? '__none__'} onValueChange={v => setFollowUpDays(v === '__none__' ? null : parseInt(v, 10))}>
             <SelectTrigger>
               <SelectValue placeholder="Kein Follow-up" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Kein Follow-up</SelectItem>
+              <SelectItem value="__none__">Kein Follow-up</SelectItem>
               {FOLLOW_UP_PRESETS.map(p => (
                 <SelectItem key={p.days} value={p.days.toString()}>{p.label}</SelectItem>
               ))}
