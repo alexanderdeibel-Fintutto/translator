@@ -1,6 +1,9 @@
 // Supabase Edge Function: Admin Create User (Lead Conversion)
 // Deploy with: supabase functions deploy admin-create-user
 // Required secrets: RESEND_API_KEY (optional, for welcome email)
+//
+// IMPORTANT: This function always returns HTTP 200 with { success: true/false }
+// because supabase-js functions.invoke() discards response bodies on non-2xx.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -14,6 +17,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+function jsonResponse(body: Record<string, unknown>) {
+  return new Response(JSON.stringify(body), {
+    status: 200, // Always 200 so supabase-js passes the body through
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+}
+
+function errorResponse(error: string, code?: string) {
+  console.log('ERROR:', error)
+  return jsonResponse({ success: false, error, code: code ?? 'ERROR' })
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -22,24 +37,18 @@ Deno.serve(async (req: Request) => {
   try {
     // Validate required env vars
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !SUPABASE_ANON_KEY) {
-      console.log('ERROR: Missing env vars:', {
+      console.log('Missing env vars:', {
         SUPABASE_URL: !!SUPABASE_URL,
         SUPABASE_SERVICE_ROLE_KEY: !!SUPABASE_SERVICE_ROLE_KEY,
         SUPABASE_ANON_KEY: !!SUPABASE_ANON_KEY,
       })
-      return new Response(JSON.stringify({ error: 'Server configuration error: missing environment variables' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse('Server configuration error: missing environment variables', 'CONFIG_ERROR')
     }
 
     // Verify auth — must be admin
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse('Nicht autorisiert - kein Auth-Header', 'UNAUTHORIZED')
     }
 
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -48,10 +57,7 @@ Deno.serve(async (req: Request) => {
 
     const { data: { user: callerUser } } = await userClient.auth.getUser()
     if (!callerUser) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse('Nicht autorisiert - ungueltiger Token', 'UNAUTHORIZED')
     }
 
     // Use service role client for admin operations (bypasses RLS)
@@ -67,17 +73,11 @@ Deno.serve(async (req: Request) => {
     console.log('Caller:', callerUser.id, 'Profile:', callerProfile, 'Error:', profileLookupError)
 
     if (profileLookupError) {
-      return new Response(JSON.stringify({ error: `Profile lookup failed: ${profileLookupError.message}` }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse(`Profil-Lookup fehlgeschlagen: ${profileLookupError.message}`, 'PROFILE_LOOKUP_FAILED')
     }
 
     if (!callerProfile || callerProfile.role !== 'admin') {
-      return new Response(JSON.stringify({ error: `Admin role required. Your role: ${callerProfile?.role ?? 'not found'}` }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse(`Admin-Rolle erforderlich. Ihre Rolle: ${callerProfile?.role ?? 'nicht gefunden'}`, 'FORBIDDEN')
     }
 
     // Parse request — leadId is optional (direct user creation vs lead conversion)
@@ -86,10 +86,7 @@ Deno.serve(async (req: Request) => {
     console.log('Request body:', JSON.stringify({ leadId, tierId, email, displayName, role: requestedRole, hasPassword: !!providedPassword }))
 
     if (!email) {
-      return new Response(JSON.stringify({ error: 'Missing required field: email' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse('Pflichtfeld fehlt: E-Mail', 'VALIDATION_ERROR')
     }
 
     const effectiveTier = tierId || 'free'
@@ -111,14 +108,12 @@ Deno.serve(async (req: Request) => {
       const msg = createError.message || ''
       if (msg.includes('already been registered') || msg.includes('already exists') || msg.includes('duplicate') || msg.includes('unique')) {
         console.log('Auth user already exists, looking up by email:', email)
-        // Use paginated listUsers with filter instead of fetching all users
-        const { data: listData, error: listError } = await adminClient.auth.admin.listUsers({
+        const { data: listData } = await adminClient.auth.admin.listUsers({
           page: 1,
           perPage: 5,
         })
-        let existing = listData?.users?.find((u: any) => u.email === email)
+        const existing = listData?.users?.find((u: any) => u.email === email)
 
-        // Fallback: try getUserByEmail if available, or search in gt_users
         if (!existing) {
           console.log('User not found via listUsers, trying gt_users lookup')
           const { data: profileMatch } = await adminClient
@@ -130,29 +125,18 @@ Deno.serve(async (req: Request) => {
             userId = profileMatch.id
             console.log('Found existing user via gt_users:', userId)
           } else {
-            console.log('ERROR: User reported as existing but not found anywhere')
-            return new Response(JSON.stringify({ error: 'Benutzer existiert bereits in Auth, konnte aber nicht gefunden werden. Bitte in Supabase Dashboard pruefen.' }), {
-              status: 409,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            })
+            return errorResponse('Benutzer existiert bereits in Auth, konnte aber nicht gefunden werden. Bitte in Supabase Dashboard pruefen.', 'USER_EXISTS_NOT_FOUND')
           }
         } else {
           userId = existing.id
           console.log('Found existing auth user:', userId)
         }
       } else {
-        console.log('ERROR: Auth user creation failed:', msg, JSON.stringify(createError))
-        return new Response(JSON.stringify({ error: `Auth-Fehler: ${msg}` }), {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
+        console.log('Auth user creation failed:', msg, JSON.stringify(createError))
+        return errorResponse(`Auth-Fehler: ${msg}`, 'AUTH_ERROR')
       }
     } else if (!newUser?.user) {
-      console.log('ERROR: Auth user creation returned no user')
-      return new Response(JSON.stringify({ error: 'Failed to create user' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      return errorResponse('Auth-User konnte nicht erstellt werden (kein User-Objekt zurueckgegeben)', 'AUTH_ERROR')
     } else {
       userId = newUser.user.id
       console.log('Auth user created:', userId)
@@ -170,11 +154,8 @@ Deno.serve(async (req: Request) => {
       }, { onConflict: 'id' })
 
     if (profileError) {
-      console.log('ERROR: Profile creation failed:', profileError.message)
-      return new Response(JSON.stringify({ error: `Profile creation failed: ${profileError.message}` }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      console.log('Profile creation failed:', profileError.message)
+      return errorResponse(`Profil-Erstellung fehlgeschlagen: ${profileError.message}`, 'PROFILE_ERROR')
     }
 
     console.log('Profile created/updated')
@@ -191,7 +172,7 @@ Deno.serve(async (req: Request) => {
         .eq('id', leadId)
 
       if (leadError) {
-        console.log('ERROR: Lead update failed:', leadError)
+        console.log('Lead update failed:', leadError)
       }
     }
 
@@ -218,7 +199,7 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    return new Response(JSON.stringify({
+    return jsonResponse({
       success: true,
       id: userId,
       email,
@@ -227,15 +208,9 @@ Deno.serve(async (req: Request) => {
       created_at: new Date().toISOString(),
       userId: userId,
       resetLink: resetData?.properties?.action_link ?? null,
-    }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    console.log('ERROR: Unhandled exception:', error.message, error.stack)
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    console.log('Unhandled exception:', error.message, error.stack)
+    return errorResponse(`Unerwarteter Fehler: ${error.message}`, 'UNHANDLED')
   }
 })

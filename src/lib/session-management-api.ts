@@ -267,49 +267,25 @@ export async function createManagedUser(
   displayName: string,
   role: 'session_manager' | 'admin' | 'sales_agent' | 'tester' = 'session_manager'
 ): Promise<ManagedUser> {
-  // Use Supabase admin function to create user
-  // supabase-js v2 functions.invoke returns { data, error }.
-  // On non-2xx, error.message is generic; the real body is in error.context (a Response).
+  // Edge Function always returns HTTP 200 with { success, error? } in body,
+  // because supabase-js discards the response body on non-2xx status codes.
   const { data, error } = await supabase.functions.invoke('admin-create-user', {
     body: { email, password, displayName, role },
   })
 
+  // Network-level or invocation error (function not found, CORS, etc.)
   if (error) {
-    let detail = error.message || 'Unbekannter Fehler'
-    // Try every known way to extract the real error from the Edge Function response
-    try {
-      const ctx = (error as any).context
-      if (ctx instanceof Response) {
-        try {
-          const body = await ctx.json()
-          if (body?.error) detail = body.error
-        } catch {
-          try {
-            const text = await ctx.text()
-            if (text) {
-              try { detail = JSON.parse(text)?.error || text } catch { detail = text }
-            }
-          } catch { /* body already consumed */ }
-        }
-      } else if (ctx && typeof ctx === 'object' && ctx.error) {
-        detail = ctx.error
-      } else if (typeof ctx === 'string') {
-        try { detail = JSON.parse(ctx)?.error || ctx } catch { detail = ctx }
-      }
-    } catch { /* ignore extraction errors */ }
+    console.error('[createManagedUser] invoke error:', error.message)
+    throw new Error(error.message || 'Edge Function konnte nicht aufgerufen werden')
+  }
 
-    // Also check if data somehow contains the error (some versions put it there)
-    if (detail === error.message && data && typeof data === 'object' && data.error) {
-      detail = data.error
-    }
-
-    console.error('[createManagedUser] Edge Function error:', { message: error.message, detail, data })
+  // Application-level error from the Edge Function
+  if (!data?.success) {
+    const detail = data?.error || 'Unbekannter Fehler bei der Benutzererstellung'
+    console.error('[createManagedUser] function error:', detail)
     throw new Error(detail)
   }
 
-  if (data?.error) {
-    throw new Error(data.error)
-  }
   return data as ManagedUser
 }
 

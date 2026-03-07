@@ -34,6 +34,7 @@ export default function LeadConvert({ lead, open, onOpenChange, onConverted }: L
         },
       })
       if (fnError) throw fnError
+      if (!data?.success) throw new Error(data?.error || 'Unbekannter Fehler')
       onConverted(data.userId)
       onOpenChange(false)
     } catch (err) {
