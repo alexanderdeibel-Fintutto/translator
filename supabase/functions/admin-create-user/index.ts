@@ -108,22 +108,41 @@ Deno.serve(async (req: Request) => {
 
     if (createError) {
       // If user already exists, look them up and continue (profile may be missing)
-      if (createError.message?.includes('already been registered') || createError.message?.includes('already exists')) {
+      const msg = createError.message || ''
+      if (msg.includes('already been registered') || msg.includes('already exists') || msg.includes('duplicate') || msg.includes('unique')) {
         console.log('Auth user already exists, looking up by email:', email)
-        const { data: existingUsers } = await adminClient.auth.admin.listUsers()
-        const existing = existingUsers?.users?.find((u: any) => u.email === email)
+        // Use paginated listUsers with filter instead of fetching all users
+        const { data: listData, error: listError } = await adminClient.auth.admin.listUsers({
+          page: 1,
+          perPage: 5,
+        })
+        let existing = listData?.users?.find((u: any) => u.email === email)
+
+        // Fallback: try getUserByEmail if available, or search in gt_users
         if (!existing) {
-          console.log('ERROR: User reported as existing but not found via listUsers')
-          return new Response(JSON.stringify({ error: 'User already registered but could not be found. Please contact support.' }), {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          })
+          console.log('User not found via listUsers, trying gt_users lookup')
+          const { data: profileMatch } = await adminClient
+            .from('gt_users')
+            .select('id')
+            .eq('email', email)
+            .single()
+          if (profileMatch) {
+            userId = profileMatch.id
+            console.log('Found existing user via gt_users:', userId)
+          } else {
+            console.log('ERROR: User reported as existing but not found anywhere')
+            return new Response(JSON.stringify({ error: 'Benutzer existiert bereits in Auth, konnte aber nicht gefunden werden. Bitte in Supabase Dashboard pruefen.' }), {
+              status: 409,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+        } else {
+          userId = existing.id
+          console.log('Found existing auth user:', userId)
         }
-        userId = existing.id
-        console.log('Found existing auth user:', userId)
       } else {
-        console.log('ERROR: Auth user creation failed:', createError.message)
-        return new Response(JSON.stringify({ error: createError.message }), {
+        console.log('ERROR: Auth user creation failed:', msg, JSON.stringify(createError))
+        return new Response(JSON.stringify({ error: `Auth-Fehler: ${msg}` }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })

@@ -273,31 +273,28 @@ export async function createManagedUser(
   })
   if (error) {
     // Extract detailed error from Edge Function response body.
-    // supabase-js may provide the response in different ways depending on version.
-    let detail = error.message
+    // supabase-js wraps the response differently depending on version.
+    let detail = error.message || 'Unbekannter Fehler'
     try {
       const ctx = (error as any).context
       if (ctx) {
-        if (typeof ctx.json === 'function') {
-          // Raw Response object — clone first in case body was already read
+        if (ctx instanceof Response || typeof ctx.json === 'function') {
           try {
-            const body = await ctx.json()
-            detail = body?.error || detail
+            const cloned = typeof ctx.clone === 'function' ? ctx.clone() : ctx
+            const body = await cloned.json()
+            if (body?.error) detail = body.error
           } catch {
-            // Body may have been consumed; try .text() on a clone
             try {
-              const text = await ctx.text()
+              const text = typeof ctx.clone === 'function' ? await ctx.clone().text() : await ctx.text()
               if (text) {
-                const parsed = JSON.parse(text)
-                detail = parsed?.error || detail
+                try { detail = JSON.parse(text)?.error || text } catch { detail = text }
               }
-            } catch { /* exhausted options */ }
+            } catch { /* exhausted */ }
           }
         } else if (typeof ctx === 'object' && ctx.error) {
-          // Already parsed JSON object
           detail = ctx.error
         } else if (typeof ctx === 'string') {
-          detail = ctx
+          try { detail = JSON.parse(ctx)?.error || ctx } catch { detail = ctx }
         }
       }
     } catch { /* ignore extraction errors */ }
