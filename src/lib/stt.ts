@@ -302,6 +302,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   let activeLang = ''
   let actualSampleRate = 16000
   let emittedFinalText = '' // Tracks text already emitted as isFinal for sentence segmentation
+  let lastInterimText = '' // Tracks last interim text for stability detection
+  let interimStableCount = 0 // How many consecutive intervals returned similar/identical text
+  let lastFinalEmitTime = 0 // Timestamp of last isFinal emission for time-based fallback
+  let visibilityHandler: (() => void) | null = null // iOS AudioContext resume on visibility change
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -364,6 +368,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       activeLang = lang
       audioChunks = []
       emittedFinalText = ''
+      lastInterimText = ''
+      interimStableCount = 0
+      lastFinalEmitTime = Date.now()
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -381,6 +388,25 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       actualSampleRate = audioContext.sampleRate
       const source = audioContext.createMediaStreamSource(stream)
       processor = audioContext.createScriptProcessor(4096, 1, 1)
+
+      // iOS WebKit suspends AudioContext when page goes to background or after inactivity.
+      // Auto-resume to prevent recording from silently stopping.
+      const tryResumeAudioContext = () => {
+        if (audioContext && audioContext.state === 'suspended' && isActive) {
+          console.log('[STT] AudioContext suspended, attempting resume...')
+          audioContext.resume().catch(() => {})
+        }
+      }
+
+      audioContext.addEventListener('statechange', tryResumeAudioContext)
+
+      // Also resume on visibility change (user switches back to tab/app)
+      visibilityHandler = () => {
+        if (document.visibilityState === 'visible') {
+          tryResumeAudioContext()
+        }
+      }
+      document.addEventListener('visibilitychange', visibilityHandler)
 
       // Hard limit: keep max ~30 seconds of audio to prevent memory issues
       const maxBufferChunks = Math.ceil((30 * actualSampleRate) / 4096)
@@ -400,6 +426,22 @@ export function createGoogleCloudSTTEngine(): STTEngine {
 
       onResult({ text: '...', isFinal: false })
 
+      // Helper: emit text as isFinal and trim audio buffer
+      const emitFinal = (text: string) => {
+        if (!onResultCallback) return
+        onResultCallback({ text, isFinal: true })
+        emittedFinalText += (emittedFinalText ? ' ' : '') + text
+        lastFinalEmitTime = Date.now()
+        lastInterimText = ''
+        interimStableCount = 0
+
+        // Trim audio buffer: keep only last ~5 seconds for context
+        const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
+        if (audioChunks.length > keepChunks * 2) {
+          audioChunks = audioChunks.slice(-keepChunks)
+        }
+      }
+
       sendInterval = setInterval(async () => {
         if (!isActive || audioChunks.length === 0) return
         // Cap audio sent per request to ~15 seconds max to limit payload size
@@ -408,34 +450,78 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         const snapshot = audioChunks.slice(sendFrom)
         try {
           const fullText = await recognizeChunks(snapshot, activeLang)
-          if (!fullText || !onResultCallback) return
+          if (!onResultCallback) return
+
+          if (!fullText) {
+            // No text recognized — if we had pending interim text, check stability timeout
+            if (lastInterimText) {
+              interimStableCount++
+              // After 3 empty polls (~6s silence) with pending interim text, emit as final
+              if (interimStableCount >= 3) {
+                console.log('[STT] Silence timeout — emitting pending interim as final')
+                emitFinal(lastInterimText)
+              }
+            }
+            return
+          }
 
           // Extract only the NEW text (beyond what we already finalized)
           const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
             ? fullText.slice(emittedFinalText.length).trim()
             : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
 
-          if (!newText) return
+          if (!newText) {
+            // Same text as before — increment stability counter
+            if (lastInterimText) {
+              interimStableCount++
+              if (interimStableCount >= 3) {
+                console.log('[STT] Stable text timeout — emitting as final')
+                emitFinal(lastInterimText)
+              }
+            }
+            return
+          }
 
           // Check for sentence boundaries → emit synthetic isFinal
           const boundary = detectSentenceBoundary(newText)
           if (boundary) {
-            onResultCallback({ text: boundary.final, isFinal: true })
-            emittedFinalText += (emittedFinalText ? ' ' : '') + boundary.final
-
-            // Trim audio buffer: keep only last ~5 seconds for context
-            const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
-            if (audioChunks.length > keepChunks * 2) {
-              audioChunks = audioChunks.slice(-keepChunks)
-            }
+            emitFinal(boundary.final)
 
             // Emit remainder as interim
             if (boundary.remainder) {
+              lastInterimText = boundary.remainder
+              interimStableCount = 0
               onResultCallback({ text: boundary.remainder, isFinal: false })
             }
           } else {
-            // No sentence boundary yet — emit as interim
-            onResultCallback({ text: newText, isFinal: false })
+            // No sentence boundary — check for time-based or stability-based finalization
+            const timeSinceLastFinal = Date.now() - lastFinalEmitTime
+            const wordCount = newText.split(/\s+/).length
+
+            // Stability check: same text for 2+ consecutive polls (~4s)
+            const isStable = newText === lastInterimText
+            if (isStable) {
+              interimStableCount++
+            } else {
+              interimStableCount = 0
+            }
+
+            // Force emit as isFinal if:
+            // 1. Text has been stable for 2+ intervals (~4s of no change), OR
+            // 2. More than 8 seconds since last isFinal and we have substantial text (5+ words), OR
+            // 3. Word count exceeds 20 (long utterance without punctuation)
+            if (
+              (isStable && interimStableCount >= 2) ||
+              (timeSinceLastFinal > 8000 && wordCount >= 5) ||
+              wordCount >= 20
+            ) {
+              console.log(`[STT] Force-finalizing: stable=${interimStableCount}, elapsed=${timeSinceLastFinal}ms, words=${wordCount}`)
+              emitFinal(newText)
+            } else {
+              // Emit as interim
+              lastInterimText = newText
+              onResultCallback({ text: newText, isFinal: false })
+            }
           }
         } catch (err) {
           console.error('[STT] Recognition error:', err)
@@ -460,15 +546,28 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             isActive = false
           }
         }
-      }, 3000)
+      }, 2000) // 2s interval (was 3s) for smoother updates on iOS
     },
 
     stop() {
       isActive = false
 
+      // Clean up visibility listener (iOS AudioContext resume)
+      if (visibilityHandler) {
+        document.removeEventListener('visibilitychange', visibilityHandler)
+        visibilityHandler = null
+      }
+
       if (sendInterval) {
         clearInterval(sendInterval)
         sendInterval = null
+      }
+
+      // Flush any pending interim text as final before stopping
+      if (lastInterimText && onResultCallback) {
+        onResultCallback({ text: lastInterimText, isFinal: true })
+        emittedFinalText += (emittedFinalText ? ' ' : '') + lastInterimText
+        lastInterimText = ''
       }
 
       if (audioChunks.length > 0 && onResultCallback) {
@@ -494,6 +593,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       onResultCallback = null
       activeLang = ''
       emittedFinalText = ''
+      lastInterimText = ''
+      interimStableCount = 0
+      lastFinalEmitTime = 0
     },
   }
 }
