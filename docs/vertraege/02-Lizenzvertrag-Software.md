@@ -5,7 +5,7 @@
 
 **Zwischen**
 
-**Fintutto Cloud** -- Alexander Deibel
+**Fintutto UG (haftungsbeschränkt)** -- i.Gr., vertreten durch Alexander Deibel
 *(nachfolgend "Lizenzgeber")*
 
 **und**
@@ -78,6 +78,21 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ---
 
+## § 4a -- Exklusivität und Kundenzuordnung
+
+(1) Der Lizenznehmer erhält das **exklusive Vertriebsrecht** für die folgenden Marktsegmente ("Exklusivmärkte"):
+   - Kreuzfahrt (Ocean & River Cruise)
+   - Tourismus und Reiseveranstaltung
+   - Guided Tours und Stadtführungen
+
+(2) Der Lizenzgeber behält das Recht, die Software in **nicht-exklusiven Märkten** direkt oder über andere Partner zu vertreiben. Nicht-exklusive Märkte umfassen insbesondere: Konferenzen, Bildung, NGOs/Flüchtlingshilfe.
+
+(3) **Kundenzuordnung (Anti-Circumvention):** Kunden, die nachweislich über Aktivitäten des Lizenznehmers oder dessen Vertriebspartner auf die Software aufmerksam geworden sind, werden dem Lizenznehmer zugeordnet -- unabhängig davon, ob der Vertragsabschluss direkt beim Lizenzgeber erfolgt. Die Zuordnung erfolgt über das Sales-Dashboard mit einem **Attributionsfenster von 12 Monaten** nach Erstkontakt.
+
+(4) Die UG erhält auf alle Deals in den Exklusivmärkten eine **Vertriebsmarge von 15%** des Nettoumsatzes -- unabhängig davon, welcher Vertriebspartner den Deal abschließt.
+
+---
+
 ## § 5 -- Eigentum und geistiges Eigentum
 
 (1) Die Software, einschließlich aller Updates, Erweiterungen und Derivate, bleibt **ausschließliches Eigentum des Lizenzgebers**.
@@ -146,8 +161,18 @@ Der Lizenznehmer verpflichtet sich:
 
    e) Nichtzahlung der Lizenzgebühren für mehr als **60 Tage** trotz Mahnung
 
-(3) Im Falle einer Kündigung:
-   - erlischt das Nutzungsrecht des Lizenznehmers an der Software
+(3) Im Falle einer **ordentlichen Kündigung durch den Lizenzgeber**:
+
+   a) Die Kündigungsfrist beträgt abweichend von Abs. 1 **12 Monate** zum Ende der jeweiligen Vertragsperiode
+
+   b) Der Lizenzgeber zahlt dem Lizenznehmer eine **Entschädigung in Höhe des 1-fachen Jahresnettoumsatzes** der letzten 12 Monate, ODER
+
+   c) Der Lizenzgeber hat das Recht, die Geschäftsanteile des Lizenznehmers (bzw. dessen Gesellschafter) zum **bewerteten Firmenwert** nach einem vordefinierten Bewertungsverfahren (IDW S1 vereinfacht oder Ertragswertverfahren) zu erwerben (Kaufoption)
+
+   d) Die Wahl zwischen Option b) und c) liegt beim Lizenzgeber. Der Lizenznehmer ist zur Mitwirkung verpflichtet.
+
+(4) Im Falle einer Kündigung (allgemein):
+   - erlischt das Nutzungsrecht des Lizenznehmers an der Software nach Ablauf der Kündigungsfrist
    - hat der Lizenznehmer bestehende Kundenverträge ordnungsgemäß abzuwickeln oder an den Lizenzgeber zu übertragen
    - sind alle fälligen Lizenzgebühren innerhalb von **30 Tagen** zu begleichen
    - hat der Lizenznehmer alle Materialien, Zugangsdaten und Kundendaten an den Lizenzgeber herauszugeben
@@ -201,7 +226,7 @@ Der Lizenznehmer verpflichtet sich:
 
 ## Unterschriften
 
-**Lizenzgeber -- Fintutto Cloud**
+**Lizenzgeber -- Fintutto UG**
 
 Ort, Datum: ________________________
 
@@ -222,7 +247,7 @@ Alexander Deibel, Geschäftsführer
 **Zustimmung Gesellschafter**
 *(Erforderlich gemäß § 181 BGB -- Insichgeschäft)*
 
-Der Gesellschafter Ulrich Berger stimmt dem Abschluss dieses Lizenzvertrages zwischen Fintutto Cloud (Alexander Deibel) und der AI Tour Guide UG, vertreten durch den Geschäftsführer Alexander Deibel, hiermit zu.
+Der Gesellschafter Ulrich Berger stimmt dem Abschluss dieses Lizenzvertrages zwischen Fintutto UG (Alexander Deibel) und der AI Tour Guide UG, vertreten durch den Geschäftsführer Alexander Deibel, hiermit zu.
 
 Ort, Datum: ________________________
 

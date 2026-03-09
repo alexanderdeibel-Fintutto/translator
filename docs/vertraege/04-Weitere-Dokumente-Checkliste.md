@@ -6,8 +6,54 @@
 ## A. Bereits erstellt (Entwürfe)
 
 - [x] **01 -- Partnerschaftsvorschlag** (1-Seiter für Ulrich)
-- [x] **02 -- Lizenzvertrag** (Fintutto Cloud ↔ AI Tour Guide UG)
+- [x] **02 -- Lizenzvertrag** (Fintutto UG ↔ AI Tour Guide UG)
 - [x] **03 -- Vertriebsvereinbarung** (AI Tour Guide UG ↔ Ulrich Berger)
+
+---
+
+## A2. Gründung Fintutto UG (haftungsbeschränkt) -- Notartermin Donnerstag
+
+### Was zum Notar mitbringen:
+
+| # | Dokument / Unterlagen | Status |
+|---|----------------------|--------|
+| 1 | **Personalausweis** (oder Reisepass) | ☐ |
+| 2 | **Musterprotokoll** (vereinfachte Gründung für 1-Personen-UG) -- wird vom Notar bereitgestellt | ☐ |
+| 3 | **Unternehmensgegenstand** (Formulierungsvorschlag, s.u.) | ☐ |
+| 4 | **Geschäftsanschrift** (Firmensitz) | ☐ |
+| 5 | **Stammkapital**: Mindestens 1 EUR, empfohlen **500--1.000 EUR** | ☐ |
+| 6 | **Geschäftskonto-Nachweis** (oder nach Gründung einrichten -- Stammkapital einzahlen) | ☐ |
+
+### Empfohlener Unternehmensgegenstand:
+
+> "Die Entwicklung, der Betrieb und die Lizenzierung von Software, insbesondere im Bereich Künstliche Intelligenz, Echtzeit-Übersetzung und digitaler Tourismuslösungen, sowie die Erbringung von IT-Dienstleistungen, Beratung und Cloud-Services."
+
+**Wichtig:** Den Gegenstand breit formulieren, damit Fintutto UG nicht nur GuideTranslator, sondern das gesamte Fintutto-Ökosystem abdecken kann.
+
+### Ablauf beim Notar:
+
+1. Musterprotokoll wird verlesen und unterschrieben
+2. Notar reicht beim Handelsregister ein (~2-4 Wochen bis HR-Eintrag)
+3. Du bekommst eine **Handelsregisteranmeldung** (beglaubigt)
+4. **Geschäftskonto** eröffnen und Stammkapital einzahlen
+5. Bis HR-Eintrag firmiert die Gesellschaft als "Fintutto UG (haftungsbeschränkt) i.Gr."
+6. Gewerbeanmeldung beim zuständigen Gewerbeamt
+7. Fragebogen zur steuerlichen Erfassung ans Finanzamt
+
+### Kosten Notar (Musterprotokoll / 1-Personen-UG):
+
+| Posten | Betrag |
+|--------|--------|
+| Notargebühren (Beurkundung) | ~60--120 EUR |
+| Handelsregistergebühr | ~150 EUR |
+| Gewerbeanmeldung | ~20--60 EUR |
+| **Gesamt** | **~230--330 EUR** (zzgl. Stammkapital) |
+
+### Was NICHT zum Notar muss:
+
+- Der Lizenzvertrag (Fintutto UG ↔ AI Tour Guide UG) -- das ist ein privatrechtlicher Vertrag, kein notarieller Akt
+- Die Vertriebsvereinbarung -- ebenso kein Notar nötig
+- Ulrichs Zustimmung -- die Fintutto UG ist DEINE Firma, 100% Alexander
 
 ---
 
@@ -60,7 +106,7 @@
 
 ### 4. IP-Zuordnungsbestätigung (IP Assignment Confirmation)
 
-**Warum:** Schriftliche Bestätigung, dass der gesamte GuideTranslator-Code, alle Designs, Domains und Marken **Eigentum von Fintutto Cloud / Alexander Deibel** sind und **nie** Eigentum der AI Tour Guide UG waren.
+**Warum:** Schriftliche Bestätigung, dass der gesamte GuideTranslator-Code, alle Designs, Domains und Marken **Eigentum von Fintutto UG / Alexander Deibel** sind und **nie** Eigentum der AI Tour Guide UG waren.
 
 **Inhalt:**
 - Liste aller IP-Assets (Code, Domains, Marken, Designs)
@@ -74,7 +120,7 @@
 
 ### 5. Markenanmeldung "GuideTranslator"
 
-**Warum:** Ohne eingetragene Marke kann jeder den Namen nutzen. Auf Fintutto Cloud / Alexander anmelden, NICHT auf die UG.
+**Warum:** Ohne eingetragene Marke kann jeder den Namen nutzen. Auf Fintutto UG / Alexander anmelden, NICHT auf die UG.
 
 **Kosten:** ~300 EUR beim DPMA (deutsches Patent- und Markenamt), ~850 EUR beim EUIPO (EU-weit)
 
@@ -87,7 +133,7 @@
 **Warum:** Die Software verarbeitet Audiodaten und potenziell personenbezogene Daten.
 
 **Benötigt:**
-- **Auftragsverarbeitungsvertrag (AVV)** zwischen Fintutto Cloud und AI Tour Guide UG
+- **Auftragsverarbeitungsvertrag (AVV)** zwischen Fintutto UG und AI Tour Guide UG
 - **Datenschutzerklärung** für die Software / Website
 - **Verzeichnis der Verarbeitungstätigkeiten** (Art. 30 DSGVO)
 
@@ -99,7 +145,7 @@
 
 ### Die offenen 270.000 EUR Rechnungen
 
-**Problem:** Alexander hat als Fintutto Cloud an die AI Tour Guide UG (deren GF er ist) Rechnungen über ~270k EUR gestellt. Ulrich hat das als "Insolvenz-treibend" bezeichnet.
+**Problem:** Alexander hat als Fintutto UG an die AI Tour Guide UG (deren GF er ist) Rechnungen über ~270k EUR gestellt. Ulrich hat das als "Insolvenz-treibend" bezeichnet.
 
 **Optionen:**
 
@@ -117,14 +163,15 @@
 
 | Prio | Dokument | Wann |
 |------|----------|------|
-| **1** | Partnerschaftsvorschlag an Ulrich | Sofort (nach Telefonat) |
-| **2** | Gesellschafterbeschluss § 181 BGB | Vor Lizenzvertrag-Unterzeichnung |
-| **3** | IP-Zuordnungsbestätigung | Zusammen mit Lizenzvertrag |
-| **4** | Lizenzvertrag unterzeichnen | Nach Einigung |
-| **5** | Vertriebsvereinbarung unterzeichnen | Nach Einigung |
-| **6** | Gesellschaftervereinbarung (Ergänzung) | Innerhalb 4 Wochen (Anwalt) |
-| **7** | Markenanmeldung | Vor Seatrade (April) |
-| **8** | DSGVO-Dokumente | Vor erstem Kunden |
+| **1** | **Fintutto UG gründen** (Notar) | **Donnerstag, diese Woche** |
+| **2** | Partnerschaftsvorschlag an Ulrich | Sofort (nach Telefonat) |
+| **3** | Gesellschafterbeschluss § 181 BGB | Vor Lizenzvertrag-Unterzeichnung |
+| **4** | IP-Zuordnungsbestätigung | Zusammen mit Lizenzvertrag |
+| **5** | Lizenzvertrag unterzeichnen (Fintutto UG ↔ AI Tour Guide UG) | Nach HR-Eintrag Fintutto UG |
+| **6** | Vertriebsvereinbarung unterzeichnen | Nach Einigung |
+| **7** | Gesellschaftervereinbarung (Ergänzung) | Innerhalb 4 Wochen (Anwalt) |
+| **8** | Markenanmeldung (auf Fintutto UG!) | Vor Seatrade (April) |
+| **9** | DSGVO-Dokumente | Vor erstem Kunden |
 
 ---
 

@@ -18,7 +18,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## Präambel
 
-Die Gesellschaft vertreibt die Software "GuideTranslator" -- eine Echtzeit-Übersetzungslösung für die Tourismus- und Kreuzfahrtbranche -- auf Grundlage eines Lizenzvertrages mit dem Softwareeigentümer Fintutto Cloud (Alexander Deibel).
+Die Gesellschaft vertreibt die Software "GuideTranslator" -- eine Echtzeit-Übersetzungslösung für die Tourismus- und Kreuzfahrtbranche -- auf Grundlage eines Lizenzvertrages mit dem Softwareeigentümer Fintutto UG (Alexander Deibel).
 
 Ulrich Berger ist Gesellschafter der AI Tour Guide UG (50%) und verfügt über langjährige Expertise und ein umfangreiches Netzwerk in der Kreuzfahrt- und Tourismusbranche. Die Parteien wünschen, seine Vertriebstätigkeit auf eine klare vertragliche Grundlage zu stellen.
 
@@ -53,20 +53,24 @@ Ulrich Berger ist Gesellschafter der AI Tour Guide UG (50%) und verfügt über l
 
 (1) Der Vertriebspartner erhält eine erfolgsabhängige Provision auf Geschäftsabschlüsse, die durch seine Vermittlung oder Mitwirkung zustande kommen:
 
-| Kategorie | Provisionssatz |
-|-----------|---------------|
-| Standard-Deals (SaaS-Lizenzen, Abonnements) | **15%** des Nettoumsatzes im ersten Vertragsjahr |
-| Großkundenverträge (Jahresvolumen > 100.000 EUR) | **20%** des Nettoumsatzes im ersten Vertragsjahr |
-| Folgeprovisionen (Vertragsverlängerungen) | **5%** des Nettoumsatzes in Folgejahren |
-| White-Label / Integrationsprojekte | **10%** des Projektvolumens |
+| Kategorie | Provisionssatz | Laufzeit |
+|-----------|---------------|----------|
+| Standard-Deals (SaaS-Lizenzen, Abonnements) | **15%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
+| Großkundenverträge (Jahresvolumen > 100.000 EUR) | **20%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
+| White-Label / Integrationsprojekte | **15%** des Projektvolumens | Einmalig bei Abschluss + laufende Lizenzgebühren |
+| Investor-Leads | Gemäß gesonderter Vereinbarung | Bei Closing |
 
-(2) Die Provision bezieht sich auf den **tatsächlich vom Kunden gezahlten Nettoumsatz** (nach Abzug von USt, Rabatten, Gutschriften).
+(2) Die Provision bezieht sich auf den **tatsächlich vom Kunden gezahlten Nettoumsatz** (nach Abzug von USt, Rabatten, Gutschriften). Die Provision läuft **solange der Kunde zahlt** -- auch bei automatischen Vertragsverlängerungen.
 
-(3) **Zurechnung**: Ein Deal gilt als durch den Vertriebspartner vermittelt, wenn:
-   - der Erstkontakt nachweislich durch den Vertriebspartner hergestellt wurde, ODER
-   - der Vertriebspartner maßgeblich an Verhandlung oder Abschluss beteiligt war
+(3) **Zurechnung über Sales-Dashboard**: Ein Deal gilt als durch den Vertriebspartner vermittelt, wenn:
+   - der Vertriebspartner den Lead im **Sales-Dashboard** angelegt hat, UND
+   - der Vertriebspartner den Lead bis zum Abschluss betreut hat ("Lead-Owner")
 
-(4) Im Streitfall über die Zurechnung entscheidet die Geschäftsführung. Bei Uneinigkeit wird ein externer Mediator hinzugezogen.
+   Die Lead-Attribution ist transparent und live einsehbar im Dashboard. Der Lead-Owner sieht seine Umsätze und Provisionen in Echtzeit.
+
+(3a) **Mehrere Vertriebspartner**: Die Gesellschaft kann weitere Vertriebspartner einsetzen. Für die Lead-Attribution gilt das Prinzip "wer zuerst kommt, malt zuerst" -- der erste Vertriebspartner, der einen Lead im Dashboard anlegt, ist dessen Owner.
+
+(4) Im Streitfall über die Zurechnung entscheidet das Dashboard-Protokoll. Bei Uneinigkeit wird ein externer Mediator hinzugezogen.
 
 (5) Die Provision wird **monatlich** abgerechnet und ist **14 Tage** nach Eingang der Kundenzahlung bei der Gesellschaft fällig.
 
@@ -93,9 +97,10 @@ Ulrich Berger ist Gesellschafter der AI Tour Guide UG (50%) und verfügt über l
 
 | Leistung | Zeitraum |
 |----------|----------|
+| **Onboarding-Phase (Woche 1):** 3 Stunden/Tag | Testing, Dashboard-Einarbeitung, erste Leads |
+| **Laufend (ab Woche 2):** 1 Stunde/Tag | Lead-Management, Kontaktpflege, Pipeline |
 | 5 qualifizierte Leads | pro Quartal |
 | 1 Messeauftritt / Branchenevent | pro Jahr |
-| 10 Stunden aktive Vertriebstätigkeit | pro Woche |
 | Monatlicher Vertriebsbericht | bis zum 5. des Folgemonats |
 
 (2) Ein **qualifizierter Lead** ist ein Kontakt, der:
