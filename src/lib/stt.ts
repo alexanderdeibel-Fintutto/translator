@@ -95,6 +95,12 @@ export function createWebSpeechEngine(): STTEngine {
         stream = null
       }
 
+      // Require secure context for mediaDevices API
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        onError('Voice input requires HTTPS. Please use a secure connection.')
+        return
+      }
+
       // Request mic permission
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })

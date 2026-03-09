@@ -2,8 +2,16 @@
 // Query params: ?range=7d|30d|90d&metric=overview|translations|errors|vitals|sessions
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { validateApiKey } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
+  // Validate API key
+  const apiKey = request.headers.get('x-api-key')
+  const isValid = await validateApiKey(apiKey)
+  if (!isValid) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { searchParams } = request.nextUrl
   const range = searchParams.get('range') || '7d'
   const metric = searchParams.get('metric') || 'overview'
