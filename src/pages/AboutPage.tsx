@@ -17,7 +17,7 @@ const TIMELINE = [
   { year: '2012', event: 'Gruendung der Guiding Group', desc: 'Buendelung aller Unternehmen zu einem Netzwerk.' },
   { year: '2019', event: 'Smart Streaming Solutions / Voicetra (Potsdam)', desc: 'WLAN-basiertes Live Audio Streaming.' },
   { year: '2020', event: 'Weltneuheit: SmartGuide', desc: 'Weltweit erstes Smartphone-basiertes Tour Guide System.' },
-  { year: '2026', event: 'Gruendung ai tour UG — Launch GuideTranslator', desc: 'KI-Echtzeit-Uebersetzung in 45+ Sprachen — die naechste Evolution.' },
+  { year: '2026', event: 'Gruendung fintutto UG — Launch GuideTranslator', desc: 'KI-Echtzeit-Uebersetzung in 45+ Sprachen — die naechste Evolution.' },
 ]
 
 const NETWORK = [
@@ -113,7 +113,7 @@ export default function AboutPage() {
             <div className="space-y-4">
               <div>
                 <h3 className="text-xl font-bold">Alexander Deibel</h3>
-                <p className="text-sm text-primary font-medium">CEO & CTO — ai tour UG</p>
+                <p className="text-sm text-primary font-medium">CEO & CTO — fintutto UG</p>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Alexander ist ein kreativer Stratege mit einem ungewoehnlichen Profil:
@@ -163,7 +163,7 @@ export default function AboutPage() {
             <div className="space-y-4">
               <div>
                 <h3 className="text-xl font-bold">Ulrich Berger</h3>
-                <p className="text-sm text-primary font-medium">CMO — ai tour UG · Gruender & CEO der Guiding Group</p>
+                <p className="text-sm text-primary font-medium">CMO — fintutto UG · Gruender & CEO der Guiding Group</p>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Ulrich ist ein Pionier der Tourismustechnologie und Seriengruender
@@ -278,7 +278,7 @@ export default function AboutPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Die Guiding Group — unser Netzwerk</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            itour.guide ist die neue Plattform der ai tour UG und buendelt die
+            itour.guide ist die neue Plattform der fintutto UG und buendelt die
             Innovationskraft eines gewachsenen Netzwerks.
           </p>
         </div>
@@ -335,9 +335,9 @@ export default function AboutPage() {
       <Card className="p-6 text-center space-y-3">
         <h2 className="text-xl font-bold">Kontakt</h2>
         <div className="space-y-1 text-sm text-muted-foreground">
-          <p className="font-semibold text-foreground">ai tour UG (haftungsbeschraenkt)</p>
+          <p className="font-semibold text-foreground">fintutto UG (haftungsbeschraenkt)</p>
           <p>Kolonie 2, 18317 Saal, Deutschland</p>
-          <p>info@itour.guide · enterprise@itour.guide</p>
+          <p>info@fintutto.de · enterprise@itour.guide</p>
           <p>+49 30 440 40 740</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">

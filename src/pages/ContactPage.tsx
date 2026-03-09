@@ -68,7 +68,7 @@ export default function ContactPage() {
       // Fallback: mailto link
       const subject = encodeURIComponent(`[${form.requestType || 'Kontakt'}] ${form.product || 'Allgemein'} — ${form.company || form.firstName}`)
       const body = encodeURIComponent(`Name: ${form.firstName} ${form.lastName}\nE-Mail: ${form.email}\nUnternehmen: ${form.company}\nTelefon: ${form.phone}\n\n${form.message}`)
-      window.open(`mailto:info@itour.guide?subject=${subject}&body=${body}`)
+      window.open(`mailto:info@fintutto.de?subject=${subject}&body=${body}`)
       toast.info('E-Mail-Programm wird geoeffnet...')
       setSubmitted(true)
     } finally {
@@ -261,8 +261,8 @@ export default function ContactPage() {
                 <Mail className="w-4 h-4 text-primary mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium">Allgemein</p>
-                  <a href="mailto:info@itour.guide" className="text-muted-foreground hover:text-foreground text-xs">
-                    info@itour.guide
+                  <a href="mailto:info@fintutto.de" className="text-muted-foreground hover:text-foreground text-xs">
+                    info@fintutto.de
                   </a>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function ContactPage() {
                 <div className="text-sm">
                   <p className="font-medium">Adresse</p>
                   <p className="text-xs text-muted-foreground">
-                    ai tour UG (haftungsbeschraenkt)<br />
+                    fintutto UG (haftungsbeschraenkt)<br />
                     Kolonie 2<br />
                     18317 Saal<br />
                     Deutschland

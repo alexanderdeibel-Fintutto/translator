@@ -57,7 +57,7 @@ export default function Footer() {
             <span className="opacity-40">v3.1</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-3 text-[11px] text-muted-foreground/60">
-            <span>&copy; {new Date().getFullYear()} ai tour ug (haftungsbeschraenkt)</span>
+            <span>&copy; {new Date().getFullYear()} fintutto UG (haftungsbeschraenkt)</span>
             <span>·</span>
             {t('footer.projectBy')} <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.cloud</a>
             <span>·</span>

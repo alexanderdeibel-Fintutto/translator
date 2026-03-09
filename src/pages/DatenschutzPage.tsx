@@ -30,17 +30,21 @@ export default function DatenschutzPage() {
 
       <Section title="2. Verantwortliche Stelle">
         <p>
-          ai tour ug (haftungsbeschränkt)<br />
+          fintutto UG (haftungsbeschraenkt)<br />
           Kolonie 2<br />
           18317 Saal<br />
-          E-Mail: datenschutz@guidetranslator.com
+          E-Mail: info@fintutto.de
+        </p>
+        <p className="text-xs italic">
+          Fuer die Enterprise-Loesung ist die ai tour guide ug (haftungsbeschraenkt) als exklusive
+          Lizenznehmerin verantwortlich. Kontakt: info@guidetranslator.com
         </p>
       </Section>
 
       <Section title="3. Datenerfassung auf dieser Website">
         <p>
           <strong className="text-foreground">Wer ist verantwortlich für die Datenerfassung?</strong><br />
-          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (ai tour ug (haftungsbeschränkt)).
+          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (fintutto UG (haftungsbeschraenkt)).
         </p>
         <p>
           <strong className="text-foreground">Wie erfassen wir Ihre Daten?</strong><br />

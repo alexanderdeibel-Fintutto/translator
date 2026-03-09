@@ -418,7 +418,7 @@ const TRUST_SIGNALS = [
   'E2E-verschlüsselt (AES-256-GCM)',
   'DSGVO-konform — kein Cloud-Zwang',
   '87 automatisierte Tests',
-  'Made in Germany — ai tour ug',
+  'Made in Germany — fintutto UG',
 ]
 
 const VALID_SEGMENTS: SalesSegment[] = ['personal', 'guide', 'agency', 'event', 'cruise']
