@@ -67,6 +67,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   autoTTSRef.current = autoTTS
   const ttsRef = useRef(tts.speak)
   ttsRef.current = tts.speak
+  const processTranslationRef = useRef<(text: string) => Promise<void>>(async () => {})
 
   // --- SPEAKER ---
 
@@ -166,7 +167,24 @@ export function useLiveSession(userTierId: TierId = 'free') {
     let targetLangs = Object.keys(presence.listenersByLanguage)
       .filter(lang => lang !== '_speaker')
 
-    if (targetLangs.length === 0) return
+    if (targetLangs.length === 0) {
+      // No listeners yet — still record source text in speaker's history
+      // so the speaker sees their own transcript
+      const chunk: TranslationChunk = {
+        id: generateChunkId(),
+        sourceText: text,
+        translatedText: text,
+        sourceLang: sourceLanguage,
+        targetLanguage: sourceLanguage,
+        isFinal: true,
+        timestamp: Date.now(),
+      }
+      setTranslationHistory(prev => {
+        const next = [...prev, chunk]
+        return next.length > 100 ? next.slice(-100) : next
+      })
+      return
+    }
 
     // Enforce language limit per tier (0 = unlimited)
     const maxLangs = tierRef.current.limits.maxLanguages
@@ -219,7 +237,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
+  // Keep ref in sync so drainQueue always calls the latest version
+  processTranslationRef.current = processTranslation
+
   // Drain the pending queue one item at a time
+  // Uses processTranslationRef to avoid stale closures when listeners join/leave
   const drainQueue = useCallback(async () => {
     if (isTranslatingRef.current) return
     const next = pendingTextsRef.current.shift()
@@ -227,10 +249,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     isTranslatingRef.current = true
     try {
-      await processTranslation(next)
+      await processTranslationRef.current(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : t('error.translationFailed'))
+      setError(err instanceof Error ? err.message : String(err))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -238,7 +260,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
         drainQueue()
       }
     }
-  }, [processTranslation])
+  }, [])
 
   // Handle speech recognition results (speaker side) — queue-based, never drops
   const handleSpeechResult = useCallback(async (text: string) => {

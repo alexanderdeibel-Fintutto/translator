@@ -30,6 +30,12 @@ import EnterpriseHomePage from './pages/EnterpriseHomePage'
 // Lazy-loaded enterprise routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
 const LiveSessionPage = lazy(() => import('@/pages/LiveSessionPage'))
+const ConversationPage = lazy(() => import('@/pages/ConversationPage'))
+const CameraTranslatePage = lazy(() => import('@/pages/CameraTranslatePage'))
+const TranslatorPage = lazy(() => import('@/pages/TranslatorPage'))
+const PhrasebookPage = lazy(() => import('@/pages/PhrasebookPage'))
+const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
+const HistoryPage = lazy(() => import('@/pages/HistoryPage'))
 const AuthPage = lazy(() => import('@/pages/AuthPage'))
 const AccountPage = lazy(() => import('@/pages/AccountPage'))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
@@ -64,6 +70,14 @@ function App() {
                 <Route path="/" element={<Layout />}>
                   {/* Main: Quick session activation */}
                   <Route index element={<EnterpriseHomePage />} />
+
+                  {/* Core translation features */}
+                  <Route path="translator" element={<Suspense fallback={<PageLoader />}><TranslatorPage /></Suspense>} />
+                  <Route path="conversation" element={<Suspense fallback={<PageLoader />}><ConversationPage /></Suspense>} />
+                  <Route path="camera" element={<Suspense fallback={<PageLoader />}><CameraTranslatePage /></Suspense>} />
+                  <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />
+                  <Route path="favorites" element={<Suspense fallback={<PageLoader />}><FavoritesPage /></Suspense>} />
+                  <Route path="history" element={<Suspense fallback={<PageLoader />}><HistoryPage /></Suspense>} />
 
                   {/* Live session management */}
                   <Route path="live" element={<Suspense fallback={<PageLoader />}><LiveLandingPage /></Suspense>} />
