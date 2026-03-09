@@ -442,8 +442,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         }
       }
 
+      let isRecognizing = false // Guard against overlapping API calls
       sendInterval = setInterval(async () => {
-        if (!isActive || audioChunks.length === 0) return
+        if (!isActive || audioChunks.length === 0 || isRecognizing) return
+        isRecognizing = true
         // Cap audio sent per request to ~15 seconds max to limit payload size
         const maxSendChunks = Math.ceil((15 * actualSampleRate) / 4096)
         const sendFrom = Math.max(0, audioChunks.length - maxSendChunks)
@@ -545,6 +547,8 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             onError(errorDetail)
             isActive = false
           }
+        } finally {
+          isRecognizing = false
         }
       }, 2000) // 2s interval (was 3s) for smoother updates on iOS
     },
