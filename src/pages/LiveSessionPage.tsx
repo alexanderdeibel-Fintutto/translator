@@ -137,7 +137,7 @@ export default function LiveSessionPage() {
 
         <Card className="p-6 space-y-4">
           <p className="font-medium">{t('liveSession.chooseLanguage')}</p>
-          <LanguageChips selected={listenerLang} onSelect={setListenerLang} />
+          <LanguageChips selected={listenerLang} onSelect={setListenerLang} showLive />
           <Button onClick={handleJoin} className="w-full" size="lg">
             {t('liveSession.join')}
           </Button>

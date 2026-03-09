@@ -60,7 +60,7 @@ export default function ListenerJoinPage() {
           <label className="text-sm font-medium">
             {t('liveSession.chooseLanguage') || 'Deine Sprache'}
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} />
+          <LanguageChips selected={language} onSelect={setLanguage} showLive />
         </div>
 
         {/* Join Button */}
