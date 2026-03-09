@@ -21,24 +21,26 @@ interface TranslateResponse {
 }
 
 export default async function handler(req: Request) {
+  const origin = req.headers.get('origin')
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() })
+    return new Response(null, { status: 204, headers: corsHeaders(origin) })
   }
 
   if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405)
+    return json({ error: 'Method not allowed' }, 405, origin)
   }
 
   let body: TranslateRequest
   try {
     body = await req.json()
   } catch {
-    return json({ error: 'Invalid JSON body' }, 400)
+    return json({ error: 'Invalid JSON body' }, 400, origin)
   }
 
   const { text, source, target } = body
   if (!text?.trim() || !source || !target) {
-    return json({ error: 'Missing required fields: text, source, target' }, 400)
+    return json({ error: 'Missing required fields: text, source, target' }, 400, origin)
   }
 
   const errors: string[] = []
@@ -48,7 +50,7 @@ export default async function handler(req: Request) {
   if (azureKey) {
     try {
       const result = await translateAzure(text, source, target, azureKey)
-      return json(result)
+      return json(result, 200, origin)
     } catch (err) {
       errors.push(`Azure: ${err instanceof Error ? err.message : String(err)}`)
     }
@@ -59,7 +61,7 @@ export default async function handler(req: Request) {
   if (googleKey) {
     try {
       const result = await translateGoogle(text, source, target, googleKey)
-      return json(result)
+      return json(result, 200, origin)
     } catch (err) {
       errors.push(`Google: ${err instanceof Error ? err.message : String(err)}`)
     }
@@ -68,12 +70,12 @@ export default async function handler(req: Request) {
   // 3. MyMemory (free, 10K chars/day)
   try {
     const result = await translateMyMemory(text, source, target)
-    return json(result)
+    return json(result, 200, origin)
   } catch (err) {
     errors.push(`MyMemory: ${err instanceof Error ? err.message : String(err)}`)
   }
 
-  return json({ error: `All providers failed: ${errors.join(' | ')}` }, 502)
+  return json({ error: `All providers failed: ${errors.join(' | ')}` }, 502, origin)
 }
 
 // --- Provider implementations ---
@@ -148,17 +150,27 @@ async function translateMyMemory(
 
 // --- Helpers ---
 
-function json(data: unknown, status = 200) {
+function json(data: unknown, status = 200, origin?: string | null) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
   })
 }
 
-function corsHeaders(): Record<string, string> {
+const ALLOWED_ORIGINS = new Set([
+  'https://guidetranslator.com',
+  'https://www.guidetranslator.com',
+  'https://app.guidetranslator.com',
+  'https://listener.guidetranslator.com',
+  ...(process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:3000'] : []),
+])
+
+function corsHeaders(origin?: string | null): Record<string, string> {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : ''
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
   }
 }

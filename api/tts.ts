@@ -16,29 +16,31 @@ interface TtsRequest {
 }
 
 export default async function handler(req: Request) {
+  const origin = req.headers.get('origin')
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() })
+    return new Response(null, { status: 204, headers: corsHeaders(origin) })
   }
 
   if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405)
+    return json({ error: 'Method not allowed' }, 405, origin)
   }
 
   const apiKey = process.env.GOOGLE_API_KEY
   if (!apiKey) {
-    return json({ error: 'TTS API key not configured' }, 503)
+    return json({ error: 'TTS API key not configured' }, 503, origin)
   }
 
   let body: TtsRequest
   try {
     body = await req.json()
   } catch {
-    return json({ error: 'Invalid JSON body' }, 400)
+    return json({ error: 'Invalid JSON body' }, 400, origin)
   }
 
   const { text, languageCode, voiceName, useBeta, speakingRate } = body
   if (!text?.trim() || !languageCode) {
-    return json({ error: 'Missing required fields: text, languageCode' }, 400)
+    return json({ error: 'Missing required fields: text, languageCode' }, 400, origin)
   }
 
   const apiUrl = useBeta ? API_URL_BETA : API_URL
@@ -65,29 +67,39 @@ export default async function handler(req: Request) {
 
     if (!res.ok) {
       const errText = await res.text()
-      return json({ error: `Google TTS failed (${res.status}): ${errText}` }, res.status)
+      return json({ error: `Google TTS failed (${res.status}): ${errText}` }, res.status, origin)
     }
 
     const data = await res.json()
-    return json({ audioContent: data.audioContent })
+    return json({ audioContent: data.audioContent }, 200, origin)
   } catch (err) {
-    return json({ error: `TTS proxy error: ${err instanceof Error ? err.message : String(err)}` }, 502)
+    return json({ error: `TTS proxy error: ${err instanceof Error ? err.message : String(err)}` }, 502, origin)
   }
 }
 
 // --- Helpers ---
 
-function json(data: unknown, status = 200) {
+const ALLOWED_ORIGINS = new Set([
+  'https://guidetranslator.com',
+  'https://www.guidetranslator.com',
+  'https://app.guidetranslator.com',
+  'https://listener.guidetranslator.com',
+  ...(process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:3000'] : []),
+])
+
+function json(data: unknown, status = 200, origin?: string | null) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders() },
+    headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
   })
 }
 
-function corsHeaders(): Record<string, string> {
+function corsHeaders(origin?: string | null): Record<string, string> {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : ''
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
   }
 }
