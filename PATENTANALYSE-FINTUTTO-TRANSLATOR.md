@@ -182,13 +182,22 @@ Dieses Patent wuerde abdecken:
 5. Sentence-Boundary-Detection fuer Streaming-Segmentierung
 6. Pipeline-Instrumentierung (Latenz-Tracking STT->Translate->Broadcast->TTS)
 
-### 3.2 Realistische Einschaetzung: EU/Deutschland
+### 3.2 Wichtiger Praezedens-Fall: Googles NMT-Patent vom EPO abgelehnt
+
+**EP3210132A1** - "Neural Machine Translation Systems With Rare Word Processing" (Google, eingereicht 2015) wurde im Oktober 2023 vom Europaeischen Patentamt **abgelehnt**. Begruendung:
+
+> "Merely finding a computer algorithm to implement an automated translation process does not render the resulting computer program technical."
+
+Das EPO stufte rein linguistische Verbesserungen als **nicht-technisch** ein. **Das ist fuer Fintutto aber eher positiv**: Unsere Innovation ist NICHT rein linguistisch. Der Multi-Transport-Manager, die Netzwerk-Auto-Discovery, das Echtzeit-Broadcasting-System und die Circuit-Breaker-Architektur sind klar **technische** Beitraege (Netzwerktechnik, Ressourcenmanagement, Ausfallsicherheit). Wir wuerden die gleiche Falle wie Google NICHT treffen.
+
+### 3.3 Realistische Einschaetzung: EU/Deutschland
 
 **Grundvoraussetzungen fuer Software-Patente in der EU:**
 - Es muss ein **"technischer Beitrag"** vorliegen (Art. 52 EPUe)
 - Reine Software/Geschaeftsmethoden sind NICHT patentierbar
 - Die Erfindung muss ein **technisches Problem** mit **technischen Mitteln** loesen
 - **Neuheit** (nicht Stand der Technik) und **erfinderische Taetigkeit** (nicht naheliegend fuer Fachmann)
+- **COMVIK-Ansatz** (T641/00): Nur technische Merkmale koennen erfinderische Taetigkeit begruenden
 
 **Bewertung fuer Fintutto:**
 - **Technischer Beitrag**: JA - Netzwerkoptimierung, Ressourcenmanagement, Echtzeitkommunikation
@@ -229,7 +238,7 @@ Dieses Patent wuerde abdecken:
 |--------|-------------|
 | Anmeldegebuehr | 1.335 |
 | Recherchegebuehr | 1.460 |
-| Pruefungsgebuehr | 1.880 |
+| Pruefungsgebuehr | 2.600 (ab 04/2026: +5%) |
 | Benennungsgebuehr (pro Land) | 660 |
 | Erteilungsgebuehr + Uebersetzungen | 2.000-5.000 |
 | Validierung in Laendern | 1.000-3.000/Land |
@@ -260,7 +269,16 @@ Monat 36-60  Erteilung ODER Zurueckweisung
 | Nachteil | Schwaecherer Schutz, nur bei Streit geprueft |
 | **Fuer Software:** | **NICHT anwendbar** (Computerprogramme sind ausgeschlossen!) |
 
-**Wichtig:** Gebrauchsmuster sind fuer Software in Deutschland NICHT moeglich (GebrMG Paragraph 1 Abs. 2 Nr. 3). Nur Patente kommen in Frage.
+**Update nach Recherche:** Gebrauchsmuster sind fuer "Verfahren" (Methoden) nicht moeglich. ABER: Wenn die Software als **System-Anspruch** formuliert wird ("System umfassend einen Computer, der konfiguriert ist zum..."), ist ein Gebrauchsmuster DOCH moeglich. Das waere fuer Fintutto eine interessante Option:
+
+| Vorteil | Detail |
+|---------|--------|
+| Schnell | Eintragung in 2-6 Monaten |
+| Guenstig | 3.000-5.000 EUR inkl. Anwalt |
+| Sofort wirksam | Kein Pruefungsverfahren |
+| Kombi-Strategie | Gebrauchsmuster + Patent parallel moeglich |
+
+**Risiko:** Keine materielle Pruefung - erst bei Streit wird geprueft, ob der Anspruch haelt. Aber als schneller "Placeholder" bis das Patent erteilt wird, sehr nuetzlich.
 
 ---
 
@@ -302,7 +320,17 @@ Monat 36-60  Erteilung ODER Zurueckweisung
 
 **Begruendung:** Die technische Loesung liegt im Code. Die Server-seitige Proxy-Logik, Circuit-Breaker-Konfiguration und Transport-Selektion sind nicht von aussen einsehbar. Der Frontend-Code ist zwar einsehbar (JavaScript), aber die Architektur ist komplex genug, dass einfaches Kopieren schwierig ist.
 
-#### Option B: Provisorische Patentanmeldung beim DPMA - **Sinnvoll wenn Investoren-Gespraeche anstehen**
+#### Option B: Gebrauchsmuster (System-Anspruch) + spaeter Patent - **BESTES PREIS-LEISTUNGS-VERHAELTNIS**
+
+| Aspekt | Detail |
+|--------|--------|
+| Kosten | 3.000-5.000 EUR |
+| Nutzen | Sofortiger Schutz, Prioritaetsdatum gesichert |
+| Zeitrahmen | 2-6 Monate bis Eintragung |
+| Strategie | Gebrauchsmuster jetzt, Patent spaeter bei Bedarf nachlegen |
+| Formulierung | "System umfassend einen Computer mit Netzwerkschnittstelle, konfiguriert zur automatischen Selektion eines Kommunikationskanals..." |
+
+#### Option C: Patentanmeldung beim DPMA - **Sinnvoll wenn Investoren-Gespraeche anstehen**
 
 | Aspekt | Detail |
 |--------|--------|
@@ -311,7 +339,7 @@ Monat 36-60  Erteilung ODER Zurueckweisung
 | Zeitrahmen | Anmeldung in 2-3 Monaten |
 | Empfehlung | Vor der naechsten Funding-Runde anmelden |
 
-#### Option C: Volles europaeisches Patent - **Nur bei validiertem Product-Market-Fit und Umsatz**
+#### Option D: Volles europaeisches Patent - **Nur bei validiertem Product-Market-Fit und Umsatz**
 
 | Aspekt | Detail |
 |--------|--------|
@@ -369,4 +397,6 @@ Das ist eine **bemerkenswert durchdachte Architektur**, die in dieser Kombinatio
 
 ### Meine Empfehlung:
 
-**Investiert die 7.000-14.000 EUR lieber in Kundenwachstum und Produktweiterentwicklung**, es sei denn, ihr steht vor einer konkreten Funding-Runde, wo "Patent Pending" den Unternehmenswert signifikant steigern wuerde. In dem Fall: DPMA-Anmeldung fuer 4.000-8.000 EUR, fokussiert auf den Gesamtsystem-Anspruch (2.4 + 2.1 kombiniert).
+**Pragmatischste Strategie: Gebrauchsmuster (Option B) fuer 3.000-5.000 EUR.** Schnell (2-6 Monate), sofort wirksam, sichert Prioritaetsdatum. Falls spaeter ein volles Patent noetig wird (Investorenrunde, Wettbewerbsdruck), kann man darauf aufbauen. Wenn selbst das Budget zu hoch ist: Trade Secret (Option A) kostet nichts und schuetzt durch Wettbewerbsvorsprung.
+
+**Quellen der Patent-Recherche:** EPO-Datenbank (Espacenet), Google Patents, Slator.com (Sprachindustrie-Analyse), Bardehle Pagenberg (EU-Patentrecht), Potter Clarkson, Novagraaf, DPMA.
