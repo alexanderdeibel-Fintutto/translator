@@ -1,6 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
-    <!-- Animated ring gradient -->
+    <filter id="glow" x="-0.13235294" y="-0.13235294" width="1.2647059" height="1.2647059">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
     <linearGradient id="ring" x1="0" y1="1" x2="1" y2="0">
       <stop offset="0%" stop-color="#2563EB">
         <animate attributeName="stop-color" values="#2563EB;#E879F9;#10B981;#F97316;#2563EB" dur="8s" repeatCount="indefinite"/>
@@ -19,70 +28,11 @@
       </stop>
     </linearGradient>
 
-    <!-- Quadrant gradients with center in outer corners, radiating inward -->
-    <!-- Top-Left: Coral - light from top-left corner -->
-    <radialGradient id="q-tl" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="362">
-      <stop offset="0%" stop-color="#FF6B6B"/>
-      <stop offset="15%" stop-color="#e05050"/>
-      <stop offset="30%" stop-color="#c04048"/>
-      <stop offset="45%" stop-color="#903050"/>
-      <stop offset="60%" stop-color="#6a2858"/>
-      <stop offset="75%" stop-color="#4a2060"/>
-      <stop offset="88%" stop-color="#2d1850"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-
-    <!-- Top-Right: Peach - light from top-right corner -->
-    <radialGradient id="q-tr" gradientUnits="userSpaceOnUse" cx="512" cy="0" r="362">
-      <stop offset="0%" stop-color="#FFB090"/>
-      <stop offset="15%" stop-color="#e08070"/>
-      <stop offset="30%" stop-color="#b86060"/>
-      <stop offset="45%" stop-color="#8a4068"/>
-      <stop offset="60%" stop-color="#6a3070"/>
-      <stop offset="75%" stop-color="#4a2068"/>
-      <stop offset="88%" stop-color="#2d1850"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-
-    <!-- Bottom-Left: Gold - light from bottom-left corner -->
-    <radialGradient id="q-bl" gradientUnits="userSpaceOnUse" cx="0" cy="512" r="362">
-      <stop offset="0%" stop-color="#F0C830"/>
-      <stop offset="15%" stop-color="#d4a030"/>
-      <stop offset="30%" stop-color="#b8703a"/>
-      <stop offset="45%" stop-color="#8a4048"/>
-      <stop offset="60%" stop-color="#6a3058"/>
-      <stop offset="75%" stop-color="#4a2060"/>
-      <stop offset="88%" stop-color="#2d1850"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-
-    <!-- Bottom-Right: Pink - light from bottom-right corner -->
-    <radialGradient id="q-br" gradientUnits="userSpaceOnUse" cx="512" cy="512" r="362">
-      <stop offset="0%" stop-color="#F088B0"/>
-      <stop offset="15%" stop-color="#d068a0"/>
-      <stop offset="30%" stop-color="#a84890"/>
-      <stop offset="45%" stop-color="#8a4088"/>
-      <stop offset="60%" stop-color="#6a3080"/>
-      <stop offset="75%" stop-color="#4a2070"/>
-      <stop offset="88%" stop-color="#2d1850"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-
-    <!-- Glow filters -->
-    <filter id="glow" x="-0.15" y="-0.15" width="1.3" height="1.3">
-      <feGaussianBlur stdDeviation="5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
     <filter id="glow-strong" x="-0.3" y="-0.3" width="1.6" height="1.6">
-      <feGaussianBlur stdDeviation="10" result="blur1">
-        <animate attributeName="stdDeviation" values="10;14;10" dur="3s" repeatCount="indefinite"/>
+      <feGaussianBlur stdDeviation="20" result="blur1">
+        <animate attributeName="stdDeviation" values="20;28;20" dur="3s" repeatCount="indefinite"/>
       </feGaussianBlur>
-      <feGaussianBlur stdDeviation="5" result="blur2"/>
+      <feGaussianBlur stdDeviation="10" result="blur2"/>
       <feMerge>
         <feMergeNode in="blur1"/>
         <feMergeNode in="blur2"/>
@@ -90,53 +40,186 @@
       </feMerge>
     </filter>
 
+    <!-- Ring gradients referencing animated ring -->
+    <linearGradient xlink:href="#ring" id="linearGradient851"
+       x1="-16.000004" y1="528" x2="528" y2="-16.000004"
+       gradientUnits="userSpaceOnUse" gradientTransform="translate(1663.9999,824.00001)"/>
+    <linearGradient xlink:href="#ring" id="linearGradient853"
+       x1="41.000004" y1="471" x2="471" y2="41.000004"
+       gradientUnits="userSpaceOnUse" gradientTransform="translate(1663.9999,824.00001)"/>
+    <linearGradient xlink:href="#ring" id="linearGradient855"
+       x1="70.998871" y1="441.00323" x2="440.99701" y2="71.005081"
+       gradientTransform="matrix(0.88160617,0,0,0.88189632,286.23321,286.30956)"
+       gradientUnits="userSpaceOnUse"/>
+    <linearGradient xlink:href="#ring" id="linearGradient857"
+       x1="75.737" y1="436.66507" x2="434.49268" y2="77.909378"
+       gradientTransform="matrix(0.88465856,0,0,0.87885318,286.31034,286.30859)"
+       gradientUnits="userSpaceOnUse"/>
+    <linearGradient xlink:href="#ring" id="linearGradient859"
+       x1="71" y1="441" x2="441" y2="71"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.88160021,0,0,0.8819021,286.23355,286.30927)"/>
+
+    <!-- Quadrant linear gradients (base colors) -->
+    <linearGradient id="peach-diagonal-se"
+       x1="12.145102" y1="12.276863" x2="2876.5601" y2="2883.4448"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11407,-510.28248)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="12%" stop-color="#1a1030"/>
+      <stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="0.35960788" stop-color="#4a2068"/>
+      <stop offset="0.49847782" stop-color="#6a3070"/>
+      <stop offset="0.58969784" stop-color="#8a4068"/>
+      <stop offset="0.73909438" stop-color="#b86060"/>
+      <stop offset="0.88567901" stop-color="#e08070"/>
+      <stop offset="100%" stop-color="#FFB090"/>
+    </linearGradient>
+
+    <linearGradient id="coral-diagonal-sw"
+       x1="2875.4322" y1="1.4291574" x2="-1.4866029" y2="2878.348"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-5.9188292,-514.27932)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="12%" stop-color="#1a1030"/>
+      <stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="38%" stop-color="#4a2060"/>
+      <stop offset="50%" stop-color="#6a2858"/>
+      <stop offset="0.63308793" stop-color="#903050"/>
+      <stop offset="0.75733292" stop-color="#c04048"/>
+      <stop offset="0.87853247" stop-color="#e05050"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+
+    <linearGradient id="gold-diagonal-sw"
+       x1="2876.5591" y1="2.2996124e-05" x2="1.9895586e-05" y2="2883.4448"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-1022.1435,-514.27922)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="12%" stop-color="#1a1030"/>
+      <stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="38%" stop-color="#4a2060"/>
+      <stop offset="50%" stop-color="#6a3058"/>
+      <stop offset="0.60298145" stop-color="#8a4048"/>
+      <stop offset="0.77334201" stop-color="#b8703a"/>
+      <stop offset="0.87841564" stop-color="#d4a030"/>
+      <stop offset="100%" stop-color="#F0C830"/>
+    </linearGradient>
+
+    <linearGradient id="mieter-diagonal-se"
+       x1="-1.4866029" y1="1.4291574" x2="2875.4322" y2="2878.348"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11432,510.28239)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="12%" stop-color="#1a1030"/>
+      <stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="38%" stop-color="#4a2070"/>
+      <stop offset="50%" stop-color="#6a3080"/>
+      <stop offset="62%" stop-color="#8a4088"/>
+      <stop offset="75%" stop-color="#a84890"/>
+      <stop offset="88%" stop-color="#d068a0"/>
+      <stop offset="100%" stop-color="#F088B0"/>
+    </linearGradient>
+
+    <!-- Radial gradient overlays (original Inkscape transforms preserved exactly) -->
+    <radialGradient xlink:href="#peach-diagonal-se" id="radialGradient14891"
+       cx="1529.0662" cy="-253.03757" fx="1529.0662" fy="-253.03757" r="256.40182"
+       gradientTransform="matrix(0.62119453,1.9577456,-2.3111475,0.73677533,-1531.4276,-3827.0539)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#coral-diagonal-sw" id="radialGradient14893"
+       cx="508.09378" cy="-517.05786" fx="508.09375" fy="-517.05786" r="257.01556"
+       gradientTransform="matrix(-2.1731079,0.30715347,-0.44723694,-3.1514026,1895.0798,-2808.28)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#mieter-diagonal-se" id="radialGradient14911"
+       cx="514.27917" cy="506.54276" fx="514.27917" fy="506.54276" r="256.40182"
+       gradientTransform="matrix(-0.30651758,2.6587051,-2.3284828,-0.26710169,1337.2891,-2256.9466)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#gold-diagonal-sw" id="radialGradient18289"
+       cx="-1.0705715" cy="-1.372988" fx="-1.0705715" fy="-1.372988" r="255.42059"
+       gradientTransform="matrix(-2.9179686,0,-2.9415091e-7,-2.3102041,-4.194466,-5.1562899)"
+       gradientUnits="userSpaceOnUse"/>
+
+    <!-- Rounded corners clip for app icon -->
+    <clipPath id="app-rounded">
+      <rect x="0" y="0" width="1024" height="1024" rx="192" ry="192"/>
+    </clipPath>
+
     <!-- Text glow -->
-    <filter id="text-glow" x="-0.2" y="-0.2" width="1.4" height="1.4">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+    <filter id="text-glow" x="-0.3" y="-0.3" width="1.6" height="1.6">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
       <feMerge>
+        <feMergeNode in="blur"/>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-
-    <!-- Rounded rectangle clip -->
-    <clipPath id="rounded">
-      <rect x="0" y="0" width="512" height="512" rx="96" ry="96"/>
-    </clipPath>
   </defs>
 
-  <!-- Background with rounded corners -->
-  <g clip-path="url(#rounded)">
-    <!-- Four quadrant backgrounds - each gradient radiates from its outer corner -->
-    <rect x="0"   y="0"   width="256" height="256" fill="url(#q-tl)"/>
-    <rect x="256" y="0"   width="256" height="256" fill="url(#q-tr)"/>
-    <rect x="0"   y="256" width="256" height="256" fill="url(#q-bl)"/>
-    <rect x="256" y="256" width="256" height="256" fill="url(#q-br)"/>
+  <!-- Clip everything to rounded app icon shape -->
+  <g clip-path="url(#app-rounded)">
+    <!-- Original four quadrant backgrounds (exact transforms from Inkscape) -->
+    <g style="display:inline"
+       transform="matrix(0,0.99987504,-1.0022684,0,1025.073,1.9841596)">
+      <rect width="510.84125" height="512.06396"
+         x="1.0704963" y="-1022.1437"
+         style="fill:url(#radialGradient14891);fill-opacity:1"
+         transform="rotate(90)"/>
+      <rect width="512.06396" height="510.84125"
+         x="510.07965" y="-1022.7529"
+         style="fill:url(#radialGradient14893);fill-opacity:1"
+         transform="scale(1,-1)"/>
+      <rect width="510.84119" height="512.06403"
+         x="-511.91171" y="-1.9844524"
+         style="fill:url(#radialGradient18289);fill-opacity:1"
+         transform="rotate(-90)"/>
+      <rect width="512.06403" height="510.84119"
+         x="-1.984468" y="-1022.7529"
+         style="fill:url(#radialGradient14911);fill-opacity:1"
+         transform="scale(1,-1)"/>
+    </g>
   </g>
 
-  <!-- Outer glow ring - stronger -->
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="32" filter="url(#glow-strong)" opacity="0.35">
-    <animate attributeName="opacity" values="0.2;0.45;0.2" dur="3s" repeatCount="indefinite"/>
+  <!-- Animated rings (original geometry preserved, stronger opacity) -->
+  <circle cx="1920" cy="1080" r="170" fill="none"
+     stroke-width="60" filter="url(#glow-strong)"
+     style="stroke:url(#linearGradient851)"
+     transform="matrix(0.88159982,0,0,0.88190207,-1180.7483,-440.37758)">
+    <animate attributeName="opacity" values="0.15;0.35;0.15" dur="3s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Middle ring with glow - stronger -->
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="22" filter="url(#glow)" opacity="0.65">
-    <animate attributeName="opacity" values="0.5;0.75;0.5" dur="3s" repeatCount="indefinite"/>
+  <circle cx="1920" cy="1080" r="170" fill="none"
+     stroke-width="42" filter="url(#glow)"
+     style="stroke:url(#linearGradient853)"
+     transform="matrix(0.88159982,0,0,0.88190183,-1180.7483,-440.37732)">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Dashed rotating ring - stronger -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="13" opacity="0.6" stroke-dasharray="25 12.5" stroke-linecap="round">
-    <animateTransform attributeName="transform" type="rotate" from="0 256 256" to="360 256 256" dur="25s" repeatCount="indefinite"/>
-  </circle>
+  <ellipse cx="511.92328" cy="512.0769" fill="none"
+     stroke-width="26.4534" opacity="0.55"
+     stroke-dasharray="50, 25" stroke-linecap="round"
+     style="stroke:url(#linearGradient855)"
+     rx="149.87204" ry="149.92331">
+    <animateTransform attributeName="transform" type="rotate"
+       from="0 256 256" to="360 256 256" dur="25s" repeatCount="indefinite"/>
+  </ellipse>
 
-  <!-- Reverse dashed ring -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="9" opacity="0.4" stroke-dasharray="12.5 25" stroke-linecap="round">
-    <animateTransform attributeName="transform" type="rotate" from="360 256 256" to="0 256 256" dur="35s" repeatCount="indefinite"/>
-  </circle>
+  <ellipse cx="512.00006" cy="512.0766" fill="none"
+     stroke-width="17.6352" opacity="0.35"
+     stroke-dasharray="25, 50" stroke-linecap="round"
+     style="stroke:url(#linearGradient857)"
+     rx="149.87204" ry="149.92331">
+    <animateTransform attributeName="transform" type="rotate"
+       from="360 256 256" to="0 256 256" dur="35s" repeatCount="indefinite"/>
+  </ellipse>
 
-  <!-- Solid inner ring - stronger -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="13" opacity="0.85"/>
+  <ellipse cx="511.92334" cy="512.0766" fill="none"
+     stroke-width="26.4534" opacity="0.85"
+     style="stroke:url(#linearGradient859)"
+     rx="149.87204" ry="149.92331"/>
 
-  <!-- Center "f" letter for fintutto - lowercase -->
-  <text x="256" y="282" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="110" font-weight="700" fill="white" opacity="0.95" filter="url(#text-glow)">f</text>
+  <!-- Center "f" letter -->
+  <text x="512" y="555" text-anchor="middle"
+     font-family="Inter, system-ui, -apple-system, sans-serif"
+     font-size="200" font-weight="700" fill="white" opacity="0.95"
+     filter="url(#text-glow)">f</text>
 </svg>

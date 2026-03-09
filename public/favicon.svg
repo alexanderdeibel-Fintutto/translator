@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 1024 1024" width="32" height="32">
   <defs>
     <linearGradient id="ring" x1="0" y1="1" x2="1" y2="0">
       <stop offset="0%" stop-color="#2563EB">
@@ -11,39 +12,86 @@
         <animate attributeName="stop-color" values="#E879F9;#F97316;#14B8A6;#2563EB;#E879F9" dur="8s" repeatCount="indefinite"/>
       </stop>
     </linearGradient>
-    <!-- Corner-based radial gradients -->
-    <radialGradient id="q-tl" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="22.6">
-      <stop offset="0%" stop-color="#FF6B6B"/>
-      <stop offset="40%" stop-color="#903050"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-    <radialGradient id="q-tr" gradientUnits="userSpaceOnUse" cx="32" cy="0" r="22.6">
-      <stop offset="0%" stop-color="#FFB090"/>
-      <stop offset="40%" stop-color="#8a4068"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-    <radialGradient id="q-bl" gradientUnits="userSpaceOnUse" cx="0" cy="32" r="22.6">
-      <stop offset="0%" stop-color="#F0C830"/>
-      <stop offset="40%" stop-color="#8a4048"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-    <radialGradient id="q-br" gradientUnits="userSpaceOnUse" cx="32" cy="32" r="22.6">
-      <stop offset="0%" stop-color="#F088B0"/>
-      <stop offset="40%" stop-color="#6a3080"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
+    <linearGradient xlink:href="#ring" id="lr859"
+       x1="71" y1="441" x2="441" y2="71" gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.88160021,0,0,0.8819021,286.23355,286.30927)"/>
+
+    <!-- Original quadrant gradients -->
+    <linearGradient id="peach-diagonal-se"
+       x1="12.145102" y1="12.276863" x2="2876.5601" y2="2883.4448"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11407,-510.28248)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3070"/><stop offset="75%" stop-color="#b86060"/>
+      <stop offset="100%" stop-color="#FFB090"/>
+    </linearGradient>
+    <linearGradient id="coral-diagonal-sw"
+       x1="2875.4322" y1="1.4291574" x2="-1.4866029" y2="2878.348"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-5.9188292,-514.27932)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a2858"/><stop offset="75%" stop-color="#c04048"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+    <linearGradient id="gold-diagonal-sw"
+       x1="2876.5591" y1="2.2996124e-05" x2="1.9895586e-05" y2="2883.4448"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-1022.1435,-514.27922)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3058"/><stop offset="75%" stop-color="#b8703a"/>
+      <stop offset="100%" stop-color="#F0C830"/>
+    </linearGradient>
+    <linearGradient id="mieter-diagonal-se"
+       x1="-1.4866029" y1="1.4291574" x2="2875.4322" y2="2878.348"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11432,510.28239)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3080"/><stop offset="75%" stop-color="#a84890"/>
+      <stop offset="100%" stop-color="#F088B0"/>
+    </linearGradient>
+
+    <radialGradient xlink:href="#peach-diagonal-se" id="rg14891"
+       cx="1529.0662" cy="-253.03757" fx="1529.0662" fy="-253.03757" r="256.40182"
+       gradientTransform="matrix(0.62119453,1.9577456,-2.3111475,0.73677533,-1531.4276,-3827.0539)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#coral-diagonal-sw" id="rg14893"
+       cx="508.09378" cy="-517.05786" fx="508.09375" fy="-517.05786" r="257.01556"
+       gradientTransform="matrix(-2.1731079,0.30715347,-0.44723694,-3.1514026,1895.0798,-2808.28)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#mieter-diagonal-se" id="rg14911"
+       cx="514.27917" cy="506.54276" fx="514.27917" fy="506.54276" r="256.40182"
+       gradientTransform="matrix(-0.30651758,2.6587051,-2.3284828,-0.26710169,1337.2891,-2256.9466)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#gold-diagonal-sw" id="rg18289"
+       cx="-1.0705715" cy="-1.372988" fx="-1.0705715" fy="-1.372988" r="255.42059"
+       gradientTransform="matrix(-2.9179686,0,-2.9415091e-7,-2.3102041,-4.194466,-5.1562899)"
+       gradientUnits="userSpaceOnUse"/>
+
     <clipPath id="r">
-      <rect width="32" height="32" rx="6"/>
+      <rect width="1024" height="1024" rx="192"/>
     </clipPath>
   </defs>
+
   <g clip-path="url(#r)">
-    <rect x="0"  y="0"  width="16" height="16" fill="url(#q-tl)"/>
-    <rect x="16" y="0"  width="16" height="16" fill="url(#q-tr)"/>
-    <rect x="0"  y="16" width="16" height="16" fill="url(#q-bl)"/>
-    <rect x="16" y="16" width="16" height="16" fill="url(#q-br)"/>
+    <g transform="matrix(0,0.99987504,-1.0022684,0,1025.073,1.9841596)">
+      <rect width="510.84125" height="512.06396" x="1.0704963" y="-1022.1437"
+         style="fill:url(#rg14891)" transform="rotate(90)"/>
+      <rect width="512.06396" height="510.84125" x="510.07965" y="-1022.7529"
+         style="fill:url(#rg14893)" transform="scale(1,-1)"/>
+      <rect width="510.84119" height="512.06403" x="-511.91171" y="-1.9844524"
+         style="fill:url(#rg18289)" transform="rotate(-90)"/>
+      <rect width="512.06403" height="510.84119" x="-1.984468" y="-1022.7529"
+         style="fill:url(#rg14911)" transform="scale(1,-1)"/>
+    </g>
   </g>
-  <!-- Ring - stronger -->
-  <circle cx="16" cy="16" r="9" fill="none" stroke="url(#ring)" stroke-width="2" opacity="0.85"/>
-  <!-- f lowercase -->
-  <text x="16" y="20.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="white" opacity="0.95">f</text>
+
+  <!-- Ring -->
+  <ellipse cx="511.92334" cy="512.0766" fill="none"
+     stroke-width="30" opacity="0.85" style="stroke:url(#lr859)"
+     rx="149.87204" ry="149.92331"/>
+
+  <!-- f -->
+  <text x="512" y="555" text-anchor="middle"
+     font-family="Inter, system-ui, sans-serif"
+     font-size="200" font-weight="700" fill="white" opacity="0.95">f</text>
 </svg>
