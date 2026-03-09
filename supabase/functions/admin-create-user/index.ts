@@ -68,7 +68,7 @@ Deno.serve(async (req: Request) => {
       .from('gt_users')
       .select('role')
       .eq('id', callerUser.id)
-      .single()
+      .maybeSingle()
 
     console.log('Caller:', callerUser.id, 'Profile:', callerProfile, 'Error:', profileLookupError)
 
@@ -108,11 +108,21 @@ Deno.serve(async (req: Request) => {
       const msg = createError.message || ''
       if (msg.includes('already been registered') || msg.includes('already exists') || msg.includes('duplicate') || msg.includes('unique')) {
         console.log('Auth user already exists, looking up by email:', email)
-        const { data: listData } = await adminClient.auth.admin.listUsers({
-          page: 1,
-          perPage: 5,
-        })
-        const existing = listData?.users?.find((u: any) => u.email === email)
+
+        // Search through all pages to find the user by email
+        let existing: { id: string } | undefined
+        let page = 1
+        const perPage = 50
+        while (!existing) {
+          const { data: listData, error: listError } = await adminClient.auth.admin.listUsers({
+            page,
+            perPage,
+          })
+          if (listError || !listData?.users?.length) break
+          existing = listData.users.find((u: any) => u.email === email)
+          if (listData.users.length < perPage) break // last page
+          page++
+        }
 
         if (!existing) {
           console.log('User not found via listUsers, trying gt_users lookup')
@@ -120,7 +130,7 @@ Deno.serve(async (req: Request) => {
             .from('gt_users')
             .select('id')
             .eq('email', email)
-            .single()
+            .maybeSingle()
           if (profileMatch) {
             userId = profileMatch.id
             console.log('Found existing user via gt_users:', userId)
@@ -209,8 +219,10 @@ Deno.serve(async (req: Request) => {
       userId: userId,
       resetLink: resetData?.properties?.action_link ?? null,
     })
-  } catch (error) {
-    console.log('Unhandled exception:', error.message, error.stack)
-    return errorResponse(`Unerwarteter Fehler: ${error.message}`, 'UNHANDLED')
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error)
+    const stack = error instanceof Error ? error.stack : undefined
+    console.log('Unhandled exception:', msg, stack)
+    return errorResponse(`Unerwarteter Fehler: ${msg}`, 'UNHANDLED')
   }
 })

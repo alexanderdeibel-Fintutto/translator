@@ -275,8 +275,16 @@ export async function createManagedUser(
 
   // Network-level or invocation error (function not found, CORS, etc.)
   if (error) {
-    console.error('[createManagedUser] invoke error:', error.message)
-    throw new Error(error.message || 'Edge Function konnte nicht aufgerufen werden')
+    // Try to extract the response body even on non-2xx (supabase-js v2 may include context)
+    let detail = error.message || 'Edge Function konnte nicht aufgerufen werden'
+    try {
+      if (error.context && typeof error.context.json === 'function') {
+        const body = await error.context.json()
+        if (body?.error) detail = body.error
+      }
+    } catch { /* ignore parse errors */ }
+    console.error('[createManagedUser] invoke error:', detail)
+    throw new Error(detail)
   }
 
   // Application-level error from the Edge Function
