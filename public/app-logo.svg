@@ -40,7 +40,7 @@
       </feMerge>
     </filter>
 
-    <!-- Ring gradients referencing animated ring -->
+    <!-- Ring gradient references - exact from Fintutto_translatorkreisGross -->
     <linearGradient xlink:href="#ring" id="linearGradient851"
        x1="-16.000004" y1="528" x2="528" y2="-16.000004"
        gradientUnits="userSpaceOnUse" gradientTransform="translate(1663.9999,824.00001)"/>
@@ -49,18 +49,18 @@
        gradientUnits="userSpaceOnUse" gradientTransform="translate(1663.9999,824.00001)"/>
     <linearGradient xlink:href="#ring" id="linearGradient855"
        x1="70.998871" y1="441.00323" x2="440.99701" y2="71.005081"
-       gradientTransform="matrix(0.88160617,0,0,0.88189632,286.23321,286.30956)"
+       gradientTransform="matrix(1.8817212,0,0,1.8823406,30.282234,-993.88315)"
        gradientUnits="userSpaceOnUse"/>
     <linearGradient xlink:href="#ring" id="linearGradient857"
        x1="75.737" y1="436.66507" x2="434.49268" y2="77.909378"
-       gradientTransform="matrix(0.88465856,0,0,0.87885318,286.31034,286.30859)"
+       gradientTransform="matrix(1.8882364,0,0,1.8758452,30.282318,-994.04838)"
        gradientUnits="userSpaceOnUse"/>
     <linearGradient xlink:href="#ring" id="linearGradient859"
        x1="71" y1="441" x2="441" y2="71"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.88160021,0,0,0.8819021,286.23355,286.30927)"/>
+       gradientTransform="matrix(1.8817085,0,0,1.8823529,30.282169,-993.88315)"/>
 
-    <!-- Quadrant linear gradients (base colors) -->
+    <!-- Quadrant gradients -->
     <linearGradient id="peach-diagonal-se"
        x1="12.145102" y1="12.276863" x2="2876.5601" y2="2883.4448"
        gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11407,-510.28248)"
@@ -71,8 +71,8 @@
       <stop offset="0.35960788" stop-color="#4a2068"/>
       <stop offset="0.49847782" stop-color="#6a3070"/>
       <stop offset="0.58969784" stop-color="#8a4068"/>
-      <stop offset="0.73909438" stop-color="#b86060"/>
-      <stop offset="0.88567901" stop-color="#e08070"/>
+      <stop offset="0.79689199" stop-color="#b86060"/>
+      <stop offset="88%" stop-color="#e08070"/>
       <stop offset="100%" stop-color="#FFB090"/>
     </linearGradient>
 
@@ -85,9 +85,9 @@
       <stop offset="25%" stop-color="#2d1850"/>
       <stop offset="38%" stop-color="#4a2060"/>
       <stop offset="50%" stop-color="#6a2858"/>
-      <stop offset="0.63308793" stop-color="#903050"/>
-      <stop offset="0.75733292" stop-color="#c04048"/>
-      <stop offset="0.87853247" stop-color="#e05050"/>
+      <stop offset="0.61936647" stop-color="#903050"/>
+      <stop offset="0.748757" stop-color="#c04048"/>
+      <stop offset="0.88001043" stop-color="#e05050"/>
       <stop offset="100%" stop-color="#FF6B6B"/>
     </linearGradient>
 
@@ -100,8 +100,8 @@
       <stop offset="25%" stop-color="#2d1850"/>
       <stop offset="38%" stop-color="#4a2060"/>
       <stop offset="50%" stop-color="#6a3058"/>
-      <stop offset="0.60298145" stop-color="#8a4048"/>
-      <stop offset="0.77334201" stop-color="#b8703a"/>
+      <stop offset="0.60901409" stop-color="#8a4048"/>
+      <stop offset="0.77511191" stop-color="#b8703a"/>
       <stop offset="0.87841564" stop-color="#d4a030"/>
       <stop offset="100%" stop-color="#F0C830"/>
     </linearGradient>
@@ -121,69 +121,46 @@
       <stop offset="100%" stop-color="#F088B0"/>
     </linearGradient>
 
-    <!-- Radial gradient overlays (original Inkscape transforms preserved exactly) -->
+    <!-- Radial gradient overlays - exact from Fintutto_translatorkreisGross -->
     <radialGradient xlink:href="#peach-diagonal-se" id="radialGradient14891"
-       cx="1529.0662" cy="-253.03757" fx="1529.0662" fy="-253.03757" r="256.40182"
-       gradientTransform="matrix(0.62119453,1.9577456,-2.3111475,0.73677533,-1531.4276,-3827.0539)"
+       cx="1529.0662" cy="-253.03757" fx="1529.0662" fy="-253.03755" r="256.40182"
+       gradientTransform="matrix(-0.00578403,2.6835415,-2.5637829,-0.00559489,-1659.871,-5125.306)"
        gradientUnits="userSpaceOnUse"/>
     <radialGradient xlink:href="#coral-diagonal-sw" id="radialGradient14893"
-       cx="508.09378" cy="-517.05786" fx="508.09375" fy="-517.05786" r="257.01556"
-       gradientTransform="matrix(-2.1731079,0.30715347,-0.44723694,-3.1514026,1895.0798,-2808.28)"
+       cx="508.11044" cy="-517.05786" fx="508.11041" fy="-517.05786" r="257.01556"
+       gradientTransform="matrix(-2.4418427,0.01369572,-0.01453954,-2.6491594,1232.1421,-2398.8712)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#gold-diagonal-sw" id="radialGradient14897"
+       cx="-510.2825" cy="-514.8692" fx="-510.2825" fy="-514.8692" r="257.01556"
+       gradientTransform="matrix(-2.8609463,-0.01559761,0.01408698,-2.6406622,-1455.865,-1367.3588)"
        gradientUnits="userSpaceOnUse"/>
     <radialGradient xlink:href="#mieter-diagonal-se" id="radialGradient14911"
        cx="514.27917" cy="506.54276" fx="514.27917" fy="506.54276" r="256.40182"
-       gradientTransform="matrix(-0.30651758,2.6587051,-2.3284828,-0.26710169,1337.2891,-2256.9466)"
-       gradientUnits="userSpaceOnUse"/>
-    <radialGradient xlink:href="#gold-diagonal-sw" id="radialGradient18289"
-       cx="-1.0705715" cy="-1.372988" fx="-1.0705715" fy="-1.372988" r="255.42059"
-       gradientTransform="matrix(-2.9179686,0,-2.9415091e-7,-2.3102041,-4.194466,-5.1562899)"
+       gradientTransform="matrix(0.00707138,3.2799111,-2.5637831,0.00559515,1295.2064,-2714.5524)"
        gradientUnits="userSpaceOnUse"/>
 
     <!-- Rounded corners clip for app icon -->
     <clipPath id="app-rounded">
       <rect x="0" y="0" width="1024" height="1024" rx="192" ry="192"/>
     </clipPath>
-
-    <!-- Text glow -->
-    <filter id="text-glow" x="-0.3" y="-0.3" width="1.6" height="1.6">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Label text glow -->
-    <filter id="label-glow" x="-0.2" y="-0.3" width="1.4" height="1.6">
-      <feGaussianBlur stdDeviation="4" result="blur">
-        <animate attributeName="stdDeviation" values="4;6;4" dur="2s" repeatCount="indefinite"/>
-      </feGaussianBlur>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <style>@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&amp;display=swap');</style>
   </defs>
 
   <!-- Clip everything to rounded app icon shape -->
   <g clip-path="url(#app-rounded)">
-    <!-- Original four quadrant backgrounds (exact transforms from Inkscape) -->
+    <!-- Four quadrant backgrounds - exact transforms from Fintutto_translatorkreisGross -->
     <g style="display:inline"
        transform="matrix(0,0.99987504,-1.0022684,0,1025.073,1.9841596)">
-      <rect width="510.84125" height="512.06396"
-         x="1.0704963" y="-1022.1437"
+      <rect width="512.06403" height="510.84119"
+         x="-1022.1436" y="-1022.7529"
          style="fill:url(#radialGradient14891);fill-opacity:1"
-         transform="rotate(90)"/>
-      <rect width="512.06396" height="510.84125"
-         x="510.07965" y="-1022.7529"
+         transform="scale(-1)"/>
+      <rect width="510.84119" height="512.06403"
+         x="-511.91174" y="-1022.1436"
          style="fill:url(#radialGradient14893);fill-opacity:1"
-         transform="scale(1,-1)"/>
+         transform="matrix(0,-1,-1,0,0,0)"/>
       <rect width="510.84119" height="512.06403"
          x="-511.91171" y="-1.9844524"
-         style="fill:url(#radialGradient18289);fill-opacity:1"
+         style="fill:url(#radialGradient14897);fill-opacity:1"
          transform="rotate(-90)"/>
       <rect width="512.06403" height="510.84119"
          x="-1.984468" y="-1022.7529"
@@ -192,60 +169,50 @@
     </g>
   </g>
 
-  <!-- Animated rings - original size from quadrat SVG, shifted up slightly for label space -->
-  <!-- Ring center at (512, 440) to leave room for "translator" text below -->
+  <!-- Big ring - exact geometry from Fintutto_translatorkreisGross (r≈320, no text) -->
 
   <!-- Outer Glow Ring - pulsing -->
   <circle cx="1920" cy="1080" r="170" fill="none"
      stroke-width="60" filter="url(#glow-strong)"
      style="stroke:url(#linearGradient851)"
-     transform="matrix(0.88159982,0,0,0.88190207,-1180.7483,-512)">
-    <animate attributeName="opacity" values="0.15;0.35;0.15" dur="3s" repeatCount="indefinite"/>
+     transform="matrix(0,1.8817078,-1.882353,0,2544.9413,-3100.8789)">
+    <animate attributeName="opacity" values="0.12;0.28;0.12" dur="3s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Middle Ring -->
   <circle cx="1920" cy="1080" r="170" fill="none"
      stroke-width="42" filter="url(#glow)"
      style="stroke:url(#linearGradient853)"
-     transform="matrix(0.88159982,0,0,0.88190183,-1180.7483,-512)">
-    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+     transform="matrix(0,1.8817078,-1.8823524,0,2544.9406,-3100.8789)">
+    <animate attributeName="opacity" values="0.3;0.55;0.3" dur="3s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Dashed rotating ring -->
-  <ellipse cx="511.92328" cy="440" fill="none"
-     stroke-width="26.4534" opacity="0.55"
+  <ellipse cx="512.00055" cy="-511.99991" fill="none"
+     stroke-width="56.4627" opacity="0.4"
      stroke-dasharray="50, 25" stroke-linecap="round"
      style="stroke:url(#linearGradient855)"
-     rx="149.87204" ry="149.92331">
+     rx="319.89044" ry="319.99991"
+     transform="rotate(90)">
     <animateTransform attributeName="transform" type="rotate"
-       from="0 512 440" to="360 512 440" dur="25s" repeatCount="indefinite"/>
+       from="0 256 256" to="360 256 256" dur="25s" repeatCount="indefinite"/>
   </ellipse>
 
   <!-- Counter-rotating dashed ring -->
-  <ellipse cx="512.00006" cy="440" fill="none"
-     stroke-width="17.6352" opacity="0.35"
+  <ellipse cx="511.99982" cy="-512.1637" fill="none"
+     stroke-width="37.641" opacity="0.25"
      stroke-dasharray="25, 50" stroke-linecap="round"
      style="stroke:url(#linearGradient857)"
-     rx="149.87204" ry="149.92331">
+     rx="319.89044" ry="319.99991"
+     transform="rotate(90)">
     <animateTransform attributeName="transform" type="rotate"
-       from="360 512 440" to="0 512 440" dur="35s" repeatCount="indefinite"/>
+       from="360 256 256" to="0 256 256" dur="35s" repeatCount="indefinite"/>
   </ellipse>
 
   <!-- Solid ring on top -->
-  <ellipse cx="511.92334" cy="440" fill="none"
-     stroke-width="26.4534" opacity="0.85"
+  <ellipse cx="511.99991" cy="-512.00006" fill="none"
+     stroke-width="56.4627" opacity="0.7"
      style="stroke:url(#linearGradient859)"
-     rx="149.87204" ry="149.92331"/>
-
-  <!-- Center "f" letter -->
-  <text x="512" y="483" text-anchor="middle"
-     font-family="Inter, system-ui, -apple-system, sans-serif"
-     font-size="200" font-weight="700" fill="white" opacity="0.95"
-     filter="url(#text-glow)">f</text>
-
-  <!-- "translator" label below ring -->
-  <text x="512" y="730" text-anchor="middle"
-     font-family="Raleway, sans-serif" font-weight="600"
-     font-size="80" letter-spacing="6"
-     fill="#ffffff" filter="url(#label-glow)">translator</text>
+     rx="319.89044" ry="319.99991"
+     transform="rotate(90)"/>
 </svg>
