@@ -24,7 +24,10 @@ export async function fetchAlternatives(
     const langPair = `${sourceLang}|${targetLang}`
     const url = `${MYMEMORY_API}?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(langPair)}&mt=1`
 
-    const response = await fetch(url)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 6000)
+    const response = await fetch(url, { signal: controller.signal })
+    clearTimeout(timeout)
     if (!response.ok) return []
 
     const data = await response.json()

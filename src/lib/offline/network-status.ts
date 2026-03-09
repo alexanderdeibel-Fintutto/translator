@@ -13,10 +13,12 @@ class NetworkStatusManager {
   private listeners = new Set<Listener>()
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null
   private consecutiveFailures = 0
+  private onlineHandler = () => this.handleBrowserEvent(true)
+  private offlineHandler = () => this.handleBrowserEvent(false)
 
   constructor() {
-    window.addEventListener('online', () => this.handleBrowserEvent(true))
-    window.addEventListener('offline', () => this.handleBrowserEvent(false))
+    window.addEventListener('online', this.onlineHandler)
+    window.addEventListener('offline', this.offlineHandler)
 
     // Start heartbeat for more reliable detection
     this.startHeartbeat()
@@ -112,6 +114,8 @@ class NetworkStatusManager {
       clearInterval(this.heartbeatTimer)
       this.heartbeatTimer = null
     }
+    window.removeEventListener('online', this.onlineHandler)
+    window.removeEventListener('offline', this.offlineHandler)
     this.listeners.clear()
   }
 }

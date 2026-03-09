@@ -20,6 +20,8 @@ interface QueuedEvent {
 let queue: QueuedEvent[] = []
 let flushTimer: ReturnType<typeof setInterval> | null = null
 let sessionId = ''
+let visibilityHandler: (() => void) | null = null
+let beforeUnloadHandler: (() => void) | null = null
 
 function getSessionId(): string {
   if (!sessionId) {
@@ -100,14 +102,15 @@ export function initAdminReporter() {
   flushTimer = setInterval(flush, FLUSH_INTERVAL_MS)
 
   // Flush on page visibility change (user leaving)
-  document.addEventListener('visibilitychange', () => {
+  visibilityHandler = () => {
     if (document.visibilityState === 'hidden') {
       flush()
     }
-  })
+  }
+  document.addEventListener('visibilitychange', visibilityHandler)
 
   // Flush on beforeunload
-  window.addEventListener('beforeunload', () => {
+  beforeUnloadHandler = () => {
     if (queue.length > 0 && ADMIN_API_URL) {
       // Use sendBeacon for reliability during page unload
       const payload = JSON.stringify({
@@ -119,13 +122,22 @@ export function initAdminReporter() {
         new Blob([payload], { type: 'application/json' })
       )
     }
-  })
+  }
+  window.addEventListener('beforeunload', beforeUnloadHandler)
 }
 
 export function stopAdminReporter() {
   if (flushTimer) {
     clearInterval(flushTimer)
     flushTimer = null
+  }
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
+    visibilityHandler = null
+  }
+  if (beforeUnloadHandler) {
+    window.removeEventListener('beforeunload', beforeUnloadHandler)
+    beforeUnloadHandler = null
   }
   flush()
 }

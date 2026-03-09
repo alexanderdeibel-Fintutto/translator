@@ -29,6 +29,13 @@ import { getNetworkStatus } from '../offline/network-status'
 import { getCachedTranslation } from '../offline/translation-cache'
 import { isLanguagePairAvailable, translateOffline } from '../offline/translation-engine'
 
+// Helper: mock a failed proxy response (first in cascade for free tier)
+const proxyFail = () => mockFetch.mockResolvedValueOnce({
+  ok: false,
+  status: 502,
+  text: () => Promise.resolve('Proxy unavailable'),
+})
+
 beforeEach(() => {
   vi.clearAllMocks()
   mockFetch.mockReset()
@@ -57,7 +64,10 @@ describe('translateText cascade', () => {
   it('skips Google when no API key is configured', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
 
-    // MyMemory responds
+    // Proxy fails
+    proxyFail()
+
+    // MyMemory responds (Google skipped because no API key)
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({
@@ -73,6 +83,9 @@ describe('translateText cascade', () => {
 
   it('falls back to MyMemory when Google fails', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('fake-key')
+
+    // Proxy fails
+    proxyFail()
 
     // Google fails
     mockFetch.mockResolvedValueOnce({
@@ -97,6 +110,9 @@ describe('translateText cascade', () => {
 
   it('falls back to LibreTranslate when Google and MyMemory fail', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('fake-key')
+
+    // Proxy fails
+    proxyFail()
 
     // Google fails
     mockFetch.mockResolvedValueOnce({
@@ -125,7 +141,10 @@ describe('translateText cascade', () => {
   it('falls back to offline engine when all online providers fail', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
 
-    // MyMemory fails
+    // Proxy fails
+    proxyFail()
+
+    // MyMemory fails (Google skipped — no key)
     mockFetch.mockResolvedValueOnce({
       ok: false,
       statusText: 'Service Unavailable',
@@ -152,6 +171,9 @@ describe('translateText cascade', () => {
 
   it('throws when all providers fail and offline unavailable', async () => {
     vi.mocked(getGoogleApiKey).mockReturnValue('')
+
+    // Proxy fails
+    proxyFail()
 
     // MyMemory fails
     mockFetch.mockResolvedValueOnce({

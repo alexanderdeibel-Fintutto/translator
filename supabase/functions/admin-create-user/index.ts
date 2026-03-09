@@ -184,19 +184,26 @@ Deno.serve(async (req: Request) => {
 
     // Send welcome email via Resend (optional)
     if (RESEND_API_KEY && resetData?.properties?.action_link) {
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'GuideTranslator <noreply@guidetranslator.com>',
-          to: [email],
-          subject: 'Willkommen bei GuideTranslator!',
-          text: `Hallo ${displayName ?? email},\n\nIhr Account wurde erstellt. Bitte setzen Sie Ihr Passwort ueber folgenden Link:\n\n${resetData.properties.action_link}\n\nBeste Gruesse,\nDas GuideTranslator Team`,
-        }),
-      })
+      try {
+        const emailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'GuideTranslator <noreply@guidetranslator.com>',
+            to: [email],
+            subject: 'Willkommen bei GuideTranslator!',
+            text: `Hallo ${displayName ?? email},\n\nIhr Account wurde erstellt. Bitte setzen Sie Ihr Passwort ueber folgenden Link:\n\n${resetData.properties.action_link}\n\nBeste Gruesse,\nDas GuideTranslator Team`,
+          }),
+        })
+        if (!emailRes.ok) {
+          console.log('Welcome email failed:', emailRes.status, await emailRes.text())
+        }
+      } catch (emailErr) {
+        console.log('Welcome email error:', emailErr instanceof Error ? emailErr.message : String(emailErr))
+      }
     }
 
     return jsonResponse({
