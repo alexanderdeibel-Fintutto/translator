@@ -93,7 +93,9 @@ const CHIRP_VOICE_MAP: Record<string, { languageCode: string; name: string }> = 
 }
 
 export function isCloudTTSAvailable(): boolean {
-  return !!getGoogleApiKey()
+  // Cloud TTS is available via the /api/tts server proxy (always deployed)
+  // or via direct API call if a client-side key is configured
+  return true
 }
 
 export type TtsQualityTier = 'browser' | 'standard' | 'neural2' | 'chirp3hd'

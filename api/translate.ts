@@ -162,11 +162,21 @@ const ALLOWED_ORIGINS = new Set([
   'https://www.guidetranslator.com',
   'https://app.guidetranslator.com',
   'https://listener.guidetranslator.com',
-  ...(process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:3000'] : []),
 ])
 
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return true // same-origin requests have no Origin header
+  if (ALLOWED_ORIGINS.has(origin)) return true
+  try {
+    const url = new URL(origin)
+    return url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+  } catch {
+    return false
+  }
+}
+
 function corsHeaders(origin?: string | null): Record<string, string> {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.has(origin) ? origin : ''
+  const allowedOrigin = origin && isAllowedOrigin(origin) ? origin : ''
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
