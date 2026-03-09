@@ -11,24 +11,25 @@
         <animate attributeName="stop-color" values="#E879F9;#F97316;#14B8A6;#2563EB;#E879F9" dur="8s" repeatCount="indefinite"/>
       </stop>
     </linearGradient>
-    <radialGradient id="q-tl" cx="0.3" cy="0.3" r="0.85">
+    <!-- Corner-based radial gradients -->
+    <radialGradient id="q-tl" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="22.6">
       <stop offset="0%" stop-color="#FF6B6B"/>
-      <stop offset="50%" stop-color="#903050"/>
+      <stop offset="40%" stop-color="#903050"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
-    <radialGradient id="q-tr" cx="0.7" cy="0.3" r="0.85">
+    <radialGradient id="q-tr" gradientUnits="userSpaceOnUse" cx="32" cy="0" r="22.6">
       <stop offset="0%" stop-color="#FFB090"/>
-      <stop offset="50%" stop-color="#8a4068"/>
+      <stop offset="40%" stop-color="#8a4068"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
-    <radialGradient id="q-bl" cx="0.3" cy="0.7" r="0.85">
+    <radialGradient id="q-bl" gradientUnits="userSpaceOnUse" cx="0" cy="32" r="22.6">
       <stop offset="0%" stop-color="#F0C830"/>
-      <stop offset="50%" stop-color="#8a4048"/>
+      <stop offset="40%" stop-color="#8a4048"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
-    <radialGradient id="q-br" cx="0.7" cy="0.7" r="0.85">
+    <radialGradient id="q-br" gradientUnits="userSpaceOnUse" cx="32" cy="32" r="22.6">
       <stop offset="0%" stop-color="#F088B0"/>
-      <stop offset="50%" stop-color="#6a3080"/>
+      <stop offset="40%" stop-color="#6a3080"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
     <clipPath id="r">
@@ -41,8 +42,8 @@
     <rect x="0"  y="16" width="16" height="16" fill="url(#q-bl)"/>
     <rect x="16" y="16" width="16" height="16" fill="url(#q-br)"/>
   </g>
-  <!-- Ring -->
-  <circle cx="16" cy="16" r="9" fill="none" stroke="url(#ring)" stroke-width="1.8" opacity="0.7"/>
-  <!-- F -->
-  <text x="16" y="20.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="white" opacity="0.95">F</text>
+  <!-- Ring - stronger -->
+  <circle cx="16" cy="16" r="9" fill="none" stroke="url(#ring)" stroke-width="2" opacity="0.85"/>
+  <!-- f lowercase -->
+  <text x="16" y="20.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" fill="white" opacity="0.95">f</text>
 </svg>

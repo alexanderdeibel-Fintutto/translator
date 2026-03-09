@@ -19,39 +19,52 @@
       </stop>
     </linearGradient>
 
-    <!-- Quadrant gradients - Top-Right: Peach -->
-    <radialGradient id="q-tr" cx="0.7" cy="0.3" r="0.8" fx="0.8" fy="0.2">
-      <stop offset="0%" stop-color="#FFB090"/>
-      <stop offset="30%" stop-color="#e08070"/>
-      <stop offset="55%" stop-color="#8a4068"/>
-      <stop offset="80%" stop-color="#2d1850"/>
-      <stop offset="100%" stop-color="#0f0f1a"/>
-    </radialGradient>
-
-    <!-- Top-Left: Coral -->
-    <radialGradient id="q-tl" cx="0.3" cy="0.3" r="0.8" fx="0.2" fy="0.2">
+    <!-- Quadrant gradients with center in outer corners, radiating inward -->
+    <!-- Top-Left: Coral - light from top-left corner -->
+    <radialGradient id="q-tl" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="362">
       <stop offset="0%" stop-color="#FF6B6B"/>
-      <stop offset="30%" stop-color="#e05050"/>
-      <stop offset="55%" stop-color="#903050"/>
-      <stop offset="80%" stop-color="#2d1850"/>
+      <stop offset="15%" stop-color="#e05050"/>
+      <stop offset="30%" stop-color="#c04048"/>
+      <stop offset="45%" stop-color="#903050"/>
+      <stop offset="60%" stop-color="#6a2858"/>
+      <stop offset="75%" stop-color="#4a2060"/>
+      <stop offset="88%" stop-color="#2d1850"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
 
-    <!-- Bottom-Left: Gold -->
-    <radialGradient id="q-bl" cx="0.3" cy="0.7" r="0.8" fx="0.2" fy="0.8">
+    <!-- Top-Right: Peach - light from top-right corner -->
+    <radialGradient id="q-tr" gradientUnits="userSpaceOnUse" cx="512" cy="0" r="362">
+      <stop offset="0%" stop-color="#FFB090"/>
+      <stop offset="15%" stop-color="#e08070"/>
+      <stop offset="30%" stop-color="#b86060"/>
+      <stop offset="45%" stop-color="#8a4068"/>
+      <stop offset="60%" stop-color="#6a3070"/>
+      <stop offset="75%" stop-color="#4a2068"/>
+      <stop offset="88%" stop-color="#2d1850"/>
+      <stop offset="100%" stop-color="#0f0f1a"/>
+    </radialGradient>
+
+    <!-- Bottom-Left: Gold - light from bottom-left corner -->
+    <radialGradient id="q-bl" gradientUnits="userSpaceOnUse" cx="0" cy="512" r="362">
       <stop offset="0%" stop-color="#F0C830"/>
-      <stop offset="30%" stop-color="#d4a030"/>
-      <stop offset="55%" stop-color="#8a4048"/>
-      <stop offset="80%" stop-color="#2d1850"/>
+      <stop offset="15%" stop-color="#d4a030"/>
+      <stop offset="30%" stop-color="#b8703a"/>
+      <stop offset="45%" stop-color="#8a4048"/>
+      <stop offset="60%" stop-color="#6a3058"/>
+      <stop offset="75%" stop-color="#4a2060"/>
+      <stop offset="88%" stop-color="#2d1850"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
 
-    <!-- Bottom-Right: Pink -->
-    <radialGradient id="q-br" cx="0.7" cy="0.7" r="0.8" fx="0.8" fy="0.8">
+    <!-- Bottom-Right: Pink - light from bottom-right corner -->
+    <radialGradient id="q-br" gradientUnits="userSpaceOnUse" cx="512" cy="512" r="362">
       <stop offset="0%" stop-color="#F088B0"/>
-      <stop offset="30%" stop-color="#d068a0"/>
-      <stop offset="55%" stop-color="#6a3080"/>
-      <stop offset="80%" stop-color="#2d1850"/>
+      <stop offset="15%" stop-color="#d068a0"/>
+      <stop offset="30%" stop-color="#a84890"/>
+      <stop offset="45%" stop-color="#8a4088"/>
+      <stop offset="60%" stop-color="#6a3080"/>
+      <stop offset="75%" stop-color="#4a2070"/>
+      <stop offset="88%" stop-color="#2d1850"/>
       <stop offset="100%" stop-color="#0f0f1a"/>
     </radialGradient>
 
@@ -77,6 +90,15 @@
       </feMerge>
     </filter>
 
+    <!-- Text glow -->
+    <filter id="text-glow" x="-0.2" y="-0.2" width="1.4" height="1.4">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
     <!-- Rounded rectangle clip -->
     <clipPath id="rounded">
       <rect x="0" y="0" width="512" height="512" rx="96" ry="96"/>
@@ -85,36 +107,36 @@
 
   <!-- Background with rounded corners -->
   <g clip-path="url(#rounded)">
-    <!-- Four quadrant backgrounds -->
+    <!-- Four quadrant backgrounds - each gradient radiates from its outer corner -->
     <rect x="0"   y="0"   width="256" height="256" fill="url(#q-tl)"/>
     <rect x="256" y="0"   width="256" height="256" fill="url(#q-tr)"/>
     <rect x="0"   y="256" width="256" height="256" fill="url(#q-bl)"/>
     <rect x="256" y="256" width="256" height="256" fill="url(#q-br)"/>
   </g>
 
-  <!-- Outer glow ring -->
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="30" filter="url(#glow-strong)" opacity="0.2">
-    <animate attributeName="opacity" values="0.12;0.28;0.12" dur="3s" repeatCount="indefinite"/>
+  <!-- Outer glow ring - stronger -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="32" filter="url(#glow-strong)" opacity="0.35">
+    <animate attributeName="opacity" values="0.2;0.45;0.2" dur="3s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Middle ring with glow -->
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="20" filter="url(#glow)" opacity="0.45">
-    <animate attributeName="opacity" values="0.3;0.55;0.3" dur="3s" repeatCount="indefinite"/>
+  <!-- Middle ring with glow - stronger -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring)" stroke-width="22" filter="url(#glow)" opacity="0.65">
+    <animate attributeName="opacity" values="0.5;0.75;0.5" dur="3s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Dashed rotating ring -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="12" opacity="0.4" stroke-dasharray="25 12.5" stroke-linecap="round">
+  <!-- Dashed rotating ring - stronger -->
+  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="13" opacity="0.6" stroke-dasharray="25 12.5" stroke-linecap="round">
     <animateTransform attributeName="transform" type="rotate" from="0 256 256" to="360 256 256" dur="25s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Reverse dashed ring -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="8" opacity="0.25" stroke-dasharray="12.5 25" stroke-linecap="round">
+  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="9" opacity="0.4" stroke-dasharray="12.5 25" stroke-linecap="round">
     <animateTransform attributeName="transform" type="rotate" from="360 256 256" to="0 256 256" dur="35s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- Solid inner ring -->
-  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="12" opacity="0.7"/>
+  <!-- Solid inner ring - stronger -->
+  <circle cx="256" cy="256" r="132" fill="none" stroke="url(#ring)" stroke-width="13" opacity="0.85"/>
 
-  <!-- Center "F" letter for Fintutto -->
-  <text x="256" y="280" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="120" font-weight="700" fill="white" opacity="0.95" filter="url(#glow)">F</text>
+  <!-- Center "f" letter for fintutto - lowercase -->
+  <text x="256" y="282" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="110" font-weight="700" fill="white" opacity="0.95" filter="url(#text-glow)">f</text>
 </svg>
