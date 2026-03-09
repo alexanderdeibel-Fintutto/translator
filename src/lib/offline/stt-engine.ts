@@ -84,6 +84,12 @@ export function createWhisperSTTEngine(): STTEngine {
     async start(lang, onResult, onError) {
       onResultCallback = onResult
 
+      // Require secure context for mediaDevices API
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        onError('Voice input requires HTTPS. Please use a secure connection.')
+        return
+      }
+
       // Get microphone
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 16000 } })

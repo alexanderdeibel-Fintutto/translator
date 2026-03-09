@@ -9,12 +9,30 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
   apiVersion: '2023-10-16',
 })
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+const ALLOWED_ORIGINS = new Set([
+  'https://guidetranslator.com',
+  'https://www.guidetranslator.com',
+  'https://app.guidetranslator.com',
+])
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  let allowedOrigin = ''
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    allowedOrigin = origin
+  } else if (origin) {
+    try { if (new URL(origin).hostname === 'localhost') allowedOrigin = origin } catch { /* */ }
+  }
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Vary': 'Origin',
+  }
 }
 
 Deno.serve(async (req: Request) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }

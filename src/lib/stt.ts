@@ -378,6 +378,12 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       interimStableCount = 0
       lastFinalEmitTime = Date.now()
 
+      // Require secure context for mediaDevices API
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        onError('Voice input requires HTTPS. Please use a secure connection.')
+        return
+      }
+
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       } catch (e) {

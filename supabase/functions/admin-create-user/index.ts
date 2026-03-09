@@ -12,10 +12,28 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+const ALLOWED_ORIGINS = new Set([
+  'https://guidetranslator.com',
+  'https://www.guidetranslator.com',
+  'https://app.guidetranslator.com',
+])
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  let allowedOrigin = ''
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    allowedOrigin = origin
+  } else if (origin) {
+    try { if (new URL(origin).hostname === 'localhost') allowedOrigin = origin } catch { /* */ }
+  }
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Vary': 'Origin',
+  }
 }
+
+// Module-level default (overridden per-request in the handler)
+let corsHeaders: Record<string, string> = getCorsHeaders(null)
 
 function jsonResponse(body: Record<string, unknown>) {
   return new Response(JSON.stringify(body), {
@@ -30,6 +48,9 @@ function errorResponse(error: string, code?: string) {
 }
 
 Deno.serve(async (req: Request) => {
+  const origin = req.headers.get('origin')
+  corsHeaders = getCorsHeaders(origin)
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
