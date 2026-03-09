@@ -22,7 +22,7 @@ export default function LandingLayout() {
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex items-center justify-between h-14 px-4">
           <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-            <img src="/fintutto-logo.svg" alt="Fintutto Logo" className="w-8 h-8 rounded-lg" />
+            <img src="/app-logo.svg" alt="Fintutto Logo" className="w-8 h-8 rounded-lg" />
             <span><span className="text-primary">fintutto</span>translator</span>
           </Link>
 
