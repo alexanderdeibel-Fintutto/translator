@@ -104,13 +104,31 @@ function recordSuccess(provider: string) {
 
 // --- Provider implementations ---
 
+/** Fetch with AbortController timeout — prevents hanging requests from blocking the cascade */
+const PROVIDER_TIMEOUT_MS = 6000 // 6 seconds per provider
+
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS)
+  try {
+    return await fetch(input, { ...init, signal: controller.signal })
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error(`Request timed out after ${PROVIDER_TIMEOUT_MS / 1000}s`)
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 /** Server-side proxy (Vercel Edge Function) — hides API keys, bypasses CSP/ad-blockers */
 async function translateWithProxy(
   text: string,
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch('/api/translate', {
+  const response = await fetchWithTimeout('/api/translate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, source: sourceLang, target: targetLang }),
@@ -142,7 +160,7 @@ async function translateWithGoogle(
     throw new Error('Google API key not configured')
   }
 
-  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${getGoogleApiKey()}`, {
+  const response = await fetchWithTimeout(`${GOOGLE_TRANSLATE_URL}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -185,7 +203,7 @@ async function translateWithMyMemory(
   const langPair = `${sourceLang}|${targetLang}`
   const url = `${MYMEMORY_API}?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(langPair)}`
 
-  const response = await fetch(url)
+  const response = await fetchWithTimeout(url)
 
   if (!response.ok) {
     throw new Error(`MyMemory failed: ${response.statusText}`)
@@ -209,7 +227,7 @@ async function translateWithLibre(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch(LIBRE_API, {
+  const response = await fetchWithTimeout(LIBRE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -247,7 +265,7 @@ async function translateWithAzure(
 
   const url = `${AZURE_TRANSLATE_URL}?api-version=3.0&from=${sourceLang}&to=${targetLang}`
 
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     method: 'POST',
     headers: {
       'Ocp-Apim-Subscription-Key': apiKey,

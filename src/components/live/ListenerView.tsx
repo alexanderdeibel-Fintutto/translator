@@ -211,6 +211,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
           selected={session.selectedLanguage}
           onSelect={session.selectLanguage}
           exclude={session.sourceLanguage}
+          showLive
         />
       </Card>
 

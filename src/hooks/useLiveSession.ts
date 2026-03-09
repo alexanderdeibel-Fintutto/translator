@@ -67,6 +67,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   autoTTSRef.current = autoTTS
   const ttsRef = useRef(tts.speak)
   ttsRef.current = tts.speak
+  const processTranslationRef = useRef<(text: string) => Promise<void>>(async () => {})
 
   // --- SPEAKER ---
 
@@ -163,12 +164,47 @@ export function useLiveSession(userTierId: TierId = 'free') {
   // Process a single text through translation fan-out
   const processTranslation = useCallback(async (text: string) => {
     // Get unique target languages from connected listeners
-    let targetLangs = Object.keys(presence.listenersByLanguage)
+    const allTargetLangs = Object.keys(presence.listenersByLanguage)
       .filter(lang => lang !== '_speaker')
 
-    if (targetLangs.length === 0) return
+    // Separate _live listeners (passthrough, no translation needed) from regular
+    const hasLiveListeners = allTargetLangs.includes('_live')
+    let targetLangs = allTargetLangs.filter(lang => lang !== '_live')
 
-    // Enforce language limit per tier (0 = unlimited)
+    if (allTargetLangs.length === 0) {
+      // No listeners yet — still record source text in speaker's history
+      // so the speaker sees their own transcript
+      const chunk: TranslationChunk = {
+        id: generateChunkId(),
+        sourceText: text,
+        translatedText: text,
+        sourceLang: sourceLanguage,
+        targetLanguage: sourceLanguage,
+        isFinal: true,
+        timestamp: Date.now(),
+      }
+      setTranslationHistory(prev => {
+        const next = [...prev, chunk]
+        return next.length > 100 ? next.slice(-100) : next
+      })
+      return
+    }
+
+    // Broadcast source text to _live listeners (no translation, no API call)
+    if (hasLiveListeners) {
+      const liveChunk: TranslationChunk = {
+        id: generateChunkId(),
+        sourceText: text,
+        translatedText: text,
+        sourceLang: sourceLanguage,
+        targetLanguage: '_live',
+        isFinal: true,
+        timestamp: Date.now(),
+      }
+      broadcast.broadcast('translation', liveChunk as unknown as Record<string, unknown>)
+    }
+
+    // Enforce language limit per tier (0 = unlimited) — _live doesn't count
     const maxLangs = tierRef.current.limits.maxLanguages
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
       console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
@@ -179,21 +215,23 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
 
     // Translate to all requested languages in parallel (resilient — individual failures don't block others)
-    const settled = await Promise.allSettled(
-      targetLangs.map(async (targetLang) => {
-        const result = await translateText(text, sourceLanguage, targetLang)
-        const chunk: TranslationChunk = {
-          id: generateChunkId(),
-          sourceText: text,
-          translatedText: result.translatedText,
-          sourceLang: sourceLanguage,
-          targetLanguage: targetLang,
-          isFinal: true,
-          timestamp: Date.now(),
-        }
-        return chunk
-      })
-    )
+    const settled = targetLangs.length > 0
+      ? await Promise.allSettled(
+          targetLangs.map(async (targetLang) => {
+            const result = await translateText(text, sourceLanguage, targetLang)
+            const chunk: TranslationChunk = {
+              id: generateChunkId(),
+              sourceText: text,
+              translatedText: result.translatedText,
+              sourceLang: sourceLanguage,
+              targetLanguage: targetLang,
+              isFinal: true,
+              timestamp: Date.now(),
+            }
+            return chunk
+          })
+        )
+      : []
 
     const results = settled
       .filter((r): r is PromiseFulfilledResult<TranslationChunk> => r.status === 'fulfilled')
@@ -205,9 +243,19 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
 
     // Add to local history (one entry per source text, capped at 100)
-    if (results.length > 0) {
+    const historyChunk = results.length > 0 ? results[0] : (hasLiveListeners ? {
+      id: generateChunkId(),
+      sourceText: text,
+      translatedText: text,
+      sourceLang: sourceLanguage,
+      targetLanguage: sourceLanguage,
+      isFinal: true,
+      timestamp: Date.now(),
+    } as TranslationChunk : null)
+
+    if (historyChunk) {
       setTranslationHistory(prev => {
-        const next = [...prev, results[0]]
+        const next = [...prev, historyChunk]
         return next.length > 100 ? next.slice(-100) : next
       })
     }
@@ -219,7 +267,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
   }, [sourceLanguage, presence.listenersByLanguage, broadcast])
 
+  // Keep ref in sync so drainQueue always calls the latest version
+  processTranslationRef.current = processTranslation
+
   // Drain the pending queue one item at a time
+  // Uses processTranslationRef to avoid stale closures when listeners join/leave
   const drainQueue = useCallback(async () => {
     if (isTranslatingRef.current) return
     const next = pendingTextsRef.current.shift()
@@ -227,10 +279,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     isTranslatingRef.current = true
     try {
-      await processTranslation(next)
+      await processTranslationRef.current(next)
     } catch (err) {
       console.error('[Live] Translation fan-out failed:', err)
-      setError(err instanceof Error ? err.message : t('error.translationFailed'))
+      setError(err instanceof Error ? err.message : String(err))
     } finally {
       isTranslatingRef.current = false
       // Process next queued item if any
@@ -238,7 +290,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
         drainQueue()
       }
     }
-  }, [processTranslation])
+  }, [])
 
   // Handle speech recognition results (speaker side) — queue-based, never drops
   const handleSpeechResult = useCallback(async (text: string) => {
@@ -311,10 +363,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
             return next.length > 100 ? next.slice(-100) : next
           })
 
-          // Auto-TTS
+          // Auto-TTS — for _live mode use the source language's voice
           if (autoTTSRef.current && chunk.translatedText) {
-            const lang = getLanguageByCode(selectedLanguageRef.current)
-            ttsRef.current(chunk.translatedText, lang?.speechCode || selectedLanguageRef.current)
+            const ttsLangCode = selectedLanguageRef.current === '_live'
+              ? chunk.sourceLang
+              : selectedLanguageRef.current
+            const lang = getLanguageByCode(ttsLangCode)
+            ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
           }
         }
       },

@@ -255,6 +255,7 @@ const strings: Record<string, string> = {
   'live.connected': 'Connected',
   'live.autoSpeak': 'Auto-speak',
   'live.subtitles': 'Subtitles',
+  'live.originalAudio': 'Live (Original)',
   'live.leave': 'Leave',
   'live.fullscreen': 'Fullscreen',
   'live.closeFullscreen': 'Close fullscreen',

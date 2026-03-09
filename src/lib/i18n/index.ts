@@ -308,6 +308,7 @@ const de: TranslationStrings = {
   'live.connected': 'Verbunden',
   'live.autoSpeak': 'Auto-Vorlesen',
   'live.subtitles': 'Untertitel',
+  'live.originalAudio': 'Live (Original)',
   'live.leave': 'Verlassen',
   'live.fullscreen': 'Vollbild',
   'live.closeFullscreen': 'Vollbild schließen',
