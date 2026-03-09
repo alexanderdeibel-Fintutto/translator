@@ -153,6 +153,19 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <!-- Label text glow -->
+    <filter id="label-glow" x="-0.2" y="-0.3" width="1.4" height="1.6">
+      <feGaussianBlur stdDeviation="4" result="blur">
+        <animate attributeName="stdDeviation" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+      </feGaussianBlur>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <style>@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&amp;display=swap');</style>
   </defs>
 
   <!-- Clip everything to rounded app icon shape -->
@@ -179,47 +192,60 @@
     </g>
   </g>
 
-  <!-- Animated rings (original geometry preserved, stronger opacity) -->
+  <!-- Animated rings - original size from quadrat SVG, shifted up slightly for label space -->
+  <!-- Ring center at (512, 440) to leave room for "translator" text below -->
+
+  <!-- Outer Glow Ring - pulsing -->
   <circle cx="1920" cy="1080" r="170" fill="none"
      stroke-width="60" filter="url(#glow-strong)"
      style="stroke:url(#linearGradient851)"
-     transform="matrix(0.88159982,0,0,0.88190207,-1180.7483,-440.37758)">
+     transform="matrix(0.88159982,0,0,0.88190207,-1180.7483,-512)">
     <animate attributeName="opacity" values="0.15;0.35;0.15" dur="3s" repeatCount="indefinite"/>
   </circle>
 
+  <!-- Middle Ring -->
   <circle cx="1920" cy="1080" r="170" fill="none"
      stroke-width="42" filter="url(#glow)"
      style="stroke:url(#linearGradient853)"
-     transform="matrix(0.88159982,0,0,0.88190183,-1180.7483,-440.37732)">
+     transform="matrix(0.88159982,0,0,0.88190183,-1180.7483,-512)">
     <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
   </circle>
 
-  <ellipse cx="511.92328" cy="512.0769" fill="none"
+  <!-- Dashed rotating ring -->
+  <ellipse cx="511.92328" cy="440" fill="none"
      stroke-width="26.4534" opacity="0.55"
      stroke-dasharray="50, 25" stroke-linecap="round"
      style="stroke:url(#linearGradient855)"
      rx="149.87204" ry="149.92331">
     <animateTransform attributeName="transform" type="rotate"
-       from="0 256 256" to="360 256 256" dur="25s" repeatCount="indefinite"/>
+       from="0 512 440" to="360 512 440" dur="25s" repeatCount="indefinite"/>
   </ellipse>
 
-  <ellipse cx="512.00006" cy="512.0766" fill="none"
+  <!-- Counter-rotating dashed ring -->
+  <ellipse cx="512.00006" cy="440" fill="none"
      stroke-width="17.6352" opacity="0.35"
      stroke-dasharray="25, 50" stroke-linecap="round"
      style="stroke:url(#linearGradient857)"
      rx="149.87204" ry="149.92331">
     <animateTransform attributeName="transform" type="rotate"
-       from="360 256 256" to="0 256 256" dur="35s" repeatCount="indefinite"/>
+       from="360 512 440" to="0 512 440" dur="35s" repeatCount="indefinite"/>
   </ellipse>
 
-  <ellipse cx="511.92334" cy="512.0766" fill="none"
+  <!-- Solid ring on top -->
+  <ellipse cx="511.92334" cy="440" fill="none"
      stroke-width="26.4534" opacity="0.85"
      style="stroke:url(#linearGradient859)"
      rx="149.87204" ry="149.92331"/>
 
   <!-- Center "f" letter -->
-  <text x="512" y="555" text-anchor="middle"
+  <text x="512" y="483" text-anchor="middle"
      font-family="Inter, system-ui, -apple-system, sans-serif"
      font-size="200" font-weight="700" fill="white" opacity="0.95"
      filter="url(#text-glow)">f</text>
+
+  <!-- "translator" label below ring -->
+  <text x="512" y="730" text-anchor="middle"
+     font-family="Raleway, sans-serif" font-weight="600"
+     font-size="80" letter-spacing="6"
+     fill="#ffffff" filter="url(#label-glow)">translator</text>
 </svg>
