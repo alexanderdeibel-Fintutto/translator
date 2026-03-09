@@ -1,11 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="url(#g)"/>
-  <path d="M8 12h6M11 12v-2M9 16c1 2 3 3.5 5 4M14 16c-1 2-3 3.5-5 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M20 12l3 8M23 12l3 8M20.5 18h5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 1024 1024" width="32" height="32">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
-      <stop stop-color="#0369a1"/>
-      <stop offset="1" stop-color="#38bdf8"/>
+    <linearGradient id="ring" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563EB">
+        <animate attributeName="stop-color" values="#2563EB;#E879F9;#10B981;#F97316;#2563EB" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#EAB308">
+        <animate attributeName="stop-color" values="#EAB308;#14B8A6;#2563EB;#E879F9;#EAB308" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#E879F9">
+        <animate attributeName="stop-color" values="#E879F9;#F97316;#14B8A6;#2563EB;#E879F9" dur="8s" repeatCount="indefinite"/>
+      </stop>
     </linearGradient>
+    <linearGradient xlink:href="#ring" id="lr859"
+       x1="71" y1="441" x2="441" y2="71" gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.8817085,0,0,1.8823529,30.282169,-993.88315)"/>
+
+    <!-- Quadrant gradients -->
+    <linearGradient id="peach-diagonal-se"
+       x1="12.145102" y1="12.276863" x2="2876.5601" y2="2883.4448"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11407,-510.28248)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3070"/><stop offset="80%" stop-color="#b86060"/>
+      <stop offset="100%" stop-color="#FFB090"/>
+    </linearGradient>
+    <linearGradient id="coral-diagonal-sw"
+       x1="2875.4322" y1="1.4291574" x2="-1.4866029" y2="2878.348"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-5.9188292,-514.27932)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a2858"/><stop offset="75%" stop-color="#c04048"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+    <linearGradient id="gold-diagonal-sw"
+       x1="2876.5591" y1="2.2996124e-05" x2="1.9895586e-05" y2="2883.4448"
+       gradientTransform="matrix(0.17869652,0,0,0.17634246,-1022.1435,-514.27922)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3058"/><stop offset="78%" stop-color="#b8703a"/>
+      <stop offset="100%" stop-color="#F0C830"/>
+    </linearGradient>
+    <linearGradient id="mieter-diagonal-se"
+       x1="-1.4866029" y1="1.4291574" x2="2875.4322" y2="2878.348"
+       gradientTransform="matrix(0.1782698,0,0,0.17676456,512.11432,510.28239)"
+       gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f0f1a"/><stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="50%" stop-color="#6a3080"/><stop offset="75%" stop-color="#a84890"/>
+      <stop offset="100%" stop-color="#F088B0"/>
+    </linearGradient>
+
+    <radialGradient xlink:href="#peach-diagonal-se" id="rg14891"
+       cx="1529.0662" cy="-253.03757" fx="1529.0662" fy="-253.03755" r="256.40182"
+       gradientTransform="matrix(-0.00578403,2.6835415,-2.5637829,-0.00559489,-1659.871,-5125.306)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#coral-diagonal-sw" id="rg14893"
+       cx="508.11044" cy="-517.05786" fx="508.11041" fy="-517.05786" r="257.01556"
+       gradientTransform="matrix(-2.4418427,0.01369572,-0.01453954,-2.6491594,1232.1421,-2398.8712)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#gold-diagonal-sw" id="rg14897"
+       cx="-510.2825" cy="-514.8692" fx="-510.2825" fy="-514.8692" r="257.01556"
+       gradientTransform="matrix(-2.8609463,-0.01559761,0.01408698,-2.6406622,-1455.865,-1367.3588)"
+       gradientUnits="userSpaceOnUse"/>
+    <radialGradient xlink:href="#mieter-diagonal-se" id="rg14911"
+       cx="514.27917" cy="506.54276" fx="514.27917" fy="506.54276" r="256.40182"
+       gradientTransform="matrix(0.00707138,3.2799111,-2.5637831,0.00559515,1295.2064,-2714.5524)"
+       gradientUnits="userSpaceOnUse"/>
+
+    <clipPath id="r">
+      <rect width="1024" height="1024" rx="192"/>
+    </clipPath>
   </defs>
+
+  <g clip-path="url(#r)">
+    <g transform="matrix(0,0.99987504,-1.0022684,0,1025.073,1.9841596)">
+      <rect width="512.06403" height="510.84119" x="-1022.1436" y="-1022.7529"
+         style="fill:url(#rg14891)" transform="scale(-1)"/>
+      <rect width="510.84119" height="512.06403" x="-511.91174" y="-1022.1436"
+         style="fill:url(#rg14893)" transform="matrix(0,-1,-1,0,0,0)"/>
+      <rect width="510.84119" height="512.06403" x="-511.91171" y="-1.9844524"
+         style="fill:url(#rg14897)" transform="rotate(-90)"/>
+      <rect width="512.06403" height="510.84119" x="-1.984468" y="-1022.7529"
+         style="fill:url(#rg14911)" transform="scale(1,-1)"/>
+    </g>
+  </g>
+
+  <!-- Big solid ring -->
+  <ellipse cx="511.99991" cy="-512.00006" fill="none"
+     stroke-width="56" opacity="0.85" style="stroke:url(#lr859)"
+     rx="319.89044" ry="319.99991" transform="rotate(90)"/>
 </svg>
