@@ -8,6 +8,7 @@ import type {
   ContactRequest,
   PipelineStage,
   AdminStatsData,
+  UserActivity,
 } from './admin-types'
 
 // ---------------------------------------------------------------------------
@@ -176,6 +177,22 @@ export async function generateInviteToken(leadId: string): Promise<string> {
   })
 
   return token
+}
+
+// ---------------------------------------------------------------------------
+// Stats
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// User Activity (admin only)
+// ---------------------------------------------------------------------------
+
+export async function fetchUserActivity(userId?: string): Promise<UserActivity[]> {
+  const { data, error } = await supabase.rpc('admin_get_user_activity', {
+    p_user_id: userId ?? null,
+  })
+  if (error) throw error
+  return (data ?? []) as UserActivity[]
 }
 
 // ---------------------------------------------------------------------------

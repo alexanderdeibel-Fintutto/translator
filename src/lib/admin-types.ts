@@ -53,11 +53,31 @@ export interface Lead {
   tags: string[]
   invite_token: string | null
   assigned_to: string | null
+  created_by: string | null
   converted_user_id: string | null
   converted_at: string | null
   source: string | null
   created_at: string
   updated_at: string
+}
+
+// ---------------------------------------------------------------------------
+// User Activity (admin RPC)
+// ---------------------------------------------------------------------------
+
+export interface UserActivity {
+  user_id: string
+  email: string
+  display_name: string | null
+  role: string
+  total_sessions: number
+  total_duration_minutes: number
+  total_translations: number
+  last_session_at: string | null
+  current_month_minutes: number
+  current_month_translations: number
+  lead_count: number
+  created_at: string
 }
 
 export interface LeadNote {

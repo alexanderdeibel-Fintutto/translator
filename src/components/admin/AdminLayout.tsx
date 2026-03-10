@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog } from 'lucide-react'
+import { BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = {
@@ -13,6 +13,7 @@ const NAV_ITEMS = {
     { path: '/sessions', label: 'Sessions', icon: Calendar, end: false },
     { path: '/session-stats', label: 'Session Stats', icon: BarChart3, end: false },
     { path: '/users', label: 'Benutzer', icon: UserCog, end: false },
+    { path: '/user-activity', label: 'Aktivitaet', icon: Activity, end: false },
   ],
 }
 
