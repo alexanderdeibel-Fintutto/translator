@@ -134,23 +134,21 @@ export default function Header() {
                 >
                   {t('nav.settings')}
                 </Link>
-                {isSalesAgent && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
-                      location.pathname.startsWith('/admin')
-                        ? 'bg-accent text-accent-foreground'
-                        : 'text-primary hover:text-foreground hover:bg-accent/50'
-                    )}
-                  >
-                    <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      Admin CRM
-                    </span>
-                  </Link>
-                )}
+                <Link
+                  to={isSalesAgent ? '/admin' : '/crm'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                    (location.pathname.startsWith('/admin') || location.pathname === '/crm')
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-primary hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  <span className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    CRM
+                  </span>
+                </Link>
               </nav>
             </div>
           )}
@@ -249,6 +247,22 @@ export default function Header() {
           >
             {isDark ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
           </Button>
+
+          {/* CRM Direct Login */}
+          <Link to={isSalesAgent ? '/admin' : '/crm'} className="hidden md:block">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="CRM"
+              className={cn(
+                location.pathname === '/crm' || location.pathname.startsWith('/admin')
+                  ? 'bg-accent'
+                  : ''
+              )}
+            >
+              <Shield className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </Link>
 
           {/* User menu / Login */}
           {isAuthenticated ? (
