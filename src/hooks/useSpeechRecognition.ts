@@ -25,6 +25,15 @@ export function useSpeechRecognition() {
     setIsListening(false)
   }, [getEngine])
 
+  // Mute/unmute mic capture (e.g. during TTS playback to prevent feedback)
+  const muteMic = useCallback(() => {
+    getEngine().mute?.()
+  }, [getEngine])
+
+  const unmuteMic = useCallback(() => {
+    getEngine().unmute?.()
+  }, [getEngine])
+
   const startListening = useCallback(async (
     lang: string,
     onFinalResult: (text: string) => void,
@@ -87,6 +96,8 @@ export function useSpeechRecognition() {
     error,
     startListening,
     stopListening,
+    muteMic,
+    unmuteMic,
     provider: getEngine().provider,
   }
 }

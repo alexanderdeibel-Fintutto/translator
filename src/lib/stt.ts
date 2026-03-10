@@ -65,6 +65,10 @@ export interface STTEngine {
   readonly isSupported: boolean
   start(lang: string, onResult: (result: STTResult) => void, onError: (error: string) => void): Promise<void>
   stop(): void
+  /** Temporarily mute audio capture (e.g. while TTS is playing to prevent feedback) */
+  mute?(): void
+  /** Resume audio capture after mute */
+  unmute?(): void
 }
 
 // --- Web Speech API engine (current default) ---
@@ -220,6 +224,19 @@ export function createWebSpeechEngine(): STTEngine {
         stream = null
       }
     },
+
+    mute() {
+      // Mute the mic track to prevent TTS audio feedback
+      if (stream) {
+        stream.getAudioTracks().forEach(t => { t.enabled = false })
+      }
+    },
+
+    unmute() {
+      if (stream) {
+        stream.getAudioTracks().forEach(t => { t.enabled = true })
+      }
+    },
   }
 }
 
@@ -303,6 +320,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   let processor: ScriptProcessorNode | null = null
   let audioChunks: Float32Array[] = []
   let isActive = false
+  let isMuted = false // When true, audio capture is paused (e.g. during TTS playback)
   let sendInterval: ReturnType<typeof setInterval> | null = null
   let onResultCallback: ((result: STTResult) => void) | null = null
   let activeLang = ''
@@ -418,7 +436,7 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       const maxBufferChunks = Math.ceil((30 * actualSampleRate) / 4096)
 
       processor.onaudioprocess = (e) => {
-        if (!isActive) return
+        if (!isActive || isMuted) return // Skip audio capture while muted (TTS playing)
         audioChunks.push(new Float32Array(e.inputBuffer.getChannelData(0)))
         // Enforce hard memory limit — discard oldest chunks beyond 30s
         if (audioChunks.length > maxBufferChunks) {
@@ -441,16 +459,19 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         lastInterimText = ''
         interimStableCount = 0
 
-        // Trim audio buffer: keep only last ~5 seconds for context
-        const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
-        if (audioChunks.length > keepChunks * 2) {
-          audioChunks = audioChunks.slice(-keepChunks)
-        }
+        // Clear audio buffer completely after finalizing to prevent duplication.
+        // Keeping old audio caused prefix-mismatch: the next API call would return
+        // overlapping text that doesn't start with emittedFinalText, causing the
+        // fallback to re-emit the entire text as "new".
+        audioChunks = []
+        // Reset emittedFinalText since we cleared the audio — next recognition
+        // starts fresh and won't contain any previously emitted text.
+        emittedFinalText = ''
       }
 
       let isRecognizing = false // Guard against overlapping API calls
       sendInterval = setInterval(async () => {
-        if (!isActive || audioChunks.length === 0 || isRecognizing) return
+        if (!isActive || audioChunks.length === 0 || isRecognizing || isMuted) return
         isRecognizing = true
         // Cap audio sent per request to ~15 seconds max to limit payload size
         const maxSendChunks = Math.ceil((15 * actualSampleRate) / 4096)
@@ -474,9 +495,28 @@ export function createGoogleCloudSTTEngine(): STTEngine {
           }
 
           // Extract only the NEW text (beyond what we already finalized)
-          const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
-            ? fullText.slice(emittedFinalText.length).trim()
-            : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
+          let newText: string
+          if (emittedFinalText && fullText.startsWith(emittedFinalText)) {
+            // Clean prefix match: strip already-emitted portion
+            newText = fullText.slice(emittedFinalText.length).trim()
+          } else if (emittedFinalText) {
+            // Prefix mismatch after audio trim — the API re-transcribed trimmed audio.
+            // Skip if result looks like a subset of what we already emitted (avoids duplication).
+            const emittedWords = emittedFinalText.toLowerCase().split(/\s+/)
+            const fullWords = fullText.toLowerCase().split(/\s+/)
+            // Check if most words in fullText already appeared in emittedFinalText
+            const overlapCount = fullWords.filter(w => emittedWords.includes(w)).length
+            if (overlapCount > fullWords.length * 0.6) {
+              // High overlap — likely stale audio, skip to avoid duplication
+              newText = ''
+            } else {
+              // Genuinely new content — use full text
+              newText = fullText
+            }
+          } else {
+            // No prior emissions — everything is new
+            newText = fullText
+          }
 
           if (!newText) {
             // Same text as before — increment stability counter
@@ -606,6 +646,26 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       lastInterimText = ''
       interimStableCount = 0
       lastFinalEmitTime = 0
+      isMuted = false
+    },
+
+    mute() {
+      if (!isMuted) {
+        console.log('[STT] Muting audio capture (TTS playing)')
+        isMuted = true
+        // Discard any audio captured during TTS to prevent feedback
+        audioChunks = []
+      }
+    },
+
+    unmute() {
+      if (isMuted) {
+        console.log('[STT] Unmuting audio capture (TTS finished)')
+        isMuted = false
+        // Reset audio buffer and timing to start fresh
+        audioChunks = []
+        lastFinalEmitTime = Date.now()
+      }
     },
   }
 }

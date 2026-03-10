@@ -141,11 +141,20 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   useInformalRef.current = useInformal
   streamModeRef.current = streamMode
 
-  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
+  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening, muteMic, unmuteMic } = useSpeechRecognition()
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
   const targetSpeakRef = useRef(targetSpeech.speak)
   targetSpeakRef.current = targetSpeech.speak
+
+  // Mute mic during TTS playback to prevent audio feedback on iOS
+  useEffect(() => {
+    if (isListening && (targetSpeech.isSpeaking || sourceSpeech.isSpeaking)) {
+      muteMic()
+    } else if (isListening) {
+      unmuteMic()
+    }
+  }, [isListening, targetSpeech.isSpeaking, sourceSpeech.isSpeaking, muteMic, unmuteMic])
 
   // Derived display values
   const sourceText = segments.map(s => s.sourceText).join(' ')
