@@ -5,12 +5,20 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight, ChevronRight, Check, X, Users, Globe2, Clock,
   Mic, Volume2, Shield, Wifi, Bluetooth, QrCode, FileText,
-  Building, Settings, Zap, Star, ExternalLink, Calculator
+  Building, Settings, Zap, Star, Calculator
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const SALES_BASE = 'https://sales.guidetranslator.com'
+// Slug → internal sales route segment mapping
+const SLUG_TO_SEGMENT: Record<string, string> = {
+  fintutto: 'personal',
+  stadtfuehrer: 'guide',
+  agentur: 'agency',
+  veranstalter: 'event',
+  kreuzfahrt: 'cruise',
+  enterprise: 'event',
+}
 
 interface PlanInfo {
   name: string
@@ -287,13 +295,12 @@ export default function PricingOverviewPage() {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <a href={SALES_BASE} target="_blank" rel="noopener noreferrer">
+          <Link to="/sales/guide">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
               <Calculator className="h-4 w-4" />
               Ersparnis berechnen
-              <ExternalLink className="h-3 w-3" />
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -347,18 +354,15 @@ export default function PricingOverviewPage() {
                   </Button>
                 </Link>
                 {plan.salesSlug && (
-                  <a
-                    href={`${SALES_BASE}/${plan.salesSlug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    to={`/sales/${SLUG_TO_SEGMENT[plan.salesSlug] ?? plan.salesSlug}`}
                     className="block"
                   >
                     <Button className="w-full gap-1" size="sm" variant="ghost">
                       <Calculator className="w-3 h-3" />
                       ROI berechnen
-                      <ExternalLink className="w-3 h-3" />
                     </Button>
-                  </a>
+                  </Link>
                 )}
               </div>
             </Card>
@@ -463,28 +467,26 @@ export default function PricingOverviewPage() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { label: 'Stadtfuehrer', slug: 'stadtfuehrer', desc: '97% guenstiger als Vox-Hardware' },
-            { label: 'Agenturen', slug: 'agentur', desc: '80% guenstiger als KUDO' },
-            { label: 'Events', slug: 'veranstalter', desc: '91% guenstiger als Wordly.ai' },
-            { label: 'Kreuzfahrt', slug: 'kreuzfahrt', desc: '95% guenstiger als Dolmetscher' },
-            { label: 'Enterprise', slug: 'enterprise', desc: 'Individuelle Konditionen' },
-            { label: 'Einzelunternehmer', slug: 'fintutto', desc: 'Guenstiger als DeepL & iTranslate' },
+            { label: 'Stadtfuehrer', segment: 'guide', desc: '97% guenstiger als Vox-Hardware' },
+            { label: 'Agenturen', segment: 'agency', desc: '80% guenstiger als KUDO' },
+            { label: 'Events', segment: 'event', desc: '91% guenstiger als Wordly.ai' },
+            { label: 'Kreuzfahrt', segment: 'cruise', desc: '95% guenstiger als Dolmetscher' },
+            { label: 'Enterprise', segment: 'event', desc: 'Individuelle Konditionen' },
+            { label: 'Einzelunternehmer', segment: 'personal', desc: 'Guenstiger als DeepL & iTranslate' },
           ].map((item, i) => (
-            <a
+            <Link
               key={i}
-              href={`${SALES_BASE}/${item.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              to={`/sales/${item.segment}`}
               className="block"
             >
               <Card className="p-4 hover:bg-muted/50 transition-colors h-full">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-sm">{item.label}</h3>
-                  <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </div>
                 <p className="text-xs text-primary mt-1">{item.desc}</p>
               </Card>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -521,12 +523,12 @@ export default function PricingOverviewPage() {
               <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
-          <a href={SALES_BASE} target="_blank" rel="noopener noreferrer">
+          <Link to="/sales/cruise">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Enterprise Sales Tool
-              <ExternalLink className="h-3 w-3" />
+              Enterprise Sales
+              <ChevronRight className="h-3 w-3" />
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

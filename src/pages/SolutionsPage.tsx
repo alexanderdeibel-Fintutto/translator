@@ -10,7 +10,15 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const SALES_BASE = 'https://sales.guidetranslator.com'
+// Map German slugs to internal sales route segments
+const SLUG_TO_SEGMENT: Record<string, string> = {
+  stadtfuehrer: 'guide',
+  agentur: 'agency',
+  veranstalter: 'event',
+  kreuzfahrt: 'cruise',
+  enterprise: 'event',
+  fintutto: 'personal',
+}
 
 interface Solution {
   slug: string
@@ -222,16 +230,12 @@ export default function SolutionsPage() {
                     ))}
                   </ul>
                   <div className="pt-2">
-                    <a
-                      href={`${SALES_BASE}/${solution.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link to={`/sales/${SLUG_TO_SEGMENT[solution.slug] ?? solution.slug}`}>
                       <Button className="w-full gap-2">
                         {solution.cta}
                         <ArrowRight className="h-4 w-4" />
                       </Button>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -289,18 +293,14 @@ export default function SolutionsPage() {
       {/* All solutions link */}
       <div className="text-center space-y-3">
         <p className="text-sm text-muted-foreground">
-          Ausfuehrliche Informationen zu allen Loesungen finden Sie auf unserer Sales-Seite:
+          Ausfuehrliche Informationen zu allen Loesungen finden Sie auf unseren Sales-Seiten:
         </p>
-        <a
-          href={SALES_BASE}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link to="/sales/guide">
           <Button size="lg" className="gap-2">
-            sales.guidetranslator.com
+            Alle Loesungen entdecken
             <ArrowRight className="h-4 w-4" />
           </Button>
-        </a>
+        </Link>
       </div>
 
       {/* Further links */}

@@ -423,17 +423,31 @@ const TRUST_SIGNALS = [
 
 const VALID_SEGMENTS: SalesSegment[] = ['personal', 'guide', 'agency', 'event', 'cruise']
 
+// Map German slugs (used in Footer, PricingOverviewPage, SolutionsPage, external links) to internal segments
+const SLUG_ALIASES: Record<string, SalesSegment> = {
+  stadtfuehrer: 'guide',
+  agentur: 'agency',
+  veranstalter: 'event',
+  kreuzfahrt: 'cruise',
+  fintutto: 'personal',
+}
+
+function resolveSegment(raw: string): SalesSegment | null {
+  if (VALID_SEGMENTS.includes(raw as SalesSegment)) return raw as SalesSegment
+  return SLUG_ALIASES[raw] ?? null
+}
+
 export default function SalesLandingPage() {
   const { segment } = useParams<{ segment: string }>()
   const [searchParams] = useSearchParams()
   const inviteToken = searchParams.get('invite')
   const source = searchParams.get('source')
 
-  if (!segment || !VALID_SEGMENTS.includes(segment as SalesSegment)) {
+  const seg = segment ? resolveSegment(segment) : null
+
+  if (!seg) {
     return <Navigate to="/pricing" replace />
   }
-
-  const seg = segment as SalesSegment
   const content = CONTENT[seg]
 
   return (

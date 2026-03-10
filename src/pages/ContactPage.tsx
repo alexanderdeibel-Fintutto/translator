@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import {
   Send, Mail, Phone, MapPin, Building, Clock, ChevronRight,
-  ArrowRight, Check, ExternalLink
+  ArrowRight, Check
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -331,22 +331,17 @@ export default function ContactPage() {
           </Card>
 
           {/* Enterprise sales link */}
-          <a
-            href="https://sales.guidetranslator.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
+          <Link to="/sales/cruise" className="block">
             <Card className="p-5 space-y-2 hover:bg-muted/50 transition-colors">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm">Enterprise Sales Tool</h3>
-                <ExternalLink className="w-4 h-4 text-primary" />
+                <h3 className="font-semibold text-sm">Enterprise Sales</h3>
+                <ChevronRight className="w-4 h-4 text-primary" />
               </div>
               <p className="text-xs text-muted-foreground">
                 ROI berechnen und individuelle Angebote fuer Flotten und Grossunternehmen erhalten.
               </p>
             </Card>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
