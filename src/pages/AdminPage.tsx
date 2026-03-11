@@ -11,6 +11,7 @@ import SessionDetail from '@/components/admin/SessionDetail'
 import SessionStatsView from '@/components/admin/SessionStats'
 import UserManager from '@/components/admin/UserManager'
 import UserActivityView from '@/components/admin/UserActivity'
+import SalesPerformanceView from '@/components/admin/SalesPerformance'
 
 export default function AdminPage() {
   return (
@@ -30,6 +31,7 @@ export default function AdminPage() {
           <Route path="session-stats" element={<SessionStatsView />} />
           <Route path="users" element={<UserManager />} />
           <Route path="user-activity" element={<UserActivityView />} />
+          <Route path="sales" element={<SalesPerformanceView />} />
         </Routes>
       </AdminLayout>
     </AdminGuard>

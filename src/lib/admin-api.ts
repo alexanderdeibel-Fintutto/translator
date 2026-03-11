@@ -9,6 +9,9 @@ import type {
   PipelineStage,
   AdminStatsData,
   UserActivity,
+  Commission,
+  CommissionRate,
+  SalesPerformance,
 } from './admin-types'
 
 // ---------------------------------------------------------------------------
@@ -193,6 +196,66 @@ export async function fetchUserActivity(userId?: string): Promise<UserActivity[]
   })
   if (error) throw error
   return (data ?? []) as UserActivity[]
+}
+
+// ---------------------------------------------------------------------------
+// Stats
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Commissions
+// ---------------------------------------------------------------------------
+
+export async function fetchSalesPerformance(agentId?: string): Promise<SalesPerformance[]> {
+  const { data, error } = await supabase.rpc('admin_get_sales_performance', {
+    p_sales_agent_id: agentId ?? null,
+  })
+  if (error) throw error
+  return (data ?? []) as SalesPerformance[]
+}
+
+export async function fetchCommissions(filters?: {
+  salesAgentId?: string
+  status?: string
+  periodMonth?: string
+}): Promise<Commission[]> {
+  let query = supabase
+    .from('gt_commissions')
+    .select('*')
+    .order('period_month', { ascending: false })
+
+  if (filters?.salesAgentId) query = query.eq('sales_agent_id', filters.salesAgentId)
+  if (filters?.status) query = query.eq('status', filters.status)
+  if (filters?.periodMonth) query = query.eq('period_month', filters.periodMonth)
+
+  const { data, error } = await query
+  if (error) throw error
+  return data as Commission[]
+}
+
+export async function updateCommissionStatus(id: string, status: string): Promise<void> {
+  const { error } = await supabase
+    .from('gt_commissions')
+    .update({ status })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function calculateCommissions(month?: string): Promise<number> {
+  const { data, error } = await supabase.rpc('admin_calculate_commissions', {
+    p_month: month ?? null,
+  })
+  if (error) throw error
+  return data as number
+}
+
+export async function fetchCommissionRates(): Promise<CommissionRate[]> {
+  const { data, error } = await supabase
+    .from('gt_commission_rates')
+    .select('*')
+    .order('segment')
+  if (error) throw error
+  return data as CommissionRate[]
 }
 
 // ---------------------------------------------------------------------------

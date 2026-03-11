@@ -166,6 +166,55 @@ export interface AdminStatsData {
 export type UserRole = 'user' | 'admin' | 'sales_agent' | 'session_manager' | 'tester'
 
 // ---------------------------------------------------------------------------
+// Commission Tracking
+// ---------------------------------------------------------------------------
+
+export type CommissionStatus = 'earned' | 'approved' | 'paid' | 'clawed_back'
+
+export interface Commission {
+  id: string
+  lead_id: string | null
+  sales_agent_id: string
+  customer_user_id: string | null
+  tier_id: string
+  segment: string
+  commission_pct: number
+  monthly_revenue_eur: number
+  commission_eur: number
+  period_month: string
+  status: CommissionStatus
+  paid_at: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CommissionRate {
+  id: string
+  segment: string
+  tier_id: string | null
+  commission_pct: number
+  recurring_months: number
+  clawback_days: number
+  created_at: string
+  updated_at: string
+}
+
+export interface SalesPerformance {
+  sales_agent_id: string
+  agent_email: string
+  agent_name: string | null
+  leads_created: number
+  leads_converted: number
+  conversion_rate: number
+  active_customers: number
+  total_mrr_eur: number
+  total_commissions_earned_eur: number
+  total_commissions_paid_eur: number
+  current_month_commission_eur: number
+}
+
+// ---------------------------------------------------------------------------
 // Event Session Management
 // ---------------------------------------------------------------------------
 
