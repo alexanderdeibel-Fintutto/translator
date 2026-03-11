@@ -97,7 +97,12 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       this.channel = null
     }
 
-    const channel = supabase.channel(getChannelName(code))
+    // Enable broadcast acknowledgments so send() can detect failures.
+    // Without ack, channel.send() is fire-and-forget and silently fails
+    // if the channel is not fully connected (common on iOS Safari).
+    const channel = supabase.channel(getChannelName(code), {
+      config: { broadcast: { ack: true, self: false } },
+    })
 
     if (handlers.onTranslation) {
       const handler = handlers.onTranslation
@@ -129,7 +134,6 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         if (this.retries < MAX_RETRIES && this.subscribeArgs) {
           const delay = BASE_DELAY * Math.pow(2, this.retries)
           this.retries++
-          console.warn(`[Supabase] Retry in ${delay}ms (${this.retries}/${MAX_RETRIES})`)
           this.clearRetryTimer()
           this.retryTimer = setTimeout(() => {
             if (this.subscribeArgs) {
@@ -146,8 +150,20 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   }
 
   broadcast(event: string, payload: Record<string, unknown>): void {
-    if (!this.channel) return
-    this.channel.send({ type: 'broadcast', event, payload })
+    if (!this.channel || !this.connected) return
+    // With ack enabled, send() returns a Promise that resolves to 'ok' or 'error'.
+    // On failure, trigger a re-subscribe so the next broadcast succeeds.
+    this.channel.send({ type: 'broadcast', event, payload }).then((status: string) => {
+      if (status !== 'ok' && this.subscribeArgs) {
+        console.error('[Supabase] Broadcast send failed, re-subscribing...')
+        this.setConnected(false)
+        this.retries = 0
+        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      }
+    }).catch(() => {
+      // Network error — mark as disconnected, keepalive will reconnect
+      this.setConnected(false)
+    })
   }
 
   unsubscribe(): void {

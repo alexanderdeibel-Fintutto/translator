@@ -71,7 +71,6 @@ export interface STTEngine {
 
 export function createWebSpeechEngine(): STTEngine {
   let recognition: SpeechRecognitionInstance | null = null
-  let stream: MediaStream | null = null
   let shouldBeListening = false
   let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
   let serviceCheckTimer: ReturnType<typeof setTimeout> | null = null
@@ -92,10 +91,6 @@ export function createWebSpeechEngine(): STTEngine {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
-      }
 
       // Require secure context for mediaDevices API
       if (typeof window !== 'undefined' && !window.isSecureContext) {
@@ -103,9 +98,20 @@ export function createWebSpeechEngine(): STTEngine {
         return
       }
 
-      // Request mic permission
+      // Request mic permission — getUserMedia is needed to prompt permission dialog.
+      // We immediately release the stream because SpeechRecognition captures its own
+      // audio internally. Keeping a parallel getUserMedia stream open causes audio
+      // artifacts (ringing/feedback) on some Android devices (e.g., Pixel).
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const permStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        })
+        // Release immediately — SpeechRecognition uses its own mic stream
+        permStream.getTracks().forEach(t => t.stop())
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
           onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
@@ -190,7 +196,6 @@ export function createWebSpeechEngine(): STTEngine {
         if (err.error === 'aborted') return
 
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
         const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
 
@@ -209,8 +214,7 @@ export function createWebSpeechEngine(): STTEngine {
         if (shouldBeListening && recognition) {
           // Reset synthetic final tracking — new recognition session starts fresh
           lastSyntheticFinal = ''
-          // Debounce restart to prevent rapid "ding" sounds on Android Chrome
-          // (Chrome plays a system sound each time recognition.start() is called)
+          // Debounce restart to prevent rapid audio artifacts on Android Chrome
           if (restartTimer) clearTimeout(restartTimer)
           restartTimer = setTimeout(() => {
             restartTimer = null
@@ -218,12 +222,10 @@ export function createWebSpeechEngine(): STTEngine {
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
-            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
           }, 300)
           return
         }
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
       }
 
       shouldBeListening = true
@@ -255,10 +257,7 @@ export function createWebSpeechEngine(): STTEngine {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
-      }
+      // No stream to stop — getUserMedia stream was released immediately after permission check
       // Clear dedup buffer
       recentFinals.length = 0
     },
