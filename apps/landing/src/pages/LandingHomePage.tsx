@@ -187,6 +187,11 @@ export default function LandingHomePage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">Für jede Zielgruppe der richtige Plan</h2>
           <p className="text-white/70 drop-shadow">Von Free bis Enterprise — 11 Pläne in 5 Segmenten</p>
+          <Link to="/preise">
+            <Button variant="link" className="gap-1 text-sky-300">
+              Alle Preise ansehen <ArrowRight className="w-3 h-3" />
+            </Button>
+          </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {SEGMENTS.map((seg, i) => {

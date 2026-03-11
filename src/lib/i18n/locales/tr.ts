@@ -5,6 +5,7 @@ const strings: Record<string, string> = {
   'nav.camera': 'Kamera',
   'nav.phrasebook': 'S\u00f6zl\u00fck',
   'nav.info': 'Bilgi',
+  'nav.pricing': 'Fiyatlar',
   'nav.settings': 'Ayarlar',
   'status.online': '\u00c7evrimi\u00e7i',
   'status.degraded': 'Karars\u0131z',

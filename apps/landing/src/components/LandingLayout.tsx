@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: 'Live', path: '/apps/live' },
   { label: 'Enterprise', path: '/apps/enterprise' },
   { label: 'Features', path: '/features' },
+  { label: 'Preise', path: '/preise' },
   { label: 'Investoren', path: '/investors' },
   { label: 'News', path: '/news' },
 ]
@@ -95,6 +96,7 @@ export default function LandingLayout() {
               <h4 className="font-semibold">Produkt</h4>
               <div className="space-y-1 text-muted-foreground">
                 <Link to="/features" className="block hover:text-foreground">Features</Link>
+                <Link to="/preise" className="block hover:text-foreground">Preise</Link>
                 <Link to="/technology" className="block hover:text-foreground">Technologie</Link>
                 <Link to="/news" className="block hover:text-foreground">News</Link>
               </div>

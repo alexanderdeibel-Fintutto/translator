@@ -26,6 +26,7 @@ const FeaturesPage = lazy(() => import('@/pages/FeaturesPage'))
 const TechnologyPage = lazy(() => import('@/pages/TechnologyPage'))
 const ImpressumPage = lazy(() => import('@/pages/ImpressumPage'))
 const DatenschutzPage = lazy(() => import('@/pages/DatenschutzPage'))
+const PricingOverviewPage = lazy(() => import('@/pages/PricingOverviewPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
@@ -53,6 +54,9 @@ function App() {
           <Route path="technology" element={<Suspense fallback={<PageLoader />}><TechnologyPage /></Suspense>} />
           <Route path="investors" element={<Suspense fallback={<PageLoader />}><InvestorPage /></Suspense>} />
           <Route path="news" element={<Suspense fallback={<PageLoader />}><NewsPage /></Suspense>} />
+
+          {/* Pricing */}
+          <Route path="preise" element={<Suspense fallback={<PageLoader />}><PricingOverviewPage /></Suspense>} />
 
           {/* Legal */}
           <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />

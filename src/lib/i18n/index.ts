@@ -31,6 +31,7 @@ const de: TranslationStrings = {
   'nav.camera': 'Kamera',
   'nav.phrasebook': 'Phrasebook',
   'nav.info': 'Info',
+  'nav.pricing': 'Preise',
   'nav.settings': 'Einstellungen',
   'status.online': 'Online',
   'status.degraded': 'Instabil',

@@ -5,6 +5,7 @@ const strings: Record<string, string> = {
   'nav.camera': 'Camera',
   'nav.phrasebook': 'Phrasebook',
   'nav.info': 'Info',
+  'nav.pricing': 'Pricing',
   'nav.settings': 'Settings',
   'status.online': 'Online',
   'status.degraded': 'Unstable',

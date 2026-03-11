@@ -33,6 +33,7 @@ export default function Header() {
     { label: t('nav.favorites'), path: '/favorites' },
     { label: t('nav.history'), path: '/history' },
     { label: t('nav.info'), path: '/info' },
+    { label: t('nav.pricing'), path: '/preise' },
   ]
 
   // Close menus on outside click
@@ -112,17 +113,6 @@ export default function Header() {
                     {item.label}
                   </Link>
                 ))}
-                <Link
-                  to="/pricing"
-                  className={cn(
-                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
-                    location.pathname === '/pricing'
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                  )}
-                >
-                  Preise
-                </Link>
                 <Link
                   to="/settings"
                   className={cn(
