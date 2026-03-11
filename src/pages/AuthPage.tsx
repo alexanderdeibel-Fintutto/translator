@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useUser } from '@/context/UserContext'
+import { useOffline } from '@/context/OfflineContext'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
-import { Loader2, Mail, Lock, Eye, EyeOff, Languages } from 'lucide-react'
+import { Loader2, Mail, Lock, Eye, EyeOff, Languages, WifiOff } from 'lucide-react'
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login')
@@ -15,6 +16,7 @@ export default function AuthPage() {
   const [success, setSuccess] = useState<string | null>(null)
 
   const { signIn, signUp, isAuthenticated } = useUser()
+  const { isOffline } = useOffline()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
@@ -23,6 +25,31 @@ export default function AuthPage() {
   if (isAuthenticated) {
     navigate(redirect, { replace: true })
     return null
+  }
+
+  // Offline: show helpful message instead of a login form that will fail
+  if (isOffline) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <div className="w-full max-w-md text-center space-y-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 mb-4">
+            <WifiOff className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+          </div>
+          <h1 className="text-2xl font-bold">Offline</h1>
+          <p className="text-muted-foreground">
+            Anmeldung ist ohne Internetverbindung nicht moeglich.
+            Bitte stelle eine Verbindung her und versuche es erneut.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Viele Funktionen wie Uebersetzer, Kamera und Phrasebook
+            funktionieren auch offline.
+          </p>
+          <Button onClick={() => navigate('/')} variant="outline" className="mt-4">
+            Zur Startseite
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -37,16 +64,22 @@ export default function AuthPage() {
           redirectTo: `${window.location.origin}/auth`,
         })
         if (resetError) throw resetError
-        setSuccess('Link zum Zurücksetzen gesendet! Bitte prüfe dein Postfach.')
+        setSuccess('Link zum Zuruecksetzen gesendet! Bitte pruefe dein Postfach.')
       } else if (mode === 'login') {
         await signIn(email, password)
         navigate(redirect, { replace: true })
       } else {
         await signUp(email, password)
-        setSuccess('Bestätigungs-E-Mail gesendet! Bitte prüfe dein Postfach.')
+        setSuccess('Bestaetigungs-E-Mail gesendet! Bitte pruefe dein Postfach.')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten.')
+      // Show user-friendly message for network errors
+      const msg = err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten.'
+      if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('network')) {
+        setError('Keine Internetverbindung. Bitte pruefe dein Netzwerk und versuche es erneut.')
+      } else {
+        setError(msg)
+      }
     } finally {
       setLoading(false)
     }
