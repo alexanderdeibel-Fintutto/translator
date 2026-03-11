@@ -242,7 +242,6 @@ export function createWebSpeechEngine(): STTEngine {
         }, 4000)
       } catch {
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         recognition = null
         const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
         onError(getTranslation(uiLang, 'error.sttStartFailed'))
