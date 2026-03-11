@@ -71,10 +71,11 @@ export interface STTEngine {
 
 export function createWebSpeechEngine(): STTEngine {
   let recognition: SpeechRecognitionInstance | null = null
-  let stream: MediaStream | null = null
   let shouldBeListening = false
   let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
   let serviceCheckTimer: ReturnType<typeof setTimeout> | null = null
+  let restartTimer: ReturnType<typeof setTimeout> | null = null // Debounce restart to prevent rapid beeps on Android
+  const recentFinals: Array<{ text: string; time: number }> = [] // Dedup buffer for recently emitted finals
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -90,10 +91,6 @@ export function createWebSpeechEngine(): STTEngine {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
-      }
 
       // Require secure context for mediaDevices API
       if (typeof window !== 'undefined' && !window.isSecureContext) {
@@ -101,9 +98,20 @@ export function createWebSpeechEngine(): STTEngine {
         return
       }
 
-      // Request mic permission
+      // Request mic permission — getUserMedia is needed to prompt permission dialog.
+      // We immediately release the stream because SpeechRecognition captures its own
+      // audio internally. Keeping a parallel getUserMedia stream open causes audio
+      // artifacts (ringing/feedback) on some Android devices (e.g., Pixel).
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const permStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        })
+        // Release immediately — SpeechRecognition uses its own mic stream
+        permStream.getTracks().forEach(t => t.stop())
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
           onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
@@ -119,6 +127,30 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.interimResults = true
       recognition.lang = lang
 
+      // Helper: check if text was recently emitted as final (dedup for Android restarts)
+      // Only dedup within a short window after a restart — legitimate repeated
+      // sentences (user genuinely says the same thing twice) should pass through.
+      let lastRestartTime = 0 // Set when onend restarts recognition
+
+      const isDuplicateFinal = (text: string): boolean => {
+        const now = Date.now()
+        // Purge entries older than 2.5 seconds
+        while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
+          recentFinals.shift()
+        }
+        // Only dedup if we recently restarted recognition (within 3s)
+        // This avoids dropping legitimate repeated sentences during normal speech
+        if (now - lastRestartTime > 3000) return false
+        const normalized = text.trim().toLowerCase()
+        return recentFinals.some(f => f.text === normalized)
+      }
+
+      const trackFinal = (text: string) => {
+        recentFinals.push({ text: text.trim().toLowerCase(), time: Date.now() })
+        // Keep buffer bounded
+        if (recentFinals.length > 20) recentFinals.shift()
+      }
+
       recognition.onresult = (event) => {
         // Clear service check — we got results, the service works
         if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
@@ -133,19 +165,26 @@ export function createWebSpeechEngine(): STTEngine {
             if (lastSyntheticFinal && text.startsWith(lastSyntheticFinal)) {
               const delta = text.slice(lastSyntheticFinal.length).trim()
               lastSyntheticFinal = ''
-              if (delta) {
+              if (delta && !isDuplicateFinal(delta)) {
+                trackFinal(delta)
                 onResult({ text: delta, isFinal: true, confidence })
               }
             } else {
               lastSyntheticFinal = ''
-              onResult({ text, isFinal: true, confidence })
+              if (!isDuplicateFinal(text)) {
+                trackFinal(text)
+                onResult({ text, isFinal: true, confidence })
+              }
             }
           } else {
             // Interim result: check for sentence boundaries to emit early finals
             const boundary = detectSentenceBoundary(text)
             if (boundary) {
-              // Emit completed sentence(s) as synthetic final
-              onResult({ text: boundary.final, isFinal: true, confidence })
+              // Emit completed sentence(s) as synthetic final (with dedup)
+              if (!isDuplicateFinal(boundary.final)) {
+                trackFinal(boundary.final)
+                onResult({ text: boundary.final, isFinal: true, confidence })
+              }
               lastSyntheticFinal = boundary.final
               // Emit remainder as interim
               if (boundary.remainder) {
@@ -164,7 +203,6 @@ export function createWebSpeechEngine(): STTEngine {
         if (err.error === 'aborted') return
 
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
         const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
 
@@ -181,10 +219,21 @@ export function createWebSpeechEngine(): STTEngine {
 
       recognition.onend = () => {
         if (shouldBeListening && recognition) {
-          try { recognition.start(); return } catch { /* fall through */ }
+          // Reset synthetic final tracking — new recognition session starts fresh
+          lastSyntheticFinal = ''
+          // Debounce restart to prevent rapid audio artifacts on Android Chrome
+          if (restartTimer) clearTimeout(restartTimer)
+          restartTimer = setTimeout(() => {
+            restartTimer = null
+            if (shouldBeListening && recognition) {
+              lastRestartTime = Date.now()
+              try { recognition.start(); return } catch { /* fall through */ }
+            }
+            shouldBeListening = false
+          }, 300)
+          return
         }
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
       }
 
       shouldBeListening = true
@@ -201,7 +250,6 @@ export function createWebSpeechEngine(): STTEngine {
         }, 4000)
       } catch {
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         recognition = null
         const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
         onError(getTranslation(uiLang, 'error.sttStartFailed'))
@@ -211,14 +259,14 @@ export function createWebSpeechEngine(): STTEngine {
     stop() {
       shouldBeListening = false
       if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
+      if (restartTimer) { clearTimeout(restartTimer); restartTimer = null }
       if (recognition) {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
-      }
+      // No stream to stop — getUserMedia stream was released immediately after permission check
+      // Clear dedup buffer
+      recentFinals.length = 0
     },
   }
 }
@@ -426,8 +474,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         }
       }
 
+      // Connect processor through a zero-gain node to prevent mic audio from playing
+      // through speakers (which causes feedback/echo). ScriptProcessorNode needs to be
+      // connected to the audio graph to fire onaudioprocess events.
+      const silencer = audioContext.createGain()
+      silencer.gain.value = 0
       source.connect(processor)
-      processor.connect(audioContext.destination)
+      processor.connect(silencer)
+      silencer.connect(audioContext.destination)
       isActive = true
 
       onResult({ text: '...', isFinal: false })

@@ -1,9 +1,12 @@
 // User Context — Manages authentication state, tier, and feature access.
 // Wraps Supabase Auth and provides tier-aware helpers to the entire app.
-// Until Supabase Auth is fully set up, supports "local-only" mode with
-// tier stored in localStorage (for development / demo).
+//
+// OFFLINE SUPPORT: When the device goes offline, Supabase's auto-token-refresh
+// fails and clears the session, logging the user out. We cache the user profile
+// in localStorage so the app can continue working offline with the last known
+// identity. When connectivity returns, normal auth resumes automatically.
 
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useRef, type ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import { TIERS, isInternalTier, type TierId, type TierDefinition } from '../lib/tiers'
 import { setUsageTier, getUsage, type UsageRecord } from '../lib/usage-tracker'
@@ -47,6 +50,41 @@ async function fetchProfileDirect(userId: string, accessToken: string) {
   if (!res.ok) return null
   const rows = await res.json()
   return Array.isArray(rows) && rows.length === 1 ? rows[0] : null
+}
+
+// ---------------------------------------------------------------------------
+// Offline session cache — survives token refresh failures when offline
+// ---------------------------------------------------------------------------
+
+const CACHED_PROFILE_KEY = 'gt_cached_user_profile'
+
+function cacheUserProfile(profile: UserProfile): void {
+  try {
+    localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(profile))
+  } catch { /* quota exceeded or private browsing */ }
+}
+
+function getCachedUserProfile(): UserProfile | null {
+  try {
+    const raw = localStorage.getItem(CACHED_PROFILE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    // Basic validation
+    if (parsed && typeof parsed.id === 'string' && typeof parsed.role === 'string') {
+      return parsed as UserProfile
+    }
+  } catch { /* corrupt data */ }
+  return null
+}
+
+function clearCachedUserProfile(): void {
+  try {
+    localStorage.removeItem(CACHED_PROFILE_KEY)
+  } catch { /* */ }
+}
+
+function isDeviceOffline(): boolean {
+  return typeof navigator !== 'undefined' && !navigator.onLine
 }
 
 // ---------------------------------------------------------------------------
@@ -108,6 +146,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   })
   const [usage, setUsage] = useState<UsageRecord>(getUsage())
+  // Ref to signal explicit sign-out to the auth state listener
+  const signOutExplicitRef = useRef<() => void>(() => {})
+  // Ref to track current user for TOKEN_REFRESHED optimization
+  const userRef = useRef<UserProfile | null>(null)
 
   // Sync tier to usage tracker
   useEffect(() => {
@@ -119,9 +161,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Listen for Supabase auth changes
   useEffect(() => {
+    // Track whether signOut was explicitly called by the user (not by token expiry)
+    let explicitSignOut = false
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
         if (session?.user) {
+          // TOKEN_REFRESHED fires every ~1 hour. If we already have the user
+          // profile loaded, skip the expensive profile fetch — nothing changed.
+          if (event === 'TOKEN_REFRESHED' && userRef.current) {
+            setIsLoading(false)
+            return
+          }
+
           // Strategy: try multiple approaches to load the user profile.
           // 1. RPC function (SECURITY DEFINER, bypasses RLS entirely)
           // 2. Direct REST API with access token
@@ -174,7 +226,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             effectiveTier = 'internal_tester'
           }
 
-          setUser({
+          const userProfile: UserProfile = {
             id: session.user.id,
             email: session.user.email ?? null,
             displayName: profile?.display_name ?? session.user.email ?? null,
@@ -182,13 +234,41 @@ export function UserProvider({ children }: { children: ReactNode }) {
             organizationId: profile?.organization_id ?? null,
             stripeCustomerId: profile?.stripe_customer_id ?? null,
             role: userRole,
-          })
+          }
+
+          setUser(userProfile)
+          userRef.current = userProfile
           setTierId(effectiveTier)
+
+          // Cache profile for offline use
+          cacheUserProfile(userProfile)
 
           // Start syncing usage to server
           startUsageSync(session.user.id)
         } else {
+          // Session is null — either explicit sign-out or token refresh failed.
+          //
+          // OFFLINE GUARD: When the device is offline, Supabase's auto-token-refresh
+          // fails and fires SIGNED_OUT with session=null. Instead of logging the user
+          // out (which forces a re-login that's impossible offline), we restore the
+          // cached profile so the app continues working.
+          if (!explicitSignOut && isDeviceOffline()) {
+            const cached = getCachedUserProfile()
+            if (cached) {
+              console.error('[Auth] Token refresh failed offline — restoring cached session')
+              setUser(cached)
+              userRef.current = cached
+              setTierId(cached.tierId)
+              // Don't start usage sync — we're offline
+              setIsLoading(false)
+              return
+            }
+          }
+
+          // Genuine sign-out or no cached profile: clear everything
+          explicitSignOut = false
           setUser(null)
+          userRef.current = null
           stopUsageSync()
           // Keep local tier for anonymous/demo users
         }
@@ -196,13 +276,44 @@ export function UserProvider({ children }: { children: ReactNode }) {
       }
     )
 
-    // Initial session check
+    // Initial session check — also try cached profile if offline
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) setIsLoading(false)
-      // onAuthStateChange will handle the rest
+      if (!session) {
+        // No active session. If offline, try to restore from cache.
+        if (isDeviceOffline()) {
+          const cached = getCachedUserProfile()
+          if (cached) {
+            console.error('[Auth] No session but offline — restoring cached profile')
+            setUser(cached)
+            userRef.current = cached
+            setTierId(cached.tierId)
+          }
+        }
+        setIsLoading(false)
+      }
+      // If session exists, onAuthStateChange will handle the rest
     })
 
-    return () => subscription.unsubscribe()
+    // Listen for online/offline transitions to re-attempt auth when back online
+    const handleOnline = () => {
+      // Device came back online — try to refresh the session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          // Session is still valid or was refreshed — onAuthStateChange handles it
+        }
+        // If no session, user stays in cached mode until they log in
+      })
+    }
+    window.addEventListener('online', handleOnline)
+
+    // Mark explicit sign-out so the offline guard doesn't interfere
+    const origSignOut = signOutExplicitRef
+    origSignOut.current = () => { explicitSignOut = true }
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('online', handleOnline)
+    }
   }, [])
 
   const signIn = useCallback(async (email: string, password: string) => {
@@ -216,9 +327,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(async () => {
+    // Signal to the auth state listener that this is an explicit sign-out
+    // so the offline guard doesn't restore the cached profile
+    signOutExplicitRef.current()
     stopUsageSync()
+    clearCachedUserProfile()
     await supabase.auth.signOut()
     setUser(null)
+    userRef.current = null
     setTierId('free')
   }, [])
 
