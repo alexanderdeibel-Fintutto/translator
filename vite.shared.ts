@@ -119,6 +119,7 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
       }),
     ],
     build: {
+      target: ['es2020', 'safari13', 'chrome87', 'firefox78'],
       outDir: path.resolve(rootDir, 'dist'),
       chunkSizeWarningLimit: 550,
       rollupOptions: {

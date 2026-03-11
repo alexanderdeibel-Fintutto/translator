@@ -8,9 +8,10 @@
  * This app is purely informational — no translation functionality.
  */
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Home, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import LandingLayout from './components/LandingLayout'
 import LandingHomePage from './pages/LandingHomePage'
 
@@ -26,7 +27,6 @@ const FeaturesPage = lazy(() => import('@/pages/FeaturesPage'))
 const TechnologyPage = lazy(() => import('@/pages/TechnologyPage'))
 const ImpressumPage = lazy(() => import('@/pages/ImpressumPage'))
 const DatenschutzPage = lazy(() => import('@/pages/DatenschutzPage'))
-const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 function PageLoader() {
   return (
@@ -58,8 +58,24 @@ function App() {
           <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />
           <Route path="datenschutz" element={<Suspense fallback={<PageLoader />}><DatenschutzPage /></Suspense>} />
 
-          {/* 404 */}
-          <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
+          {/* 404 — inline to avoid useI18n dependency */}
+          <Route path="*" element={
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center space-y-6">
+              <div className="text-8xl font-bold text-muted-foreground/20">404</div>
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold">Seite nicht gefunden</h1>
+                <p className="text-muted-foreground max-w-md">Die angeforderte Seite existiert nicht.</p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={() => window.history.back()} className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />Zurueck
+                </Button>
+                <Button asChild className="gap-2">
+                  <Link to="/"><Home className="h-4 w-4" />Startseite</Link>
+                </Button>
+              </div>
+            </div>
+          } />
         </Route>
       </Routes>
     </BrowserRouter>
