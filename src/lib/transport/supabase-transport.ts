@@ -56,7 +56,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.clearVisibilityHandler()
     this.visibilityHandler = () => {
       if (document.visibilityState === 'visible' && this.subscribeArgs && !this.connected) {
-        console.log('[Supabase] Page visible again, reconnecting broadcast channel...')
+        console.error('[Supabase] Page visible again, reconnecting broadcast channel...')
         this.retries = 0
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
@@ -69,7 +69,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.keepaliveTimer = setInterval(() => {
       if (!this.subscribeArgs) return
       if (!this.connected && this.channel) {
-        console.log('[Supabase] Keepalive detected disconnected channel, re-subscribing...')
+        console.error('[Supabase] Keepalive detected disconnected channel, re-subscribing...')
         this.retries = 0
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
@@ -218,7 +218,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
         if (this.channel) {
           this.channel.track(this.myPresence).catch(() => {
             // Channel might be stale, re-join entirely
-            console.log('[Supabase] Presence re-track failed, re-joining...')
+            console.error('[Supabase] Presence re-track failed, re-joining...')
             if (this.lastCode && this.myPresence) {
               this.doJoin(this.lastCode, this.myPresence)
             }

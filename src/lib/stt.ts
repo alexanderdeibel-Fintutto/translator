@@ -131,6 +131,9 @@ export function createWebSpeechEngine(): STTEngine {
       // Only dedup within a short window after a restart — legitimate repeated
       // sentences (user genuinely says the same thing twice) should pass through.
       let lastRestartTime = 0 // Set when onend restarts recognition
+      // Post-restart suppression: ignore interim results for a brief window after restart
+      // to prevent echo/duplicate fragments that Chrome often emits right after start()
+      const POST_RESTART_SUPPRESSION_MS = 400
 
       const isDuplicateFinal = (text: string): boolean => {
         const now = Date.now()
@@ -159,6 +162,16 @@ export function createWebSpeechEngine(): STTEngine {
           const result = event.results[i]
           const text = result[0].transcript
           const confidence = result[0].confidence
+
+          // After a restart, Chrome often re-emits the tail of the previous utterance
+          // as interim results. Suppress interims during the post-restart window to
+          // avoid duplicate/echo fragments appearing in the UI and translation pipeline.
+          if (!result.isFinal && lastRestartTime > 0) {
+            const sinceRestart = Date.now() - lastRestartTime
+            if (sinceRestart < POST_RESTART_SUPPRESSION_MS) {
+              continue // Skip this interim — too soon after restart
+            }
+          }
 
           if (result.isFinal) {
             // Dedup: if we already synthetically finalized part of this text, emit only the delta
@@ -221,7 +234,9 @@ export function createWebSpeechEngine(): STTEngine {
         if (shouldBeListening && recognition) {
           // Reset synthetic final tracking — new recognition session starts fresh
           lastSyntheticFinal = ''
-          // Debounce restart to prevent rapid audio artifacts on Android Chrome
+          // Debounce restart to prevent rapid audio artifacts on Android Chrome.
+          // 600ms gives Chrome enough time to fully release the audio session
+          // before starting a new one, avoiding system sounds on Pixel devices.
           if (restartTimer) clearTimeout(restartTimer)
           restartTimer = setTimeout(() => {
             restartTimer = null
@@ -230,7 +245,7 @@ export function createWebSpeechEngine(): STTEngine {
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
-          }, 300)
+          }, 600)
           return
         }
         shouldBeListening = false
@@ -261,7 +276,10 @@ export function createWebSpeechEngine(): STTEngine {
       if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
       if (restartTimer) { clearTimeout(restartTimer); restartTimer = null }
       if (recognition) {
-        try { recognition.abort() } catch { /* ignore */ }
+        // Use stop() instead of abort() — stop() lets Chrome finalize the current
+        // audio session cleanly, which avoids transient sounds on Android devices.
+        // abort() terminates immediately and can cause audio artifacts.
+        try { recognition.stop() } catch { /* ignore */ }
         recognition = null
       }
       // No stream to stop — getUserMedia stream was released immediately after permission check
