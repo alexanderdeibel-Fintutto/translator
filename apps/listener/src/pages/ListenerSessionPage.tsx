@@ -36,7 +36,11 @@ export default function ListenerSessionPage() {
   const connectionConfig = useMemo((): ConnectionConfig | undefined => {
     if (bleParam) return { mode: 'ble' }
     if (wsParam) return { mode: 'local', localServerUrl: wsParam }
-    return { mode: 'cloud' }
+    // Cloud mode: return undefined so connection.initialize is not called.
+    // useBroadcast/usePresence already default to Supabase transports.
+    // Calling initialize for cloud mode would create extra transports that
+    // could interfere with the internally subscribed ones.
+    return undefined
   }, [wsParam, bleParam])
 
   // Auto-join if language was pre-selected

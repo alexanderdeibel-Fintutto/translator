@@ -22,6 +22,8 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   private subscribeArgs: { code: string; handlers: BroadcastHandlers } | null = null
   private keepaliveTimer: ReturnType<typeof setInterval> | null = null
   private visibilityHandler: (() => void) | null = null
+  /** Timestamp of the last received broadcast message (for stale-connection detection) */
+  private lastMessageAt = Date.now()
 
   get isConnected(): boolean {
     return this.connected
@@ -48,23 +50,34 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   subscribe(code: string, handlers: BroadcastHandlers): void {
     this.subscribeArgs = { code, handlers }
     this.retries = 0
+    this.lastMessageAt = Date.now()
     this.clearRetryTimer()
     this.doSubscribe(code, handlers)
 
-    // iOS Safari: WebSocket can silently disconnect when the browser goes to
-    // background or the screen locks. Re-subscribe when the page becomes visible again.
+    // iOS Safari/Firefox (WebKit): WebSocket can silently disconnect when the
+    // browser goes to background or the screen locks. Re-subscribe when the
+    // page becomes visible again — even if this.connected is still true,
+    // because iOS WebKit can freeze the socket without firing close events.
     this.clearVisibilityHandler()
     this.visibilityHandler = () => {
-      if (document.visibilityState === 'visible' && this.subscribeArgs && !this.connected) {
-        console.log('[Supabase] Page visible again, reconnecting broadcast channel...')
-        this.retries = 0
-        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      if (document.visibilityState === 'visible' && this.subscribeArgs) {
+        // Always force re-subscribe on iOS when coming back to foreground.
+        // The connection may appear alive but the WebSocket could be frozen.
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent)
+        if (!this.connected || isIOS) {
+          console.log('[Supabase] Page visible again, reconnecting broadcast channel...')
+          this.retries = 0
+          this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+        }
       }
     }
     document.addEventListener('visibilitychange', this.visibilityHandler)
 
     // Keepalive: periodically check if the channel is still alive.
     // Supabase Realtime channels can silently drop on mobile browsers.
+    // On iOS WebKit (Safari/Firefox/Chrome), the connection can appear as
+    // connected but stop delivering messages. Use lastMessageAt to detect
+    // stale connections where no messages arrive for an extended period.
     this.clearKeepalive()
     this.keepaliveTimer = setInterval(() => {
       if (!this.subscribeArgs) return
@@ -72,6 +85,17 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         console.log('[Supabase] Keepalive detected disconnected channel, re-subscribing...')
         this.retries = 0
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      }
+      // iOS stale-connection detection: if connected but no messages received
+      // for 45 seconds, force re-subscribe. On iOS WebKit the WebSocket can
+      // freeze without triggering a close event.
+      if (this.connected && this.channel) {
+        const staleSec = (Date.now() - this.lastMessageAt) / 1000
+        if (staleSec > 45) {
+          console.log(`[Supabase] No messages for ${Math.round(staleSec)}s, forcing re-subscribe...`)
+          this.retries = 0
+          this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+        }
       }
     }, 15_000) // check every 15 seconds
   }
@@ -107,6 +131,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onTranslation) {
       const handler = handlers.onTranslation
       channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as TranslationChunk)
       })
     }
@@ -114,6 +139,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onSessionInfo) {
       const handler = handlers.onSessionInfo
       channel.on('broadcast', { event: 'session_info' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as SessionInfo)
       })
     }
@@ -121,6 +147,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onStatus) {
       const handler = handlers.onStatus
       channel.on('broadcast', { event: 'status' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as StatusMessage)
       })
     }
@@ -129,6 +156,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       if (status === 'SUBSCRIBED') {
         this.setConnected(true)
         this.retries = 0
+        this.lastMessageAt = Date.now()
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         this.setConnected(false)
         if (this.retries < MAX_RETRIES && this.subscribeArgs) {
@@ -207,17 +235,22 @@ export class SupabasePresenceTransport implements PresenceTransport {
     this.lastCode = code
     this.doJoin(code, data)
 
-    // iOS Safari: re-join presence when the page becomes visible again
-    // (WebSocket may have been suspended while in background)
+    // iOS Safari/Firefox (WebKit): re-join presence when the page becomes
+    // visible again. On iOS the WebSocket can freeze in background — always
+    // force re-join on iOS to ensure the speaker sees the listener.
     if (this.visibilityHandler) {
       document.removeEventListener('visibilitychange', this.visibilityHandler)
     }
     this.visibilityHandler = () => {
       if (document.visibilityState === 'visible' && this.lastCode && this.myPresence) {
-        // Re-track presence to ensure speaker sees us
-        if (this.channel) {
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent)
+        if (isIOS) {
+          // On iOS, always re-join entirely — the channel is likely stale
+          console.log('[Supabase] iOS visibility change, re-joining presence...')
+          this.doJoin(this.lastCode, this.myPresence)
+        } else if (this.channel) {
+          // On other platforms, try to re-track first
           this.channel.track(this.myPresence).catch(() => {
-            // Channel might be stale, re-join entirely
             console.log('[Supabase] Presence re-track failed, re-joining...')
             if (this.lastCode && this.myPresence) {
               this.doJoin(this.lastCode, this.myPresence)

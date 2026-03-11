@@ -7,6 +7,9 @@ export function usePresence(externalTransport?: PresenceTransport) {
   const [listeners, setListeners] = useState<PresenceState[]>([])
   const transportRef = useRef<PresenceTransport | null>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
+  // Track the transport that was actually joined — always use this for
+  // updatePresence() and leave() to avoid the transport-switching bug.
+  const joinedTransportRef = useRef<PresenceTransport | null>(null)
 
   // Use external transport or create default Supabase transport
   const getTransport = useCallback((): PresenceTransport => {
@@ -29,6 +32,7 @@ export function usePresence(externalTransport?: PresenceTransport) {
     cleanupRef.current?.()
 
     const transport = getTransport()
+    joinedTransportRef.current = transport
 
     // Listen for presence sync
     cleanupRef.current = transport.onSync((allListeners) => {
@@ -39,7 +43,8 @@ export function usePresence(externalTransport?: PresenceTransport) {
   }, [getTransport])
 
   const updatePresence = useCallback((data: Partial<PresenceState>) => {
-    const transport = externalTransport || transportRef.current
+    // Always use the transport that was actually joined to a channel
+    const transport = joinedTransportRef.current || externalTransport || transportRef.current
     transport?.updatePresence(data)
   }, [externalTransport])
 
@@ -47,9 +52,11 @@ export function usePresence(externalTransport?: PresenceTransport) {
     cleanupRef.current?.()
     cleanupRef.current = null
 
-    const transport = externalTransport || transportRef.current
+    // Leave on the transport that was actually joined
+    const transport = joinedTransportRef.current || externalTransport || transportRef.current
     transport?.leave()
 
+    joinedTransportRef.current = null
     if (!externalTransport) {
       transportRef.current = null
     }

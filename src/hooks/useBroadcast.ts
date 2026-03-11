@@ -11,6 +11,12 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
   const [isConnected, setIsConnected] = useState(false)
   const transportRef = useRef<BroadcastTransport | null>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
+  // Track the transport that was actually subscribed — always use this for
+  // broadcast() and unsubscribe() to avoid the transport-switching bug where
+  // connection.initialize() creates a new transport that replaces
+  // externalTransport via state update, but the new transport was never
+  // subscribed to a channel.
+  const subscribedTransportRef = useRef<BroadcastTransport | null>(null)
 
   // Use external transport or create default Supabase transport
   const getTransport = useCallback((): BroadcastTransport => {
@@ -38,6 +44,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     cleanupRef.current?.()
 
     const transport = getTransport()
+    subscribedTransportRef.current = transport
 
     // Listen for connection changes
     cleanupRef.current = transport.onConnectionChange((connected) => {
@@ -54,7 +61,10 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
   }, [getTransport])
 
   const broadcast = useCallback((event: string, payload: Record<string, unknown>) => {
-    const transport = externalTransport || transportRef.current
+    // Always use the transport that was actually subscribed to a channel.
+    // Falls back to externalTransport/transportRef only if subscribe() hasn't
+    // been called yet (e.g. speaker-only broadcast before listeners connect).
+    const transport = subscribedTransportRef.current || externalTransport || transportRef.current
     transport?.broadcast(event, payload)
   }, [externalTransport])
 
@@ -62,9 +72,11 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     cleanupRef.current?.()
     cleanupRef.current = null
 
-    const transport = externalTransport || transportRef.current
+    // Unsubscribe from the transport that was actually subscribed
+    const transport = subscribedTransportRef.current || externalTransport || transportRef.current
     transport?.unsubscribe()
 
+    subscribedTransportRef.current = null
     if (!externalTransport) {
       transportRef.current = null
     }
