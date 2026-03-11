@@ -75,6 +75,8 @@ export function createWebSpeechEngine(): STTEngine {
   let shouldBeListening = false
   let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
   let serviceCheckTimer: ReturnType<typeof setTimeout> | null = null
+  let restartTimer: ReturnType<typeof setTimeout> | null = null // Debounce restart to prevent rapid beeps on Android
+  const recentFinals: Array<{ text: string; time: number }> = [] // Dedup buffer for recently emitted finals
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -119,6 +121,23 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.interimResults = true
       recognition.lang = lang
 
+      // Helper: check if text was recently emitted as final (dedup for Android restarts)
+      const isDuplicateFinal = (text: string): boolean => {
+        const now = Date.now()
+        // Purge entries older than 4 seconds
+        while (recentFinals.length > 0 && now - recentFinals[0].time > 4000) {
+          recentFinals.shift()
+        }
+        const normalized = text.trim().toLowerCase()
+        return recentFinals.some(f => f.text === normalized)
+      }
+
+      const trackFinal = (text: string) => {
+        recentFinals.push({ text: text.trim().toLowerCase(), time: Date.now() })
+        // Keep buffer bounded
+        if (recentFinals.length > 20) recentFinals.shift()
+      }
+
       recognition.onresult = (event) => {
         // Clear service check — we got results, the service works
         if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
@@ -133,19 +152,26 @@ export function createWebSpeechEngine(): STTEngine {
             if (lastSyntheticFinal && text.startsWith(lastSyntheticFinal)) {
               const delta = text.slice(lastSyntheticFinal.length).trim()
               lastSyntheticFinal = ''
-              if (delta) {
+              if (delta && !isDuplicateFinal(delta)) {
+                trackFinal(delta)
                 onResult({ text: delta, isFinal: true, confidence })
               }
             } else {
               lastSyntheticFinal = ''
-              onResult({ text, isFinal: true, confidence })
+              if (!isDuplicateFinal(text)) {
+                trackFinal(text)
+                onResult({ text, isFinal: true, confidence })
+              }
             }
           } else {
             // Interim result: check for sentence boundaries to emit early finals
             const boundary = detectSentenceBoundary(text)
             if (boundary) {
-              // Emit completed sentence(s) as synthetic final
-              onResult({ text: boundary.final, isFinal: true, confidence })
+              // Emit completed sentence(s) as synthetic final (with dedup)
+              if (!isDuplicateFinal(boundary.final)) {
+                trackFinal(boundary.final)
+                onResult({ text: boundary.final, isFinal: true, confidence })
+              }
               lastSyntheticFinal = boundary.final
               // Emit remainder as interim
               if (boundary.remainder) {
@@ -181,7 +207,20 @@ export function createWebSpeechEngine(): STTEngine {
 
       recognition.onend = () => {
         if (shouldBeListening && recognition) {
-          try { recognition.start(); return } catch { /* fall through */ }
+          // Reset synthetic final tracking — new recognition session starts fresh
+          lastSyntheticFinal = ''
+          // Debounce restart to prevent rapid "ding" sounds on Android Chrome
+          // (Chrome plays a system sound each time recognition.start() is called)
+          if (restartTimer) clearTimeout(restartTimer)
+          restartTimer = setTimeout(() => {
+            restartTimer = null
+            if (shouldBeListening && recognition) {
+              try { recognition.start(); return } catch { /* fall through */ }
+            }
+            shouldBeListening = false
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
+          }, 300)
+          return
         }
         shouldBeListening = false
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
@@ -211,6 +250,7 @@ export function createWebSpeechEngine(): STTEngine {
     stop() {
       shouldBeListening = false
       if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
+      if (restartTimer) { clearTimeout(restartTimer); restartTimer = null }
       if (recognition) {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
@@ -219,6 +259,8 @@ export function createWebSpeechEngine(): STTEngine {
         stream.getTracks().forEach(t => t.stop())
         stream = null
       }
+      // Clear dedup buffer
+      recentFinals.length = 0
     },
   }
 }
@@ -426,8 +468,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         }
       }
 
+      // Connect processor through a zero-gain node to prevent mic audio from playing
+      // through speakers (which causes feedback/echo). ScriptProcessorNode needs to be
+      // connected to the audio graph to fire onaudioprocess events.
+      const silencer = audioContext.createGain()
+      silencer.gain.value = 0
       source.connect(processor)
-      processor.connect(audioContext.destination)
+      processor.connect(silencer)
+      silencer.connect(audioContext.destination)
       isActive = true
 
       onResult({ text: '...', isFinal: false })

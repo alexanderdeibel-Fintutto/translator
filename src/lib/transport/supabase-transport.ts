@@ -20,6 +20,8 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   private retryTimer: ReturnType<typeof setTimeout> | null = null
   private connectionListeners = new Set<(connected: boolean) => void>()
   private subscribeArgs: { code: string; handlers: BroadcastHandlers } | null = null
+  private keepaliveTimer: ReturnType<typeof setInterval> | null = null
+  private visibilityHandler: (() => void) | null = null
 
   get isConnected(): boolean {
     return this.connected
@@ -48,6 +50,44 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.retries = 0
     this.clearRetryTimer()
     this.doSubscribe(code, handlers)
+
+    // iOS Safari: WebSocket can silently disconnect when the browser goes to
+    // background or the screen locks. Re-subscribe when the page becomes visible again.
+    this.clearVisibilityHandler()
+    this.visibilityHandler = () => {
+      if (document.visibilityState === 'visible' && this.subscribeArgs && !this.connected) {
+        console.log('[Supabase] Page visible again, reconnecting broadcast channel...')
+        this.retries = 0
+        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      }
+    }
+    document.addEventListener('visibilitychange', this.visibilityHandler)
+
+    // Keepalive: periodically check if the channel is still alive.
+    // Supabase Realtime channels can silently drop on mobile browsers.
+    this.clearKeepalive()
+    this.keepaliveTimer = setInterval(() => {
+      if (!this.subscribeArgs) return
+      if (!this.connected && this.channel) {
+        console.log('[Supabase] Keepalive detected disconnected channel, re-subscribing...')
+        this.retries = 0
+        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      }
+    }, 15_000) // check every 15 seconds
+  }
+
+  private clearVisibilityHandler() {
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler)
+      this.visibilityHandler = null
+    }
+  }
+
+  private clearKeepalive() {
+    if (this.keepaliveTimer) {
+      clearInterval(this.keepaliveTimer)
+      this.keepaliveTimer = null
+    }
   }
 
   private doSubscribe(code: string, handlers: BroadcastHandlers): void {
@@ -112,6 +152,8 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
 
   unsubscribe(): void {
     this.clearRetryTimer()
+    this.clearVisibilityHandler()
+    this.clearKeepalive()
     this.subscribeArgs = null
     this.retries = 0
     if (this.channel) {
@@ -129,6 +171,8 @@ export class SupabasePresenceTransport implements PresenceTransport {
   private channel: RealtimeChannel | null = null
   private myPresence: PresenceState | null = null
   private syncListeners = new Set<(listeners: PresenceState[]) => void>()
+  private visibilityHandler: (() => void) | null = null
+  private lastCode: string | null = null
 
   onSync(callback: (listeners: PresenceState[]) => void): () => void {
     this.syncListeners.add(callback)
@@ -142,6 +186,37 @@ export class SupabasePresenceTransport implements PresenceTransport {
     }
 
     this.myPresence = data
+    this.lastCode = code
+    this.doJoin(code, data)
+
+    // iOS Safari: re-join presence when the page becomes visible again
+    // (WebSocket may have been suspended while in background)
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler)
+    }
+    this.visibilityHandler = () => {
+      if (document.visibilityState === 'visible' && this.lastCode && this.myPresence) {
+        // Re-track presence to ensure speaker sees us
+        if (this.channel) {
+          this.channel.track(this.myPresence).catch(() => {
+            // Channel might be stale, re-join entirely
+            console.log('[Supabase] Presence re-track failed, re-joining...')
+            if (this.lastCode && this.myPresence) {
+              this.doJoin(this.lastCode, this.myPresence)
+            }
+          })
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', this.visibilityHandler)
+  }
+
+  private doJoin(code: string, data: PresenceState): void {
+    if (this.channel) {
+      supabase.removeChannel(this.channel)
+      this.channel = null
+    }
+
     const channel = supabase.channel(getChannelName(code) + '-presence')
 
     channel.on('presence', { event: 'sync' }, () => {
@@ -176,6 +251,11 @@ export class SupabasePresenceTransport implements PresenceTransport {
   }
 
   leave(): void {
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler)
+      this.visibilityHandler = null
+    }
+    this.lastCode = null
     if (this.channel) {
       this.channel.untrack()
       supabase.removeChannel(this.channel)
