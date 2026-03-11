@@ -115,6 +115,14 @@ const httpServer = http.createServer((req, res) => {
   }
 
   if (req.url === '/sessions') {
+    // Require RELAY_ADMIN_TOKEN for session listing (prevent info leak)
+    const adminToken = process.env.RELAY_ADMIN_TOKEN
+    const authHeader = req.headers['authorization']
+    if (!adminToken || authHeader !== `Bearer ${adminToken}`) {
+      res.writeHead(401, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Unauthorized' }))
+      return
+    }
     res.writeHead(200, { 'Content-Type': 'application/json' })
     const sessionList = Array.from(sessions.entries()).map(([code, s]) => ({
       code,

@@ -4,10 +4,19 @@ node_modules/
 # build
 dist/
 
-# env files
+# env files (NEVER commit secrets)
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
+
+# secrets & credentials
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
 
 # editor
 .vscode/
