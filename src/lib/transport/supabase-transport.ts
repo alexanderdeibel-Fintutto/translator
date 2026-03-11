@@ -151,12 +151,14 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
 
   broadcast(event: string, payload: Record<string, unknown>): void {
     if (!this.channel || !this.connected) return
-    // With ack enabled, send() returns a Promise that resolves to 'ok' or 'error'.
-    // On failure, trigger a re-subscribe so the next broadcast succeeds.
-    this.channel.send({ type: 'broadcast', event, payload }).then((status: string) => {
-      if (status !== 'ok' && this.subscribeArgs) {
-        console.error('[Supabase] Broadcast send failed, re-subscribing...')
-        this.setConnected(false)
+    // With ack enabled, send() returns Promise<'ok' | 'timed out' | 'error'>.
+    // On failure, mark disconnected so keepalive triggers re-subscribe.
+    this.channel.send({ type: 'broadcast', event, payload }).then((status) => {
+      if (status === 'ok') return
+      console.error(`[Supabase] Broadcast send failed: ${status}`)
+      this.setConnected(false)
+      // Immediate re-subscribe on error (don't wait for keepalive)
+      if (this.subscribeArgs) {
         this.retries = 0
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }

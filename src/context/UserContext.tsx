@@ -148,6 +148,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [usage, setUsage] = useState<UsageRecord>(getUsage())
   // Ref to signal explicit sign-out to the auth state listener
   const signOutExplicitRef = useRef<() => void>(() => {})
+  // Ref to track current user for TOKEN_REFRESHED optimization
+  const userRef = useRef<UserProfile | null>(null)
 
   // Sync tier to usage tracker
   useEffect(() => {
@@ -165,6 +167,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
+          // TOKEN_REFRESHED fires every ~1 hour. If we already have the user
+          // profile loaded, skip the expensive profile fetch — nothing changed.
+          if (event === 'TOKEN_REFRESHED' && userRef.current) {
+            setIsLoading(false)
+            return
+          }
+
           // Strategy: try multiple approaches to load the user profile.
           // 1. RPC function (SECURITY DEFINER, bypasses RLS entirely)
           // 2. Direct REST API with access token
@@ -228,6 +237,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           }
 
           setUser(userProfile)
+          userRef.current = userProfile
           setTierId(effectiveTier)
 
           // Cache profile for offline use
@@ -247,6 +257,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             if (cached) {
               console.error('[Auth] Token refresh failed offline — restoring cached session')
               setUser(cached)
+              userRef.current = cached
               setTierId(cached.tierId)
               // Don't start usage sync — we're offline
               setIsLoading(false)
@@ -257,6 +268,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           // Genuine sign-out or no cached profile: clear everything
           explicitSignOut = false
           setUser(null)
+          userRef.current = null
           stopUsageSync()
           // Keep local tier for anonymous/demo users
         }
@@ -273,6 +285,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           if (cached) {
             console.error('[Auth] No session but offline — restoring cached profile')
             setUser(cached)
+            userRef.current = cached
             setTierId(cached.tierId)
           }
         }
@@ -321,6 +334,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     clearCachedUserProfile()
     await supabase.auth.signOut()
     setUser(null)
+    userRef.current = null
     setTierId('free')
   }, [])
 

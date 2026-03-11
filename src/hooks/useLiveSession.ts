@@ -340,6 +340,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   ) => {
     setSessionCode(code)
     setSelectedLanguage(targetLang)
+    selectedLanguageRef.current = targetLang // Sync ref immediately for broadcast filter
     setRole('listener')
     setSessionEnded(false)
     setReceivedChunks([])
@@ -393,6 +394,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
+    selectedLanguageRef.current = lang // Sync ref immediately for incoming broadcasts
+    setReceivedChunks([]) // Clear old translations from previous language
+    setCurrentTranslation('')
     presence.updatePresence({ targetLanguage: lang })
   }, [presence])
 

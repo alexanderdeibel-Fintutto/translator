@@ -128,12 +128,19 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.lang = lang
 
       // Helper: check if text was recently emitted as final (dedup for Android restarts)
+      // Only dedup within a short window after a restart — legitimate repeated
+      // sentences (user genuinely says the same thing twice) should pass through.
+      let lastRestartTime = 0 // Set when onend restarts recognition
+
       const isDuplicateFinal = (text: string): boolean => {
         const now = Date.now()
-        // Purge entries older than 4 seconds
-        while (recentFinals.length > 0 && now - recentFinals[0].time > 4000) {
+        // Purge entries older than 2.5 seconds
+        while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
           recentFinals.shift()
         }
+        // Only dedup if we recently restarted recognition (within 3s)
+        // This avoids dropping legitimate repeated sentences during normal speech
+        if (now - lastRestartTime > 3000) return false
         const normalized = text.trim().toLowerCase()
         return recentFinals.some(f => f.text === normalized)
       }
@@ -219,6 +226,7 @@ export function createWebSpeechEngine(): STTEngine {
           restartTimer = setTimeout(() => {
             restartTimer = null
             if (shouldBeListening && recognition) {
+              lastRestartTime = Date.now()
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
