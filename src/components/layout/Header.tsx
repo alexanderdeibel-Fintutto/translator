@@ -249,18 +249,19 @@ export default function Header() {
           </Button>
 
           {/* CRM Direct Login */}
-          <Link to={isSalesAgent ? '/admin' : '/crm'} className="hidden md:block">
+          <Link to={isSalesAgent ? '/admin' : '/crm'}>
             <Button
-              variant="ghost"
-              size="icon"
-              aria-label="CRM"
+              variant="outline"
+              size="sm"
+              aria-label="CRM Login"
               className={cn(
-                location.pathname === '/crm' || location.pathname.startsWith('/admin')
-                  ? 'bg-accent'
-                  : ''
+                'gap-1.5 text-xs font-semibold border-primary/30 hover:bg-primary/10',
+                (location.pathname === '/crm' || location.pathname.startsWith('/admin'))
+                  && 'bg-primary/10 border-primary'
               )}
             >
-              <Shield className="h-4 w-4" aria-hidden="true" />
+              <Shield className="h-3.5 w-3.5" aria-hidden="true" />
+              CRM
             </Button>
           </Link>
 
