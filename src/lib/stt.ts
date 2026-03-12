@@ -682,6 +682,18 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   }
 }
 
+// --- Android detection ---
+// Chrome on Android plays an unavoidable system beep/ding every time
+// SpeechRecognition.start() is called. With continuous mode, the recognition
+// periodically stops and restarts, causing repeated beeps. The beep also
+// interferes with mic input, degrading recognition quality.
+// Solution: use Google Cloud STT on Android (no system sounds, direct mic access).
+
+function isAndroid(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /Android/i.test(navigator.userAgent)
+}
+
 // --- Engine selection ---
 
 export function getBestSTTEngine(): STTEngine {
@@ -695,11 +707,20 @@ export function getBestSTTEngine(): STTEngine {
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. Web Speech API (streaming, real-time — Chrome/Edge/Android)
+  // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
+  //    Chrome Android plays a "ding" on every recognition.start(), which repeats
+  //    in continuous mode and interferes with mic capture. Google Cloud STT uses
+  //    getUserMedia directly — no system sounds, no restart issues.
+  if (isAndroid()) {
+    const googleSTT = createGoogleCloudSTTEngine()
+    if (googleSTT.isSupported) return googleSTT
+  }
+
+  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
   const webSpeech = createWebSpeechEngine()
   if (webSpeech.isSupported) return webSpeech
 
-  // 4. Google Cloud STT (fallback for any browser with mic access)
+  // 5. Google Cloud STT (fallback for any browser with mic access)
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 
