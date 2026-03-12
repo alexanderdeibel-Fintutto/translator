@@ -66,8 +66,27 @@ export default function AuthPage() {
         if (resetError) throw resetError
         setSuccess('Link zum Zuruecksetzen gesendet! Bitte pruefe dein Postfach.')
       } else if (mode === 'login') {
-        await signIn(email, password)
-        navigate(redirect, { replace: true })
+        // Retry login up to 2 times on network errors (flaky mobile connections)
+        let lastError: Error | null = null
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            await signIn(email, password)
+            navigate(redirect, { replace: true })
+            return // Success — exit early
+          } catch (err) {
+            lastError = err instanceof Error ? err : new Error(String(err))
+            const msg = lastError.message
+            // Only retry on network errors, not auth errors (wrong password etc.)
+            if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('network') || msg.includes('ECONNREFUSED')) {
+              if (attempt < 2) {
+                await new Promise(r => setTimeout(r, 1000 * (attempt + 1))) // 1s, 2s
+                continue
+              }
+            }
+            throw lastError // Non-network error or final attempt — throw
+          }
+        }
+        if (lastError) throw lastError
       } else {
         await signUp(email, password)
         setSuccess('Bestaetigungs-E-Mail gesendet! Bitte pruefe dein Postfach.')
@@ -210,6 +229,11 @@ export default function AuthPage() {
             </>
           )}
         </div>
+
+        {/* Build version — helps debug stale PWA cache issues */}
+        <p className="mt-8 text-center text-[10px] text-muted-foreground/40 font-mono select-all">
+          v{typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__.slice(0, 16).replace('T', ' ') : '?'}
+        </p>
       </div>
     </div>
   )
