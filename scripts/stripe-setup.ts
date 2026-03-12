@@ -3,8 +3,8 @@
 // GuideTranslator — Stripe Product & Price Setup
 // =============================================================================
 //
-// Creates all Stripe products and prices for the 11 public tiers.
-// Run once to set up, then paste the output Price IDs into src/lib/tiers.ts.
+// Creates all Stripe products and prices for the 10 public paid tiers,
+// then automatically patches src/lib/tiers.ts with the generated Price IDs.
 //
 // Usage:
 //   STRIPE_SECRET_KEY=sk_test_xxx npx tsx scripts/stripe-setup.ts
@@ -17,6 +17,12 @@
 // =============================================================================
 
 import Stripe from 'stripe'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const TIERS_FILE = resolve(__dirname, '../src/lib/tiers.ts')
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 if (!STRIPE_SECRET_KEY) {
@@ -27,7 +33,7 @@ if (!STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' })
 
-// All public paid tiers with their pricing
+// All public paid tiers with their pricing (amounts in cents)
 const PAID_TIERS = [
   { id: 'personal_pro', name: 'Personal Pro', monthly: 499, yearly: 4990 },
   { id: 'guide_basic', name: 'Guide Basic', monthly: 1990, yearly: 19900 },
@@ -115,6 +121,78 @@ async function setupTier(tier: typeof PAID_TIERS[0]): Promise<TierResult> {
   }
 }
 
+/**
+ * Patch tiers.ts — replaces commented-out placeholder Price IDs with real ones.
+ * For each tier, finds the pricing block and replaces the placeholder comments
+ * with actual stripePriceIdMonthly / stripePriceIdYearly values.
+ */
+function patchTiersFile(results: TierResult[]): void {
+  let content = readFileSync(TIERS_FILE, 'utf-8')
+  let patchCount = 0
+
+  for (const r of results) {
+    // Pattern: replace commented-out price ID placeholders with real values
+    // Matches both "// stripePriceIdMonthly: 'price_...'," and
+    // "// TODO: Set after Stripe product creation" + the two commented lines
+    const commentedPattern = new RegExp(
+      `([ \\t]*)(?:\\/\\/ TODO: Set after Stripe product creation\\n\\s*)?` +
+      `\\/\\/ stripePriceIdMonthly: '[^']*',\\n\\s*` +
+      `\\/\\/ stripePriceIdYearly: '[^']*',`,
+    )
+
+    // Also handle already-set values (for re-running the script)
+    const activePattern = new RegExp(
+      `([ \\t]*)stripePriceIdMonthly: '[^']*',\\n\\s*` +
+      `stripePriceIdYearly: '[^']*',`,
+    )
+
+    const replacement = (indent: string) =>
+      `${indent}stripePriceIdMonthly: '${r.monthlyPriceId}',\n` +
+      `${indent}stripePriceIdYearly: '${r.yearlyPriceId}',`
+
+    // Find the tier block first by looking for the tier id
+    // We need to find the right pricing section for each tier
+    const tierBlockStart = content.indexOf(`id: '${r.tierId}'`)
+    if (tierBlockStart === -1) {
+      console.warn(`  WARNUNG: Tier '${r.tierId}' nicht in tiers.ts gefunden`)
+      continue
+    }
+
+    // Find the next tier block (or end of TIERS object) to limit our search
+    const nextTierIdx = content.indexOf(`\n  },\n`, tierBlockStart)
+    const tierBlock = content.substring(tierBlockStart, nextTierIdx !== -1 ? nextTierIdx : undefined)
+
+    // Try commented pattern first
+    const commentedMatch = tierBlock.match(commentedPattern)
+    if (commentedMatch) {
+      const indent = commentedMatch[1] || '      '
+      const fullMatch = commentedMatch[0]
+      content = content.replace(fullMatch, replacement(indent))
+      patchCount++
+      continue
+    }
+
+    // Try active pattern (already set from previous run)
+    const activeMatch = tierBlock.match(activePattern)
+    if (activeMatch) {
+      const indent = activeMatch[1] || '      '
+      const fullMatch = activeMatch[0]
+      content = content.replace(fullMatch, replacement(indent))
+      patchCount++
+      continue
+    }
+
+    console.warn(`  WARNUNG: Keine Price-ID-Platzhalter fuer '${r.tierId}' gefunden`)
+  }
+
+  if (patchCount > 0) {
+    writeFileSync(TIERS_FILE, content, 'utf-8')
+    console.log(`\n${patchCount} Tier(s) in tiers.ts aktualisiert.`)
+  } else {
+    console.log('\nKeine Aenderungen an tiers.ts noetig.')
+  }
+}
+
 async function main() {
   console.log('='.repeat(70))
   console.log('GuideTranslator — Stripe Setup')
@@ -136,29 +214,45 @@ async function main() {
     console.log()
   }
 
-  // Output the config block to paste into tiers.ts
+  // Auto-patch tiers.ts with generated Price IDs
   console.log('='.repeat(70))
-  console.log('FERTIG! Kopiere die folgenden Price IDs in src/lib/tiers.ts:')
+  console.log('Patche src/lib/tiers.ts mit Price IDs ...')
+  console.log('='.repeat(70))
+  patchTiersFile(results)
+
+  // Summary
+  console.log()
+  console.log('='.repeat(70))
+  console.log('FERTIG! Price IDs wurden automatisch in tiers.ts eingetragen.')
   console.log('='.repeat(70))
   console.log()
 
   for (const r of results) {
-    console.log(`// ${r.tierId}`)
-    console.log(`stripePriceIdMonthly: '${r.monthlyPriceId}',`)
-    console.log(`stripePriceIdYearly: '${r.yearlyPriceId}',`)
-    console.log()
+    console.log(`  ${r.tierId}: monthly=${r.monthlyPriceId} yearly=${r.yearlyPriceId}`)
   }
 
-  // Output env line
+  // Remaining manual steps
+  console.log()
   console.log('='.repeat(70))
-  console.log('.env Eintrag (Publishable Key manuell aus Stripe Dashboard kopieren):')
+  console.log('Naechste Schritte:')
   console.log('='.repeat(70))
   console.log()
-  console.log('VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...')
+  console.log('1. Publishable Key in .env setzen:')
+  console.log('   VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...')
   console.log()
-  console.log('Supabase Secrets setzen:')
-  console.log(`supabase secrets set STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}`)
-  console.log('supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...')
+  console.log('2. Supabase Secrets setzen:')
+  console.log(`   supabase secrets set STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}`)
+  console.log('   supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...')
+  console.log()
+  console.log('3. Edge Functions deployen:')
+  console.log('   supabase functions deploy stripe-checkout stripe-portal stripe-webhook')
+  console.log()
+  console.log('4. Webhook-Endpunkt in Stripe Dashboard konfigurieren:')
+  console.log('   URL: https://<project-ref>.supabase.co/functions/v1/stripe-webhook')
+  console.log('   Events: checkout.session.completed, customer.subscription.updated,')
+  console.log('           customer.subscription.deleted, invoice.payment_failed')
+  console.log()
+  console.log('5. Webhook-Secret aus Stripe Dashboard kopieren und als Supabase Secret setzen')
 }
 
 main().catch((err) => {
