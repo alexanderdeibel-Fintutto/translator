@@ -144,6 +144,7 @@ const de: TranslationStrings = {
   'error.offlineNoModel': 'Offline — kein Sprachmodell für dieses Sprachpaar heruntergeladen. Gehe zu Einstellungen → Offline-Sprachen.',
   'error.allProvidersFailed': 'Übersetzung fehlgeschlagen — bitte versuche es erneut.',
   'error.unknown': 'Ein Fehler ist aufgetreten.',
+  'error.networkDownload': 'Download fehlgeschlagen — bitte Internetverbindung pruefen und erneut versuchen.',
   'error.cameraNoApiKey': 'Kamera-Übersetzung benötigt einen Google Cloud API-Key. Bitte in den Einstellungen konfigurieren.',
   'error.cameraOcrFailed': 'Texterkennung fehlgeschlagen. Bitte versuche es erneut.',
   'error.cameraNoText': 'Kein Text im Bild erkannt.',

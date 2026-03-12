@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'غير متصل — لم يتم تنزيل نموذج لغة لهذا الزوج. انتقل إلى الإعدادات → اللغات غير المتصلة.',
   'error.allProvidersFailed': 'فشلت الترجمة — يرجى المحاولة مرة أخرى.',
   'error.unknown': 'حدث خطأ.',
+  'error.networkDownload': 'فشل التنزيل — يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',
   'error.cameraNoApiKey': 'ترجمة الكاميرا تحتاج مفتاح Google Cloud API. يرجى التكوين في الإعدادات.',
   'error.cameraOcrFailed': 'فشل التعرف على النص. يرجى المحاولة مرة أخرى.',
   'error.cameraNoText': 'لم يتم اكتشاف نص في الصورة.',

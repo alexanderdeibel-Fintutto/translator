@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'Hors ligne — aucun modèle téléchargé pour cette paire de langues. Allez dans Paramètres → Langues hors ligne.',
   'error.allProvidersFailed': 'La traduction a échoué — veuillez réessayer.',
   'error.unknown': 'Une erreur est survenue.',
+  'error.networkDownload': 'Le téléchargement a échoué — veuillez vérifier votre connexion internet et réessayer.',
   'error.cameraNoApiKey': 'La traduction par caméra nécessite une clé API Google Cloud. Configurez dans les Paramètres.',
   'error.cameraOcrFailed': 'La reconnaissance de texte a échoué. Veuillez réessayer.',
   'error.cameraNoText': 'Aucun texte détecté dans l\'image.',

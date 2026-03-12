@@ -104,6 +104,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'Offline — no language model downloaded for this pair. Go to Settings → Offline Languages.',
   'error.allProvidersFailed': 'Translation failed — please try again.',
   'error.unknown': 'An error occurred.',
+  'error.networkDownload': 'Download failed — please check your internet connection and try again.',
   'error.cameraNoApiKey': 'Camera translation requires a Google Cloud API key. Please configure in Settings.',
   'error.cameraOcrFailed': 'Text recognition failed. Please try again.',
   'error.cameraNoText': 'No text detected in the image.',

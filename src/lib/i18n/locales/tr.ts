@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'Çevrimdışı — bu dil çifti için model indirilmedi. Ayarlar → Çevrimdışı Diller\'e gidin.',
   'error.allProvidersFailed': 'Çeviri başarısız — lütfen tekrar deneyin.',
   'error.unknown': 'Bir hata oluştu.',
+  'error.networkDownload': 'İndirme başarısız oldu — lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.',
   'error.cameraNoApiKey': 'Kamera çevirisi Google Cloud API anahtarı gerektirir. Lütfen Ayarlar\'da yapılandırın.',
   'error.cameraOcrFailed': 'Metin tanıma başarısız. Lütfen tekrar deneyin.',
   'error.cameraNoText': 'Resimde metin algılanamadı.',
