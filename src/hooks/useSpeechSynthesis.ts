@@ -4,24 +4,41 @@ import { isCloudTTSAvailable, speakWithCloudTTS, prefetchCloudTTS } from '@/lib/
 import type { VoiceQuality } from '@/lib/tts'
 import { useI18n } from '@/context/I18nContext'
 
-// iOS audio unlock: play a silent audio element during a user gesture to
-// "warm up" the HTMLAudioElement and AudioContext APIs. Without this,
-// programmatic play() calls outside gesture context are blocked by WebKit.
+// iOS audio unlock: reuse ONE Audio element that was play()-ed during a user
+// gesture. On iOS Safari, each new Audio() requires a fresh gesture for play().
+// But re-setting .src on an already-unlocked element and calling play() works.
 let iosAudioUnlocked = false
+let sharedAudioElement: HTMLAudioElement | null = null
+let ttsFallbackNotified = false
+let sharedEndHandler: (() => void) | null = null
+let sharedErrorHandler: (() => void) | null = null
+
+/** Get or create the shared audio element (reused across all TTS playbacks) */
+export function getSharedAudioElement(): HTMLAudioElement {
+  if (!sharedAudioElement) {
+    sharedAudioElement = new Audio()
+  }
+  return sharedAudioElement
+}
 
 function unlockIOSAudio() {
   if (iosAudioUnlocked) return
   if (typeof window === 'undefined') return
 
-  // Create and play a tiny silent WAV (44 bytes header + 1 sample)
+  // Play a tiny silent WAV on the SHARED element to unlock it
   try {
-    const silentWav = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
-    const audio = new Audio(silentWav)
+    const audio = getSharedAudioElement()
+    const prevSrc = audio.src
+    audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
     audio.volume = 0
     audio.play().then(() => {
+      audio.volume = 1
       iosAudioUnlocked = true
-      console.log('[TTS] iOS audio unlocked via user gesture')
-    }).catch(() => {})
+      console.log('[TTS] iOS audio unlocked via shared element')
+    }).catch(() => {
+      // Restore previous src if unlock failed
+      if (prevSrc) audio.src = prevSrc
+    })
   } catch { /* ignore */ }
 
   // Also warm up speechSynthesis
@@ -79,15 +96,36 @@ export function useSpeechSynthesis() {
         setIsSpeaking(true)
         setTtsEngine('cloud')
         speakWithCloudTTS(text, lang, voiceQualityRef.current)
-          .then(audio => {
+          .then(newAudio => {
+            // On iOS, reuse the shared (gesture-unlocked) element instead of
+            // the new Audio from Cloud TTS — new elements need a fresh gesture.
+            const audio = iosAudioUnlocked ? getSharedAudioElement() : newAudio
             audioRef.current = audio
-            audio.addEventListener('ended', onFinished)
-            audio.addEventListener('error', () => {
+
+            // Clean up previous event listeners on shared element
+            const endHandler = () => {
+              if (newAudio !== audio) URL.revokeObjectURL(newAudio.src)
+              onFinished()
+            }
+            const errorHandler = () => {
+              if (newAudio !== audio) URL.revokeObjectURL(newAudio.src)
               audioRef.current = null
-              // Fallback to browser TTS on error
               speakBrowserQueued(text, lang, true)
-            })
-            // Catch iOS autoplay rejection (Chrome/WebKit block play() outside user gesture)
+            }
+
+            // Remove previous handlers from shared element before attaching new ones
+            if (sharedEndHandler) audio.removeEventListener('ended', sharedEndHandler)
+            if (sharedErrorHandler) audio.removeEventListener('error', sharedErrorHandler)
+            sharedEndHandler = endHandler
+            sharedErrorHandler = errorHandler
+            audio.addEventListener('ended', endHandler)
+            audio.addEventListener('error', errorHandler)
+
+            if (audio !== newAudio) {
+              // Transfer the blob URL to the shared element
+              audio.src = newAudio.src
+            }
+
             audio.play().catch(() => {
               audioRef.current = null
               speakBrowserQueued(text, lang, true)
@@ -114,9 +152,11 @@ export function useSpeechSynthesis() {
       }
       setTtsEngine('browser')
 
-      if (isFallback) {
-        toast.warning(t('error.ttsFallback'), {
-          duration: 4000,
+      // Only show fallback notice once per session to avoid alarming red flashes
+      if (isFallback && !ttsFallbackNotified) {
+        ttsFallbackNotified = true
+        toast.info(t('error.ttsFallback'), {
+          duration: 3000,
         })
       }
 
@@ -184,7 +224,10 @@ export function useSpeechSynthesis() {
 
     if (audioRef.current) {
       audioRef.current.pause()
-      audioRef.current = null
+      // Don't null the shared element — it gets reused
+      if (audioRef.current !== sharedAudioElement) {
+        audioRef.current = null
+      }
     }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()

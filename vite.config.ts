@@ -108,35 +108,17 @@ export default defineConfig({
             },
           },
           {
-            // Cache HuggingFace model files (Opus-MT, Whisper)
-            // No $ anchor — HF URLs often have query params like ?download=true
-            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
+            // HuggingFace model files: let Transformers.js handle caching.
+            // CacheFirst caused mobile download failures because the SW tried to
+            // clone 35MB+ responses in memory, crashing on mobile browsers.
+            // Transformers.js already caches in its own 'transformers-cache'.
+            urlPattern: /^https:\/\/huggingface\.co\/.*(onnx|json|wasm|bin|safetensors)/,
+            handler: 'NetworkOnly',
           },
           {
-            // Also cache CDN-served model files (all regional CDNs)
+            // HuggingFace CDN (LFS files) — same: let Transformers.js cache these
             urlPattern: /^https:\/\/cdn-lfs(-[a-z0-9-]+)?\.huggingface\.co/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models-cdn',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
+            handler: 'NetworkOnly',
           },
           {
             // Cache local WASM files (ONNX Runtime) on first use

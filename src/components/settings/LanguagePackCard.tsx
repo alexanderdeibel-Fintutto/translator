@@ -47,16 +47,25 @@ export default function LanguagePackCard({
         return
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err)
-        const isNetworkError = msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('network') || msg.includes('TypeError')
+        const errName = err instanceof Error ? err.name : ''
+        // Only treat actual fetch/network failures as network errors
+        const isNetworkError =
+          msg === 'Failed to fetch' ||
+          msg.includes('NetworkError') ||
+          errName === 'TypeError' && msg.includes('fetch') ||
+          msg.includes('AbortError') ||
+          msg.includes('net::')
         if (isNetworkError && attempt < 2) {
+          console.warn(`[LanguagePack] Download attempt ${attempt + 1} failed, retrying...`, msg)
           await new Promise(r => setTimeout(r, 2000 * (attempt + 1)))
           continue
         }
-        console.error('[LanguagePack] Download failed:', err)
+        console.error(`[LanguagePack] Download failed (attempt ${attempt + 1}):`, err)
+        // Show actual error for non-network errors so we can diagnose
         setError(
           isNetworkError
             ? t('error.networkDownload')
-            : msg
+            : `${t('error.networkDownload')} (${msg.slice(0, 100)})`
         )
         break
       }
