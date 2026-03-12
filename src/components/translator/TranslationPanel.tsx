@@ -137,13 +137,13 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
 
   // Keep refs in sync
   autoSpeakRef.current = autoSpeak
-  isListeningRef.current = isListening
   targetLangRef.current = targetLang
   sourceLangRef.current = sourceLang
   useInformalRef.current = useInformal
   streamModeRef.current = streamMode
 
   const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
+  isListeningRef.current = isListening
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
   const targetSpeakRef = useRef(targetSpeech.speak)
