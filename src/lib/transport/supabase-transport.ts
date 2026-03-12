@@ -22,6 +22,11 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   private subscribeArgs: { code: string; handlers: BroadcastHandlers } | null = null
   private keepaliveTimer: ReturnType<typeof setInterval> | null = null
   private visibilityHandler: (() => void) | null = null
+  // Track when last message was received — used for listener-side staleness detection.
+  // On mobile WebKit (Safari, Firefox iOS, Chrome iOS), the underlying WebSocket can
+  // die silently without firing any status callback. The channel stays "connected"
+  // but no broadcasts arrive. We detect this by checking lastMessageAt.
+  private lastMessageAt = 0
 
   get isConnected(): boolean {
     return this.connected
@@ -51,29 +56,40 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.clearRetryTimer()
     this.doSubscribe(code, handlers)
 
-    // iOS Safari: WebSocket can silently disconnect when the browser goes to
+    // iOS/Firefox: WebSocket can silently disconnect when the browser goes to
     // background or the screen locks. Re-subscribe when the page becomes visible again.
+    // Check both connected state AND message staleness — on iOS WebKit browsers
+    // (Safari, Firefox, Chrome), the WebSocket can die without firing a close event,
+    // leaving connected=true but no messages arriving.
     this.clearVisibilityHandler()
     this.visibilityHandler = () => {
-      if (document.visibilityState === 'visible' && this.subscribeArgs && !this.connected) {
-        console.error('[Supabase] Page visible again, reconnecting broadcast channel...')
-        this.retries = 0
-        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      if (document.visibilityState === 'visible' && this.subscribeArgs) {
+        const stale = this.lastMessageAt > 0 && (Date.now() - this.lastMessageAt) > 20_000
+        if (!this.connected || stale) {
+          console.error(`[Supabase] Page visible again, reconnecting (connected=${this.connected}, stale=${stale})`)
+          this.retries = 0
+          this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+        }
       }
     }
     document.addEventListener('visibilitychange', this.visibilityHandler)
 
     // Keepalive: periodically check if the channel is still alive.
-    // Supabase Realtime channels can silently drop on mobile browsers.
+    // Checks TWO conditions:
+    // 1. Channel explicitly disconnected (connected=false) — normal failure path
+    // 2. Channel "connected" but no messages for 30s — silent WebSocket death
+    //    (common on iOS WebKit browsers: Safari, Firefox iOS, Chrome iOS)
     this.clearKeepalive()
     this.keepaliveTimer = setInterval(() => {
       if (!this.subscribeArgs) return
-      if (!this.connected && this.channel) {
-        console.error('[Supabase] Keepalive detected disconnected channel, re-subscribing...')
+      const silentlyDead = this.connected && this.lastMessageAt > 0 &&
+        (Date.now() - this.lastMessageAt) > 30_000
+      if ((!this.connected && this.channel) || silentlyDead) {
+        console.error(`[Supabase] Keepalive: reconnecting (connected=${this.connected}, lastMsg=${Date.now() - this.lastMessageAt}ms ago)`)
         this.retries = 0
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
-    }, 15_000) // check every 15 seconds
+    }, 10_000) // check every 10 seconds
   }
 
   private clearVisibilityHandler() {
@@ -107,6 +123,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onTranslation) {
       const handler = handlers.onTranslation
       channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as TranslationChunk)
       })
     }
@@ -114,6 +131,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onSessionInfo) {
       const handler = handlers.onSessionInfo
       channel.on('broadcast', { event: 'session_info' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as SessionInfo)
       })
     }
@@ -121,13 +139,20 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     if (handlers.onStatus) {
       const handler = handlers.onStatus
       channel.on('broadcast', { event: 'status' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
         handler(payload as StatusMessage)
       })
     }
 
+    // Also listen for heartbeat events (no handler needed, just updates lastMessageAt)
+    channel.on('broadcast', { event: 'heartbeat' }, () => {
+      this.lastMessageAt = Date.now()
+    })
+
     channel.subscribe((status) => {
       if (status === 'SUBSCRIBED') {
         this.setConnected(true)
+        this.lastMessageAt = Date.now() // Reset staleness timer on fresh subscribe
         this.retries = 0
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         this.setConnected(false)
