@@ -43,6 +43,8 @@ export default function ConversationPage() {
   autoSpeakRef.current = autoSpeak
   const ttsRef = useRef(tts.speak)
   ttsRef.current = tts.speak
+  const isAnyListeningRef = useRef(false)
+  isAnyListeningRef.current = topRecognition.isListening || bottomRecognition.isListening
 
   const handleResult = useCallback(async (text: string, side: 'top' | 'bottom') => {
     if (isTranslatingRef.current || !text.trim()) return
@@ -65,7 +67,8 @@ export default function ConversationPage() {
       }
       setMessages(prev => [...prev, msg])
 
-      if (autoSpeakRef.current && result.translatedText) {
+      // Skip auto-speak while recording to prevent mic interference
+      if (autoSpeakRef.current && result.translatedText && !isAnyListeningRef.current) {
         const lang = getLanguageByCode(tgtLang)
         ttsRef.current(result.translatedText, lang?.speechCode || tgtLang)
       }
