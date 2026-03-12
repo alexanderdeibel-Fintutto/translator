@@ -134,6 +134,17 @@ export function useLiveSession(userTierId: TierId = 'free') {
     return () => clearInterval(interval)
   }, [role, sessionCode])
 
+  // Speaker heartbeat: send a lightweight ping every 10s so listeners can detect
+  // silent channel death (common on iOS WebKit — Safari, Firefox, Chrome).
+  // Without this, a listener's channel can appear "connected" but receive nothing.
+  useEffect(() => {
+    if (role !== 'speaker' || !sessionCode) return
+    const interval = setInterval(() => {
+      broadcast.broadcast('heartbeat', { t: Date.now() })
+    }, 10_000) // every 10 seconds
+    return () => clearInterval(interval)
+  }, [role, sessionCode, broadcast])
+
   // Broadcast session info periodically when listener count changes
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return

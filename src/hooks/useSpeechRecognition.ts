@@ -54,7 +54,7 @@ export function useSpeechRecognition() {
       // Auto-fallback: if Web Speech service doesn't work (Opera, WebKit, network),
       // switch to Google Cloud STT transparently
       if (errorMsg.includes('[web-speech-unavailable]') && engineRef.current?.provider === 'web-speech') {
-        console.log('[STT] Web Speech unavailable, falling back to Google Cloud STT')
+        console.error('[STT] Web Speech unavailable, falling back to Google Cloud STT')
         const fallback = createGoogleCloudSTTEngine()
         if (fallback.isSupported) {
           engineRef.current = fallback
