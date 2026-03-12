@@ -48,7 +48,7 @@ export default function ListenerJoinPage() {
             {t('liveSession.sessionCode') || 'Session-Code'}
           </label>
           <SessionCodeInput
-            onSubmit={(code) => {
+            onJoin={(code) => {
               setSessionCode(code)
               if (code) handleJoin()
             }}

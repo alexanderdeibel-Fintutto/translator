@@ -7,8 +7,11 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 import type { TranslationChunk, SessionInfo, StatusMessage, PresenceState } from '@/lib/session'
 import type { BroadcastTransport, BroadcastHandlers, PresenceTransport } from './types'
 
-const MAX_RETRIES = 5
-const BASE_DELAY = 2000
+const MAX_RETRIES = 8
+const BASE_DELAY = 1500
+
+// Timeout for initial subscription — if not connected within this window, retry
+const SUBSCRIBE_TIMEOUT_MS = 10_000
 
 // --- Broadcast ---
 
@@ -18,6 +21,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   private connected = false
   private retries = 0
   private retryTimer: ReturnType<typeof setTimeout> | null = null
+  private subscribeTimeoutTimer: ReturnType<typeof setTimeout> | null = null
   private connectionListeners = new Set<(connected: boolean) => void>()
   private subscribeArgs: { code: string; handlers: BroadcastHandlers } | null = null
 
@@ -43,10 +47,18 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     }
   }
 
+  private clearSubscribeTimeout() {
+    if (this.subscribeTimeoutTimer) {
+      clearTimeout(this.subscribeTimeoutTimer)
+      this.subscribeTimeoutTimer = null
+    }
+  }
+
   subscribe(code: string, handlers: BroadcastHandlers): void {
     this.subscribeArgs = { code, handlers }
     this.retries = 0
     this.clearRetryTimer()
+    this.clearSubscribeTimeout()
     this.doSubscribe(code, handlers)
   }
 
@@ -57,7 +69,11 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       this.channel = null
     }
 
-    const channel = supabase.channel(getChannelName(code))
+    console.info(`[Supabase:Broadcast] Subscribing to channel "${getChannelName(code)}" (attempt ${this.retries + 1})`)
+
+    const channel = supabase.channel(getChannelName(code), {
+      config: { broadcast: { ack: true } },
+    })
 
     if (handlers.onTranslation) {
       const handler = handlers.onTranslation
@@ -80,24 +96,27 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       })
     }
 
+    // Set a timeout — if we don't reach SUBSCRIBED within the window, force retry
+    this.clearSubscribeTimeout()
+    this.subscribeTimeoutTimer = setTimeout(() => {
+      if (!this.connected && this.subscribeArgs) {
+        console.warn(`[Supabase:Broadcast] Subscription timeout after ${SUBSCRIBE_TIMEOUT_MS}ms — retrying`)
+        this.scheduleRetry()
+      }
+    }, SUBSCRIBE_TIMEOUT_MS)
+
     channel.subscribe((status) => {
+      console.info(`[Supabase:Broadcast] Channel status: ${status}`)
       if (status === 'SUBSCRIBED') {
+        this.clearSubscribeTimeout()
         this.setConnected(true)
         this.retries = 0
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        this.clearSubscribeTimeout()
         this.setConnected(false)
-        if (this.retries < MAX_RETRIES && this.subscribeArgs) {
-          const delay = BASE_DELAY * Math.pow(2, this.retries)
-          this.retries++
-          console.warn(`[Supabase] Retry in ${delay}ms (${this.retries}/${MAX_RETRIES})`)
-          this.clearRetryTimer()
-          this.retryTimer = setTimeout(() => {
-            if (this.subscribeArgs) {
-              this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
-            }
-          }, delay)
-        }
+        this.scheduleRetry()
       } else if (status === 'CLOSED') {
+        this.clearSubscribeTimeout()
         this.setConnected(false)
       }
     })
@@ -105,13 +124,36 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.channel = channel
   }
 
+  private scheduleRetry() {
+    if (this.retries >= MAX_RETRIES || !this.subscribeArgs) {
+      console.error(`[Supabase:Broadcast] Max retries (${MAX_RETRIES}) reached — giving up`)
+      return
+    }
+    const delay = BASE_DELAY * Math.pow(2, Math.min(this.retries, 4))
+    this.retries++
+    console.warn(`[Supabase:Broadcast] Retry in ${delay}ms (${this.retries}/${MAX_RETRIES})`)
+    this.clearRetryTimer()
+    this.retryTimer = setTimeout(() => {
+      if (this.subscribeArgs) {
+        this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
+      }
+    }, delay)
+  }
+
   broadcast(event: string, payload: Record<string, unknown>): void {
-    if (!this.channel) return
+    if (!this.channel) {
+      console.warn('[Supabase:Broadcast] Cannot broadcast — no channel')
+      return
+    }
+    if (!this.connected) {
+      console.warn('[Supabase:Broadcast] Broadcasting while disconnected — message may be lost')
+    }
     this.channel.send({ type: 'broadcast', event, payload })
   }
 
   unsubscribe(): void {
     this.clearRetryTimer()
+    this.clearSubscribeTimeout()
     this.subscribeArgs = null
     this.retries = 0
     if (this.channel) {
@@ -129,6 +171,10 @@ export class SupabasePresenceTransport implements PresenceTransport {
   private channel: RealtimeChannel | null = null
   private myPresence: PresenceState | null = null
   private syncListeners = new Set<(listeners: PresenceState[]) => void>()
+  private joinArgs: { code: string; data: PresenceState } | null = null
+  private retries = 0
+  private retryTimer: ReturnType<typeof setTimeout> | null = null
+  private subscribeTimeoutTimer: ReturnType<typeof setTimeout> | null = null
 
   onSync(callback: (listeners: PresenceState[]) => void): () => void {
     this.syncListeners.add(callback)
@@ -136,13 +182,34 @@ export class SupabasePresenceTransport implements PresenceTransport {
   }
 
   join(code: string, data: PresenceState): void {
+    this.joinArgs = { code, data }
+    this.retries = 0
+    this.clearTimers()
+    this.doJoin(code, data)
+  }
+
+  private clearTimers() {
+    if (this.retryTimer) {
+      clearTimeout(this.retryTimer)
+      this.retryTimer = null
+    }
+    if (this.subscribeTimeoutTimer) {
+      clearTimeout(this.subscribeTimeoutTimer)
+      this.subscribeTimeoutTimer = null
+    }
+  }
+
+  private doJoin(code: string, data: PresenceState): void {
     if (this.channel) {
       supabase.removeChannel(this.channel)
       this.channel = null
     }
 
     this.myPresence = data
-    const channel = supabase.channel(getChannelName(code) + '-presence')
+    const channelName = getChannelName(code) + '-presence'
+    console.info(`[Supabase:Presence] Joining channel "${channelName}" (attempt ${this.retries + 1})`)
+
+    const channel = supabase.channel(channelName)
 
     channel.on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState<PresenceState>()
@@ -159,13 +226,49 @@ export class SupabasePresenceTransport implements PresenceTransport {
       this.syncListeners.forEach(fn => fn(allListeners))
     })
 
+    // Set subscription timeout
+    this.subscribeTimeoutTimer = setTimeout(() => {
+      if (this.joinArgs && this.retries < MAX_RETRIES) {
+        console.warn(`[Supabase:Presence] Subscription timeout after ${SUBSCRIBE_TIMEOUT_MS}ms — retrying`)
+        this.scheduleRetry()
+      }
+    }, SUBSCRIBE_TIMEOUT_MS)
+
     channel.subscribe(async (status) => {
+      console.info(`[Supabase:Presence] Channel status: ${status}`)
       if (status === 'SUBSCRIBED') {
-        await channel.track(data)
+        this.clearTimers()
+        this.retries = 0
+        try {
+          await channel.track(data)
+          console.info('[Supabase:Presence] Presence tracked successfully')
+        } catch (err) {
+          console.error('[Supabase:Presence] Failed to track presence:', err)
+        }
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        this.clearTimers()
+        this.scheduleRetry()
+      } else if (status === 'CLOSED') {
+        this.clearTimers()
       }
     })
 
     this.channel = channel
+  }
+
+  private scheduleRetry() {
+    if (this.retries >= MAX_RETRIES || !this.joinArgs) {
+      console.error(`[Supabase:Presence] Max retries (${MAX_RETRIES}) reached — giving up`)
+      return
+    }
+    const delay = BASE_DELAY * Math.pow(2, Math.min(this.retries, 4))
+    this.retries++
+    console.warn(`[Supabase:Presence] Retry in ${delay}ms (${this.retries}/${MAX_RETRIES})`)
+    this.retryTimer = setTimeout(() => {
+      if (this.joinArgs) {
+        this.doJoin(this.joinArgs.code, this.joinArgs.data)
+      }
+    }, delay)
   }
 
   async updatePresence(data: Partial<PresenceState>): Promise<void> {
@@ -176,6 +279,9 @@ export class SupabasePresenceTransport implements PresenceTransport {
   }
 
   leave(): void {
+    this.clearTimers()
+    this.joinArgs = null
+    this.retries = 0
     if (this.channel) {
       this.channel.untrack()
       supabase.removeChannel(this.channel)

@@ -396,6 +396,43 @@ export function useLiveSession(userTierId: TierId = 'free') {
     presence.updatePresence({ targetLanguage: lang })
   }, [presence])
 
+  // Reconnect: re-subscribe to broadcast + re-join presence
+  const reconnect = useCallback(() => {
+    if (!sessionCode || role !== 'listener') return
+    console.info('[LiveSession] Manual reconnect triggered')
+    setError(null)
+    broadcast.subscribe(
+      sessionCode,
+      (chunk: TranslationChunk) => {
+        if (chunk.targetLanguage === selectedLanguageRef.current) {
+          setCurrentTranslation(chunk.translatedText)
+          setReceivedChunks(prev => {
+            const next = [...prev, chunk]
+            return next.length > 100 ? next.slice(-100) : next
+          })
+          if (autoTTSRef.current && chunk.translatedText) {
+            const ttsLangCode = selectedLanguageRef.current === '_live'
+              ? chunk.sourceLang
+              : selectedLanguageRef.current
+            const lang = getLanguageByCode(ttsLangCode)
+            ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
+          }
+        }
+      },
+      undefined,
+      (status: StatusMessage) => {
+        if (status.ended) {
+          setSessionEnded(true)
+        }
+      },
+    )
+    presence.join(sessionCode, {
+      deviceName: getDeviceName(),
+      targetLanguage: selectedLanguageRef.current,
+      joinedAt: new Date().toISOString(),
+    })
+  }, [sessionCode, role, broadcast, presence])
+
   const leaveSession = useCallback(() => {
     tts.stop()
     broadcast.unsubscribe()
@@ -448,6 +485,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Listener
     joinSession,
     leaveSession,
+    reconnect: role === 'listener' ? reconnect : undefined,
     selectedLanguage,
     selectLanguage,
     currentTranslation,

@@ -102,10 +102,19 @@ export default function ListenerView({ session }: ListenerViewProps) {
 
       {/* Connection status bar */}
       {!session.isConnected && !session.isResolvingConnection && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm" role="alert">
+        <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm" role="alert">
           <WifiOff className="h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>{t('live.disconnected')}</span>
-          <Loader2 className="h-4 w-4 animate-spin ml-auto shrink-0" aria-hidden="true" />
+          <div className="flex-1 min-w-0">
+            <span>{t('live.disconnected')}</span>
+            <p className="text-xs mt-0.5 opacity-70">{t('live.disconnectedHint') || 'Verbindung wird wiederhergestellt...'}</p>
+          </div>
+          {session.reconnect ? (
+            <Button variant="outline" size="sm" onClick={session.reconnect} className="shrink-0 text-xs">
+              {t('live.retry') || 'Erneut verbinden'}
+            </Button>
+          ) : (
+            <Loader2 className="h-4 w-4 animate-spin shrink-0" aria-hidden="true" />
+          )}
         </div>
       )}
 
