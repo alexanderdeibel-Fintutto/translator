@@ -309,10 +309,30 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
   }, [])
 
+  // Dedup: track recently processed final texts to prevent double-broadcast
+  const recentFinalsRef = useRef<Array<{ text: string; time: number }>>([])
+
   // Handle speech recognition results (speaker side) — queue-based, never drops
   const handleSpeechResult = useCallback(async (text: string) => {
-    if (!text.trim()) return
-    pendingTextsRef.current.push(text)
+    const trimmed = text.trim()
+    if (!trimmed) return
+
+    // Dedup: skip if we already processed this exact text in the last 3 seconds
+    const now = Date.now()
+    const recents = recentFinalsRef.current
+    // Purge old entries
+    while (recents.length > 0 && now - recents[0].time > 3000) {
+      recents.shift()
+    }
+    const normalized = trimmed.toLowerCase()
+    if (recents.some(f => f.text === normalized)) {
+      console.log(`[Live] Dedup: skipping duplicate final "${trimmed.slice(0, 40)}..."`)
+      return
+    }
+    recents.push({ text: normalized, time: now })
+    if (recents.length > 20) recents.shift()
+
+    pendingTextsRef.current.push(trimmed)
     drainQueue()
   }, [drainQueue])
 

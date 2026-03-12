@@ -109,7 +109,8 @@ export default defineConfig({
           },
           {
             // Cache HuggingFace model files (Opus-MT, Whisper)
-            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)$/,
+            // No $ anchor — HF URLs often have query params like ?download=true
+            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'offline-models',
@@ -123,8 +124,8 @@ export default defineConfig({
             },
           },
           {
-            // Also cache CDN-served model files
-            urlPattern: /^https:\/\/cdn-lfs(-us-1)?\.huggingface\.co/,
+            // Also cache CDN-served model files (all regional CDNs)
+            urlPattern: /^https:\/\/cdn-lfs(-[a-z0-9-]+)?\.huggingface\.co/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'offline-models-cdn',
