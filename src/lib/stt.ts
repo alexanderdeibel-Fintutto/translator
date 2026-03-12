@@ -536,8 +536,8 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             // No text recognized — if we had pending interim text, check stability timeout
             if (lastInterimText) {
               interimStableCount++
-              // After 3 empty polls (~6s silence) with pending interim text, emit as final
-              if (interimStableCount >= 3) {
+              // After 2 empty polls (~4s silence) with pending interim text, emit as final
+              if (interimStableCount >= 2) {
                 console.log('[STT] Silence timeout — emitting pending interim as final')
                 emitFinal(lastInterimText)
               }
@@ -587,12 +587,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             }
 
             // Force emit as isFinal if:
-            // 1. Text has been stable for 2+ intervals (~4s of no change), OR
-            // 2. More than 8 seconds since last isFinal and we have substantial text (5+ words), OR
+            // 1a. Short text (< 5 words) stable for 1+ interval (~2s) — fast single-word capture, OR
+            // 1b. Longer text stable for 2+ intervals (~4s of no change), OR
+            // 2. More than 6 seconds since last isFinal and we have substantial text (3+ words), OR
             // 3. Word count exceeds 20 (long utterance without punctuation)
             if (
+              (isStable && wordCount < 5 && interimStableCount >= 1) ||
               (isStable && interimStableCount >= 2) ||
-              (timeSinceLastFinal > 8000 && wordCount >= 5) ||
+              (timeSinceLastFinal > 6000 && wordCount >= 3) ||
               wordCount >= 20
             ) {
               console.log(`[STT] Force-finalizing: stable=${interimStableCount}, elapsed=${timeSinceLastFinal}ms, words=${wordCount}`)
@@ -645,27 +647,13 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         sendInterval = null
       }
 
-      // Flush any pending interim text as final before stopping
+      // Flush any pending interim text as final before stopping.
+      // Skip the async final recognition — it frequently re-recognizes text that was
+      // already emitted via the 2s polling, causing duplicate sentences. The interim
+      // flush above captures any remaining text that hasn't been finalized yet.
       if (lastInterimText && onResultCallback) {
         onResultCallback({ text: lastInterimText, isFinal: true })
-        emittedFinalText += (emittedFinalText ? ' ' : '') + lastInterimText
         lastInterimText = ''
-      }
-
-      if (audioChunks.length > 0 && onResultCallback) {
-        const finalChunks = [...audioChunks]
-        const callback = onResultCallback
-        const lang = activeLang
-        const alreadyEmitted = emittedFinalText
-
-        recognizeChunks(finalChunks, lang).then(text => {
-          if (!text) return
-          // Only emit the portion not yet finalized via synthetic finals
-          const remainder = alreadyEmitted && text.startsWith(alreadyEmitted)
-            ? text.slice(alreadyEmitted.length).trim()
-            : text
-          if (remainder) callback({ text: remainder, isFinal: true })
-        }).catch(() => {})
       }
 
       if (processor) { processor.disconnect(); processor = null }

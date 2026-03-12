@@ -4,6 +4,34 @@ import { isCloudTTSAvailable, speakWithCloudTTS, prefetchCloudTTS } from '@/lib/
 import type { VoiceQuality } from '@/lib/tts'
 import { useI18n } from '@/context/I18nContext'
 
+// iOS audio unlock: play a silent audio element during a user gesture to
+// "warm up" the HTMLAudioElement and AudioContext APIs. Without this,
+// programmatic play() calls outside gesture context are blocked by WebKit.
+let iosAudioUnlocked = false
+
+function unlockIOSAudio() {
+  if (iosAudioUnlocked) return
+  if (typeof window === 'undefined') return
+
+  // Create and play a tiny silent WAV (44 bytes header + 1 sample)
+  try {
+    const silentWav = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
+    const audio = new Audio(silentWav)
+    audio.volume = 0
+    audio.play().then(() => {
+      iosAudioUnlocked = true
+      console.log('[TTS] iOS audio unlocked via user gesture')
+    }).catch(() => {})
+  } catch { /* ignore */ }
+
+  // Also warm up speechSynthesis
+  if ('speechSynthesis' in window) {
+    const utt = new SpeechSynthesisUtterance('')
+    utt.volume = 0
+    window.speechSynthesis.speak(utt)
+  }
+}
+
 export function useSpeechSynthesis() {
   const { t } = useI18n()
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -164,12 +192,19 @@ export function useSpeechSynthesis() {
     setIsSpeaking(false)
   }, [])
 
+  // Call during a user gesture (tap/click) to unlock iOS audio playback.
+  // Must be called BEFORE any programmatic play() — e.g., on "Join" or "Auto-speak" toggle.
+  const warmup = useCallback(() => {
+    unlockIOSAudio()
+  }, [])
+
   return {
     isSpeaking,
     isSupported,
     ttsEngine,
     speak,
     stop,
+    warmup,
     setVoiceQuality,
   }
 }

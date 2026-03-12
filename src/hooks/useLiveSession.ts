@@ -40,7 +40,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [translationHistory, setTranslationHistory] = useState<TranslationChunk[]>([])
   const [sessionEnded, setSessionEnded] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [autoTTS, setAutoTTS] = useState(true)
+  const [autoTTS, setAutoTTSRaw] = useState(true)
   const [listenerLimitReached, setListenerLimitReached] = useState(false)
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
   const [languageLimitReached, setLanguageLimitReached] = useState(false)
@@ -58,6 +58,12 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const presence = usePresence(connection.presenceTransport)
   const recognition = useSpeechRecognition()
   const tts = useSpeechSynthesis()
+
+  // Wrap setAutoTTS to unlock iOS audio when user enables auto-speak
+  const setAutoTTS = useCallback((value: boolean) => {
+    if (value) tts.warmup()
+    setAutoTTSRaw(value)
+  }, [tts])
 
   const isTranslatingRef = useRef(false)
   const pendingTextsRef = useRef<string[]>([])
@@ -349,6 +355,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
     targetLang: string,
     connectionConfig?: ConnectionConfig,
   ) => {
+    // Unlock iOS audio during this user gesture (tap "Join")
+    // so that auto-TTS can play audio programmatically later
+    tts.warmup()
+
     setSessionCode(code)
     setSelectedLanguage(targetLang)
     selectedLanguageRef.current = targetLang // Sync ref immediately for broadcast filter
