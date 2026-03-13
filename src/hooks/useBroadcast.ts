@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BroadcastTransport, BroadcastHandlers } from '@/lib/transport/types'
+import type { BroadcastTransport, BroadcastHandlers, ListenerAnnounce } from '@/lib/transport/types'
 import { SupabaseBroadcastTransport } from '@/lib/transport/supabase-transport'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
 
@@ -33,6 +33,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     onTranslation?: TranslationHandler,
     onSessionInfo?: SessionInfoHandler,
     onStatus?: StatusHandler,
+    onListenerAnnounce?: (data: ListenerAnnounce) => void,
   ) => {
     // Clean up previous
     cleanupRef.current?.()
@@ -48,6 +49,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
       onTranslation,
       onSessionInfo,
       onStatus,
+      onListenerAnnounce,
     }
 
     transport.subscribe(code, handlers)

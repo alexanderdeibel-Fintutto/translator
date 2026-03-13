@@ -13,7 +13,7 @@ import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import { TIERS, type TierId } from '@/lib/tiers'
 import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
-import type { ConnectionConfig } from '@/lib/transport/types'
+import type { ConnectionConfig, ListenerAnnounce } from '@/lib/transport/types'
 
 function generateChunkId(): string {
   return `chunk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -65,6 +65,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
     setAutoTTSRaw(value)
   }, [tts])
 
+  // Broadcast-based listener announce — fallback when presence is unreliable (iOS)
+  // Maps "deviceName:targetLanguage" → ListenerAnnounce with timestamp
+  const announcedListenersRef = useRef<Map<string, ListenerAnnounce>>(new Map())
+  const announceIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   const isTranslatingRef = useRef(false)
   const pendingTextsRef = useRef<string[]>([])
   const selectedLanguageRef = useRef(selectedLanguage)
@@ -98,8 +103,18 @@ export function useLiveSession(userTierId: TierId = 'free') {
       await connection.initialize(config)
     }
 
-    // Subscribe to broadcast channel
-    broadcast.subscribe(code)
+    // Subscribe to broadcast channel — listen for listener_announce as fallback to presence
+    broadcast.subscribe(
+      code,
+      undefined, // onTranslation (speaker doesn't receive translations)
+      undefined, // onSessionInfo
+      undefined, // onStatus
+      // onListenerAnnounce — track listener languages via broadcast (presence fallback)
+      (data: ListenerAnnounce) => {
+        const key = `${data.deviceName}:${data.targetLanguage}`
+        announcedListenersRef.current.set(key, data)
+      },
+    )
 
     // Join presence as speaker
     presence.join(code, {
@@ -180,8 +195,24 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
   // Process a single text through translation fan-out
   const processTranslation = useCallback(async (text: string) => {
-    // Get unique target languages from connected listeners
-    const allTargetLangs = Object.keys(presence.listenersByLanguage)
+    // Get unique target languages from connected listeners (presence)
+    const presenceLangs = Object.keys(presence.listenersByLanguage)
+      .filter(lang => lang !== '_speaker')
+
+    // Merge with broadcast-announced languages (fallback for broken presence on iOS)
+    // Expire entries older than 45s (announce interval is 15s, so 3 missed = stale)
+    const now = Date.now()
+    const announcedLangs = new Set<string>()
+    for (const [key, entry] of announcedListenersRef.current) {
+      if (now - entry.ts > 45_000) {
+        announcedListenersRef.current.delete(key)
+      } else {
+        announcedLangs.add(entry.targetLanguage)
+      }
+    }
+
+    // Union of presence + announced languages
+    const allTargetLangs = [...new Set([...presenceLangs, ...announcedLangs])]
       .filter(lang => lang !== '_speaker')
 
     // Separate _live listeners (passthrough, no translation needed) from regular
@@ -349,6 +380,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const endSession = useCallback(() => {
     broadcast.broadcast('status', { speaking: false, ended: true } satisfies StatusMessage)
     recognition.stopListening()
+    announcedListenersRef.current.clear()
+    if (announceIntervalRef.current) {
+      clearInterval(announceIntervalRef.current)
+      announceIntervalRef.current = null
+    }
     setTimeout(() => {
       broadcast.unsubscribe()
       presence.leave()
@@ -431,6 +467,20 @@ export function useLiveSession(userTierId: TierId = 'free') {
       targetLanguage: targetLang,
       joinedAt: new Date().toISOString(),
     })
+
+    // Broadcast-based announce — fallback when presence is unreliable (iOS Safari)
+    // Send immediately and then every 15s so speaker always knows our language
+    const sendAnnounce = () => {
+      broadcast.broadcast('listener_announce', {
+        targetLanguage: selectedLanguageRef.current,
+        deviceName: getDeviceName(),
+        ts: Date.now(),
+      })
+    }
+    // Small delay to let the channel connect first
+    setTimeout(sendAnnounce, 1000)
+    if (announceIntervalRef.current) clearInterval(announceIntervalRef.current)
+    announceIntervalRef.current = setInterval(sendAnnounce, 15_000)
   }, [broadcast, presence, connection])
 
   const selectLanguage = useCallback((lang: string) => {
@@ -439,10 +489,20 @@ export function useLiveSession(userTierId: TierId = 'free') {
     setReceivedChunks([]) // Clear old translations from previous language
     setCurrentTranslation('')
     presence.updatePresence({ targetLanguage: lang })
-  }, [presence])
+    // Re-announce immediately so speaker picks up the new language
+    broadcast.broadcast('listener_announce', {
+      targetLanguage: lang,
+      deviceName: getDeviceName(),
+      ts: Date.now(),
+    })
+  }, [presence, broadcast])
 
   const leaveSession = useCallback(() => {
     tts.stop()
+    if (announceIntervalRef.current) {
+      clearInterval(announceIntervalRef.current)
+      announceIntervalRef.current = null
+    }
     broadcast.unsubscribe()
     presence.leave()
     setRole(null)

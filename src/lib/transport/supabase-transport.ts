@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { getChannelName } from '@/lib/session'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import type { TranslationChunk, SessionInfo, StatusMessage, PresenceState } from '@/lib/session'
-import type { BroadcastTransport, BroadcastHandlers, PresenceTransport } from './types'
+import type { BroadcastTransport, BroadcastHandlers, PresenceTransport, ListenerAnnounce } from './types'
 
 const MAX_RETRIES = 5
 const BASE_DELAY = 2000
@@ -141,6 +141,14 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       channel.on('broadcast', { event: 'status' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
         handler(payload as StatusMessage)
+      })
+    }
+
+    if (handlers.onListenerAnnounce) {
+      const handler = handlers.onListenerAnnounce
+      channel.on('broadcast', { event: 'listener_announce' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
+        handler(payload as ListenerAnnounce)
       })
     }
 

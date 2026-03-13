@@ -32,10 +32,18 @@ export interface HotspotInfo {
 
 // --- Broadcast transport ---
 
+export interface ListenerAnnounce {
+  targetLanguage: string
+  deviceName: string
+  /** Timestamp so speaker can expire stale entries */
+  ts: number
+}
+
 export interface BroadcastHandlers {
   onTranslation?: (chunk: TranslationChunk) => void
   onSessionInfo?: (info: SessionInfo) => void
   onStatus?: (status: StatusMessage) => void
+  onListenerAnnounce?: (data: ListenerAnnounce) => void
 }
 
 export interface BroadcastTransport {
