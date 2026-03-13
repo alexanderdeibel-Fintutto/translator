@@ -21,6 +21,24 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1
  *  This bypasses RLS entirely and avoids the race condition / self-referencing
  *  policy issue that was blocking the direct SELECT on gt_users. */
 async function fetchProfileRpc(accessToken: string) {
+  // Try billing-aware RPC first, fall back to original get_my_profile
+  const billingUrl = `${SUPABASE_URL}/rest/v1/rpc/get_my_billing_profile`
+  const billingRes = await fetch(billingUrl, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: '{}',
+  })
+  if (billingRes.ok) {
+    const data = await billingRes.json()
+    if (data) return data
+  }
+
+  // Fallback to original RPC
   const url = `${SUPABASE_URL}/rest/v1/rpc/get_my_profile`
   const res = await fetch(url, {
     method: 'POST',
@@ -39,7 +57,7 @@ async function fetchProfileRpc(accessToken: string) {
 
 /** Fallback: fetch profile directly via REST API with access token. */
 async function fetchProfileDirect(userId: string, accessToken: string) {
-  const url = `${SUPABASE_URL}/rest/v1/gt_users?id=eq.${userId}&select=tier_id,organization_id,stripe_customer_id,display_name,role`
+  const url = `${SUPABASE_URL}/rest/v1/gt_users?id=eq.${userId}&select=tier_id,organization_id,stripe_customer_id,display_name,role,subscription_status,billing_period_end,is_suspended`
   const res = await fetch(url, {
     headers: {
       'apikey': SUPABASE_KEY,
@@ -99,6 +117,9 @@ export interface UserProfile {
   organizationId: string | null
   stripeCustomerId: string | null
   role: UserRole
+  subscriptionStatus: string | null
+  billingPeriodEnd: string | null
+  isSuspended: boolean
 }
 
 interface UserContextValue {
@@ -117,6 +138,11 @@ interface UserContextValue {
 
   // Usage
   usage: UsageRecord
+
+  // Billing
+  isSuspended: boolean
+  subscriptionStatus: string | null
+  billingPeriodEnd: string | null
 
   // Actions
   signIn: (email: string, password: string) => Promise<void>
@@ -189,7 +215,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             // Try via Supabase client as last resort
             const { data } = await supabase
               .from('gt_users')
-              .select('tier_id, organization_id, stripe_customer_id, display_name, role')
+              .select('tier_id, organization_id, stripe_customer_id, display_name, role, subscription_status, billing_period_end, is_suspended')
               .eq('id', session.user.id)
               .single()
             profile = data
@@ -206,6 +232,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 display_name: session.user.email,
                 tier_id: 'free',
                 role: 'user',
+                is_suspended: false,
               })
             // After insert, try to read it back
             profile = await fetchProfileRpc(session.access_token)
@@ -234,6 +261,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
             organizationId: profile?.organization_id ?? null,
             stripeCustomerId: profile?.stripe_customer_id ?? null,
             role: userRole,
+            subscriptionStatus: profile?.subscription_status ?? null,
+            billingPeriodEnd: profile?.billing_period_end ?? null,
+            isSuspended: profile?.is_suspended ?? false,
           }
 
           setUser(userProfile)
@@ -361,6 +391,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
       tierId,
       isAdmin,
       isSalesAgent,
+      isSuspended: user?.isSuspended ?? false,
+      subscriptionStatus: user?.subscriptionStatus ?? null,
+      billingPeriodEnd: user?.billingPeriodEnd ?? null,
       usage,
       signIn,
       signUp,

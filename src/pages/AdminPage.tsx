@@ -10,6 +10,7 @@ import SessionList from '@/components/admin/SessionList'
 import SessionDetail from '@/components/admin/SessionDetail'
 import SessionStatsView from '@/components/admin/SessionStats'
 import UserManager from '@/components/admin/UserManager'
+import BillingDashboard from '@/components/admin/BillingDashboard'
 
 export default function AdminPage() {
   return (
@@ -28,6 +29,9 @@ export default function AdminPage() {
           <Route path="sessions/:id" element={<SessionDetail />} />
           <Route path="session-stats" element={<SessionStatsView />} />
           <Route path="users" element={<UserManager />} />
+
+          {/* Billing */}
+          <Route path="billing" element={<BillingDashboard />} />
         </Routes>
       </AdminLayout>
     </AdminGuard>

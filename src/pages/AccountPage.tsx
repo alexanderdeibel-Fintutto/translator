@@ -4,12 +4,14 @@ import { formatPrice, isInternalTier } from '@/lib/tiers'
 import { getRemainingSessionMinutes, getOverageCost } from '@/lib/usage-tracker'
 import { openCustomerPortal } from '@/lib/stripe'
 import { Button } from '@/components/ui/button'
-import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings, Shield } from 'lucide-react'
+import { User, CreditCard, BarChart3, LogOut, Crown, ArrowRight, CheckCircle2, Settings, Shield, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
 import OrganizationSettings from '@/components/settings/OrganizationSettings'
+import BillingAlerts from '@/components/billing/BillingAlerts'
+import InvoiceHistory from '@/components/billing/InvoiceHistory'
 
 export default function AccountPage() {
-  const { user, tier, tierId, usage, isAuthenticated, isSalesAgent, signOut } = useUser()
+  const { user, tier, tierId, usage, isAuthenticated, isSalesAgent, signOut, subscriptionStatus, billingPeriodEnd, isSuspended } = useUser()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const checkoutStatus = searchParams.get('checkout')
@@ -53,6 +55,13 @@ export default function AccountPage() {
         </div>
       )}
 
+      {/* Billing warnings */}
+      <BillingAlerts
+        subscriptionStatus={subscriptionStatus}
+        isSuspended={isSuspended}
+        billingPeriodEnd={billingPeriodEnd}
+      />
+
       {/* Profile */}
       <div className="rounded-xl border border-border p-5">
         <div className="flex items-center gap-3 mb-4">
@@ -87,9 +96,16 @@ export default function AccountPage() {
         )}
 
         {tier.pricing.monthlyEur > 0 && (
-          <div className="flex items-center gap-2 text-sm mb-3">
+          <div className="flex items-center gap-2 text-sm mb-1">
             <CreditCard className="w-4 h-4 text-muted-foreground" />
             <span>{formatPrice(tier.pricing.monthlyEur)}/Monat</span>
+          </div>
+        )}
+
+        {billingPeriodEnd && subscriptionStatus === 'active' && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Naechste Verlaengerung: {new Date(billingPeriodEnd).toLocaleDateString('de-DE')}</span>
           </div>
         )}
 
@@ -176,6 +192,9 @@ export default function AccountPage() {
           )}
         </div>
       </div>
+
+      {/* Invoices */}
+      {user?.stripeCustomerId && <InvoiceHistory />}
 
       {/* Admin access */}
       {isSalesAgent && (

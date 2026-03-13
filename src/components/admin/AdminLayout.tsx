@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog } from 'lucide-react'
+import { BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog, CreditCard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = {
@@ -13,6 +13,9 @@ const NAV_ITEMS = {
     { path: '/sessions', label: 'Sessions', icon: Calendar, end: false },
     { path: '/session-stats', label: 'Session Stats', icon: BarChart3, end: false },
     { path: '/users', label: 'Benutzer', icon: UserCog, end: false },
+  ],
+  billing: [
+    { path: '/billing', label: 'Billing', icon: CreditCard, end: false },
   ],
 }
 
@@ -55,6 +58,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="w-px h-6 bg-border mx-1 flex-shrink-0" />
 
         {NAV_ITEMS.sessions.map(item => (
+          <NavLink
+            key={item.path}
+            to={`${base}${item.path}`}
+            end={item.end}
+            className={linkClass}
+          >
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </NavLink>
+        ))}
+
+        <div className="w-px h-6 bg-border mx-1 flex-shrink-0" />
+
+        {NAV_ITEMS.billing.map(item => (
           <NavLink
             key={item.path}
             to={`${base}${item.path}`}
