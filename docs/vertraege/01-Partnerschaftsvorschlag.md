@@ -1,5 +1,5 @@
 # PARTNERSCHAFTSVORSCHLAG
-## GuideTranslator -- Strukturierte Zusammenarbeit
+## Fintutto Translator -- Strukturierte Zusammenarbeit
 
 **Von:** Alexander Deibel, Geschäftsführer AI Tour Guide UG & Fintutto UG (i.Gr.)
 **An:** Ulrich Berger, Gesellschafter AI Tour Guide UG
@@ -9,7 +9,7 @@
 
 ### Die Idee
 
-Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den GuideTranslator. Die Software bleibt im Eigentum der **Fintutto UG** und wird an die UG lizenziert (nicht-exklusiv). So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
+Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den **Fintutto Translator**. Die Software bleibt im Eigentum der **Fintutto UG** und wird an die UG lizenziert. Die UG vertreibt das Produkt unter der Vertriebsmarke **"GuideTranslator"** (Domains: guidetranslator.com, .de). So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
 
 ---
 

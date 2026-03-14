@@ -106,7 +106,7 @@
 
 ### 4. IP-Zuordnungsbestätigung (IP Assignment Confirmation)
 
-**Warum:** Schriftliche Bestätigung, dass der gesamte GuideTranslator-Code, alle Designs, Domains und Marken **Eigentum von Fintutto UG / Alexander Deibel** sind und **nie** Eigentum der AI Tour Guide UG waren.
+**Warum:** Schriftliche Bestätigung, dass der gesamte Fintutto Translator-Code (inkl. Vertriebsmarke "GuideTranslator"), alle Designs, Domains und Marken **Eigentum von Fintutto UG / Alexander Deibel** sind und **nie** Eigentum der AI Tour Guide UG waren.
 
 **Inhalt:**
 - Liste aller IP-Assets (Code, Domains, Marken, Designs)
@@ -118,13 +118,13 @@
 
 ---
 
-### 5. Markenanmeldung "GuideTranslator"
+### 5. Markenanmeldung "Fintutto Translator" + "GuideTranslator"
 
-**Warum:** Ohne eingetragene Marke kann jeder den Namen nutzen. Auf Fintutto UG / Alexander anmelden, NICHT auf die UG.
+**Warum:** Ohne eingetragene Marken kann jeder die Namen nutzen. **Beide** Marken auf Fintutto UG / Alexander anmelden, NICHT auf die AI Tour Guide UG. "GuideTranslator" ist die lizenzierte Vertriebsmarke der UG -- das Eigentum bleibt bei Fintutto.
 
-**Kosten:** ~300 EUR beim DPMA (deutsches Patent- und Markenamt), ~850 EUR beim EUIPO (EU-weit)
+**Kosten:** ~300 EUR/Marke beim DPMA (deutsches Patent- und Markenamt), ~850 EUR/Marke beim EUIPO (EU-weit)
 
-**Priorität:** Mittel -- sollte vor Seatrade Miami erledigt sein
+**Priorität:** Hoch -- beide Marken vor Seatrade Miami anmelden
 
 ---
 

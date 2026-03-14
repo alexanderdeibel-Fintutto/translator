@@ -18,7 +18,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## Präambel
 
-Die Gesellschaft vertreibt die Software "GuideTranslator" -- eine Echtzeit-Übersetzungslösung für die Tourismus- und Kreuzfahrtbranche -- auf Grundlage eines Lizenzvertrages mit dem Softwareeigentümer Fintutto UG (Alexander Deibel).
+Die Gesellschaft vertreibt die Software **"Fintutto Translator"** -- eine Echtzeit-Übersetzungslösung für die Tourismus- und Kreuzfahrtbranche -- unter der Vertriebsmarke **"GuideTranslator"**, auf Grundlage eines Lizenzvertrages mit dem Softwareeigentümer Fintutto UG (Alexander Deibel).
 
 Ulrich Berger ist Gesellschafter der AI Tour Guide UG (50%) und verfügt über langjährige Expertise und ein umfangreiches Netzwerk in der Kreuzfahrt- und Tourismusbranche. Die Parteien wünschen, seine Vertriebstätigkeit auf eine klare vertragliche Grundlage zu stellen.
 
