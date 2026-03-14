@@ -28,7 +28,7 @@ export default function DatenschutzPage() {
 
       <Section title="2. Verantwortliche Stelle">
         <p>
-          ai tour ug (haftungsbeschränkt)<br />
+          AI Tour Guide UG (haftungsbeschränkt)<br />
           Kolonie 2<br />
           18317 Saal<br />
           E-Mail: datenschutz@guidetranslator.com
@@ -38,7 +38,7 @@ export default function DatenschutzPage() {
       <Section title="3. Datenerfassung auf dieser Website">
         <p>
           <strong className="text-foreground">Wer ist verantwortlich für die Datenerfassung?</strong><br />
-          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (ai tour ug (haftungsbeschränkt)).
+          Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber (AI Tour Guide UG (haftungsbeschränkt)).
         </p>
         <p>
           <strong className="text-foreground">Wie erfassen wir Ihre Daten?</strong><br />

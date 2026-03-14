@@ -25,7 +25,7 @@ export default function SessionQRCode({ code, sessionUrl }: SessionQRCodeProps) 
   const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: 'guidetranslator Live-Übersetzung',
+        title: 'guidetranslator (by fintutto) Live-Übersetzung',
         text: `Tritt meiner Live-Übersetzung bei: ${code}`,
         url,
       })

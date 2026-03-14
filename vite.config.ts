@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'guidetranslator',
+        name: 'guidetranslator (by fintutto)',
         short_name: 'guidetranslator',
         description: 'Kostenloser Übersetzer mit Spracheingabe, Sprachausgabe und Live-Übersetzung',
         theme_color: '#0369a1',

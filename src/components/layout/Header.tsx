@@ -58,7 +58,7 @@ export default function Header() {
           <div className="h-8 w-8 rounded-lg gradient-translator flex items-center justify-center">
             <Languages className="h-4.5 w-4.5 text-white" />
           </div>
-          <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span></span>
+          <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span> <span className="text-xs text-muted-foreground font-normal">(by fintutto)</span></span>
         </Link>
 
         <nav className="flex items-center gap-1 ml-4">

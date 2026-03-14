@@ -35,7 +35,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     const sourceLangData = getLanguageByCode(session.sourceLanguage)
 
     let protocol = `========================================\n`
-    protocol += `GUIDETRANSLATOR - SESSION-PROTOKOLL\n`
+    protocol += `GUIDETRANSLATOR (BY FINTUTTO) - SESSION-PROTOKOLL\n`
     protocol += `========================================\n\n`
     protocol += `Session-Code: ${session.sessionCode}\n`
     protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
@@ -57,7 +57,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
     protocol += `----------------------------------------\n`
     protocol += `Ende des Protokolls\n`
-    protocol += `Erstellt mit guidetranslator.com\n`
+    protocol += `Erstellt mit guidetranslator.com (by fintutto)\n`
 
     const blob = new Blob([protocol], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
