@@ -217,6 +217,9 @@ export class LocalBroadcastTransport implements BroadcastTransport {
       if (msg.event === 'status' && handlers.onStatus) {
         handlers.onStatus(msg.payload as never)
       }
+      if (msg.event === 'listener_announce' && handlers.onListenerAnnounce) {
+        handlers.onListenerAnnounce(msg.payload as never)
+      }
     })
     this.cleanups.push(msgCleanup)
 

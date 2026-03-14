@@ -135,15 +135,15 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const prevIsListeningRef = useRef(false)
   const isListeningRef = useRef(false)
 
-  // Keep refs in sync
+  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
+
+  // Keep refs in sync (must be after hook calls to avoid TDZ errors)
   autoSpeakRef.current = autoSpeak
   isListeningRef.current = isListening
   targetLangRef.current = targetLang
   sourceLangRef.current = sourceLang
   useInformalRef.current = useInformal
   streamModeRef.current = streamMode
-
-  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
   const targetSpeakRef = useRef(targetSpeech.speak)

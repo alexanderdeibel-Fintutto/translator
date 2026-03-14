@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'Офлайн — модель для этой языковой пары не загружена. Перейдите в Настройки → Офлайн-языки.',
   'error.allProvidersFailed': 'Перевод не удался — попробуйте ещё раз.',
   'error.unknown': 'Произошла ошибка.',
+  'error.networkDownload': 'Загрузка не удалась — проверьте подключение к интернету и попробуйте снова.',
   'error.cameraNoApiKey': 'Перевод камерой требует ключ Google Cloud API. Настройте в разделе Настройки.',
   'error.cameraOcrFailed': 'Распознавание текста не удалось. Попробуйте ещё раз.',
   'error.cameraNoText': 'Текст в изображении не обнаружен.',

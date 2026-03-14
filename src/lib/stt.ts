@@ -141,10 +141,11 @@ export function createWebSpeechEngine(): STTEngine {
         while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
           recentFinals.shift()
         }
-        // Only dedup if we recently restarted recognition (within 3s)
-        // This avoids dropping legitimate repeated sentences during normal speech
-        if (now - lastRestartTime > 3000) return false
         const normalized = text.trim().toLowerCase()
+        // Always check for exact duplicates within the 2.5s window.
+        // Previously we only checked after restarts, but the Web Speech API
+        // can emit the same final result multiple times even without a restart
+        // (especially on Android Chrome with continuous mode).
         return recentFinals.some(f => f.text === normalized)
       }
 
@@ -235,8 +236,9 @@ export function createWebSpeechEngine(): STTEngine {
           // Reset synthetic final tracking — new recognition session starts fresh
           lastSyntheticFinal = ''
           // Debounce restart to prevent rapid audio artifacts on Android Chrome.
-          // 600ms gives Chrome enough time to fully release the audio session
-          // before starting a new one, avoiding system sounds on Pixel devices.
+          // 900ms gives the OS enough time to fully release the audio session
+          // before starting a new one, reducing system notification sounds
+          // (blips) that some Android devices play on mic activation.
           if (restartTimer) clearTimeout(restartTimer)
           restartTimer = setTimeout(() => {
             restartTimer = null
@@ -245,7 +247,7 @@ export function createWebSpeechEngine(): STTEngine {
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
-          }, 600)
+          }, 900)
           return
         }
         shouldBeListening = false
@@ -536,8 +538,8 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             // No text recognized — if we had pending interim text, check stability timeout
             if (lastInterimText) {
               interimStableCount++
-              // After 3 empty polls (~6s silence) with pending interim text, emit as final
-              if (interimStableCount >= 3) {
+              // After 2 empty polls (~4s silence) with pending interim text, emit as final
+              if (interimStableCount >= 2) {
                 console.log('[STT] Silence timeout — emitting pending interim as final')
                 emitFinal(lastInterimText)
               }
@@ -587,12 +589,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             }
 
             // Force emit as isFinal if:
-            // 1. Text has been stable for 2+ intervals (~4s of no change), OR
-            // 2. More than 8 seconds since last isFinal and we have substantial text (5+ words), OR
+            // 1a. Short text (< 5 words) stable for 1+ interval (~2s) — fast single-word capture, OR
+            // 1b. Longer text stable for 2+ intervals (~4s of no change), OR
+            // 2. More than 6 seconds since last isFinal and we have substantial text (3+ words), OR
             // 3. Word count exceeds 20 (long utterance without punctuation)
             if (
+              (isStable && wordCount < 5 && interimStableCount >= 1) ||
               (isStable && interimStableCount >= 2) ||
-              (timeSinceLastFinal > 8000 && wordCount >= 5) ||
+              (timeSinceLastFinal > 6000 && wordCount >= 3) ||
               wordCount >= 20
             ) {
               console.log(`[STT] Force-finalizing: stable=${interimStableCount}, elapsed=${timeSinceLastFinal}ms, words=${wordCount}`)
@@ -645,27 +649,13 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         sendInterval = null
       }
 
-      // Flush any pending interim text as final before stopping
+      // Flush any pending interim text as final before stopping.
+      // Skip the async final recognition — it frequently re-recognizes text that was
+      // already emitted via the 2s polling, causing duplicate sentences. The interim
+      // flush above captures any remaining text that hasn't been finalized yet.
       if (lastInterimText && onResultCallback) {
         onResultCallback({ text: lastInterimText, isFinal: true })
-        emittedFinalText += (emittedFinalText ? ' ' : '') + lastInterimText
         lastInterimText = ''
-      }
-
-      if (audioChunks.length > 0 && onResultCallback) {
-        const finalChunks = [...audioChunks]
-        const callback = onResultCallback
-        const lang = activeLang
-        const alreadyEmitted = emittedFinalText
-
-        recognizeChunks(finalChunks, lang).then(text => {
-          if (!text) return
-          // Only emit the portion not yet finalized via synthetic finals
-          const remainder = alreadyEmitted && text.startsWith(alreadyEmitted)
-            ? text.slice(alreadyEmitted.length).trim()
-            : text
-          if (remainder) callback({ text: remainder, isFinal: true })
-        }).catch(() => {})
       }
 
       if (processor) { processor.disconnect(); processor = null }
@@ -682,6 +672,18 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   }
 }
 
+// --- Android detection ---
+// Chrome on Android plays an unavoidable system beep/ding every time
+// SpeechRecognition.start() is called. With continuous mode, the recognition
+// periodically stops and restarts, causing repeated beeps. The beep also
+// interferes with mic input, degrading recognition quality.
+// Solution: use Google Cloud STT on Android (no system sounds, direct mic access).
+
+function isAndroid(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /Android/i.test(navigator.userAgent)
+}
+
 // --- Engine selection ---
 
 export function getBestSTTEngine(): STTEngine {
@@ -695,11 +697,20 @@ export function getBestSTTEngine(): STTEngine {
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. Web Speech API (streaming, real-time — Chrome/Edge/Android)
+  // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
+  //    Chrome Android plays a "ding" on every recognition.start(), which repeats
+  //    in continuous mode and interferes with mic capture. Google Cloud STT uses
+  //    getUserMedia directly — no system sounds, no restart issues.
+  if (isAndroid()) {
+    const googleSTT = createGoogleCloudSTTEngine()
+    if (googleSTT.isSupported) return googleSTT
+  }
+
+  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
   const webSpeech = createWebSpeechEngine()
   if (webSpeech.isSupported) return webSpeech
 
-  // 4. Google Cloud STT (fallback for any browser with mic access)
+  // 5. Google Cloud STT (fallback for any browser with mic access)
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 
