@@ -1,6 +1,8 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Shield } from 'lucide-react'
 import { useState } from 'react'
+
+const CRM_URL = 'https://consumer.guidetranslator.com/crm'
 
 const NAV_ITEMS = [
   { label: 'Produkte', path: '/' },
@@ -43,14 +45,23 @@ export default function LandingLayout() {
             ))}
           </nav>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 rounded-md hover:bg-muted"
-            aria-label="Menu"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* CRM Login + Mobile toggle */}
+          <div className="flex items-center gap-2">
+            <a
+              href={CRM_URL}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border border-primary/30 hover:bg-primary/10 transition-colors"
+            >
+              <Shield className="h-3.5 w-3.5" />
+              CRM
+            </a>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden p-2 rounded-md hover:bg-muted"
+              aria-label="Menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Nav */}
@@ -70,6 +81,14 @@ export default function LandingLayout() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href={CRM_URL}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 text-sm rounded-md text-primary hover:bg-primary/10 font-medium"
+            >
+              <Shield className="h-4 w-4" />
+              CRM Login
+            </a>
           </nav>
         )}
       </header>
