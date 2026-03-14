@@ -296,6 +296,38 @@ export function useLiveSession(userTierId: TierId = 'free') {
       broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
 
+    // Fallback: also write translations to speaker's presence state.
+    // Supabase broadcast can silently fail on iOS Safari/WebKit while presence
+    // continues to work. The listener watches for this and accepts translations
+    // via presence if they don't arrive via broadcast.
+    const allChunks = [
+      ...(hasLiveListeners ? [{
+        id: generateChunkId(),
+        sourceText: text,
+        translatedText: text,
+        sourceLang: sourceLanguage,
+        targetLanguage: '_live',
+        isFinal: true,
+        timestamp: Date.now(),
+      }] : []),
+      ...results,
+    ]
+    if (allChunks.length > 0) {
+      try {
+        presence.updatePresence({
+          lastChunks: JSON.stringify(allChunks.map(c => ({
+            id: c.id,
+            sourceText: c.sourceText,
+            translatedText: c.translatedText,
+            sourceLang: c.sourceLang,
+            targetLanguage: c.targetLanguage,
+            timestamp: c.timestamp,
+          }))),
+          lastChunkBatch: Date.now(),
+        })
+      } catch { /* presence fallback is best-effort */ }
+    }
+
     // Add to local history (one entry per source text, capped at 100)
     const historyChunk = results.length > 0 ? results[0] : (hasLiveListeners ? {
       id: generateChunkId(),
@@ -511,6 +543,58 @@ export function useLiveSession(userTierId: TierId = 'free') {
     })
   }, [presence, broadcast])
 
+  // --- Presence-based translation fallback (listener side) ---
+  // Supabase broadcast can silently fail on iOS Safari/WebKit.
+  // When this happens, translations never arrive via broadcast, but presence
+  // continues to work. The speaker writes translations to their presence state.
+  // We watch for those and accept them if we haven't received them via broadcast.
+  const lastProcessedBatchRef = useRef(0)
+  const presenceFallbackCountRef = useRef(0)
+
+  useEffect(() => {
+    if (role !== 'listener') return
+
+    // Find speaker's presence entry
+    const speakerEntry = presence.listeners.find(l => l.targetLanguage === '_speaker')
+    if (!speakerEntry?.lastChunks || !speakerEntry.lastChunkBatch) return
+
+    // Skip if we already processed this batch
+    if (speakerEntry.lastChunkBatch <= lastProcessedBatchRef.current) return
+    lastProcessedBatchRef.current = speakerEntry.lastChunkBatch
+
+    try {
+      const chunks: TranslationChunk[] = JSON.parse(speakerEntry.lastChunks)
+      const myLang = selectedLanguageRef.current
+
+      for (const chunk of chunks) {
+        if (chunk.targetLanguage !== myLang) continue
+
+        // Check if we already received this chunk via broadcast (dedup by ID)
+        setReceivedChunks(prev => {
+          if (prev.some(c => c.id === chunk.id)) return prev // Already have it
+          presenceFallbackCountRef.current++
+          console.error(`[Listener] Presence fallback: accepted chunk #${presenceFallbackCountRef.current} id=${chunk.id}, text="${chunk.translatedText?.slice(0, 30)}"`)
+          const fullChunk: TranslationChunk = { ...chunk, isFinal: true }
+          const next = [...prev, fullChunk]
+
+          // Also update current translation display
+          setCurrentTranslation(fullChunk.translatedText)
+
+          // Auto-TTS for fallback-delivered chunks
+          if (autoTTSRef.current && fullChunk.translatedText) {
+            const ttsLangCode = myLang === '_live' ? fullChunk.sourceLang : myLang
+            const lang = getLanguageByCode(ttsLangCode)
+            ttsRef.current(fullChunk.translatedText, lang?.speechCode || ttsLangCode)
+          }
+
+          return next.length > 100 ? next.slice(-100) : next
+        })
+      }
+    } catch {
+      console.error('[Listener] Failed to parse presence fallback chunks')
+    }
+  }, [role, presence.listeners])
+
   const leaveSession = useCallback(() => {
     tts.stop()
     if (announceIntervalRef.current) {
@@ -586,5 +670,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
     languageLimitReached,
     maxListeners: tierConfig.limits.maxListeners,
     maxLanguages: tierConfig.limits.maxLanguages,
+
+    // Diagnostics (for debug panel)
+    getDiagnostics: broadcast.getDiagnostics,
+    presenceFallbackCount: presenceFallbackCountRef.current,
   }
 }

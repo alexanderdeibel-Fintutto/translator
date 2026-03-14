@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -13,6 +13,42 @@ type Session = ReturnType<typeof useLiveSession>
 
 interface ListenerViewProps {
   session: Session
+}
+
+/** Live-updating debug panel with transport diagnostics */
+function DebugPanel({ session }: { session: Session }) {
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 2000)
+    return () => clearInterval(id)
+  }, [])
+  const diag = session.getDiagnostics()
+  const lastMsgAgo = diag.lastMessageAt > 0 ? `${Math.round((Date.now() - diag.lastMessageAt) / 1000)}s ago` : 'never'
+  // suppress unused var warning
+  void tick
+
+  return (
+    <Card className="p-3 text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300">
+      <p className="font-bold text-yellow-700 dark:text-yellow-400">DEBUG INFO</p>
+      <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+      <p>Mode: {session.connectionMode}</p>
+      <p>Session: {session.sessionCode}</p>
+      <p>Selected lang: {session.selectedLanguage}</p>
+      <p className="font-bold">--- Broadcast Channel ---</p>
+      <p>Messages received: {diag.receivedCount}</p>
+      <p>Last message: {lastMsgAgo}</p>
+      <p>Reconnects: {diag.reconnectCount}</p>
+      <p className="font-bold">--- Translations ---</p>
+      <p>Chunks (broadcast): {session.receivedChunks.length}</p>
+      <p>Chunks (presence fallback): {session.presenceFallbackCount}</p>
+      <p>Current: {session.currentTranslation ? `"${session.currentTranslation.slice(0, 50)}"` : '(none)'}</p>
+      <p className="font-bold">--- Status ---</p>
+      <p>Session ended: {session.sessionEnded ? 'YES' : 'NO'}</p>
+      <p>Error: {session.error || '(none)'}</p>
+      <p>Listeners: {session.listenerCount}</p>
+      <p className="text-yellow-600 dark:text-yellow-500 pt-1">Tap 3x on session code to close</p>
+    </Card>
+  )
 }
 
 export default function ListenerView({ session }: ListenerViewProps) {
@@ -236,21 +272,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
       )}
 
       {/* Debug panel — triple-tap session code to toggle */}
-      {showDebug && (
-        <Card className="p-3 text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300">
-          <p className="font-bold text-yellow-700 dark:text-yellow-400">DEBUG INFO</p>
-          <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
-          <p>Mode: {session.connectionMode}</p>
-          <p>Session: {session.sessionCode}</p>
-          <p>Selected lang: {session.selectedLanguage}</p>
-          <p>Received chunks: {session.receivedChunks.length}</p>
-          <p>Current translation: {session.currentTranslation ? `"${session.currentTranslation.slice(0, 50)}"` : '(none)'}</p>
-          <p>Session ended: {session.sessionEnded ? 'YES' : 'NO'}</p>
-          <p>Error: {session.error || '(none)'}</p>
-          <p>Listeners: {session.listenerCount}</p>
-          <p className="text-yellow-600 dark:text-yellow-500 pt-1">Tap 3x on session code to close</p>
-        </Card>
-      )}
+      {showDebug && <DebugPanel session={session} />}
     </div>
   )
 }

@@ -73,11 +73,26 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     setIsConnected(false)
   }, [externalTransport])
 
+  /** Get diagnostic info from the active transport (for debug panel) */
+  const getDiagnostics = useCallback(() => {
+    const transport = externalTransport || transportRef.current
+    if (transport && 'diagnosticLastMessageAt' in transport) {
+      const t = transport as SupabaseBroadcastTransport
+      return {
+        lastMessageAt: t.diagnosticLastMessageAt,
+        receivedCount: t.diagnosticReceivedCount,
+        reconnectCount: t.diagnosticReconnectCount,
+      }
+    }
+    return { lastMessageAt: 0, receivedCount: 0, reconnectCount: 0 }
+  }, [externalTransport])
+
   return {
     isConnected,
     subscribe,
     broadcast,
     unsubscribe,
+    getDiagnostics,
     /** The active transport type ('supabase' or 'local-ws') */
     transportType: (externalTransport || transportRef.current)?.type ?? 'supabase',
   }

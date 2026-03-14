@@ -27,9 +27,26 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   // die silently without firing any status callback. The channel stays "connected"
   // but no broadcasts arrive. We detect this by checking lastMessageAt.
   private lastMessageAt = 0
+  private receivedCount = 0
+  private reconnectCount = 0
 
   get isConnected(): boolean {
     return this.connected
+  }
+
+  /** Diagnostic: when was the last broadcast message received (0 = never) */
+  get diagnosticLastMessageAt(): number {
+    return this.lastMessageAt
+  }
+
+  /** Diagnostic: total broadcast messages received since subscription */
+  get diagnosticReceivedCount(): number {
+    return this.receivedCount
+  }
+
+  /** Diagnostic: how many times the channel was reconnected */
+  get diagnosticReconnectCount(): number {
+    return this.reconnectCount
   }
 
   onConnectionChange(callback: (connected: boolean) => void): () => void {
@@ -53,6 +70,8 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   subscribe(code: string, handlers: BroadcastHandlers): void {
     this.subscribeArgs = { code, handlers }
     this.retries = 0
+    this.receivedCount = 0
+    this.reconnectCount = 0
     this.clearRetryTimer()
     this.doSubscribe(code, handlers)
 
@@ -68,6 +87,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         if (!this.connected || stale) {
           console.error(`[Supabase] Page visible again, reconnecting (connected=${this.connected}, stale=${stale})`)
           this.retries = 0
+          this.reconnectCount++
           this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
         }
       }
@@ -87,6 +107,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       if ((!this.connected && this.channel) || silentlyDead) {
         console.error(`[Supabase] Keepalive: reconnecting (connected=${this.connected}, lastMsg=${Date.now() - this.lastMessageAt}ms ago)`)
         this.retries = 0
+        this.reconnectCount++
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
     }, 10_000) // check every 10 seconds
@@ -134,8 +155,9 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       const handler = handlers.onTranslation
       channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
+        this.receivedCount++
         const chunk = payload as TranslationChunk
-        console.error(`[Supabase] Received translation: lang=${chunk.targetLanguage}, text="${chunk.translatedText?.slice(0, 30)}..."`)
+        console.error(`[Supabase] Received translation (#${this.receivedCount}): lang=${chunk.targetLanguage}, text="${chunk.translatedText?.slice(0, 30)}..."`)
         handler(chunk)
       })
     }
@@ -167,6 +189,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     // Also listen for heartbeat events (no handler needed, just updates lastMessageAt)
     channel.on('broadcast', { event: 'heartbeat' }, () => {
       this.lastMessageAt = Date.now()
+      this.receivedCount++
     })
 
     const channelName = getChannelName(code)
@@ -310,6 +333,9 @@ export class SupabasePresenceTransport implements PresenceTransport {
             deviceName: presence.deviceName,
             targetLanguage: presence.targetLanguage,
             joinedAt: presence.joinedAt,
+            // Pass through fallback translation data from speaker
+            lastChunks: presence.lastChunks,
+            lastChunkBatch: presence.lastChunkBatch,
           })
         }
       }
