@@ -3,9 +3,8 @@
  *
  * Full-featured translator for end users (Free/Pro tiers).
  * Includes: translation, conversation, camera OCR, phrasebook,
- * live sessions (speaker + listener), pricing, auth, settings.
- *
- * Excludes: admin/CRM, enterprise session management.
+ * live sessions (speaker + listener), pricing, auth, settings,
+ * and CRM login for internal users.
  */
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
@@ -41,6 +40,8 @@ const InfoPage = lazy(() => import('@/pages/InfoPage'))
 const ImpressumPage = lazy(() => import('@/pages/ImpressumPage'))
 const DatenschutzPage = lazy(() => import('@/pages/DatenschutzPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
+const CrmLoginPage = lazy(() => import('@/pages/CrmLoginPage'))
+const AdminPage = lazy(() => import('@/pages/AdminPage'))
 
 function PageLoader() {
   return (
@@ -87,6 +88,8 @@ function App() {
                   <Route path="phrasebook" element={<Suspense fallback={<PageLoader />}><PhrasebookPage /></Suspense>} />
                   <Route path="favorites" element={<Suspense fallback={<PageLoader />}><FavoritesPage /></Suspense>} />
                   <Route path="history" element={<Suspense fallback={<PageLoader />}><HistoryPage /></Suspense>} />
+                  <Route path="crm" element={<Suspense fallback={<PageLoader />}><CrmLoginPage /></Suspense>} />
+                  <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
                 </Route>
               </Routes>
