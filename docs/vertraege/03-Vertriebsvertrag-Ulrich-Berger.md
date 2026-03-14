@@ -55,9 +55,8 @@ Ulrich Berger ist Gesellschafter der AI Tour Guide UG (50%) und verfügt über l
 
 | Kategorie | Provisionssatz | Laufzeit |
 |-----------|---------------|----------|
-| Standard-Deals (SaaS-Lizenzen, Abonnements) | **15%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
-| Großkundenverträge (Jahresvolumen > 100.000 EUR) | **20%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
-| White-Label / Integrationsprojekte | **15%** des Projektvolumens | Einmalig bei Abschluss + laufende Lizenzgebühren |
+| Alle Deals (SaaS, Großkunden, White-Label) | **15%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
+| Externe Vertriebspartner | **10%** des Nettoumsatzes | **Lifetime** -- solange der Kunde zahlt |
 | Investor-Leads | Gemäß gesonderter Vereinbarung | Bei Closing |
 
 (2) Die Provision bezieht sich auf den **tatsächlich vom Kunden gezahlten Nettoumsatz** (nach Abzug von USt, Rabatten, Gutschriften). Die Provision läuft **solange der Kunde zahlt** -- auch bei automatischen Vertragsverlängerungen.
