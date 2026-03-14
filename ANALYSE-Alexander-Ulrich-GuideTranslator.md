@@ -209,6 +209,61 @@ Erstmals seit Projektstart bewegt sich Ulrich messbar:
 | Zeitcommitment | **Offen** | Alexander fordert 3h/Tag Woche 1, dann 1h/Tag |
 | "Funktioniert erst" | **Offen** | App funktioniert -- konkreter Meilenstein nötig |
 
+### Phase 11: 11.--14. März 2026 (Ulrich testet -- aber der Deal-Konflikt eskaliert)
+
+**Paradigmenwechsel: Ulrich testet aktiv, über mehrere Tage.**
+
+- **11.03 06:13**: Erster Video-Bugreport: Pixel→iPhone keine Datenübertragung
+- **11.03 06:23**: Offline-Logout-Problem dokumentiert mit Foto und eigener Analyse
+- **11.03 06:35**: Fragt nach Testprotokoll -- will es richtig machen
+- **12.03 03:01**: Detaillierte Analyse zum Chrome-Piepsen + eigene Lösungsvorschläge
+- **12.03 06:24**: Technische Analyse: "Sound verschluckt Wörter beim Recording"
+- **12.03 06:52**: **Luggage-App** -- liefert ausführliches Geschäftsmodell (privates UPS/BlaBlaCar für Koffer)
+- **12.03 08:00**: Prozessvorschlag: Video-Bugreports an "die Jungs" einspielen
+- **12.03 08:16**: Feature-Vorschlag: Server-seitiges Tracking/Monitoring
+- **12.03 08:24**: **Pleep-Sound bestätigt als gefixt!** -- erster gelöster Bug
+- **12.03 11:54-15:13**: Mehrere Testrunden, detaillierte Reports (iPhone-Hintergrund, Reconnect, rote Fehlermeldung)
+- **13.03 11:20**: *"Man gewöhnt sich ans Testen 😉"* -- Eigeninitiative, fragt nach Updates
+- **13.03 15:58**: **Korrigiert Alexanders Bug-Hypothese** mit eigenem Befund (Presence zeigt Listener an, also ist der Null-Listener-Bug nicht der Grund)
+- **14.03 02:38**: Video-Feedback: "Well done, etwas zu lang, ai tour guide fehlt"
+- **14.03 02:51**: *"Lies meine Email -- vielleicht hebt das meine Grundstimmung. Es geht nicht um deine Fähigkeiten sondern um deine Kollegialität!"*
+
+**Ulrichs Testleistung (quantifiziert):**
+
+| Metrik | Phase 1-9 (20 Tage) | Phase 11 (4 Tage) |
+|--------|---------------------|-------------------|
+| Bug-Reports | 1 | **~12** |
+| Testdurchläufe | ~1-2 | **~8-10** |
+| Eigene technische Hypothesen | 0 | **3-4** |
+| Prozessvorschläge | 0 | **2** |
+| App-Ideen mit Geschäftsmodell | 1 (Translator) | **+1 (Luggage)** |
+| Verfügbarkeit | Sporadisch | **Täglich, über Stunden** |
+
+**Alexanders parallele Arbeit:**
+
+- ~15 Bugfixes deployed in 4 Tagen (Audio-Duplikate, Chrome-Beep, Offline-Login, Download-CDN, Presence-System, Listener-Announce)
+- Beim Notar: **Fintutto UG gegründet** (12.03, während Bugfixing)
+- Hollywood-Video für Vertrieb produziert
+- LuggageX-App gebaut (luggagex.fintutto.cloud)
+
+**Kritische Spannung:**
+
+Ulrich testet kooperativ, aber die strategische Unzufriedenheit wächst:
+- *"ai tour guide fehlt"* im Video → UG wird unsichtbar, alles heißt Fintutto
+- *"Lies meine Email"* → Der Exklusivitäts-Konflikt ist ungelöst
+- Er trennt operatives Engagement von der Deal-Frage -- aber wie lange?
+
+**Ulrichs Email vom 14. März (Zusammenfassung):**
+
+Ulrich formuliert seinen bisher klarsten und längsten Standpunkt:
+1. Der vereinbarte Deal war: 50/50 für seine Idee, 35% Royalty für Alexanders IT, 20% Provision für Ulrichs Vertrieb
+2. Alexander hat danach schrittweise den Deal zu seinen Gunsten verschoben: Exit-Klausel → Markt-Splitting → keine Exklusivität
+3. Ulrichs Kernvorwurf: *"Du versuchst das Rad zurückzudrehen zu deinen Gunsten und zu meinen Ungunsten. Das ist kein 'hart verhandeln' -- wenn du damit durchkommst, hast du deinen Partner über den Tisch gezogen."*
+4. Psychologische Analyse: Der "liebe Alexander" trifft faire Deals, der "gierige Alexander" holt sich danach Vorteile zurück
+5. Ultimatum: (a) Alexander beharrt → Konsequenzen für Freundschaft, oder (b) konstruktiver Kompromiss
+6. Gegenangebot: 3-6% Fintutto-Equity für die Translator-Idee, oder alles bleibt in der UG
+7. Schlusssatz: *"Klare Rechnung, gute Freunde."*
+
 ---
 
 ## II. ULRICHS VERHALTEN
