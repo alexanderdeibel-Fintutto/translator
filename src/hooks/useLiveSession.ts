@@ -329,27 +329,27 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
 
     // Add to local history (one entry per source text, capped at 100)
-    const historyChunk = results.length > 0 ? results[0] : (hasLiveListeners ? {
+    // ALWAYS show source text in speaker's history — even if translation fails.
+    // Use the first successful translation if available, otherwise fall back to source text.
+    const historyChunk: TranslationChunk = results.length > 0 ? results[0] : {
       id: generateChunkId(),
       sourceText: text,
       translatedText: text,
       sourceLang: sourceLanguage,
-      targetLanguage: sourceLanguage,
+      targetLanguage: hasLiveListeners ? '_live' : (targetLangs[0] || sourceLanguage),
       isFinal: true,
       timestamp: Date.now(),
-    } as TranslationChunk : null)
-
-    if (historyChunk) {
-      setTranslationHistory(prev => {
-        // Dedup: skip if chunk with same ID already exists
-        if (prev.some(c => c.id === historyChunk.id)) return prev
-        // Also dedup by source text within last 3 seconds (same STT result processed twice)
-        const cutoff = Date.now() - 3000
-        if (prev.some(c => c.sourceText === historyChunk.sourceText && c.timestamp > cutoff)) return prev
-        const next = [...prev, historyChunk]
-        return next.length > 100 ? next.slice(-100) : next
-      })
     }
+
+    setTranslationHistory(prev => {
+      // Dedup: skip if chunk with same ID already exists
+      if (prev.some(c => c.id === historyChunk.id)) return prev
+      // Also dedup by source text within last 3 seconds (same STT result processed twice)
+      const cutoff = Date.now() - 3000
+      if (prev.some(c => c.sourceText === historyChunk.sourceText && c.timestamp > cutoff)) return prev
+      const next = [...prev, historyChunk]
+      return next.length > 100 ? next.slice(-100) : next
+    })
 
     // Warn if some translations failed
     const failed = settled.filter(r => r.status === 'rejected')
