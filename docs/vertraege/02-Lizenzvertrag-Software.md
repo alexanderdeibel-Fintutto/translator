@@ -55,6 +55,8 @@ vertreten durch den Geschäftsführer Alexander Deibel
    - gewährter Rabatte und Skonti
    - Gutschriften und Rückerstattungen
 
+   Die Lizenzgebühr berechnet sich auf den **vom Kunden gezahlten Nettoumsatz**, unabhängig von sonstigen Kosten, Vertriebsprovisionen, Margen oder Betriebsaufwendungen des Lizenznehmers. Vertriebsprovisionen und Betriebskosten des Lizenznehmers mindern die Berechnungsgrundlage der Lizenzgebühr **nicht**.
+
 (3) Die Lizenzgebühr wird **monatlich** abgerechnet. Der Lizenznehmer übermittelt dem Lizenzgeber bis zum **10. des Folgemonats** eine Umsatzaufstellung. Die Zahlung ist **14 Tage** nach Rechnungsstellung fällig.
 
 (4) Der Lizenzgeber hat das Recht, die Umsatzaufstellungen durch einen Wirtschaftsprüfer oder Steuerberater prüfen zu lassen. Die Kosten trägt der Lizenzgeber, es sei denn, die Prüfung ergibt eine Abweichung von mehr als 5%.
