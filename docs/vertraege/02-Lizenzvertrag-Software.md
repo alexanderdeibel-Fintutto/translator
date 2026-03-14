@@ -48,7 +48,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## § 3 -- Lizenzgebühr (Royalty)
 
-(1) Der Lizenznehmer zahlt dem Lizenzgeber eine laufende Lizenzgebühr in Höhe von **35% (fünfunddreißig Prozent) des Nettoumsatzes**, der durch den Vertrieb und die Nutzung der Software erzielt wird.
+(1) Der Lizenznehmer zahlt dem Lizenzgeber eine laufende Lizenzgebühr in Höhe von **45% (fünfundvierzig Prozent) des Nettoumsatzes**, der durch den Vertrieb und die Nutzung der Software erzielt wird.
 
 (2) **Nettoumsatz** im Sinne dieses Vertrages ist der Bruttoumsatz abzüglich:
    - gesetzlicher Umsatzsteuer
@@ -82,16 +82,16 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## § 4a -- Vertriebsstruktur und Kundenzuordnung
 
-(1) Der Lizenznehmer ist **bevorzugter Vertriebspartner ("Preferred Reseller")** des Lizenzgebers. Er hat **kein exklusives Vertriebsrecht**. Der Lizenzgeber behält das Recht, die Software in allen Märkten direkt oder über weitere Partner zu vertreiben.
+(1) **Sämtlicher Vertrieb** der Software "GuideTranslator" erfolgt **ausschließlich über den Lizenznehmer** (AI Tour Guide UG). Der Lizenzgeber verpflichtet sich, die Software nicht selbst und nicht über andere Partner zu vertreiben. Der Lizenznehmer ist alleiniger Vertriebskanal -- weltweit, für alle Märkte und Kundensegmente.
 
-(2) Der Lizenznehmer konzentriert seine Vertriebstätigkeit insbesondere auf folgende Kernmärkte:
-   - Kreuzfahrt (Ocean & River Cruise)
-   - Tourismus und Reiseveranstaltung
-   - Guided Tours und Stadtführungen
+(2) Der Lizenzgeber beschränkt seine Tätigkeit auf:
+   - Softwareentwicklung und -wartung
+   - Technischen Support für den Lizenznehmer
+   - Durchführung von Entwicklungsaufträgen gemäß § 4
 
 (3) **Kundenzuordnung (Anti-Circumvention):** Kunden, die nachweislich über Aktivitäten des Lizenznehmers oder dessen Vertriebspartner auf die Software aufmerksam geworden sind, werden dem Lizenznehmer zugeordnet -- unabhängig davon, ob der Vertragsabschluss direkt beim Lizenzgeber erfolgt. Die Zuordnung erfolgt über das Sales-Dashboard mit einem **Attributionsfenster von 12 Monaten** nach Erstkontakt.
 
-(4) Für Deals, die über den Lizenznehmer abgewickelt werden, erhält dieser eine **Vertriebsmarge von 15%** des Nettoumsatzes.
+(4) Die **Infrastruktur- und Betriebskosten** (Hosting, APIs, Cloud-Dienste, Kundensupport) werden vollständig vom **Lizenznehmer** getragen.
 
 ---
 
@@ -136,6 +136,8 @@ Der Lizenznehmer verpflichtet sich:
 (4) Die Marke "GuideTranslator" ausschließlich im Sinne des Lizenzgebers zu verwenden und keine markenschädigenden Maßnahmen zu ergreifen.
 
 (5) **Kundenfeedback** und **Marktinformationen** zeitnah an den Lizenzgeber weiterzugeben.
+
+(6) Den Geschäftsführer der Gesellschaft für seine Verwaltungs-, Compliance- und Haftungstätigkeit mit einer monatlichen **GF-Vergütung von 2.500 EUR (netto)** zu vergüten. Diese Vergütung ist unabhängig vom Umsatz und wird ab Vertragsunterzeichnung fällig. Sie ist zusätzlich zu etwaigen Vertriebsprovisionen und Gewinnausschüttungen.
 
 ---
 

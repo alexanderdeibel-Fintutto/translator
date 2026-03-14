@@ -50,14 +50,16 @@ AI TOUR GUIDE UG (50% Alexander / 50% Ulrich)
 
 ### Wie fließt das Geld
 
-1. **Softwarelizenz**: AI Tour Guide UG zahlt 35% Royalty auf Nettoumsatz an Fintutto UG
-2. **UG-Vertriebsmarge**: 15% auf alle Deals die über die UG abgewickelt werden -- auch White-Label. Keine Exklusivität: Fintutto UG kann in allen Märkten auch direkt oder über andere Partner vertreiben
-3. **Verbleibender UG-Gewinn**: 50/50 zwischen Alexander und Ulrich
-4. **Vertriebs-Provision**: Jeder Vertriebler (inkl. Ulrich) erhält seine individuelle Provision gemäß Vertriebsvereinbarung. Lead-Attribution über das Sales-Dashboard -- wer den Lead anlegt und zum Abschluss bringt, erhält die Provision
-5. **Mehrere Vertriebler**: Die UG kann beliebig viele Vertriebspartner einsetzen. Ulrich ist der erste, aber nicht der einzige. Wer zuerst kommt, malt zuerst
-6. **White-Label-Projekte**: Werden von der UG verkauft und an Fintutto UG zu Marktpreisen beauftragt. Die UG erhält 15% Marge
-7. **Investor-Leads**: Auch für vermittelte Investoren zahlt die Salesmaschine Provision an den Lead-Ersteller
-8. **Reisekosten**: Für beauftragte Geschäftsreisen (z.B. Seatrade) vorab erstattet durch die UG
+1. **Softwarelizenz**: AI Tour Guide UG zahlt **45% Royalty** auf Nettoumsatz an Fintutto UG (für Software-IP, laufende Entwicklung, Updates, Wartung und Support)
+2. **ALLES Translator-Geschäft** läuft über die AI Tour Guide UG -- weltweit, ohne Ausnahme. Fintutto UG vertreibt nicht selbst, sondern entwickelt ausschließlich
+3. **GF-Vergütung**: Alexander erhält als Geschäftsführer eine monatliche Vergütung von **2.500 EUR** (netto) für Verwaltung, Compliance, Haftung und operative Leitung
+4. **Verbleibender UG-Gewinn**: 50/50 zwischen Alexander und Ulrich
+5. **Vertriebs-Provision**: 15% für Alexander & Ulrich, 10% für externe Vertriebler. Lead-Attribution über das Sales-Dashboard -- wer den Lead anlegt und zum Abschluss bringt, erhält die Provision
+6. **Mehrere Vertriebler**: Die UG kann beliebig viele Vertriebspartner einsetzen. Ulrich ist der erste, aber nicht der einzige. Wer zuerst kommt, malt zuerst
+7. **White-Label-Projekte**: Werden von der UG verkauft und an Fintutto UG zu Marktpreisen beauftragt
+8. **Investor-Leads**: Auch für vermittelte Investoren zahlt die Salesmaschine Provision an den Lead-Ersteller
+9. **Reisekosten**: Für beauftragte Geschäftsreisen (z.B. Seatrade) vorab erstattet durch die UG
+10. **Infrastrukturkosten**: Werden vollständig von der AI Tour Guide UG getragen
 
 ---
 

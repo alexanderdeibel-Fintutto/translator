@@ -66,7 +66,7 @@
 **Inhalt:**
 - Zustimmung beider Gesellschafter zum Lizenzvertrag
 - Befreiung des GF von den Beschränkungen des § 181 BGB für dieses Geschäft
-- Genehmigung der Lizenzgebühr von 35%
+- Genehmigung der Lizenzgebühr von 45%
 
 **Aufwand:** Formular, 1 Seite, muss von beiden unterschrieben werden
 
@@ -96,7 +96,7 @@
 **Sollte regeln:**
 - Alleinvertretungsbefugnis
 - Befreiung von § 181 BGB (generell oder für definierte Geschäfte)
-- Vergütung des GF (ggf. zunächst 0, mit Anpassung bei Umsatz)
+- Vergütung des GF: **2.500 EUR/Monat** (netto) für Verwaltung, Compliance, Haftung und operative Leitung
 - Zustimmungsfreie Geschäfte bis [X] EUR
 - Nicht abberufbar ohne wichtigen Grund
 
