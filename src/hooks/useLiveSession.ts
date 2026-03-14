@@ -215,6 +215,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
     const allTargetLangs = [...new Set([...presenceLangs, ...announcedLangs])]
       .filter(lang => lang !== '_speaker')
 
+    // Diagnostic: log what we see (console.error survives production builds)
+    console.error(`[LiveSession] processTranslation: text="${text.slice(0, 30)}", presenceLangs=[${presenceLangs}], announcedLangs=[${[...announcedLangs]}], allTargetLangs=[${allTargetLangs}], broadcast.connected=${broadcast.isConnected}`)
+
     // Separate _live listeners (passthrough, no translation needed) from regular
     const hasLiveListeners = allTargetLangs.includes('_live')
     let targetLangs = allTargetLangs.filter(lang => lang !== '_live')
@@ -442,6 +445,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
       code,
       // onTranslation
       (chunk: TranslationChunk) => {
+        console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
           setReceivedChunks(prev => {

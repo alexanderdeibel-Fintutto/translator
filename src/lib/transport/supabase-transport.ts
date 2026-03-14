@@ -134,7 +134,9 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       const handler = handlers.onTranslation
       channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
-        handler(payload as TranslationChunk)
+        const chunk = payload as TranslationChunk
+        console.error(`[Supabase] Received translation: lang=${chunk.targetLanguage}, text="${chunk.translatedText?.slice(0, 30)}..."`)
+        handler(chunk)
       })
     }
 
@@ -167,9 +169,14 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       this.lastMessageAt = Date.now()
     })
 
+    const channelName = getChannelName(code)
+    console.error(`[Supabase] Subscribing to channel: ${channelName} (gen=${generation})`)
+
     channel.subscribe((status) => {
+      console.error(`[Supabase] Channel ${channelName} status: ${status} (gen=${generation}, current=${this.subscribeGeneration})`)
       // If a newer doSubscribe call has been made, this callback is stale — ignore it
       if (generation !== this.subscribeGeneration) {
+        console.error(`[Supabase] Stale callback ignored (gen=${generation}, current=${this.subscribeGeneration})`)
         try { channel.unsubscribe() } catch { /* ignore */ }
         supabase.removeChannel(channel)
         return
@@ -179,6 +186,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         this.lastMessageAt = Date.now() // Reset staleness timer on fresh subscribe
         this.retries = 0
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.error(`[Supabase] Channel ${channelName} error: ${status}, retry ${this.retries}/${MAX_RETRIES}`)
         this.setConnected(false)
         if (this.retries < MAX_RETRIES && this.subscribeArgs) {
           const delay = BASE_DELAY * Math.pow(2, this.retries)
@@ -199,7 +207,10 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   }
 
   broadcast(event: string, payload: Record<string, unknown>): void {
-    if (!this.channel || !this.connected) return
+    if (!this.channel || !this.connected) {
+      console.error(`[Supabase] Broadcast DROPPED: event=${event}, channel=${!!this.channel}, connected=${this.connected}`)
+      return
+    }
     // With ack enabled, send() returns Promise<'ok' | 'timed out' | 'error'>.
     // On failure, mark disconnected so keepalive triggers re-subscribe.
     this.channel.send({ type: 'broadcast', event, payload }).then((status) => {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -20,6 +20,21 @@ export default function ListenerView({ session }: ListenerViewProps) {
   const langData = getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [showDebug, setShowDebug] = useState(false)
+  const tapCountRef = useRef(0)
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Triple-tap on session code to toggle debug panel
+  const handleDebugTap = useCallback(() => {
+    tapCountRef.current++
+    if (tapTimerRef.current) clearTimeout(tapTimerRef.current)
+    if (tapCountRef.current >= 3) {
+      tapCountRef.current = 0
+      setShowDebug(prev => !prev)
+    } else {
+      tapTimerRef.current = setTimeout(() => { tapCountRef.current = 0 }, 600)
+    }
+  }, [])
 
   if (session.sessionEnded) {
     return (
@@ -137,7 +152,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
             <div className="text-center text-muted-foreground space-y-3">
               <Loader2 className="h-8 w-8 animate-spin mx-auto opacity-40" aria-hidden="true" />
               <p className="text-lg">{t('live.waitingTranslation')}</p>
-              <p className="text-sm">
+              <p className="text-sm" onClick={handleDebugTap}>
                 Session <span className="font-mono font-bold">{session.sessionCode}</span>
               </p>
               {session.isConnected && (
@@ -218,6 +233,23 @@ export default function ListenerView({ session }: ListenerViewProps) {
       {/* Transcript history */}
       {session.receivedChunks.length > 1 && (
         <LiveTranscript chunks={session.receivedChunks} isListener />
+      )}
+
+      {/* Debug panel — triple-tap session code to toggle */}
+      {showDebug && (
+        <Card className="p-3 text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300">
+          <p className="font-bold text-yellow-700 dark:text-yellow-400">DEBUG INFO</p>
+          <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+          <p>Mode: {session.connectionMode}</p>
+          <p>Session: {session.sessionCode}</p>
+          <p>Selected lang: {session.selectedLanguage}</p>
+          <p>Received chunks: {session.receivedChunks.length}</p>
+          <p>Current translation: {session.currentTranslation ? `"${session.currentTranslation.slice(0, 50)}"` : '(none)'}</p>
+          <p>Session ended: {session.sessionEnded ? 'YES' : 'NO'}</p>
+          <p>Error: {session.error || '(none)'}</p>
+          <p>Listeners: {session.listenerCount}</p>
+          <p className="text-yellow-600 dark:text-yellow-500 pt-1">Tap 3x on session code to close</p>
+        </Card>
       )}
     </div>
   )
