@@ -203,7 +203,7 @@ Erstmals seit Projektstart bewegt sich Ulrich messbar:
 |-------|--------|-------------------|
 | Royalties 35% | **Einig** | ✓ |
 | White-Label-Marge | **Offen** | 15% für UG statt 10% |
-| Exklusivität | **Einig** | Kreuzfahrt/Tourismus/Tours exklusiv UG |
+| Exklusivität | **Geändert** | Keine Exklusivität -- UG ist Preferred Reseller |
 | Provision Laufzeit | **Einig** | Solange Kunde zahlt |
 | Kündigungsschutz | **Offen** | 12 Monate + 1x Jahresumsatz oder Buyout |
 | Zeitcommitment | **Offen** | Alexander fordert 3h/Tag Woche 1, dann 1h/Tag |

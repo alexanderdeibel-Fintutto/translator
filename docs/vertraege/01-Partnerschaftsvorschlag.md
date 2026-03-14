@@ -9,7 +9,7 @@
 
 ### Die Idee
 
-Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den GuideTranslator. Die Software bleibt im Eigentum von **Fintutto Cloud** und wird an die UG lizenziert. So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
+Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den GuideTranslator. Die Software bleibt im Eigentum der **Fintutto UG** und wird an die UG lizenziert (nicht-exklusiv). So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
 
 ---
 
@@ -19,7 +19,7 @@ Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und
 FINTUTTO UG (haftungsbeschränkt) -- i.Gr.
   │  Eigentümer & Entwickler der Software
   │
-  │  ── Exklusive Softwarelizenz ──►
+  │  ── Softwarelizenz (nicht-exklusiv) ──►
   │  ── Entwicklungsaufträge ──►
   │
   ▼
@@ -51,7 +51,7 @@ AI TOUR GUIDE UG (50% Alexander / 50% Ulrich)
 ### Wie fließt das Geld
 
 1. **Softwarelizenz**: AI Tour Guide UG zahlt 35% Royalty auf Nettoumsatz an Fintutto UG
-2. **UG-Vertriebsmarge**: 15% auf alle Deals in den Exklusivmärkten (Kreuzfahrt, Tourismus, Guided Tours) -- auch White-Label
+2. **UG-Vertriebsmarge**: 15% auf alle Deals die über die UG abgewickelt werden -- auch White-Label. Keine Exklusivität: Fintutto UG kann in allen Märkten auch direkt oder über andere Partner vertreiben
 3. **Verbleibender UG-Gewinn**: 50/50 zwischen Alexander und Ulrich
 4. **Vertriebs-Provision**: Jeder Vertriebler (inkl. Ulrich) erhält seine individuelle Provision gemäß Vertriebsvereinbarung. Lead-Attribution über das Sales-Dashboard -- wer den Lead anlegt und zum Abschluss bringt, erhält die Provision
 5. **Mehrere Vertriebler**: Die UG kann beliebig viele Vertriebspartner einsetzen. Ulrich ist der erste, aber nicht der einzige. Wer zuerst kommt, malt zuerst

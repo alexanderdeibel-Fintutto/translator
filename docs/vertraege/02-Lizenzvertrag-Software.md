@@ -32,7 +32,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## § 2 -- Lizenzumfang
 
-(1) Der Lizenznehmer erhält eine **exklusive**, zeitlich befristete Lizenz zur:
+(1) Der Lizenznehmer erhält eine **nicht-exklusive**, zeitlich befristete Lizenz zur:
    - kommerziellen Nutzung der Software gegenüber Endkunden
    - Vermarktung und dem Vertrieb der Software an Dritte
    - Erstellung von Angeboten und Abschluss von Kundenverträgen im eigenen Namen
@@ -78,18 +78,18 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ---
 
-## § 4a -- Exklusivität und Kundenzuordnung
+## § 4a -- Vertriebsstruktur und Kundenzuordnung
 
-(1) Der Lizenznehmer erhält das **exklusive Vertriebsrecht** für die folgenden Marktsegmente ("Exklusivmärkte"):
+(1) Der Lizenznehmer ist **bevorzugter Vertriebspartner ("Preferred Reseller")** des Lizenzgebers. Er hat **kein exklusives Vertriebsrecht**. Der Lizenzgeber behält das Recht, die Software in allen Märkten direkt oder über weitere Partner zu vertreiben.
+
+(2) Der Lizenznehmer konzentriert seine Vertriebstätigkeit insbesondere auf folgende Kernmärkte:
    - Kreuzfahrt (Ocean & River Cruise)
    - Tourismus und Reiseveranstaltung
    - Guided Tours und Stadtführungen
 
-(2) Der Lizenzgeber behält das Recht, die Software in **nicht-exklusiven Märkten** direkt oder über andere Partner zu vertreiben. Nicht-exklusive Märkte umfassen insbesondere: Konferenzen, Bildung, NGOs/Flüchtlingshilfe.
-
 (3) **Kundenzuordnung (Anti-Circumvention):** Kunden, die nachweislich über Aktivitäten des Lizenznehmers oder dessen Vertriebspartner auf die Software aufmerksam geworden sind, werden dem Lizenznehmer zugeordnet -- unabhängig davon, ob der Vertragsabschluss direkt beim Lizenzgeber erfolgt. Die Zuordnung erfolgt über das Sales-Dashboard mit einem **Attributionsfenster von 12 Monaten** nach Erstkontakt.
 
-(4) Die UG erhält auf alle Deals in den Exklusivmärkten eine **Vertriebsmarge von 15%** des Nettoumsatzes -- unabhängig davon, welcher Vertriebspartner den Deal abschließt.
+(4) Für Deals, die über den Lizenznehmer abgewickelt werden, erhält dieser eine **Vertriebsmarge von 15%** des Nettoumsatzes.
 
 ---
 
