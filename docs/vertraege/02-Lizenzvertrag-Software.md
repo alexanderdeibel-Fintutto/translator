@@ -35,8 +35,8 @@ vertreten durch den Geschäftsführer Alexander Deibel
 ## § 2 -- Lizenzumfang
 
 (1) Der Lizenznehmer erhält eine **nicht-exklusive**, zeitlich befristete Lizenz zur:
-   - kommerziellen Nutzung der Software gegenüber Endkunden
-   - Vermarktung und dem Vertrieb der Software an Dritte
+   - kommerziellen Nutzung der Software **unter der Vertriebsmarke "GuideTranslator"** gegenüber Endkunden
+   - Vermarktung und dem Vertrieb der Software an Dritte **ausschließlich unter der Vertriebsmarke "GuideTranslator"**
    - Erstellung von Angeboten und Abschluss von Kundenverträgen im eigenen Namen
    - Durchführung von Produktdemonstrationen und Messeauftritten
 
@@ -44,7 +44,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
    - das Recht zur Unterlizenzierung an Dritte ohne schriftliche Zustimmung des Lizenzgebers
    - das Recht zur Modifikation, Dekompilierung oder Bearbeitung des Quellcodes
    - das Recht zur Übertragung dieser Lizenz an Dritte
-   - die Nutzung der Software für Zwecke außerhalb des vereinbarten Geschäftsfeldes
+   - die Nutzung der Software unter anderen Produktnamen als "GuideTranslator" ohne schriftliche Zustimmung des Lizenzgebers
 
 ---
 
@@ -84,9 +84,11 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 ## § 4a -- Vertriebsstruktur und Kundenzuordnung
 
-(1) **Sämtlicher Vertrieb** der Software "GuideTranslator" erfolgt **ausschließlich über den Lizenznehmer** (AI Tour Guide UG). Der Lizenzgeber verpflichtet sich, die Software nicht selbst und nicht über andere Partner zu vertreiben. Der Lizenznehmer ist alleiniger Vertriebskanal -- weltweit, für alle Märkte und Kundensegmente.
+(1) Der Vertrieb der Software unter der **Vertriebsmarke "GuideTranslator"** erfolgt **ausschließlich über den Lizenznehmer** (AI Tour Guide UG). Der Lizenzgeber verpflichtet sich, die Software unter der Marke "GuideTranslator" nicht selbst und nicht über andere Partner zu vertreiben.
 
-(2) Der Lizenzgeber beschränkt seine Tätigkeit auf:
+(2) Die Rechte des Lizenzgebers, die Software unter **anderen Produktnamen** (insbesondere "Fintutto Translator") eigenständig oder über Dritte zu vertreiben, bleiben von diesem Vertrag **unberührt**.
+
+(3) Der Lizenzgeber beschränkt seine Tätigkeit im Rahmen dieses Vertrages auf:
    - Softwareentwicklung und -wartung
    - Technischen Support für den Lizenznehmer
    - Durchführung von Entwicklungsaufträgen gemäß § 4
@@ -213,6 +215,8 @@ Der Lizenznehmer verpflichtet sich:
 (1) Der Lizenznehmer verpflichtet sich, während der Vertragslaufzeit und **12 Monate** nach Vertragsende keine eigene oder fremde Software zu entwickeln, zu vertreiben oder zu bewerben, die mit dem GuideTranslator in direktem Wettbewerb steht.
 
 (2) Dies gilt insbesondere für Echtzeit-Übersetzungslösungen im Bereich Tourismus, Kreuzfahrt und Guided Tours.
+
+(3) Der Lizenzgeber unterliegt **keinem Wettbewerbsverbot**. Ihm steht es frei, die Software oder darauf basierende Produkte unter anderen Produktnamen eigenständig zu vertreiben.
 
 ---
 

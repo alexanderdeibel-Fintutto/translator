@@ -17,11 +17,11 @@ ich habe deine Email gelesen, deine Sprachnachrichten gehört, und mir Zeit geno
 
 ### Was ich vorschlage -- einfach und klar:
 
-**ALLES Translator-Geschäft läuft über die AI Tour Guide UG.** Nicht "Preferred Reseller", nicht "bestimmte Märkte" -- alles. Weltweit. Ohne Ausnahme.
+**Das gesamte GuideTranslator-Geschäft läuft über die AI Tour Guide UG.** Weltweit. Das ist unser gemeinsames Spielfeld.
 
-**Die Fintutto UG ist reine Entwicklung.** Kein Vertrieb, keine Kunden, keine Deals. Die Fintutto hält die Software, entwickelt weiter, und bekommt dafür eine Lizenzgebühr. Sonst nichts.
+**Die Fintutto UG ist Entwicklung und IP-Inhaberin.** Die Fintutto hält die Software "Fintutto Translator", entwickelt weiter, und bekommt dafür eine Lizenzgebühr. Die AI Tour Guide UG vertreibt das Produkt unter der Marke "GuideTranslator".
 
-**Du bekommst keine Fintutto-Anteile -- aber du brauchst sie auch nicht.** Weil jeder Cent Translator-Umsatz durch UNSERE gemeinsame UG fließt.
+**Du bekommst keine Fintutto-Anteile -- aber du brauchst sie auch nicht.** Weil der gesamte GuideTranslator-Umsatz durch UNSERE gemeinsame UG fließt.
 
 ---
 
@@ -82,8 +82,8 @@ Aber: **Deine 50% UG-Anteile sind sicher. ALLES läuft durch die UG. Und deine P
 
 | Vorher | Jetzt |
 |--------|-------|
-| UG als "Preferred Reseller" für bestimmte Märkte | **ALLES läuft über die UG -- weltweit, exklusiv** |
-| Fintutto könnte auch direkt vertreiben | **Fintutto vertreibt NICHT -- nur Entwicklung** |
+| UG als "Preferred Reseller" für bestimmte Märkte | **Das GuideTranslator-Geschäft läuft über die UG -- weltweit** |
+| Fintutto könnte den GuideTranslator auch direkt vertreiben | **Fintutto vertreibt den GuideTranslator NICHT -- Entwicklung und IP** |
 | Royalty 35% | **Royalty 45% (dafür alles inklusive)** |
 | GF-Vergütung unklar | **2.500 EUR/Monat -- fix** |
 | Provision bis 20% | **Gedeckelt: 15% für uns beide, 10% extern** |
@@ -103,7 +103,7 @@ Aber: **Deine 50% UG-Anteile sind sicher. ALLES läuft durch die UG. Und deine P
 
 ### Zur Fintutto:
 
-Die Fintutto UG ist meine Entwicklungsfirma. Für den Translator, aber auch für andere Projekte (LuggageX, etc.). Da brauche ich freie Hand -- genauso wie du bei der Zeitreisen GmbH freie Hand hast. Fintutto-Anteile machen keinen Sinn, weil die Fintutto KEIN Translator-Geld verdient außer der Lizenzgebühr. Alles andere -- Vertrieb, Kunden, Gewinne -- passiert in UNSERER UG.
+Die Fintutto UG ist meine Entwicklungs- und Technologiefirma. Für den Translator, aber auch für andere Projekte (LuggageX, etc.). Da brauche ich freie Hand -- genauso wie du bei der Zeitreisen GmbH freie Hand hast. Fintutto-Anteile machen keinen Sinn, weil das GuideTranslator-Geschäft vollständig über UNSERE gemeinsame UG läuft. Die Fintutto bekommt die Lizenzgebühr für Entwicklung und IP -- alles andere passiert in der AI Tour Guide UG.
 
 ---
 

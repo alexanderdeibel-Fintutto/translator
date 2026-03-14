@@ -51,7 +51,7 @@ AI TOUR GUIDE UG (50% Alexander / 50% Ulrich)
 ### Wie fließt das Geld
 
 1. **Softwarelizenz**: AI Tour Guide UG zahlt **45% Royalty** auf Nettoumsatz an Fintutto UG (für Software-IP, laufende Entwicklung, Updates, Wartung und Support)
-2. **ALLES Translator-Geschäft** läuft über die AI Tour Guide UG -- weltweit, ohne Ausnahme. Fintutto UG vertreibt nicht selbst, sondern entwickelt ausschließlich
+2. **Das GuideTranslator-Geschäft** läuft über die AI Tour Guide UG. Fintutto UG vertreibt den GuideTranslator nicht selbst
 3. **GF-Vergütung**: Alexander erhält als Geschäftsführer eine monatliche Vergütung von **2.500 EUR** (netto) für Verwaltung, Compliance, Haftung und operative Leitung
 4. **Verbleibender UG-Gewinn**: 50/50 zwischen Alexander und Ulrich
 5. **Vertriebs-Provision**: 15% für Alexander & Ulrich, 10% für externe Vertriebler. Lead-Attribution über das Sales-Dashboard -- wer den Lead anlegt und zum Abschluss bringt, erhält die Provision
