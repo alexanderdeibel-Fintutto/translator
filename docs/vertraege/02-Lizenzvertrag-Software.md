@@ -86,9 +86,9 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 (1) Der Vertrieb der Software unter der **Vertriebsmarke "GuideTranslator"** erfolgt **ausschließlich über den Lizenznehmer** (AI Tour Guide UG). Der Lizenzgeber verpflichtet sich, die Software unter der Marke "GuideTranslator" nicht selbst und nicht über andere Partner zu vertreiben.
 
-(2) Die Rechte des Lizenzgebers, die Software unter **anderen Produktnamen** (insbesondere "Fintutto Translator") eigenständig oder über Dritte zu vertreiben, bleiben von diesem Vertrag **unberührt**.
+(2) Dieser Vertrag regelt ausschließlich die Rechte und Pflichten der Parteien in Bezug auf die Vertriebsmarke "GuideTranslator". Weitergehende Beschränkungen des Lizenzgebers werden durch diesen Vertrag **nicht begründet**.
 
-(3) Der Lizenzgeber beschränkt seine Tätigkeit im Rahmen dieses Vertrages auf:
+(3) Der Lizenzgeber beschränkt seine Tätigkeit **im Rahmen dieses Vertrages** auf:
    - Softwareentwicklung und -wartung
    - Technischen Support für den Lizenznehmer
    - Durchführung von Entwicklungsaufträgen gemäß § 4
@@ -216,7 +216,7 @@ Der Lizenznehmer verpflichtet sich:
 
 (2) Dies gilt insbesondere für Echtzeit-Übersetzungslösungen im Bereich Tourismus, Kreuzfahrt und Guided Tours.
 
-(3) Der Lizenzgeber unterliegt **keinem Wettbewerbsverbot**. Ihm steht es frei, die Software oder darauf basierende Produkte unter anderen Produktnamen eigenständig zu vertreiben.
+(3) Ein Wettbewerbsverbot zulasten des Lizenzgebers wird durch diesen Vertrag **nicht begründet**.
 
 ---
 
