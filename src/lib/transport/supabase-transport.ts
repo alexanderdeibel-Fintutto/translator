@@ -106,11 +106,21 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     }
   }
 
+  private subscribeGeneration = 0 // Prevents stale async callbacks from old doSubscribe calls
+
   private doSubscribe(code: string, handlers: BroadcastHandlers): void {
-    // Clean up existing
+    // Increment generation — any in-flight subscribe from a previous call is now stale
+    const generation = ++this.subscribeGeneration
+
+    // Clean up existing — unsubscribe first, THEN remove
     if (this.channel) {
-      supabase.removeChannel(this.channel)
+      const oldChannel = this.channel
       this.channel = null
+      // Unsubscribe to tear down WebSocket listeners before removing from pool.
+      // removeChannel alone doesn't reliably clean up handlers, causing
+      // accumulated listeners on iOS reconnect cycles.
+      try { oldChannel.unsubscribe() } catch { /* ignore */ }
+      supabase.removeChannel(oldChannel)
     }
 
     // Enable broadcast acknowledgments so send() can detect failures.
@@ -158,6 +168,12 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     })
 
     channel.subscribe((status) => {
+      // If a newer doSubscribe call has been made, this callback is stale — ignore it
+      if (generation !== this.subscribeGeneration) {
+        try { channel.unsubscribe() } catch { /* ignore */ }
+        supabase.removeChannel(channel)
+        return
+      }
       if (status === 'SUBSCRIBED') {
         this.setConnected(true)
         this.lastMessageAt = Date.now() // Reset staleness timer on fresh subscribe
@@ -207,7 +223,9 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.clearKeepalive()
     this.subscribeArgs = null
     this.retries = 0
+    this.subscribeGeneration++ // Invalidate any in-flight callbacks
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -232,6 +250,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
 
   join(code: string, data: PresenceState): void {
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -264,6 +283,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
 
   private doJoin(code: string, data: PresenceState): void {
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -309,6 +329,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
     this.lastCode = null
     if (this.channel) {
       this.channel.untrack()
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }

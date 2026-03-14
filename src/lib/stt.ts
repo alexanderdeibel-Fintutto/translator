@@ -141,10 +141,11 @@ export function createWebSpeechEngine(): STTEngine {
         while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
           recentFinals.shift()
         }
-        // Only dedup if we recently restarted recognition (within 3s)
-        // This avoids dropping legitimate repeated sentences during normal speech
-        if (now - lastRestartTime > 3000) return false
         const normalized = text.trim().toLowerCase()
+        // Always check for exact duplicates within the 2.5s window.
+        // Previously we only checked after restarts, but the Web Speech API
+        // can emit the same final result multiple times even without a restart
+        // (especially on Android Chrome with continuous mode).
         return recentFinals.some(f => f.text === normalized)
       }
 
@@ -235,8 +236,9 @@ export function createWebSpeechEngine(): STTEngine {
           // Reset synthetic final tracking — new recognition session starts fresh
           lastSyntheticFinal = ''
           // Debounce restart to prevent rapid audio artifacts on Android Chrome.
-          // 600ms gives Chrome enough time to fully release the audio session
-          // before starting a new one, avoiding system sounds on Pixel devices.
+          // 900ms gives the OS enough time to fully release the audio session
+          // before starting a new one, reducing system notification sounds
+          // (blips) that some Android devices play on mic activation.
           if (restartTimer) clearTimeout(restartTimer)
           restartTimer = setTimeout(() => {
             restartTimer = null
@@ -245,7 +247,7 @@ export function createWebSpeechEngine(): STTEngine {
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
-          }, 600)
+          }, 900)
           return
         }
         shouldBeListening = false

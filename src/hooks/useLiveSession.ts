@@ -232,6 +232,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
         timestamp: Date.now(),
       }
       setTranslationHistory(prev => {
+        // Dedup by source text within last 3 seconds
+        const cutoff = Date.now() - 3000
+        if (prev.some(c => c.sourceText === text && c.timestamp > cutoff)) return prev
         const next = [...prev, chunk]
         return next.length > 100 ? next.slice(-100) : next
       })
@@ -303,6 +306,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     if (historyChunk) {
       setTranslationHistory(prev => {
+        // Dedup: skip if chunk with same ID already exists
+        if (prev.some(c => c.id === historyChunk.id)) return prev
+        // Also dedup by source text within last 3 seconds (same STT result processed twice)
+        const cutoff = Date.now() - 3000
+        if (prev.some(c => c.sourceText === historyChunk.sourceText && c.timestamp > cutoff)) return prev
         const next = [...prev, historyChunk]
         return next.length > 100 ? next.slice(-100) : next
       })
@@ -437,6 +445,8 @@ export function useLiveSession(userTierId: TierId = 'free') {
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
           setReceivedChunks(prev => {
+            // Dedup: skip if chunk with same ID already exists (duplicate from reconnect)
+            if (prev.some(c => c.id === chunk.id)) return prev
             const next = [...prev, chunk]
             return next.length > 100 ? next.slice(-100) : next
           })
