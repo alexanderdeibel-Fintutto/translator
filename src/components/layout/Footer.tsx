@@ -1,4 +1,3 @@
-import { Languages } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Footer() {
@@ -7,7 +6,7 @@ export default function Footer() {
       <div className="container">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Languages className="h-4 w-4" />
+            <img src="/logo-transparent.svg" alt="guidetranslator" className="h-5 w-5" />
             <span>guidetranslator <span className="text-muted-foreground/60">(by fintutto)</span></span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">

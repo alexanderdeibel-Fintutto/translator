@@ -1,4 +1,4 @@
-import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe } from 'lucide-react'
+import { Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -55,9 +55,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">
-          <div className="h-8 w-8 rounded-lg gradient-translator flex items-center justify-center">
-            <Languages className="h-4.5 w-4.5 text-white" />
-          </div>
+          <img src="/logo-transparent.svg" alt="guidetranslator" className="h-8 w-8 rounded-lg" />
           <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span> <span className="text-xs text-muted-foreground font-normal">(by fintutto)</span></span>
         </Link>
 
