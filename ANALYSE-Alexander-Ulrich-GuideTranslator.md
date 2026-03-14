@@ -488,6 +488,19 @@ Alexander hat in 20+ Minuten Sprachnachrichten systematisch seine sachlich stark
 
 **Sachlich hat Alexander recht.** Kommunikativ liefert er Ulrich alle Argumente, die dieser braucht.
 
+**Ulrichs Kommunikation im Vergleich (Sprachnachrichten, gleicher Zeitraum):**
+
+Ulrich sendet zwei Sprachnachrichten (~5-7 Min) als Antwort auf Alexanders ~20-Min-Monolog:
+- Erkennt Alexanders Lösung als "wirklich gut und fair" an
+- Benennt sein Problem klar: "Du fängst wieder an rauszulösen" (Salami-Taktik-Vorwurf)
+- Zentraler Satz: *"Du kommst immer davon, dass du was gibst. Und nicht daran, dass du auch was bekommen hast."*
+- Bietet Kompromiss: 3-6% Fintutto-Equity, "bin einverstanden"
+- Tonkritik: *"Hör dir mal an, wie du sprichst. Gönnertums-Selbstherrlichkeitsgefühl."*
+- Keine persönlichen Angriffe, keine Beleidigungen, respektvoller Grundton
+- Schluss: "Schade, wenn wir Freunde sind, dass das mit dem Geld stimmt"
+
+**Fazit Kommunikationsvergleich:** In dieser Runde ist Ulrich der reifere Kommunikator. Alexander hat die stärkeren Argumente, Ulrich die bessere Verpackung. Alexander liefert durch seinen Ton Ulrich alle Munition, die dieser für sein "Gönnertum"-Narrativ braucht.
+
 ---
 
 ## V. BUSINESS-STRATEGIE
