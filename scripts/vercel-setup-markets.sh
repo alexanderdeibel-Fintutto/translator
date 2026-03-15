@@ -13,8 +13,8 @@
 #
 # What it does:
 #   1. Links each app directory as a new Vercel project
-#   2. Copies environment variables from the consumer app
-#   3. Assigns custom domains
+#   2. Copies environment variables from .env
+#   3. Assigns custom domains (STRATO subdomains under fintutto.cloud)
 #
 # NOTE: Run this from the repository root directory.
 
@@ -25,17 +25,21 @@ set -euo pipefail
 # Vercel team/scope (leave empty for personal account)
 VERCEL_SCOPE="${VERCEL_SCOPE:-}"
 
-# Base domain for market apps
-BASE_DOMAIN="translator.fintutto.cloud"
+# Base domain
+BASE_DOMAIN="fintutto.cloud"
 
-# Define market apps: "directory|project-name|subdomain"
+# Define market apps: "directory|project-name|full-subdomain"
+# Subdomains already created at STRATO:
+#   tl-school-teacher, tl-school-student,
+#   tl-authority-clerk, tl-authority-visitor,
+#   tl-helper, tl-client
 MARKET_APPS=(
-  "apps/school-teacher|fintutto-school-teacher|schools"
-  "apps/school-student|fintutto-school-student|schools-join"
-  "apps/authority-clerk|fintutto-authority-clerk|authorities"
-  "apps/authority-visitor|fintutto-authority-visitor|authorities-join"
-  "apps/ngo-helper|fintutto-ngo-helper|ngo"
-  "apps/ngo-client|fintutto-ngo-client|ngo-join"
+  "apps/school-teacher|fintutto-school-teacher|tl-school-teacher"
+  "apps/school-student|fintutto-school-student|tl-school-student"
+  "apps/authority-clerk|fintutto-authority-clerk|tl-authority-clerk"
+  "apps/authority-visitor|fintutto-authority-visitor|tl-authority-visitor"
+  "apps/ngo-helper|fintutto-ngo-helper|tl-helper"
+  "apps/ngo-client|fintutto-ngo-client|tl-client"
 )
 
 # Environment variables to copy (add your actual values here)
@@ -138,10 +142,10 @@ setup_project() {
   done
   ok "Environment variables set"
 
-  # Step 3: Add custom domain
+  # Step 3: Add custom domain to the Vercel project
   log "  Adding domain: $full_domain"
   vercel domains add "$full_domain" $SCOPE_FLAG 2>/dev/null || \
-    warn "Could not add domain $full_domain (may need manual DNS setup)"
+    warn "Could not add domain $full_domain (may need manual setup in Vercel dashboard)"
 
   ok "Done: $project_name -> $full_domain"
   echo ""
@@ -157,8 +161,8 @@ main() {
   echo ""
   echo "This will create ${#MARKET_APPS[@]} Vercel projects:"
   for app in "${MARKET_APPS[@]}"; do
-    IFS='|' read -r dir name domain <<< "$app"
-    echo "  - $name -> $domain.$BASE_DOMAIN"
+    IFS='|' read -r dir name subdomain <<< "$app"
+    echo "  - $name -> ${subdomain}.${BASE_DOMAIN}"
   done
   echo ""
 
@@ -178,25 +182,26 @@ main() {
 
   # Setup each project
   for app in "${MARKET_APPS[@]}"; do
-    IFS='|' read -r dir name domain <<< "$app"
-    setup_project "$dir" "$name" "$domain"
+    IFS='|' read -r dir name subdomain <<< "$app"
+    setup_project "$dir" "$name" "$subdomain"
   done
 
   echo "========================================="
   echo "  Setup Complete!"
   echo "========================================="
   echo ""
-  echo "Next steps:"
-  echo "  1. Configure DNS for *.${BASE_DOMAIN}"
-  echo "     Add a CNAME record: *.${BASE_DOMAIN} -> cname.vercel-dns.com"
+  echo "STRATO DNS Setup (already done):"
+  echo "  Each subdomain needs a CNAME record pointing to"
+  echo "  the Vercel project's domain. Check Vercel dashboard"
+  echo "  for the exact CNAME target for each project."
   echo ""
-  echo "  2. Trigger first deployment:"
-  echo "     git push (or: vercel --prod in each app dir)"
+  echo "Trigger first deployment:"
+  echo "  git push (or: vercel --prod in each app dir)"
   echo ""
-  echo "  3. Verify all apps are live:"
+  echo "Verify all apps are live:"
   for app in "${MARKET_APPS[@]}"; do
-    IFS='|' read -r dir name domain <<< "$app"
-    echo "     https://${domain}.${BASE_DOMAIN}"
+    IFS='|' read -r dir name subdomain <<< "$app"
+    echo "  https://${subdomain}.${BASE_DOMAIN}"
   done
   echo ""
 }
