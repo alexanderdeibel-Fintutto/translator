@@ -28,8 +28,21 @@
     "build:school-teacher": "vite build --config apps/school-teacher/vite.config.ts",
     "build:school-student": "vite build --config apps/school-student/vite.config.ts",
 
+    "dev:authority-clerk": "vite --config apps/authority-clerk/vite.config.ts",
+    "dev:authority-visitor": "vite --config apps/authority-visitor/vite.config.ts",
+    "build:authority-clerk": "vite build --config apps/authority-clerk/vite.config.ts",
+    "build:authority-visitor": "vite build --config apps/authority-visitor/vite.config.ts",
+
+    "dev:ngo-helper": "vite --config apps/ngo-helper/vite.config.ts",
+    "dev:ngo-client": "vite --config apps/ngo-client/vite.config.ts",
+    "build:ngo-helper": "vite build --config apps/ngo-helper/vite.config.ts",
+    "build:ngo-client": "vite build --config apps/ngo-client/vite.config.ts",
+
     "build:all": "npm run build:consumer && npm run build:listener && npm run build:enterprise && npm run build:landing",
-    "build:schools": "npm run build:school-teacher && npm run build:school-student"
+    "build:schools": "npm run build:school-teacher && npm run build:school-student",
+    "build:authorities": "npm run build:authority-clerk && npm run build:authority-visitor",
+    "build:ngo": "npm run build:ngo-helper && npm run build:ngo-client",
+    "build:markets": "npm run build:schools && npm run build:authorities && npm run build:ngo"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
