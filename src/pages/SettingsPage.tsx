@@ -82,16 +82,35 @@ export default function SettingsPage() {
     setWhisperDownloading(true)
     setWhisperProgress(0)
     setWhisperError(null)
-    try {
-      const { preloadWhisper } = await sttEngine()
-      await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
-      setWhisperReady(true)
-    } catch (err) {
-      console.error('[Settings] Whisper download failed:', err)
-      setWhisperError(err instanceof Error ? err.message : t('error.unknown'))
-    } finally {
-      setWhisperDownloading(false)
+
+    // Retry up to 2 times on network errors
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const { preloadWhisper } = await sttEngine()
+        await preloadWhisper((pct) => setWhisperProgress(Math.round(pct)))
+        setWhisperReady(true)
+        setWhisperDownloading(false)
+        return
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        const errName = err instanceof Error ? err.name : ''
+        const isNetworkError =
+          msg === 'Failed to fetch' ||
+          msg.includes('NetworkError') ||
+          errName === 'TypeError' && msg.includes('fetch') ||
+          msg.includes('AbortError') ||
+          msg.includes('net::')
+        if (isNetworkError && attempt < 2) {
+          console.warn(`[Settings] Whisper download attempt ${attempt + 1} failed, retrying...`, msg)
+          await new Promise(r => setTimeout(r, 2000 * (attempt + 1)))
+          continue
+        }
+        console.error(`[Settings] Whisper download failed (attempt ${attempt + 1}):`, err)
+        setWhisperError(isNetworkError ? t('error.networkDownload') : `${t('error.networkDownload')} (${msg.slice(0, 100)})`)
+        break
+      }
     }
+    setWhisperDownloading(false)
   }
 
   // Export / Import helpers

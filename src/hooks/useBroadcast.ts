@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BroadcastTransport, BroadcastHandlers } from '@/lib/transport/types'
+import type { BroadcastTransport, BroadcastHandlers, ListenerAnnounce } from '@/lib/transport/types'
 import { SupabaseBroadcastTransport } from '@/lib/transport/supabase-transport'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
 
@@ -33,6 +33,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     onTranslation?: TranslationHandler,
     onSessionInfo?: SessionInfoHandler,
     onStatus?: StatusHandler,
+    onListenerAnnounce?: (data: ListenerAnnounce) => void,
   ) => {
     // Clean up previous
     cleanupRef.current?.()
@@ -48,6 +49,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
       onTranslation,
       onSessionInfo,
       onStatus,
+      onListenerAnnounce,
     }
 
     transport.subscribe(code, handlers)
@@ -71,11 +73,26 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     setIsConnected(false)
   }, [externalTransport])
 
+  /** Get diagnostic info from the active transport (for debug panel) */
+  const getDiagnostics = useCallback(() => {
+    const transport = externalTransport || transportRef.current
+    if (transport && 'diagnosticLastMessageAt' in transport) {
+      const t = transport as SupabaseBroadcastTransport
+      return {
+        lastMessageAt: t.diagnosticLastMessageAt,
+        receivedCount: t.diagnosticReceivedCount,
+        reconnectCount: t.diagnosticReconnectCount,
+      }
+    }
+    return { lastMessageAt: 0, receivedCount: 0, reconnectCount: 0 }
+  }, [externalTransport])
+
   return {
     isConnected,
     subscribe,
     broadcast,
     unsubscribe,
+    getDiagnostics,
     /** The active transport type ('supabase' or 'local-ws') */
     transportType: (externalTransport || transportRef.current)?.type ?? 'supabase',
   }

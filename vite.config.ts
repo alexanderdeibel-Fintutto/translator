@@ -108,36 +108,6 @@ export default defineConfig({
             },
           },
           {
-            // Cache HuggingFace model files (Opus-MT, Whisper)
-            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
-            // Also cache CDN-served model files
-            urlPattern: /^https:\/\/cdn-lfs(-us-1)?\.huggingface\.co/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models-cdn',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
             // Cache local WASM files (ONNX Runtime) on first use
             urlPattern: /\.wasm$/,
             handler: 'CacheFirst',
