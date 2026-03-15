@@ -22,7 +22,14 @@
     "build:enterprise": "vite build --config apps/enterprise/vite.config.ts",
     "dev:landing": "vite --config apps/landing/vite.config.ts",
     "build:landing": "vite build --config apps/landing/vite.config.ts",
-    "build:all": "npm run build:consumer && npm run build:listener && npm run build:enterprise && npm run build:landing"
+
+    "dev:school-teacher": "vite --config apps/school-teacher/vite.config.ts",
+    "dev:school-student": "vite --config apps/school-student/vite.config.ts",
+    "build:school-teacher": "vite build --config apps/school-teacher/vite.config.ts",
+    "build:school-student": "vite build --config apps/school-student/vite.config.ts",
+
+    "build:all": "npm run build:consumer && npm run build:listener && npm run build:enterprise && npm run build:landing",
+    "build:schools": "npm run build:school-teacher && npm run build:school-student"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
