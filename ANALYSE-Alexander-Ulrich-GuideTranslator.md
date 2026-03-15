@@ -264,6 +264,92 @@ Ulrich formuliert seinen bisher klarsten und längsten Standpunkt:
 6. Gegenangebot: 3-6% Fintutto-Equity für die Translator-Idee, oder alles bleibt in der UG
 7. Schlusssatz: *"Klare Rechnung, gute Freunde."*
 
+### Phase 12: 14.--15. März 2026 (Der Bruch)
+
+**Der Provisionsstreit eskaliert zum Endpunkt.**
+
+**14. März Morgens -- Ulrichs Klarstellungen:**
+
+- **09:10**: Zweiter Softwaretest nach Update gescheitert. Download funktioniert nicht (Live + Offline). Alte Bugs sind zurück: *"Warum bereits erzielte Ergebnisse bei einer neuen Veränderung wieder verschlimmbessert werden, ist mir ein Rätsel."*
+- **09:12**: Kündigt "generellen Strukturvorschlag" an -- nach Deal-Abschluss
+- **09:20**: **Kritische Klarstellung**: Die 45% (35+10) gelten nur für **vollständig autonome Umsätze** -- ohne menschliche Vertriebshilfe. Bei menschlichem Vertrieb: nur 35%.
+- **09:29**: **Gegenangebot**: Wenn Alexander auf ALLE Umsätze Provision will (inkl. 100% Sales), dann will Ulrich **25% Vertriebsprovision**. Bietet privaten Kickback an: *"geb ich privat dir gerne 12.5% von meinen an dich privat ab ;-)"*
+
+**14. März Nachmittags -- Alexanders Eskalation:**
+
+- **16:16**: *"Ich verstehe dich nicht. Widerstand gegen gleiche Provision."* -- wirft Ulrich vor, seine 50/50 und 20% als gesetzt zu betrachten, aber über Alexanders Ansprüche verhandeln zu wollen
+- **16:26**: **Alexanders finale Zusammenfassung:**
+  1. 45% Vorab auf alle Umsätze (IT + KI-Vertrieb zusammen)
+  2. Geschäftsführung der UG -- nicht verhandelbar
+  3. Provision -- gleiche Regeln für beide, symmetrisch
+  4. Ulrich bekommt 50% vom Gewinn nach Vorab -- *"ein völlig anderes Universum als die 3-6% Equity"*
+- **16:29**: *"Ich will einfach die gleiche wie du. Wenn du 25% haben willst (absurd hoch) dann will ich die auch, egal wie diese zustande gekommen sind"*
+- **16:30**: *"Ich will nur das Gleiche wie du (bei der Vertriebsprovision), wenn du schon das Gleiche am Gewinn/Equity hast."*
+- **16:35**: **Drohszenario**: *"Die andere Variante wäre, ich behalte alles, gebe dir 1% aller Umsatz aus dem GuideTranslator, plus deine Vertriebsprovision und steige aus der iTour UG aus."*
+- **16:36**: *"Die kannst dann zumachen oder dir deinen GF für 400€ suchen der dir die Provision sichert und mit dem Peanuts und deiner Lamentiererei um zu wenig für dich und zu viel für den anderen klarkommt"*
+- **16:40**: **Ultimatum**: *"Also: gleiche Regeln für beide, oder wir lassen es."*
+- **16:41**: *"Du scheinst echt so einen krassen 'mir wird was weggenommen'-Film zu schieben, dass du nie siehst was du bekommst"*
+- **16:47**: Psychologische Analyse: Ulrich sehe nie was er bekomme, halte seine eigenen Ideen/Kenntnisse als gesetzt, sei nicht in der Position über Alexanders Provision zu verhandeln
+
+**14. März -- Technische Updates:**
+
+- **16:49**: Alexander liefert technische Bug-Analyse (3 wahrscheinlichste Ursachen: Broadcast DROPPED, iOS WebSocket silent death, Listener Announce verworfen)
+- **16:50**: Debug-Panel eingebaut: 3x auf Session-Code tippen → Diagnostik-Panel
+- **16:53**: Erklärt das Multi-Agenten-Problem bei Code-Updates: *"kann sein, dass eine ältere Branch wieder aktiviert wird"*
+- **19:28**: Speaker-Listener-Problem eingegrenzt: *"Der Speaker sieht den Listener, die Übersetzung funktioniert perfekt, aber das iPhone empfängt nichts."*
+
+**15. März -- Der Bruch:**
+
+- **02:01**: Ulrich: **"Ich bin raus Alexander! Mit dem Alexander nicht. Viel Glück allein!"**
+- **02:01**: *"Ok!"*
+- **02:10**: *"25%"* -- steht auf seiner Provisionsforderung
+- **02:38**: Fragt nach dem 1%: *"Und was ist mit dem 1% wenn du die Firma oder die Software verkaufst? Auch 1% von deinem Umsatz?"*
+
+**15. März Mittags -- Alexanders Reaktion:**
+
+- **13:01**: *"niemals"*
+- **13:02**: *"aha"*
+- **13:03**: *"ich auch, Ulrich. oder wir telefonieren"* + *"mit dem Ulrich nicht"* (spiegelt Ulrichs "mit dem Alexander nicht")
+- **13:14**: **DER ENTSCHEIDENDE ZUG**: *"Dann mach mir bitte für AI Tour Guide UG ein Angebot für die Übernahme der Gesellschafteranteile und ein Abfindungsangebot für meinen GF-Vertrag."*
+
+**Bewertung Phase 12:**
+
+| Dimension | Analyse |
+|-----------|---------|
+| **Ulrichs Position** | Will 25% Vertriebsprovision auf seine Deals, aber nur 35% Royalty (statt 45%) wenn menschlicher Vertrieb beteiligt. Differenziert zwischen autonomem und menschlichem Umsatz -- sachlich nicht unlogisch |
+| **Alexanders Position** | Will symmetrische Provision (gleiche Regeln für beide). Logisch konsistent: wenn 50/50 bei Gewinn, dann auch bei Provision |
+| **Der Kernkonflikt** | Ulrich sieht Provision als SEINEN Verdienst (er bringt den Kunden). Alexander sieht Provision als Leistungsvergütung (egal wer -- gleicher Satz). Beide Positionen sind vertretbar |
+| **Eskalationsdynamik** | Alexander droht mit Exit ("1% und raus aus UG"), Ulrich antwortet mit Totalabbruch ("Ich bin raus"). Klassische Eskalationsspirale |
+| **Alexanders Gegenzug** | Statt emotional zu reagieren, fordert er ein Übernahme-Angebot. Taktisch klug: zwingt Ulrich, seinen eigenen Anteil zu bewerten |
+
+**Was "Ich bin raus" bedeutet:**
+
+Ulrichs Abbruch um 02:01 nachts ist **emotional, nicht strategisch**. Indizien:
+1. Um 2 Uhr morgens geschrieben -- kein durchdachter Geschäftsentscheid
+2. 9 Minuten später fragt er nach dem 1% → er denkt noch über den Deal nach
+3. 37 Minuten später fragt er nach Exit-Beteiligung → er verhandelt noch
+4. Er sagt "Ich bin raus" aber stellt danach Fragen → kein echter Abbruch, sondern Druckmittel
+5. Muster: Identisch mit Phase 8 (28.02): *"Mach deine Sache doch besser allein. Falls du mich brauchst, melde dich!"* -- danach kam Phase 10 (Tauwetter)
+
+**Alexanders Anteilsübernahme-Forderung -- Analyse:**
+
+Alexander dreht den Spieß um: Statt aus der UG auszusteigen (wie angedroht), fordert er Ulrich auf, SEINE Anteile zu kaufen. Das setzt Ulrich in eine unmögliche Position:
+- Die UG ohne Alexander als GF und ohne den GuideTranslator (der über Fintutto lizenziert wird) ist faktisch wertlos
+- Ulrich müsste einen neuen GF finden und bezahlen
+- Die Softwarelizenz läuft über Fintutto -- ohne Alexander kein Produkt
+- Ein realistisches Übernahmeangebot wäre für Ulrich wirtschaftlich nicht darstellbar
+
+**Offene Deal-Punkte (Stand 15.03.):**
+
+| Punkt | Status |
+|-------|--------|
+| Partnerschaft überhaupt | **OFFEN -- Ulrich sagt "raus", verhandelt aber weiter** |
+| Provision symmetrisch | **Kernkonflikt -- Alexander will Gleichbehandlung, Ulrich will 25% exklusiv** |
+| Royalty 45% vs. 35% | **Offen -- Ulrich will Differenzierung nach Vertriebsart** |
+| Anteilsübernahme | **NEU -- Alexander fordert Angebot von Ulrich** |
+| GF-Abfindung | **NEU -- Alexander will Abfindung für GF-Vertrag** |
+| 1% Exit-Beteiligung | **NEU -- Ulrich fragt, Alexander lehnt ab ("niemals")** |
+
 ---
 
 ## II. ULRICHS VERHALTEN
@@ -593,9 +679,35 @@ Die Tür steht offen. Er hat NICHT endgültig gebrochen. Er wartet auf Alexander
 
 **Ruhig, sachlich, respektvoll. Kein Vorwurf, keine Claude-Analyse. Ein Mensch zum Menschen.**
 
-### Kernbotschaft
+### Aktuelle Lage (Stand 15.03.26):
 
-> "Ulrich, du hast recht -- wir hätten vorher reden sollen. Lass uns das jetzt nachholen. Nicht über WhatsApp. Am Telefon. Ich schlage [Datum/Uhrzeit] vor."
+Ulrich hat "Ich bin raus" gesagt. Alexander hat mit einer Übernahme-Forderung geantwortet. Die Situation hat jetzt **drei mögliche Ausgänge**:
+
+**Szenario 1: Ulrich macht ein Übernahmeangebot (unwahrscheinlich)**
+- Die UG ohne Alexander/GuideTranslator ist nahezu wertlos
+- Ulrich hat kein Kapital für eine sinnvolle Übernahme
+- Ergebnis: Symbolisches Angebot → Alexander lehnt ab → Patt
+
+**Szenario 2: Abkühlung und Rückkehr zum Verhandlungstisch (wahrscheinlichstes)**
+- Ulrichs "Ich bin raus" ist emotional, nicht final (Muster aus Phase 8)
+- In 3-7 Tagen wird einer von beiden sich melden
+- Dann: Telefonat, Kompromiss bei der Provision (z.B. 15-20% für beide)
+- Historisches Muster: Jede "Bruch"-Phase wurde bisher von Tauwetter gefolgt
+
+**Szenario 3: Tatsächliche Trennung (möglich, wenn keiner nachgibt)**
+- Alexander steigt aus der UG aus, behält GuideTranslator über Fintutto
+- Ulrich behält eine leere UG
+- Freundschaft beschädigt oder beendet
+- Alexander verliert Branchenkontakte, Ulrich verliert alles am Produkt
+
+### Was Alexander JETZT tun sollte
+
+1. **Nicht nachlegen.** Die Übernahme-Forderung war taktisch klug -- jetzt wirken lassen
+2. **Abwarten** -- 2-3 Tage Stille. Ulrich meldet sich historisch immer wieder
+3. **Wenn Ulrich sich meldet**: Telefonat vorschlagen, nicht WhatsApp
+4. **Wenn Ulrich sich nicht meldet (5+ Tage)**: Kurze, sachliche Nachricht: "Ulrich, mein Angebot steht. Wenn du reden willst, ruf an."
+5. **Parallel**: Am Produkt weiterarbeiten, Seatrade vorbereiten -- mit oder ohne Ulrich
+6. **Auf keinen Fall**: Weitere Drohungen, Analysen, Monologe oder "1%-Szenarien"
 
 ### Was Alexander NICHT tun sollte
 
@@ -604,14 +716,7 @@ Die Tür steht offen. Er hat NICHT endgültig gebrochen. Er wartet auf Alexander
 - Rechnungen als Druckmittel
 - Claude-Analysen als "objektive Beweise"
 - Persönliche Angriffe
-
-### Was Alexander TUN sollte
-
-1. Einmal, kurz, persönlich melden
-2. Telefontermin vorschlagen
-3. Konkreten, fairen Partnerschaftsvorschlag vorbereiten (1 Seite, schriftlich)
-4. Eigene Kommunikationsfehler anerkennen (direkt, nicht über Claude)
-5. Klare Struktur: Was biete ich an, was erwarte ich, was ist der Zeitrahmen
+- Das "1%-Szenario" weiter ausführen -- es war als Druckmittel effektiv, aber eine Wiederholung wirkt kleinlich
 
 ---
 
@@ -654,4 +759,10 @@ Diese Situation ist ein Lehrbuch-Beispiel für das "Founder's Dilemma": Einer ha
 
 **Die Fakten sprechen klar für Alexander** (Leistung, Output, Investment). **Die Beziehungsgeschichte spricht teilweise für Ulrich** (Vorgeschichte, Vertrauensvorschuss, einbezogen in bestehende Strukturen). **Beide haben kommunikativ versagt** -- Alexander durch Eskalation und Überschwemmung, Ulrich durch Vermeidung und Fixierung.
 
-Der nächste Schritt sollte ein **Telefonat** sein, kein weiterer Text. Und ein **1-Seiten-Vorschlag** mit konkreten Zahlen, Rollen und Pflichten. Alles andere ist Noise.
+**Stand 15. März 2026:** Die Partnerschaft steht am Scheideweg. Ulrich hat zum zweiten Mal den Bruch erklärt ("Ich bin raus"), Alexander hat zum ersten Mal eine konkrete Exit-Forderung gestellt (Anteilsübernahme + GF-Abfindung). Der Provisionsstreit ist der Auslöser, aber der Kern ist tiefer: Beide fühlen sich vom anderen übervorteilt, und keiner ist bereit, das anzuerkennen.
+
+**Die Ironie:** Alexanders Forderung nach "gleichen Regeln für beide" ist sachlich die fairste Position in dieser gesamten Verhandlung. Aber die Art, wie er sie kommuniziert (Drohungen, Herabsetzung, Monologe), macht es Ulrich unmöglich, sie als fair wahrzunehmen. Und Ulrichs "Ich bin raus" ist keine echte Entscheidung -- es ist ein emotionaler Reflex, dem historisch immer ein Zurückkommen folgt.
+
+**Prognose:** Mit 70% Wahrscheinlichkeit meldet sich einer von beiden innerhalb einer Woche. Die Frage ist nur, ob sie dann endlich telefonieren -- oder wieder über WhatsApp eskalieren.
+
+Der nächste Schritt sollte **Stille** sein. Dann ein **Telefonat**. Kein weiterer Text.
