@@ -1,7 +1,7 @@
-# fintutto.world — Dachmarke & Subdomain-Struktur
+# fintutto.world — Dachmarke, Claims & Subdomain-Struktur
 
 **Datum:** 2026-03-16
-**Status:** Domain gekauft! Subdomain-Planung
+**Status:** Domain gekauft, Claims beschlossen, Subdomain-Planung
 **Domain:** fintutto.world
 
 ---
@@ -116,95 +116,159 @@ Die Dachmarke **fintutto.world** umfasst 7 Produktlinien mit 16 App-Varianten:
 
 ---
 
-## Namensvorschlaege
+## BESCHLUSS: Brand Claims & Taglines
 
-### Kategorie A: Fintutto + TLD-Strategie
+### Claim-Hierarchie (final, 2026-03-16)
 
-| Name | Domain | Vorteil | Nachteil |
-|------|--------|---------|----------|
-| **fintutto.world** | fintutto.world | Bestehende Marke + globaler Anspruch, wahrsch. frei | Ungewoehnliche TLD |
-| **fintutto.global** | fintutto.global | Aehnlich wie .world, professioneller | Moegl. teurer |
-| **Fintutto Voice** | voice.fintutto.cloud | Subdomain, kein Kauf noetig | Kein eigener Domainname |
+```
+┌─────────────────────────────────────────────────────┐
+│                                                     │
+│                  fintutto.world                      │
+│       One Voice. Every Language. No Barriers.        │
+│                                                     │
+│        Understanding. Everywhere. For Everyone.      │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
 
-### Kategorie B: Neue Markennamen
+### 1. Primary Claim — Hero, Logo, App-Header
+> **One Voice. Every Language. No Barriers.**
 
-| Name | Domain-Status (.com) | Beschreibung |
-|------|---------------------|--------------|
-| **WorldTranslator** | Vergeben (seit 1998, NZ) | Klar und beschreibend, .io/.app moegl. frei |
-| **WorldVoice** | Vergeben (Premium, zum Verkauf) | Stark, aber .com wuerde Geld kosten |
-| **VoiceWorld** | Keine aktive Website gefunden | Vielversprechend! Koennte frei sein |
-| **SpeakWorld** | Unbekannt | Zu pruefen |
-| **TalkBridge** | Unbekannt | Zu pruefen |
+Einsatz: Website-Hero, App-Splash-Screens, Social Media Header, Visitenkarten,
+Print-Material, Messe-Banner. Beschreibt WAS wir tun.
 
-### Kategorie C: Bereits vergeben (nicht empfohlen)
+### 2. Mission Claim — About, Pitch, Video-Intro
+> **Understanding. Everywhere. For Everyone.**
 
-| Name | Grund |
-|------|-------|
-| LinguaBridge | Aktive Uebersetzungsfirma (Atlanta, USA) |
-| LinguaLive | Aktive AI-Sprachlern-Plattform |
-| LinguaFlow | Sprachschule + Google Play App |
-| VoiceBridge | Domain zum Verkauf |
-| VoiceConnect | Aktive Firma (Callcenter-Dienste) |
-| UniVoice | Existierendes Open-Source-Projekt |
+Einsatz: About-Seite, Investor-Pitch, Video-Intro/Outro, Pressematerial,
+Foerderantraege. Beschreibt WARUM wir es tun.
+
+### 3. Emotional Close — Video-Outro, Pitch-Ende
+> **Because Understanding Changes Everything.**
+
+Einsatz: Video-Abschluss, Pitch-Deck letzte Folie, emotionaler Closer
+in Praesentationen. Der Satz, der haengen bleibt.
+
+### 4. Product Claim — Consumer App
+> **Translation for Everyone.**
+
+Einsatz: Speziell fuer die Consumer-App (app.fintutto.world), App Store
+Beschreibung, einfacher Einstieg fuer Endverbraucher.
+
+### Intro-Video Storyboard-Skizze
+
+```
+[Fade in: Stimmengewirr, verschiedene Sprachen, Verwirrung]
+
+                    One Voice.
+
+[Schnitt: Lehrer spricht, Schueler lesen auf ihren Handys]
+
+                    Every Language.
+
+[Schnitt: Aerztin erklaert, Patient nickt verstehend]
+
+                    No Barriers.
+
+[Schnitt: Montage — Guide, Hotel, Event, Amt, NGO, Kreuzfahrt...]
+
+        Understanding. Everywhere. For Everyone.
+
+[Beat]
+
+        Because Understanding Changes Everything.
+
+[Logo]              fintutto.world
+```
 
 ---
 
-## Domain-Verfuegbarkeit (Stand: 2026-03-16)
+## Alle Claim-Varianten (Recherche-Dokumentation)
 
-### Wahrscheinlich frei / sehr vielversprechend
-- `fintutto.world` - Keine Eintraege in Suchmaschinen gefunden
-- `voiceworld.com` / `.io` / `.app` - Keine aktive Website gefunden
-- `worldtranslator.io` / `.app` - Keine bekannte Registrierung
+### Kategorie: "One Voice" Varianten
+- **One Voice. Every Language. No Barriers.** ← BESCHLOSSEN als Primary
+- One Voice. A Thousand Languages.
+- One Voice. The Whole World Listens.
+- One Voice Speaks. The World Understands.
+- One Voice. Full Understanding. Zero Barriers.
+- One Voice. Every Language. Understood.
+- One Voice. Every Language. True Understanding.
 
-### Definitiv vergeben
-- `worldtranslator.com` - Seit 1998 registriert
-- `worldvoice.com` - Premium-Domain zum Verkauf (wahrscheinlich teuer)
-- `linguabridge.com` - Aktive Firma
-- `lingualive.com` / `.ai` - Aktiv
-- `voiceconnect.com` - Aktive Firma
+### Kategorie: "Understanding" Varianten (emotional)
+- **Understanding. Everywhere. For Everyone.** ← BESCHLOSSEN als Mission
+- **Because Understanding Changes Everything.** ← BESCHLOSSEN als Closer
+- The World Deserves to Understand.
+- Understanding Has No Language.
+- Where Every Voice Is Understood.
+- So the World Can Understand.
 
-### Noch zu pruefen (manuell bei Registrar)
-- `worldtranslator.de`
-- `voiceworld.de`
-- `speakworld.com` / `.io` / `.de`
-- `talkbridge.com` / `.io` / `.de`
-- `fintutto.global`
+### Kategorie: "Speak" / Action Varianten
+- Speak. And Be Understood. Everywhere.
+- Speak Freely. Understand Fully. Connect Deeply.
+- Speak. Understand. Connect.
+- Speak One. Reach All.
+
+### Kategorie: "Breaking Barriers" Varianten
+- Breaking Barriers. Building Understanding. Connecting People.
+- Every Voice Heard. Every Language Understood. Every Barrier Gone.
+- When Language Is No Longer a Barrier.
+- One World. Zero Language Barriers.
+
+### Kategorie: Einfach / Produkt-nah
+- **Translation for Everyone.** ← BESCHLOSSEN fuer Consumer App
+- Real-Time Translation — Worldwide.
+- Translation without Borders.
+- Connecting Every Voice on Earth.
+- The Language of Understanding.
+
+### Verworfen (wg. "World"-Doppelung mit Domain)
+- ~~Every Voice. Every Language. One World.~~ — Doppelung mit fintutto.world
+- ~~The World Speaks. Everyone Understands.~~ — Doppelung
+- ~~Translating the World. In Real Time.~~ — Doppelung
+- ~~Making the World Understand.~~ — Doppelung
+- ~~One World. One Voice. Every Language.~~ — Doppelung
 
 ---
 
-## Empfehlung
+## Domain-Recherche (Archiv)
 
-### Top-Empfehlung: **fintutto.world**
+### Domain-Entscheidung: fintutto.world (GEKAUFT)
 
 **Gruende:**
 1. Bestehende Marke "Fintutto" wird beibehalten (Brand-Konsistenz)
 2. TLD `.world` drueckt den globalen Anspruch aus
 3. Kein Namenskonflikt mit bestehenden Firmen/Marken
-4. Flexible Subdomain-Struktur moeglich:
-   - `guide.fintutto.world` - Guide Translator
-   - `school.fintutto.world` - School Translator
-   - `amt.fintutto.world` - Authority Translator
-   - `ngo.fintutto.world` - NGO Translator
-   - `app.fintutto.world` - Consumer App
+4. Flexible Subdomain-Struktur (16 Subdomains, siehe oben)
 5. Passt zum bestehenden `fintutto.cloud` Setup
 6. `.world` Domains sind guenstig (ca. 2-5 EUR/Jahr)
 
-### Alternative: **VoiceWorld by Fintutto**
+### Verworfene Alternativen
 
-Falls eine eigenstaendige Produktmarke gewuenscht ist:
-- Beschreibt die Kernfunktion (Stimme + Welt)
-- Kein bekannter Markenkonflikt
-- Domain-Verfuegbarkeit muss noch geprueft werden
+| Name | Domain-Status (.com) | Grund fuer Verwerfung |
+|------|---------------------|----------------------|
+| WorldTranslator | Vergeben (seit 1998, NZ) | .com weg |
+| WorldVoice | Premium, zum Verkauf | Zu teuer |
+| VoiceWorld | Moegl. frei | Eigene Marke noetig, Brand-Split |
+| LinguaBridge | Aktive Firma (Atlanta) | Markenkonflikt |
+| LinguaLive | Aktive AI-Plattform | Markenkonflikt |
+| LinguaFlow | Sprachschule + App | Markenkonflikt |
+| VoiceBridge | Zum Verkauf | Nicht ueberzeugend |
+| VoiceConnect | Aktive Firma | Markenkonflikt |
+| UniVoice | Open-Source-Projekt | Markenkonflikt |
 
 ---
 
 ## Naechste Schritte
 
 - [x] Domain fintutto.world kaufen
-- [x] Subdomain-Struktur festlegen
+- [x] Subdomain-Struktur festlegen (16 Subdomains)
+- [x] Brand Claims beschliessen (4 Claims in Hierarchie)
 - [ ] DNS-Eintraege bei Registrar anlegen (16 Subdomains)
 - [ ] app.config.ts um Hospitality, Medical, Events Varianten erweitern
 - [ ] Neue App-Verzeichnisse in /apps/ anlegen
 - [ ] Vercel/Hosting fuer neue Subdomains konfigurieren
-- [ ] Landing Page auf www.fintutto.world aktualisieren
+- [ ] Claims in Landing Page Hero einbauen
+- [ ] Claims in App-Splash-Screens einbauen
+- [ ] Intro-Video produzieren (Storyboard oben)
 - [ ] Bestehende fintutto.cloud Subdomains auf fintutto.world migrieren
+- [ ] Markenrecherche beim DPMA fuer "fintutto.world" Claims
