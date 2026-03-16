@@ -15,6 +15,7 @@ import { Heart, Settings, MessageSquare, Zap, ArrowRight, Languages } from 'luci
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
+import QuickPhrases, { NGO_EMERGENCY_PHRASES } from '@/components/market/QuickPhrases'
 import { useI18n } from '@/context/I18nContext'
 import { useUser } from '@/context/UserContext'
 
@@ -121,6 +122,16 @@ export default function NgoHelperHomePage() {
           </div>
         </Card>
       </div>
+
+      {/* Emergency & Counseling Phrases */}
+      <QuickPhrases
+        phrases={NGO_EMERGENCY_PHRASES}
+        onSpeak={(text) => {
+          navigate('/translator', { state: { prefill: text } })
+        }}
+        title="Notfall- & Beratungssaetze"
+        defaultExpanded
+      />
 
       {/* Info hint */}
       <p className="text-xs text-muted-foreground text-center max-w-xs mx-auto">

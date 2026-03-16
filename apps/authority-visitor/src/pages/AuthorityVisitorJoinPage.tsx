@@ -2,7 +2,8 @@
  * Authority Visitor Join Page
  *
  * Entry point for government office visitors.
- * Formal, clear design. Multi-language hints for common visitor languages.
+ * Formal, clear design with flag-based language selection,
+ * privacy banner, and accessibility toggle.
  */
 
 import { useState } from 'react'
@@ -11,7 +12,12 @@ import { Building2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import LanguageChips from '@/components/live/LanguageChips'
+import LanguageFlags from '@/components/live/LanguageFlags'
+import PrivacyBanner from '@/components/market/PrivacyBanner'
+import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+
+/** Priority languages for government office visitors */
+const AUTHORITY_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'fa', 'uk', 'ru', 'pl', 'ro', 'sq', 'ku', 'fr']
 
 export default function AuthorityVisitorJoinPage() {
   const navigate = useNavigate()
@@ -27,6 +33,11 @@ export default function AuthorityVisitorJoinPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+      {/* Accessibility toggle */}
+      <div className="absolute top-4 right-4">
+        <LargeTextToggle />
+      </div>
+
       {/* Branding */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900/30 mb-4">
@@ -52,12 +63,16 @@ export default function AuthorityVisitorJoinPage() {
           />
         </div>
 
-        {/* Language Selection */}
+        {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             Ihre Sprache / Your language
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} showLive />
+          <LanguageFlags
+            selected={language}
+            onSelect={setLanguage}
+            priorityCodes={AUTHORITY_PRIORITY_LANGS}
+          />
         </div>
 
         {/* Join Button */}
@@ -72,7 +87,12 @@ export default function AuthorityVisitorJoinPage() {
         </Button>
       </Card>
 
-      <p className="text-xs text-muted-foreground mt-6 text-center max-w-xs">
+      {/* Privacy Banner */}
+      <div className="w-full max-w-sm mt-6">
+        <PrivacyBanner compact />
+      </div>
+
+      <p className="text-xs text-muted-foreground mt-4 text-center max-w-xs">
         Geben Sie den Code ein, den Sie am Schalter erhalten haben, oder scannen Sie den QR-Code.
       </p>
     </div>

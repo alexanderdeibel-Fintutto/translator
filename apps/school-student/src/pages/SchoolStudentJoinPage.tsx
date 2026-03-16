@@ -1,8 +1,8 @@
 /**
  * School Student Join Page
  *
- * Entry point for students. School-branded version of the listener join page.
- * Simplified language and friendly design for younger users.
+ * Entry point for students. School-branded with flag-based
+ * language selection and accessibility toggle.
  */
 
 import { useState } from 'react'
@@ -11,11 +11,13 @@ import { BookOpen, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import LanguageChips from '@/components/live/LanguageChips'
-import { useI18n } from '@/context/I18nContext'
+import LanguageFlags from '@/components/live/LanguageFlags'
+import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+
+/** Priority languages for school contexts (common student languages in Germany) */
+const SCHOOL_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'uk', 'ru', 'pl', 'fa', 'ku', 'ro', 'sq', 'fr', 'es']
 
 export default function SchoolStudentJoinPage() {
-  const { t } = useI18n()
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState('en')
@@ -29,6 +31,11 @@ export default function SchoolStudentJoinPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+      {/* Accessibility toggle */}
+      <div className="absolute top-4 right-4">
+        <LargeTextToggle />
+      </div>
+
       {/* Branding */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 mb-4">
@@ -54,12 +61,16 @@ export default function SchoolStudentJoinPage() {
           />
         </div>
 
-        {/* Language Selection */}
+        {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             Deine Sprache
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} showLive />
+          <LanguageFlags
+            selected={language}
+            onSelect={setLanguage}
+            priorityCodes={SCHOOL_PRIORITY_LANGS}
+          />
         </div>
 
         {/* Join Button */}

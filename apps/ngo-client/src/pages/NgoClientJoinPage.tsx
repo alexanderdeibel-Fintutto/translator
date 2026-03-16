@@ -2,8 +2,8 @@
  * NGO Client Join Page
  *
  * Entry point for refugees/asylum seekers.
- * Extra-simple design with multilingual hints.
- * Large touch targets for accessibility.
+ * Extra-simple design with flag-based language selection,
+ * multilingual trust signal, large touch targets.
  */
 
 import { useState } from 'react'
@@ -12,7 +12,12 @@ import { Heart, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import LanguageChips from '@/components/live/LanguageChips'
+import LanguageFlags from '@/components/live/LanguageFlags'
+import TrustSignal from '@/components/market/TrustSignal'
+import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+
+/** Priority languages for refugee contexts */
+const NGO_PRIORITY_LANGS = ['ar', 'fa', 'ps', 'ku', 'tr', 'uk', 'ru', 'ti', 'am', 'so', 'ur', 'fr', 'en', 'de']
 
 export default function NgoClientJoinPage() {
   const navigate = useNavigate()
@@ -28,6 +33,11 @@ export default function NgoClientJoinPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+      {/* Accessibility toggle */}
+      <div className="absolute top-4 right-4">
+        <LargeTextToggle />
+      </div>
+
       {/* Branding */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-100 dark:bg-orange-900/30 mb-4">
@@ -62,15 +72,19 @@ export default function NgoClientJoinPage() {
           />
         </div>
 
-        {/* Language Selection */}
+        {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             Deine Sprache / Your language / لغتك
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} showLive />
+          <LanguageFlags
+            selected={language}
+            onSelect={setLanguage}
+            priorityCodes={NGO_PRIORITY_LANGS}
+          />
         </div>
 
-        {/* Join Button */}
+        {/* Join Button — extra large */}
         <Button
           onClick={handleJoin}
           disabled={!sessionCode.trim()}
@@ -82,9 +96,10 @@ export default function NgoClientJoinPage() {
         </Button>
       </Card>
 
-      <p className="text-xs text-muted-foreground mt-6 text-center max-w-xs">
-        Gib den Code ein, den du von deinem Berater erhalten hast.
-      </p>
+      {/* Trust Signal */}
+      <div className="w-full max-w-sm mt-6">
+        <TrustSignal maxLanguages={6} />
+      </div>
     </div>
   )
 }

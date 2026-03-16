@@ -14,6 +14,8 @@ import { Building2, Settings, MessageSquare, Zap, ArrowRight, Languages } from '
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
+import QuickPhrases, { AUTHORITY_PHRASES } from '@/components/market/QuickPhrases'
+import PrivacyBanner from '@/components/market/PrivacyBanner'
 import { useI18n } from '@/context/I18nContext'
 import { useUser } from '@/context/UserContext'
 
@@ -120,6 +122,19 @@ export default function AuthorityClerkHomePage() {
           </div>
         </Card>
       </div>
+
+      {/* Quick Phrases */}
+      <QuickPhrases
+        phrases={AUTHORITY_PHRASES}
+        onSpeak={(text) => {
+          // TODO: Connect to translation + TTS engine
+          navigate('/translator', { state: { prefill: text } })
+        }}
+        title="Haeufige Saetze"
+      />
+
+      {/* Privacy Banner */}
+      <PrivacyBanner />
 
       {/* Info hint */}
       <p className="text-xs text-muted-foreground text-center max-w-xs mx-auto">
