@@ -476,6 +476,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
     listenerCount: presence.listeners.filter(l => l.targetLanguage !== '_speaker').length,
     listenersByLanguage: presence.listenersByLanguage,
 
+    // Back channel (raw broadcast access for listener responses)
+    broadcast: broadcast.broadcast,
+
     // Tier limits
     listenerLimitReached,
     sessionLimitReached,

@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageChips from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
+import BackChannel, { type BackChannelResponse } from './BackChannel'
+import { AudioModeToggle, AudioModeDisplay } from './AudioModeToggle'
+import TapWord from './TapWord'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
+import { useRTL } from '@/hooks/useRTL'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -20,6 +24,20 @@ export default function ListenerView({ session }: ListenerViewProps) {
   const langData = getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [audioMode, setAudioMode] = useState(false)
+
+  // Automatically switch to RTL layout for Arabic, Farsi, etc.
+  useRTL(session.selectedLanguage)
+
+  const handleBackChannelSend = useCallback((response: BackChannelResponse) => {
+    session.broadcast?.('backchannel', {
+      responseId: response.id,
+      emoji: response.emoji,
+      label: response.label,
+      senderLang: session.selectedLanguage,
+      timestamp: Date.now(),
+    })
+  }, [session])
 
   if (session.sessionEnded) {
     return (
@@ -109,23 +127,33 @@ export default function ListenerView({ session }: ListenerViewProps) {
         </div>
       )}
 
-      {/* Current translation - large display */}
+      {/* Current translation - large display (or audio mode) */}
       <Card className="p-6 min-h-[200px] flex items-center justify-center relative">
-        {/* Fullscreen button */}
-        <button
-          onClick={() => setFullscreen(true)}
-          className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label={t('live.fullscreen')}
-        >
-          <Maximize2 className="h-4 w-4" />
-        </button>
+        {!audioMode && (
+          <button
+            onClick={() => setFullscreen(true)}
+            className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label={t('live.fullscreen')}
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        )}
 
         <div aria-live="polite">
-          {session.currentTranslation ? (
+          {audioMode ? (
+            <AudioModeDisplay
+              isSpeaking={session.isSpeaking}
+              isConnected={session.isConnected}
+              sessionCode={session.sessionCode}
+            />
+          ) : session.currentTranslation ? (
             <div className="text-center space-y-2 w-full">
-              <p className="text-2xl md:text-3xl font-medium leading-relaxed break-words">
-                {session.currentTranslation}
-              </p>
+              <TapWord
+                text={session.currentTranslation}
+                sourceLang={session.sourceLanguage}
+                targetLang={session.selectedLanguage}
+                className="text-center"
+              />
               {session.isSpeaking && (
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Volume2 className="h-4 w-4 animate-pulse" aria-hidden="true" />
@@ -191,6 +219,16 @@ export default function ListenerView({ session }: ListenerViewProps) {
           <Subtitles className="h-3.5 w-3.5" />
           {t('live.subtitles')}
         </Button>
+
+        <AudioModeToggle
+          enabled={audioMode}
+          onToggle={(on) => {
+            setAudioMode(on)
+            if (on && !session.autoTTS) session.setAutoTTS(true)
+          }}
+        />
+
+        <BackChannel onSend={handleBackChannelSend} />
 
         <div className="flex-1" />
 
