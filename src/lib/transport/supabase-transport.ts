@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { getChannelName } from '@/lib/session'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import type { TranslationChunk, SessionInfo, StatusMessage, PresenceState } from '@/lib/session'
-import type { BroadcastTransport, BroadcastHandlers, PresenceTransport } from './types'
+import type { BroadcastTransport, BroadcastHandlers, PresenceTransport, ListenerAnnounce } from './types'
 
 const MAX_RETRIES = 5
 const BASE_DELAY = 2000
@@ -27,9 +27,26 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   // die silently without firing any status callback. The channel stays "connected"
   // but no broadcasts arrive. We detect this by checking lastMessageAt.
   private lastMessageAt = 0
+  private receivedCount = 0
+  private reconnectCount = 0
 
   get isConnected(): boolean {
     return this.connected
+  }
+
+  /** Diagnostic: when was the last broadcast message received (0 = never) */
+  get diagnosticLastMessageAt(): number {
+    return this.lastMessageAt
+  }
+
+  /** Diagnostic: total broadcast messages received since subscription */
+  get diagnosticReceivedCount(): number {
+    return this.receivedCount
+  }
+
+  /** Diagnostic: how many times the channel was reconnected */
+  get diagnosticReconnectCount(): number {
+    return this.reconnectCount
   }
 
   onConnectionChange(callback: (connected: boolean) => void): () => void {
@@ -53,6 +70,8 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   subscribe(code: string, handlers: BroadcastHandlers): void {
     this.subscribeArgs = { code, handlers }
     this.retries = 0
+    this.receivedCount = 0
+    this.reconnectCount = 0
     this.clearRetryTimer()
     this.doSubscribe(code, handlers)
 
@@ -68,6 +87,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         if (!this.connected || stale) {
           console.error(`[Supabase] Page visible again, reconnecting (connected=${this.connected}, stale=${stale})`)
           this.retries = 0
+          this.reconnectCount++
           this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
         }
       }
@@ -87,6 +107,7 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       if ((!this.connected && this.channel) || silentlyDead) {
         console.error(`[Supabase] Keepalive: reconnecting (connected=${this.connected}, lastMsg=${Date.now() - this.lastMessageAt}ms ago)`)
         this.retries = 0
+        this.reconnectCount++
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
     }, 10_000) // check every 10 seconds
@@ -106,11 +127,21 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     }
   }
 
+  private subscribeGeneration = 0 // Prevents stale async callbacks from old doSubscribe calls
+
   private doSubscribe(code: string, handlers: BroadcastHandlers): void {
-    // Clean up existing
+    // Increment generation — any in-flight subscribe from a previous call is now stale
+    const generation = ++this.subscribeGeneration
+
+    // Clean up existing — unsubscribe first, THEN remove
     if (this.channel) {
-      supabase.removeChannel(this.channel)
+      const oldChannel = this.channel
       this.channel = null
+      // Unsubscribe to tear down WebSocket listeners before removing from pool.
+      // removeChannel alone doesn't reliably clean up handlers, causing
+      // accumulated listeners on iOS reconnect cycles.
+      try { oldChannel.unsubscribe() } catch { /* ignore */ }
+      supabase.removeChannel(oldChannel)
     }
 
     // Enable broadcast acknowledgments so send() can detect failures.
@@ -124,7 +155,10 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       const handler = handlers.onTranslation
       channel.on('broadcast', { event: 'translation' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
-        handler(payload as TranslationChunk)
+        this.receivedCount++
+        const chunk = payload as TranslationChunk
+        console.error(`[Supabase] Received translation (#${this.receivedCount}): lang=${chunk.targetLanguage}, text="${chunk.translatedText?.slice(0, 30)}..."`)
+        handler(chunk)
       })
     }
 
@@ -144,25 +178,46 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       })
     }
 
+ claude/futo-translator-strategy-RyELj
     if (handlers.onBackChannel) {
       const handler = handlers.onBackChannel
       channel.on('broadcast', { event: 'backchannel' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
         handler(payload as import('@/lib/transport/types').BackChannelMessage)
+=======
+    if (handlers.onListenerAnnounce) {
+      const handler = handlers.onListenerAnnounce
+      channel.on('broadcast', { event: 'listener_announce' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
+        handler(payload as ListenerAnnounce)
+ main
       })
     }
 
     // Also listen for heartbeat events (no handler needed, just updates lastMessageAt)
     channel.on('broadcast', { event: 'heartbeat' }, () => {
       this.lastMessageAt = Date.now()
+      this.receivedCount++
     })
 
+    const channelName = getChannelName(code)
+    console.error(`[Supabase] Subscribing to channel: ${channelName} (gen=${generation})`)
+
     channel.subscribe((status) => {
+      console.error(`[Supabase] Channel ${channelName} status: ${status} (gen=${generation}, current=${this.subscribeGeneration})`)
+      // If a newer doSubscribe call has been made, this callback is stale — ignore it
+      if (generation !== this.subscribeGeneration) {
+        console.error(`[Supabase] Stale callback ignored (gen=${generation}, current=${this.subscribeGeneration})`)
+        try { channel.unsubscribe() } catch { /* ignore */ }
+        supabase.removeChannel(channel)
+        return
+      }
       if (status === 'SUBSCRIBED') {
         this.setConnected(true)
         this.lastMessageAt = Date.now() // Reset staleness timer on fresh subscribe
         this.retries = 0
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.error(`[Supabase] Channel ${channelName} error: ${status}, retry ${this.retries}/${MAX_RETRIES}`)
         this.setConnected(false)
         if (this.retries < MAX_RETRIES && this.subscribeArgs) {
           const delay = BASE_DELAY * Math.pow(2, this.retries)
@@ -183,7 +238,10 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
   }
 
   broadcast(event: string, payload: Record<string, unknown>): void {
-    if (!this.channel || !this.connected) return
+    if (!this.channel || !this.connected) {
+      console.error(`[Supabase] Broadcast DROPPED: event=${event}, channel=${!!this.channel}, connected=${this.connected}`)
+      return
+    }
     // With ack enabled, send() returns Promise<'ok' | 'timed out' | 'error'>.
     // On failure, mark disconnected so keepalive triggers re-subscribe.
     this.channel.send({ type: 'broadcast', event, payload }).then((status) => {
@@ -207,7 +265,9 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
     this.clearKeepalive()
     this.subscribeArgs = null
     this.retries = 0
+    this.subscribeGeneration++ // Invalidate any in-flight callbacks
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -232,6 +292,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
 
   join(code: string, data: PresenceState): void {
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -264,6 +325,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
 
   private doJoin(code: string, data: PresenceState): void {
     if (this.channel) {
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }
@@ -279,6 +341,9 @@ export class SupabasePresenceTransport implements PresenceTransport {
             deviceName: presence.deviceName,
             targetLanguage: presence.targetLanguage,
             joinedAt: presence.joinedAt,
+            // Pass through fallback translation data from speaker
+            lastChunks: presence.lastChunks,
+            lastChunkBatch: presence.lastChunkBatch,
           })
         }
       }
@@ -309,6 +374,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
     this.lastCode = null
     if (this.channel) {
       this.channel.untrack()
+      try { this.channel.unsubscribe() } catch { /* ignore */ }
       supabase.removeChannel(this.channel)
       this.channel = null
     }

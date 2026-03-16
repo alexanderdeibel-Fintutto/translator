@@ -48,4 +48,8 @@ export interface PresenceState {
   deviceName: string
   targetLanguage: string
   joinedAt: string
+  /** Speaker writes latest translations here as fallback for broken broadcast channels */
+  lastChunks?: string
+  /** Timestamp of the last chunk batch (used for dedup on listener side) */
+  lastChunkBatch?: number
 }

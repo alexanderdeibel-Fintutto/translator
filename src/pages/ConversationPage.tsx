@@ -83,6 +83,7 @@ export default function ConversationPage() {
   }, [topLang, bottomLang])
 
   const startTop = useCallback(() => {
+    tts.warmup() // Unlock iOS audio during user gesture
     setActiveSide('top')
     setCurrentTranscript('')
     const lang = getLanguageByCode(topLang)
@@ -90,9 +91,10 @@ export default function ConversationPage() {
       setCurrentTranscript(text)
       handleResult(text, 'top')
     })
-  }, [topLang, topRecognition, handleResult])
+  }, [topLang, topRecognition, handleResult, tts])
 
   const startBottom = useCallback(() => {
+    tts.warmup() // Unlock iOS audio during user gesture
     setActiveSide('bottom')
     setCurrentTranscript('')
     const lang = getLanguageByCode(bottomLang)
@@ -100,7 +102,7 @@ export default function ConversationPage() {
       setCurrentTranscript(text)
       handleResult(text, 'bottom')
     })
-  }, [bottomLang, bottomRecognition, handleResult])
+  }, [bottomLang, bottomRecognition, handleResult, tts])
 
   const stopAll = useCallback(() => {
     topRecognition.stopListening()

@@ -1,5 +1,9 @@
 import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+ claude/futo-translator-strategy-RyELj
 import { useRef, useCallback, useState, useEffect, useMemo } from 'react'
+=======
+import { useRef, useCallback, useState, useEffect, type MouseEvent as ReactMouseEvent } from 'react'
+ main
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
@@ -37,6 +41,9 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
   const [showEndConfirm, setShowEndConfirm] = useState(false)
   const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
+  const [showDebug, setShowDebug] = useState(false)
+  const debugTapRef = useRef(0)
+  const debugTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Map backchannel messages to IncomingResponse format
   const inboxResponses: IncomingResponse[] = useMemo(
@@ -213,7 +220,12 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           {isBleMode ? (
             <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-center space-y-2">
               <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
-              <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
+              <p className="font-mono font-bold text-lg tracking-widest" onClick={() => {
+                debugTapRef.current++
+                if (debugTimerRef.current) clearTimeout(debugTimerRef.current)
+                if (debugTapRef.current >= 3) { debugTapRef.current = 0; setShowDebug(p => !p) }
+                else { debugTimerRef.current = setTimeout(() => { debugTapRef.current = 0 }, 600) }
+              }}>{session.sessionCode}</p>
               <p className="text-xs text-muted-foreground">
                 {t('live.bleAutoDiscovery')}
               </p>
@@ -353,6 +365,20 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       {session.error && (
         <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
           {session.error}
+        </div>
+      )}
+
+      {/* Debug panel — triple-tap session code to toggle (not shown by default) */}
+      {showDebug && (
+        <div className="text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 p-3 rounded-lg">
+          <p className="font-bold text-yellow-700 dark:text-yellow-400">SPEAKER DEBUG</p>
+          <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+          <p>Mode: {session.connectionMode}</p>
+          <p>Recording: {session.isRecording ? 'YES' : 'NO'}</p>
+          <p>Listeners (presence): {session.listenerCount}</p>
+          <p>Langs: {Object.entries(session.listenersByLanguage).filter(([k]) => k !== '_speaker').map(([k, v]) => `${k}(${v})`).join(', ') || '(none)'}</p>
+          <p>History chunks: {session.translationHistory.length}</p>
+          <p>Error: {session.error || '(none)'}</p>
         </div>
       )}
     </div>
