@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#ea580c"/>
+  <g transform="translate(256,270)" fill="none" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Heart-handshake icon -->
+    <path d="M0,-80 C-40,-120 -100,-100 -100,-50 C-100,10 -40,60 0,90 C40,60 100,10 100,-50 C100,-100 40,-120 0,-80Z" fill="white" fill-opacity="0.2"/>
+    <path d="M-40,10 L0,40 L40,10"/>
+  </g>
+</svg>

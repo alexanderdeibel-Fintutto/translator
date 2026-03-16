@@ -2,21 +2,32 @@
  * Authority Visitor Join Page
  *
  * Entry point for government office visitors.
- * Formal, clear design. Multi-language hints for common visitor languages.
+ * Formal, clear design with flag-based language selection,
+ * privacy banner, and accessibility toggle.
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import LanguageChips from '@/components/live/LanguageChips'
+import LanguageFlags from '@/components/live/LanguageFlags'
+import PrivacyBanner from '@/components/market/PrivacyBanner'
+import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
+
+/** Priority languages for government office visitors */
+const AUTHORITY_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'fa', 'uk', 'ru', 'pl', 'ro', 'sq', 'ku', 'fr']
 
 export default function AuthorityVisitorJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState(() => detectBrowserLanguage())
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return
@@ -26,7 +37,12 @@ export default function AuthorityVisitorJoinPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={rtl ? 'rtl' : 'ltr'}>
+      {/* Accessibility toggle */}
+      <div className="absolute top-4 right-4">
+        <LargeTextToggle />
+      </div>
+
       {/* Branding */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900/30 mb-4">
@@ -34,7 +50,7 @@ export default function AuthorityVisitorJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">Amt Translator</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Verstehen Sie Ihren Termin — in Ihrer Sprache
+          {t.tagline}
         </p>
       </div>
 
@@ -42,7 +58,7 @@ export default function AuthorityVisitorJoinPage() {
         {/* Session Code Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Code vom Schalter
+            {t.enterCode}
           </label>
           <SessionCodeInput
             onSubmit={(code) => {
@@ -52,12 +68,16 @@ export default function AuthorityVisitorJoinPage() {
           />
         </div>
 
-        {/* Language Selection */}
+        {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Ihre Sprache / Your language
+            {t.chooseLanguage}
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} showLive />
+          <LanguageFlags
+            selected={language}
+            onSelect={setLanguage}
+            priorityCodes={AUTHORITY_PRIORITY_LANGS}
+          />
         </div>
 
         {/* Join Button */}
@@ -67,12 +87,17 @@ export default function AuthorityVisitorJoinPage() {
           className="w-full bg-teal-700 hover:bg-teal-800"
           size="lg"
         >
-          Starten
+          {t.join}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Card>
 
-      <p className="text-xs text-muted-foreground mt-6 text-center max-w-xs">
+      {/* Privacy Banner */}
+      <div className="w-full max-w-sm mt-6">
+        <PrivacyBanner compact />
+      </div>
+
+      <p className="text-xs text-muted-foreground mt-4 text-center max-w-xs">
         Geben Sie den Code ein, den Sie am Schalter erhalten haben, oder scannen Sie den QR-Code.
       </p>
     </div>

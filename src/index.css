@@ -94,6 +94,24 @@
   }
 }
 
+/* Large text mode (toggled via AccessibilityToggle) */
+.ft-large-text {
+  font-size: 125%;
+}
+.ft-large-text button {
+  min-height: 48px;
+  font-size: 1.1rem;
+}
+.ft-large-text .text-xs {
+  font-size: 0.875rem;
+}
+.ft-large-text .text-sm {
+  font-size: 1.05rem;
+}
+.ft-large-text .text-2xl {
+  font-size: 2rem;
+}
+
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

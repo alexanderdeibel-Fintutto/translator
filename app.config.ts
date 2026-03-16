@@ -11,12 +11,18 @@
  * - landing:    Product landing page
  *
  * Market Flavors (specialized variants):
- * - school-teacher:  Classroom speaker app for teachers
- * - school-student:  Classroom listener app for students
- * - authority-clerk: Government office speaker app
- * - authority-visitor: Government office visitor listener
- * - ngo-helper:     NGO/refugee aid speaker app
- * - ngo-client:     NGO/refugee aid listener app
+ * - school-teacher:      Classroom speaker app for teachers
+ * - school-student:      Classroom listener app for students
+ * - authority-clerk:     Government office speaker app
+ * - authority-visitor:   Government office visitor listener
+ * - ngo-helper:          NGO/refugee aid speaker app
+ * - ngo-client:          NGO/refugee aid listener app
+ * - counter-staff:       Hotel/retail/trade fair staff (bidirectional)
+ * - counter-guest:       Hotel/retail/trade fair guest listener
+ * - medical-staff:       Doctor/nurse/pharmacist speaker app
+ * - medical-patient:     Patient listener app
+ * - conference-speaker:  Conference/event/church speaker app
+ * - conference-listener: Conference/event attendee listener
  */
 
 export type AppVariant =
@@ -30,12 +36,18 @@ export type AppVariant =
   | 'authority-visitor'
   | 'ngo-helper'
   | 'ngo-client'
+  | 'counter-staff'
+  | 'counter-guest'
+  | 'medical-staff'
+  | 'medical-patient'
+  | 'conference-speaker'
+  | 'conference-listener'
 
 /** Which core app this flavor is based on */
 export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing'
 
 /** Target market for market-specific flavors */
-export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo'
+export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events'
 
 export interface AppConfig {
   /** Internal variant identifier */
@@ -64,6 +76,8 @@ export interface AppConfig {
   iosScheme: string
   /** Subdomain for deployment (e.g. tl-school-teacher.fintutto.cloud) */
   subdomain: string
+  /** Icon directory under public/icons/ (shared between speaker/listener pairs) */
+  iconDir: string
 }
 
 export const appConfigs: Record<AppVariant, AppConfig> = {
@@ -82,6 +96,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttotranslator',
     subdomain: 'app',
+    iconDir: 'core',
   },
   listener: {
     variant: 'listener',
@@ -97,6 +112,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttolive',
     subdomain: 'live',
+    iconDir: 'core',
   },
   enterprise: {
     variant: 'enterprise',
@@ -112,6 +128,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttoenterprise',
     subdomain: 'enterprise',
+    iconDir: 'core',
   },
   landing: {
     variant: 'landing',
@@ -127,6 +144,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttolanding',
     subdomain: 'www',
+    iconDir: 'core',
   },
 
   // ─── Schools Market ─────────────────────────────────────────
@@ -144,6 +162,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'schooltranslatorteacher',
     subdomain: 'tl-school-teacher',
+    iconDir: 'school',
   },
   'school-student': {
     variant: 'school-student',
@@ -159,6 +178,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'schooltranslatorstudent',
     subdomain: 'tl-school-student',
+    iconDir: 'school',
   },
 
   // ─── Authorities Market ─────────────────────────────────────
@@ -176,6 +196,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'amttranslatorclerk',
     subdomain: 'tl-authority-clerk',
+    iconDir: 'authority',
   },
   'authority-visitor': {
     variant: 'authority-visitor',
@@ -191,6 +212,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'amttranslatorvisitor',
     subdomain: 'tl-authority-visitor',
+    iconDir: 'authority',
   },
 
   // ─── NGO / Refugee Market ───────────────────────────────────
@@ -208,6 +230,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'refugeetranslatorhelper',
     subdomain: 'tl-helper',
+    iconDir: 'ngo',
   },
   'ngo-client': {
     variant: 'ngo-client',
@@ -223,6 +246,109 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'refugeetranslatorclient',
     subdomain: 'tl-client',
+    iconDir: 'ngo',
+  },
+
+  // ─── Counter / Hospitality Market ─────────────────────────────
+  'counter-staff': {
+    variant: 'counter-staff',
+    base: 'enterprise',
+    market: 'hospitality',
+    appName: 'Counter Translator - Mitarbeiter',
+    shortName: 'CounterTranslator',
+    description: 'Bidirektionale Gespraechsuebersetzung am Schalter, Empfang, Counter und auf Messen.',
+    appId: 'cloud.fintutto.counter.staff',
+    themeColor: '#7c3aed',
+    accentColor: '#a78bfa',
+    devPort: 5196,
+    startUrl: '/',
+    iosScheme: 'countertranslatorstaff',
+    subdomain: 'tl-counter-staff',
+    iconDir: 'counter',
+  },
+  'counter-guest': {
+    variant: 'counter-guest',
+    base: 'listener',
+    market: 'hospitality',
+    appName: 'Counter Translator',
+    shortName: 'CounterTranslator',
+    description: 'Verstehen Sie Ihren Gastgeber - in Ihrer Sprache. Am Schalter, Empfang oder Counter.',
+    appId: 'cloud.fintutto.counter.guest',
+    themeColor: '#7c3aed',
+    accentColor: '#a78bfa',
+    devPort: 5197,
+    startUrl: '/',
+    iosScheme: 'countertranslatorguest',
+    subdomain: 'tl-counter-guest',
+    iconDir: 'counter',
+  },
+
+  // ─── Medical Market ───────────────────────────────────────────
+  'medical-staff': {
+    variant: 'medical-staff',
+    base: 'enterprise',
+    market: 'medical',
+    appName: 'Medical Translator - Personal',
+    shortName: 'MedTranslator',
+    description: 'Arzt-Patient-Kommunikation ohne Sprachbarriere. Med. Phrasen, Schmerzskala, Datenschutz.',
+    appId: 'cloud.fintutto.medical.staff',
+    themeColor: '#dc2626',
+    accentColor: '#f87171',
+    devPort: 5198,
+    startUrl: '/',
+    iosScheme: 'medicaltranslatorstaff',
+    subdomain: 'tl-medical-staff',
+    iconDir: 'medical',
+  },
+  'medical-patient': {
+    variant: 'medical-patient',
+    base: 'listener',
+    market: 'medical',
+    appName: 'Medical Translator',
+    shortName: 'MedTranslator',
+    description: 'Verstehen Sie Ihren Arzt - in Ihrer Sprache. Mit visueller Schmerzskala.',
+    appId: 'cloud.fintutto.medical.patient',
+    themeColor: '#dc2626',
+    accentColor: '#f87171',
+    devPort: 5199,
+    startUrl: '/',
+    iosScheme: 'medicaltranslatorpatient',
+    subdomain: 'tl-medical-patient',
+    iconDir: 'medical',
+  },
+
+  // ─── Conference / Events Market ───────────────────────────────
+  'conference-speaker': {
+    variant: 'conference-speaker',
+    base: 'enterprise',
+    market: 'events',
+    appName: 'Conference Translator - Speaker',
+    shortName: 'ConfTranslator',
+    description: 'Live-Uebersetzung fuer Konferenzen, Events, Gottesdienste und Messen. Multi-Kanal, grosses Publikum.',
+    appId: 'cloud.fintutto.conference.speaker',
+    themeColor: '#1d4ed8',
+    accentColor: '#60a5fa',
+    devPort: 5200,
+    startUrl: '/',
+    iosScheme: 'conferencetranslatorspeaker',
+    subdomain: 'tl-conference-speaker',
+    iconDir: 'conference',
+  },
+  'conference-listener': {
+    variant: 'conference-listener',
+    base: 'listener',
+    market: 'events',
+    appName: 'Conference Translator',
+    shortName: 'ConfTranslator',
+    description: 'Empfangen Sie Live-Uebersetzungen bei Konferenzen und Events in Ihrer Sprache.',
+    appId: 'cloud.fintutto.conference.listener',
+    themeColor: '#1d4ed8',
+    accentColor: '#60a5fa',
+    devPort: 5201,
+    startUrl: '/',
+    iosScheme: 'conferencetranslatorlistener',
+    subdomain: 'tl-conference-listener',
+    iconDir: 'conference',
   },
 }
 

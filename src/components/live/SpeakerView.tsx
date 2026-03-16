@@ -1,5 +1,9 @@
 import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+ claude/futo-translator-strategy-RyELj
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react'
+=======
 import { useRef, useCallback, useState, useEffect, type MouseEvent as ReactMouseEvent } from 'react'
+ main
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
@@ -7,6 +11,7 @@ import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
 import EndSessionConfirmDialog from './EndSessionConfirmDialog'
+import BackChannelInbox, { type IncomingResponse } from './BackChannelInbox'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
@@ -39,6 +44,17 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const [showDebug, setShowDebug] = useState(false)
   const debugTapRef = useRef(0)
   const debugTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Map backchannel messages to IncomingResponse format
+  const inboxResponses: IncomingResponse[] = useMemo(
+    () =>
+      (session.backChannelMessages || []).map((msg) => ({
+        response: { id: msg.responseId, emoji: msg.emoji, label: msg.label },
+        senderLang: msg.senderLang,
+        timestamp: msg.timestamp,
+      })),
+    [session.backChannelMessages]
+  )
 
   // Poll latency stats while recording
   useEffect(() => {
@@ -152,6 +168,12 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
             </span>
           )}
         </div>
+
+        {/* BackChannel Inbox */}
+        <BackChannelInbox
+          responses={inboxResponses}
+          onClear={() => session.clearBackChannel?.()}
+        />
       </div>
 
       {/* iOS manual hotspot instruction */}

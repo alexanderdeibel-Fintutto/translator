@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight, Globe2, Radio, Users, Smartphone, Wifi, Camera,
   MessageSquare, BookOpen, Shield, Bluetooth, Mic, ChevronRight,
-  Languages, Zap, Building, Ship, Check, Star
+  Languages, Zap, Building, Ship, Check, Star, Heart, HandshakeIcon,
+  Presentation, GraduationCap, Building2, HeartHandshake
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -45,16 +46,21 @@ const PRODUCTS = [
 ]
 
 const SEGMENTS = [
-  { icon: Smartphone, name: 'Reisende & Expats', desc: 'Kostenlos übersetzen, offline-fähig, Kamera-OCR', plan: 'Free / 4,99 EUR/Mo' },
-  { icon: Users, name: 'Guides & Museen', desc: 'Live-Broadcasting für Touren, QR-Code-Join', plan: 'Ab 19,90 EUR/Mo' },
-  { icon: Building, name: 'Agenturen & Events', desc: 'Team-Verwaltung, bis zu 500 Teilnehmer', plan: 'Ab 99 EUR/Mo' },
-  { icon: Ship, name: 'Reedereien & Flotten', desc: 'Multi-Schiff-Management, unbegrenzte Hörer', plan: 'Ab 1.990 EUR/Mo' },
+  { icon: Smartphone, name: 'Reisende & Expats', desc: 'Kostenlos übersetzen, offline-fähig, Kamera-OCR', plan: 'Free / 4,99 EUR/Mo', link: '/apps/translator' },
+  { icon: Users, name: 'Guides & Museen', desc: 'Live-Broadcasting für Touren, QR-Code-Join', plan: 'Ab 19,90 EUR/Mo', link: '/apps/enterprise' },
+  { icon: GraduationCap, name: 'Schulen & Bildung', desc: 'Klassenzimmer-Übersetzer für Lehrkräfte und Schüler', plan: 'Ab 9,90 EUR/Mo', link: '/solutions/schools' },
+  { icon: Building2, name: 'Behörden & Ämter', desc: 'Verständigung am Schalter und im Bürgerkontakt', plan: 'Ab 14,90 EUR/Mo', link: '/solutions/authorities' },
+  { icon: HeartHandshake, name: 'NGO & Sozialarbeit', desc: 'Kommunikation mit Geflüchteten und Migranten', plan: 'Ab 9,90 EUR/Mo', link: '/solutions/ngo' },
+  { icon: HandshakeIcon, name: 'Hotels & Counter', desc: 'Bidirektionales Gespräch am Empfang, Schalter, Messe', plan: 'Ab 29,90 EUR/Mo', link: '/solutions/hospitality' },
+  { icon: Heart, name: 'Medizin & Pflege', desc: 'Arzt-Patient-Kommunikation mit Schmerzskala und Med-Phrasen', plan: 'Ab 29,90 EUR/Mo', link: '/solutions/medical' },
+  { icon: Presentation, name: 'Konferenzen & Events', desc: 'Multi-Kanal Live-Übersetzung für großes Publikum', plan: 'Ab 199 EUR/Mo', link: '/solutions/events' },
+  { icon: Ship, name: 'Reedereien & Flotten', desc: 'Multi-Schiff-Management, unbegrenzte Hörer', plan: 'Ab 1.990 EUR/Mo', link: '/apps/enterprise' },
 ]
 
 const STATS = [
   { value: '45', label: 'Sprachen' },
   { value: '7', label: 'Produkte' },
-  { value: '3', label: 'Apps' },
+  { value: '16', label: 'Apps' },
   { value: '<1s', label: 'Latenz' },
 ]
 
@@ -185,23 +191,25 @@ export default function LandingHomePage() {
       {/* Zielgruppen */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">Für jede Zielgruppe der richtige Plan</h2>
-          <p className="text-white/70 drop-shadow">Von Free bis Enterprise — 11 Pläne in 5 Segmenten</p>
+          <h2 className="text-2xl sm:text-3xl font-bold drop-shadow-lg">Für jede Zielgruppe die richtige Lösung</h2>
+          <p className="text-white/70 drop-shadow">9 Marktsegmente — von kostenlos bis Enterprise</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {SEGMENTS.map((seg, i) => {
             const Icon = seg.icon
             return (
-              <Card key={i} className="p-5 flex items-start gap-4 bg-black/30 backdrop-blur-sm border-white/10">
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-sky-300" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-semibold text-white">{seg.name}</h3>
-                  <p className="text-sm text-white/70">{seg.desc}</p>
-                  <p className="text-xs font-medium text-sky-300">{seg.plan}</p>
-                </div>
-              </Card>
+              <Link key={i} to={seg.link}>
+                <Card className="p-5 flex items-start gap-4 bg-black/30 backdrop-blur-sm border-white/10 hover:bg-white/5 transition-colors h-full">
+                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-sky-300" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-white">{seg.name}</h3>
+                    <p className="text-sm text-white/70">{seg.desc}</p>
+                    <p className="text-xs font-medium text-sky-300">{seg.plan}</p>
+                  </div>
+                </Card>
+              </Link>
             )
           })}
         </div>

@@ -32,18 +32,31 @@ export interface HotspotInfo {
 
 // --- Broadcast transport ---
 
+ claude/futo-translator-strategy-RyELj
+export interface BackChannelMessage {
+  responseId: string
+  emoji: string
+  label: string
+  senderLang: string
+  timestamp: number
+=======
 export interface ListenerAnnounce {
   targetLanguage: string
   deviceName: string
   /** Timestamp so speaker can expire stale entries */
   ts: number
+ main
 }
 
 export interface BroadcastHandlers {
   onTranslation?: (chunk: TranslationChunk) => void
   onSessionInfo?: (info: SessionInfo) => void
   onStatus?: (status: StatusMessage) => void
+ claude/futo-translator-strategy-RyELj
+  onBackChannel?: (msg: BackChannelMessage) => void
+=======
   onListenerAnnounce?: (data: ListenerAnnounce) => void
+ main
 }
 
 export interface BroadcastTransport {

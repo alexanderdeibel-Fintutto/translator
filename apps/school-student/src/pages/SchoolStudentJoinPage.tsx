@@ -1,8 +1,8 @@
 /**
  * School Student Join Page
  *
- * Entry point for students. School-branded version of the listener join page.
- * Simplified language and friendly design for younger users.
+ * Entry point for students. School-branded with flag-based
+ * language selection and accessibility toggle.
  */
 
 import { useState } from 'react'
@@ -11,14 +11,21 @@ import { BookOpen, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
-import LanguageChips from '@/components/live/LanguageChips'
-import { useI18n } from '@/context/I18nContext'
+import LanguageFlags from '@/components/live/LanguageFlags'
+import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
+
+/** Priority languages for school contexts (common student languages in Germany) */
+const SCHOOL_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'uk', 'ru', 'pl', 'fa', 'ku', 'ro', 'sq', 'fr', 'es']
 
 export default function SchoolStudentJoinPage() {
-  const { t } = useI18n()
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState(() => detectBrowserLanguage())
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return
@@ -28,7 +35,12 @@ export default function SchoolStudentJoinPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={rtl ? 'rtl' : 'ltr'}>
+      {/* Accessibility toggle */}
+      <div className="absolute top-4 right-4">
+        <LargeTextToggle />
+      </div>
+
       {/* Branding */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 mb-4">
@@ -36,7 +48,7 @@ export default function SchoolStudentJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">School Translator</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Folge dem Unterricht in deiner Sprache
+          {t.tagline}
         </p>
       </div>
 
@@ -44,7 +56,7 @@ export default function SchoolStudentJoinPage() {
         {/* Session Code Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Code von deinem Lehrer
+            {t.enterCode}
           </label>
           <SessionCodeInput
             onSubmit={(code) => {
@@ -54,12 +66,16 @@ export default function SchoolStudentJoinPage() {
           />
         </div>
 
-        {/* Language Selection */}
+        {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Deine Sprache
+            {t.chooseLanguage}
           </label>
-          <LanguageChips selected={language} onSelect={setLanguage} showLive />
+          <LanguageFlags
+            selected={language}
+            onSelect={setLanguage}
+            priorityCodes={SCHOOL_PRIORITY_LANGS}
+          />
         </div>
 
         {/* Join Button */}
@@ -69,7 +85,7 @@ export default function SchoolStudentJoinPage() {
           className="w-full bg-blue-600 hover:bg-blue-700"
           size="lg"
         >
-          Mitmachen
+          {t.join}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Card>

@@ -178,11 +178,19 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       })
     }
 
+ claude/futo-translator-strategy-RyELj
+    if (handlers.onBackChannel) {
+      const handler = handlers.onBackChannel
+      channel.on('broadcast', { event: 'backchannel' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
+        handler(payload as import('@/lib/transport/types').BackChannelMessage)
+=======
     if (handlers.onListenerAnnounce) {
       const handler = handlers.onListenerAnnounce
       channel.on('broadcast', { event: 'listener_announce' }, ({ payload }) => {
         this.lastMessageAt = Date.now()
         handler(payload as ListenerAnnounce)
+ main
       })
     }
 

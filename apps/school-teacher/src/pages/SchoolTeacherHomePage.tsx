@@ -10,7 +10,7 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { GraduationCap, Settings, Plus, Zap, ArrowRight, MessageSquare } from 'lucide-react'
+import { GraduationCap, Settings, Plus, Zap, ArrowRight, MessageSquare, QrCode, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
@@ -37,6 +37,14 @@ export default function SchoolTeacherHomePage() {
 
   const handleConversation = () => {
     navigate('/conversation')
+  }
+
+  const handleClassroomQR = () => {
+    navigate('/classroom-qr')
+  }
+
+  const handleParentLetter = () => {
+    navigate('/parent-letter')
   }
 
   const handleManage = () => {
@@ -80,7 +88,7 @@ export default function SchoolTeacherHomePage() {
       </Card>
 
       {/* Secondary Actions */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <Card
           className="p-4 cursor-pointer hover:bg-accent transition-colors"
           onClick={handleCreateNew}
@@ -90,6 +98,32 @@ export default function SchoolTeacherHomePage() {
             <p className="text-sm font-medium">Neue Session</p>
             <p className="text-xs text-muted-foreground">
               Fuer die naechste Stunde
+            </p>
+          </div>
+        </Card>
+
+        <Card
+          className="p-4 cursor-pointer hover:bg-accent transition-colors"
+          onClick={handleClassroomQR}
+        >
+          <div className="space-y-2">
+            <QrCode className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm font-medium">Klassenzimmer-QR</p>
+            <p className="text-xs text-muted-foreground">
+              Poster drucken
+            </p>
+          </div>
+        </Card>
+
+        <Card
+          className="p-4 cursor-pointer hover:bg-accent transition-colors"
+          onClick={handleParentLetter}
+        >
+          <div className="space-y-2">
+            <FileText className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm font-medium">Elternbrief</p>
+            <p className="text-xs text-muted-foreground">
+              Brief uebersetzen
             </p>
           </div>
         </Card>
@@ -108,7 +142,7 @@ export default function SchoolTeacherHomePage() {
         </Card>
 
         <Card
-          className="p-4 cursor-pointer hover:bg-accent transition-colors"
+          className="p-4 cursor-pointer hover:bg-accent transition-colors col-span-2"
           onClick={handleManage}
         >
           <div className="space-y-2">

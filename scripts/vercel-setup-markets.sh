@@ -29,17 +29,32 @@ VERCEL_SCOPE="${VERCEL_SCOPE:-}"
 BASE_DOMAIN="fintutto.cloud"
 
 # Define market apps: "directory|project-name|full-subdomain"
-# Subdomains already created at STRATO:
-#   tl-school-teacher, tl-school-student,
-#   tl-authority-clerk, tl-authority-visitor,
-#   tl-helper, tl-client
+# Subdomains to create at STRATO (CNAME -> Vercel):
+#   Schools:      tl-school-teacher, tl-school-student
+#   Authorities:  tl-authority-clerk, tl-authority-visitor
+#   NGO:          tl-helper, tl-client
+#   Hospitality:  tl-counter-staff, tl-counter-guest
+#   Medical:      tl-medical-staff, tl-medical-patient
+#   Conference:   tl-conference-speaker, tl-conference-listener
 MARKET_APPS=(
+  # Schools
   "apps/school-teacher|fintutto-school-teacher|tl-school-teacher"
   "apps/school-student|fintutto-school-student|tl-school-student"
+  # Authorities
   "apps/authority-clerk|fintutto-authority-clerk|tl-authority-clerk"
   "apps/authority-visitor|fintutto-authority-visitor|tl-authority-visitor"
+  # NGO / Refugee
   "apps/ngo-helper|fintutto-ngo-helper|tl-helper"
   "apps/ngo-client|fintutto-ngo-client|tl-client"
+  # Hospitality / Counter
+  "apps/counter-staff|fintutto-counter-staff|tl-counter-staff"
+  "apps/counter-guest|fintutto-counter-guest|tl-counter-guest"
+  # Medical
+  "apps/medical-staff|fintutto-medical-staff|tl-medical-staff"
+  "apps/medical-patient|fintutto-medical-patient|tl-medical-patient"
+  # Conference / Events
+  "apps/conference-speaker|fintutto-conference-speaker|tl-conference-speaker"
+  "apps/conference-listener|fintutto-conference-listener|tl-conference-listener"
 )
 
 # Environment variables to copy (add your actual values here)
@@ -190,10 +205,13 @@ main() {
   echo "  Setup Complete!"
   echo "========================================="
   echo ""
-  echo "STRATO DNS Setup (already done):"
+  echo "STRATO DNS Setup:"
   echo "  Each subdomain needs a CNAME record pointing to"
-  echo "  the Vercel project's domain. Check Vercel dashboard"
-  echo "  for the exact CNAME target for each project."
+  echo "  cname.vercel-dns.com (or the project-specific alias)."
+  echo "  New subdomains to create at STRATO:"
+  echo "    tl-counter-staff, tl-counter-guest"
+  echo "    tl-medical-staff, tl-medical-patient"
+  echo "    tl-conference-speaker, tl-conference-listener"
   echo ""
   echo "Trigger first deployment:"
   echo "  git push (or: vercel --prod in each app dir)"

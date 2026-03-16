@@ -20,6 +20,14 @@ const AppListenerPage = lazy(() => import('./pages/AppListenerPage'))
 const AppEnterprisePage = lazy(() => import('./pages/AppEnterprisePage'))
 const NewsPage = lazy(() => import('./pages/NewsPage'))
 
+// Solution pages (market-specific landing pages)
+const SolutionSchoolsPage = lazy(() => import('./pages/SolutionSchoolsPage'))
+const SolutionAuthoritiesPage = lazy(() => import('./pages/SolutionAuthoritiesPage'))
+const SolutionNgoPage = lazy(() => import('./pages/SolutionNgoPage'))
+const SolutionHospitalityPage = lazy(() => import('./pages/SolutionHospitalityPage'))
+const SolutionMedicalPage = lazy(() => import('./pages/SolutionMedicalPage'))
+const SolutionEventsPage = lazy(() => import('./pages/SolutionEventsPage'))
+
 // Shared pages from src/
 const InvestorPage = lazy(() => import('@/pages/InvestorPage'))
 const FeaturesPage = lazy(() => import('@/pages/FeaturesPage'))
@@ -47,6 +55,14 @@ function App() {
           <Route path="apps/translator" element={<Suspense fallback={<PageLoader />}><AppConsumerPage /></Suspense>} />
           <Route path="apps/live" element={<Suspense fallback={<PageLoader />}><AppListenerPage /></Suspense>} />
           <Route path="apps/enterprise" element={<Suspense fallback={<PageLoader />}><AppEnterprisePage /></Suspense>} />
+
+          {/* Solution pages (market segments) */}
+          <Route path="solutions/schools" element={<Suspense fallback={<PageLoader />}><SolutionSchoolsPage /></Suspense>} />
+          <Route path="solutions/authorities" element={<Suspense fallback={<PageLoader />}><SolutionAuthoritiesPage /></Suspense>} />
+          <Route path="solutions/ngo" element={<Suspense fallback={<PageLoader />}><SolutionNgoPage /></Suspense>} />
+          <Route path="solutions/hospitality" element={<Suspense fallback={<PageLoader />}><SolutionHospitalityPage /></Suspense>} />
+          <Route path="solutions/medical" element={<Suspense fallback={<PageLoader />}><SolutionMedicalPage /></Suspense>} />
+          <Route path="solutions/events" element={<Suspense fallback={<PageLoader />}><SolutionEventsPage /></Suspense>} />
 
           {/* Shared pages */}
           <Route path="features" element={<Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />

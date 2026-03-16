@@ -10,10 +10,13 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Building2, Settings, MessageSquare, Zap, ArrowRight, Languages } from 'lucide-react'
+import { Building2, Settings, MessageSquare, Zap, ArrowRight, Languages, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
+import QuickPhrases, { AUTHORITY_PHRASES } from '@/components/market/QuickPhrases'
+import PrivacyBanner from '@/components/market/PrivacyBanner'
+import FormTemplates from '@/components/market/FormTemplates'
 import { useI18n } from '@/context/I18nContext'
 import { useUser } from '@/context/UserContext'
 
@@ -37,6 +40,10 @@ export default function AuthorityClerkHomePage() {
 
   const handleTranslator = () => {
     navigate('/translator')
+  }
+
+  const handleFormTemplates = () => {
+    navigate('/form-templates')
   }
 
   const handleManage = () => {
@@ -80,7 +87,7 @@ export default function AuthorityClerkHomePage() {
       </Card>
 
       {/* Secondary Actions */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <Card
           className="p-4 cursor-pointer hover:bg-accent transition-colors"
           onClick={handleConversation}
@@ -109,6 +116,19 @@ export default function AuthorityClerkHomePage() {
 
         <Card
           className="p-4 cursor-pointer hover:bg-accent transition-colors"
+          onClick={handleFormTemplates}
+        >
+          <div className="space-y-2">
+            <FileText className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm font-medium">Vorlagen</p>
+            <p className="text-xs text-muted-foreground">
+              Formulare uebersetzen
+            </p>
+          </div>
+        </Card>
+
+        <Card
+          className="p-4 cursor-pointer hover:bg-accent transition-colors"
           onClick={handleManage}
         >
           <div className="space-y-2">
@@ -120,6 +140,16 @@ export default function AuthorityClerkHomePage() {
           </div>
         </Card>
       </div>
+
+      {/* Quick Phrases */}
+      <QuickPhrases
+        phrases={AUTHORITY_PHRASES}
+        onSpeak={(text) => navigate('/translator', { state: { prefill: text } })}
+        title="Haeufige Saetze"
+      />
+
+      {/* Privacy Banner */}
+      <PrivacyBanner />
 
       {/* Info hint */}
       <p className="text-xs text-muted-foreground text-center max-w-xs mx-auto">

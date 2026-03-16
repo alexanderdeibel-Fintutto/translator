@@ -38,11 +38,29 @@
     "build:ngo-helper": "vite build --config apps/ngo-helper/vite.config.ts",
     "build:ngo-client": "vite build --config apps/ngo-client/vite.config.ts",
 
+    "dev:counter-staff": "vite --config apps/counter-staff/vite.config.ts",
+    "dev:counter-guest": "vite --config apps/counter-guest/vite.config.ts",
+    "build:counter-staff": "vite build --config apps/counter-staff/vite.config.ts",
+    "build:counter-guest": "vite build --config apps/counter-guest/vite.config.ts",
+
+    "dev:medical-staff": "vite --config apps/medical-staff/vite.config.ts",
+    "dev:medical-patient": "vite --config apps/medical-patient/vite.config.ts",
+    "build:medical-staff": "vite build --config apps/medical-staff/vite.config.ts",
+    "build:medical-patient": "vite build --config apps/medical-patient/vite.config.ts",
+
+    "dev:conference-speaker": "vite --config apps/conference-speaker/vite.config.ts",
+    "dev:conference-listener": "vite --config apps/conference-listener/vite.config.ts",
+    "build:conference-speaker": "vite build --config apps/conference-speaker/vite.config.ts",
+    "build:conference-listener": "vite build --config apps/conference-listener/vite.config.ts",
+
     "build:all": "npm run build:consumer && npm run build:listener && npm run build:enterprise && npm run build:landing",
     "build:schools": "npm run build:school-teacher && npm run build:school-student",
     "build:authorities": "npm run build:authority-clerk && npm run build:authority-visitor",
     "build:ngo": "npm run build:ngo-helper && npm run build:ngo-client",
-    "build:markets": "npm run build:schools && npm run build:authorities && npm run build:ngo"
+    "build:counter": "npm run build:counter-staff && npm run build:counter-guest",
+    "build:medical": "npm run build:medical-staff && npm run build:medical-patient",
+    "build:conference": "npm run build:conference-speaker && npm run build:conference-listener",
+    "build:markets": "npm run build:schools && npm run build:authorities && npm run build:ngo && npm run build:counter && npm run build:medical && npm run build:conference"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",

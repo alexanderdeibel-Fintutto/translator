@@ -16,6 +16,7 @@ import { OfflineProvider } from '@/context/OfflineContext'
 import { I18nProvider } from '@/context/I18nContext'
 import { UserProvider } from '@/context/UserContext'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { AccessibilityProvider } from '@/components/market/AccessibilityToggle'
 import NgoClientJoinPage from './pages/NgoClientJoinPage'
 
 const ListenerSessionPage = lazy(() => import('@/pages/ListenerSessionPage'))
@@ -23,6 +24,7 @@ const ListenerSessionPage = lazy(() => import('@/pages/ListenerSessionPage'))
 function App() {
   return (
     <ErrorBoundary>
+      <AccessibilityProvider>
       <I18nProvider>
         <OfflineProvider>
           <UserProvider>
@@ -44,6 +46,7 @@ function App() {
           </UserProvider>
         </OfflineProvider>
       </I18nProvider>
+      </AccessibilityProvider>
     </ErrorBoundary>
   )
 }

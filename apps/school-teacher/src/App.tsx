@@ -24,6 +24,8 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import SchoolTeacherHomePage from './pages/SchoolTeacherHomePage'
+import ClassroomQRPage from './pages/ClassroomQRPage'
+const ParentLetterPage = lazy(() => import('./pages/ParentLetterPage'))
 
 // Lazy-loaded routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -65,6 +67,8 @@ function App() {
                 <Route path="/" element={<Layout />}>
                   {/* Main: Classroom session activation */}
                   <Route index element={<SchoolTeacherHomePage />} />
+                  <Route path="classroom-qr" element={<ClassroomQRPage />} />
+                  <Route path="parent-letter" element={<Suspense fallback={<PageLoader />}><ParentLetterPage /></Suspense>} />
 
                   {/* Core translation */}
                   <Route path="translator" element={<Suspense fallback={<PageLoader />}><TranslatorPage /></Suspense>} />
