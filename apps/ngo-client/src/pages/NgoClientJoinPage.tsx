@@ -6,7 +6,7 @@
  * multilingual trust signal, large touch targets.
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heart, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import TrustSignal from '@/components/market/TrustSignal'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
 
 /** Priority languages for refugee contexts */
 const NGO_PRIORITY_LANGS = ['ar', 'fa', 'ps', 'ku', 'tr', 'uk', 'ru', 'ti', 'am', 'so', 'ur', 'fr', 'en', 'de']
@@ -22,7 +23,11 @@ const NGO_PRIORITY_LANGS = ['ar', 'fa', 'ps', 'ku', 'tr', 'uk', 'ru', 'ti', 'am'
 export default function NgoClientJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
-  const [language, setLanguage] = useState('ar')
+  const [language, setLanguage] = useState(() => {
+    const detected = detectBrowserLanguage()
+    // Default to Arabic for NGO context if browser gives English
+    return detected === 'en' ? 'ar' : detected
+  })
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return

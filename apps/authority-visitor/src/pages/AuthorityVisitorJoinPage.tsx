@@ -6,7 +6,7 @@
  * privacy banner, and accessibility toggle.
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import PrivacyBanner from '@/components/market/PrivacyBanner'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
 
 /** Priority languages for government office visitors */
 const AUTHORITY_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'fa', 'uk', 'ru', 'pl', 'ro', 'sq', 'ku', 'fr']
@@ -22,7 +23,7 @@ const AUTHORITY_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'fa', 'uk', 'ru', 'pl'
 export default function AuthorityVisitorJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState(() => detectBrowserLanguage())
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return

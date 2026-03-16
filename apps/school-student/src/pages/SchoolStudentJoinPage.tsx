@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
+import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
 
 /** Priority languages for school contexts (common student languages in Germany) */
 const SCHOOL_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'uk', 'ru', 'pl', 'fa', 'ku', 'ro', 'sq', 'fr', 'es']
@@ -20,7 +21,7 @@ const SCHOOL_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'uk', 'ru', 'pl', 'fa', '
 export default function SchoolStudentJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState(() => detectBrowserLanguage())
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return

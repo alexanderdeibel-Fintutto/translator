@@ -24,6 +24,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import AuthorityClerkHomePage from './pages/AuthorityClerkHomePage'
+const FormTemplatesPage = lazy(() => import('./pages/FormTemplatesPage'))
 
 // Lazy-loaded routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                   {/* Main: Desk/counter session activation */}
                   <Route index element={<AuthorityClerkHomePage />} />
+                  <Route path="form-templates" element={<Suspense fallback={<PageLoader />}><FormTemplatesPage /></Suspense>} />
 
                   {/* Core translation */}
                   <Route path="translator" element={<Suspense fallback={<PageLoader />}><TranslatorPage /></Suspense>} />
