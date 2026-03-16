@@ -679,6 +679,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 99,
       overagePerMinuteEur: 0.10,
       additionalLanguageEur: 1.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_24h',
   },
@@ -726,6 +729,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 499,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_12h',
   },
@@ -773,6 +779,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 149,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_24h',
   },
@@ -820,6 +829,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 990,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_12h',
   },
@@ -867,6 +879,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 299,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_24h',
   },
@@ -914,6 +929,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 990,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_12h',
   },
@@ -961,6 +979,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 299,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'email_24h',
   },
@@ -1008,6 +1029,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 1_990,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
     },
     supportLevel: 'priority_4h',
   },
