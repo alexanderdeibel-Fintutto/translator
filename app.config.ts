@@ -76,6 +76,8 @@ export interface AppConfig {
   iosScheme: string
   /** Subdomain for deployment (e.g. tl-school-teacher.fintutto.cloud) */
   subdomain: string
+  /** Icon directory under public/icons/ (shared between speaker/listener pairs) */
+  iconDir: string
 }
 
 export const appConfigs: Record<AppVariant, AppConfig> = {
@@ -94,6 +96,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttotranslator',
     subdomain: 'app',
+    iconDir: 'core',
   },
   listener: {
     variant: 'listener',
@@ -109,6 +112,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttolive',
     subdomain: 'live',
+    iconDir: 'core',
   },
   enterprise: {
     variant: 'enterprise',
@@ -124,6 +128,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttoenterprise',
     subdomain: 'enterprise',
+    iconDir: 'core',
   },
   landing: {
     variant: 'landing',
@@ -139,6 +144,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'fintuttolanding',
     subdomain: 'www',
+    iconDir: 'core',
   },
 
   // ─── Schools Market ─────────────────────────────────────────
@@ -156,6 +162,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'schooltranslatorteacher',
     subdomain: 'tl-school-teacher',
+    iconDir: 'school',
   },
   'school-student': {
     variant: 'school-student',
@@ -171,6 +178,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'schooltranslatorstudent',
     subdomain: 'tl-school-student',
+    iconDir: 'school',
   },
 
   // ─── Authorities Market ─────────────────────────────────────
@@ -188,6 +196,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'amttranslatorclerk',
     subdomain: 'tl-authority-clerk',
+    iconDir: 'authority',
   },
   'authority-visitor': {
     variant: 'authority-visitor',
@@ -203,6 +212,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'amttranslatorvisitor',
     subdomain: 'tl-authority-visitor',
+    iconDir: 'authority',
   },
 
   // ─── NGO / Refugee Market ───────────────────────────────────
@@ -220,6 +230,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'refugeetranslatorhelper',
     subdomain: 'tl-helper',
+    iconDir: 'ngo',
   },
   'ngo-client': {
     variant: 'ngo-client',
@@ -235,6 +246,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'refugeetranslatorclient',
     subdomain: 'tl-client',
+    iconDir: 'ngo',
   },
 
   // ─── Counter / Hospitality Market ─────────────────────────────
@@ -252,6 +264,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'countertranslatorstaff',
     subdomain: 'tl-counter-staff',
+    iconDir: 'counter',
   },
   'counter-guest': {
     variant: 'counter-guest',
@@ -267,6 +280,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'countertranslatorguest',
     subdomain: 'tl-counter-guest',
+    iconDir: 'counter',
   },
 
   // ─── Medical Market ───────────────────────────────────────────
@@ -284,6 +298,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'medicaltranslatorstaff',
     subdomain: 'tl-medical-staff',
+    iconDir: 'medical',
   },
   'medical-patient': {
     variant: 'medical-patient',
@@ -299,6 +314,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'medicaltranslatorpatient',
     subdomain: 'tl-medical-patient',
+    iconDir: 'medical',
   },
 
   // ─── Conference / Events Market ───────────────────────────────
@@ -316,6 +332,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'conferencetranslatorspeaker',
     subdomain: 'tl-conference-speaker',
+    iconDir: 'conference',
   },
   'conference-listener': {
     variant: 'conference-listener',
@@ -331,6 +348,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     startUrl: '/',
     iosScheme: 'conferencetranslatorlistener',
     subdomain: 'tl-conference-listener',
+    iconDir: 'conference',
   },
 }
 

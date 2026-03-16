@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1d4ed8"/>
+  <g transform="translate(256,260)" fill="none" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Presentation icon -->
+    <rect x="-100" y="-80" width="200" height="130" rx="8"/>
+    <line x1="0" y1="-110" x2="0" y2="-80"/>
+    <line x1="-60" y1="-110" x2="60" y2="-110"/>
+    <line x1="-40" y1="50" x2="-60" y2="90"/>
+    <line x1="40" y1="50" x2="60" y2="90"/>
+  </g>
+</svg>
