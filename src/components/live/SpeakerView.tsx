@@ -364,6 +364,13 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
         </div>
       )}
 
+      {/* STT engine error — shown when recording fails (e.g. mic denied, unsupported browser) */}
+      {session.sttError && (
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
+          {session.sttError}
+        </div>
+      )}
+
       {/* Debug panel — triple-tap session code to toggle (not shown by default) */}
       {showDebug && (
         <div className="text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 p-3 rounded-lg">
@@ -371,6 +378,8 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
           <p>Mode: {session.connectionMode}</p>
           <p>Recording: {session.isRecording ? 'YES' : 'NO'}</p>
+          <p>STT engine: {session.sttProvider}</p>
+          <p>STT error: {session.sttError || '(none)'}</p>
           <p>Listeners (presence): {session.listenerCount}</p>
           <p>Langs: {Object.entries(session.listenersByLanguage).filter(([k]) => k !== '_speaker').map(([k, v]) => `${k}(${v})`).join(', ') || '(none)'}</p>
           <p>History chunks: {session.translationHistory.length}</p>

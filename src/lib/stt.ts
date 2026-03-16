@@ -323,11 +323,31 @@ export function createAppleSpeechAnalyzerEngine(): STTEngine {
 // --- iOS detection ---
 // All iOS browsers (Safari, Chrome, Firefox) use WebKit under the hood.
 // WebKit exposes webkitSpeechRecognition but .start() fires 'service-not-allowed'.
+//
+// iPadOS 13+ reports navigator.platform='MacIntel' and maxTouchPoints>1.
+// We must exclude real Mac desktops: check that the browser does NOT have
+// Chromium's NavigatorUAData (only desktop Chromium has it), and verify
+// screen dimensions match a tablet (iPads max out around 1366px logical width
+// in landscape). Also check for touch-primary pointer — iPads without an
+// external trackpad report 'coarse' as primary pointer.
 
 function isIOS(): boolean {
   if (typeof navigator === 'undefined') return false
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+  // Direct UA match for iPhone/iPod — always iOS
+  if (/iPhone|iPod/.test(navigator.userAgent)) return true
+
+  // Direct UA match for iPad (older iPadOS versions)
+  if (/iPad/.test(navigator.userAgent)) return true
+
+  // iPadOS 13+ detection: reports as Mac but has touch support.
+  // Real Macs have maxTouchPoints=0 (even with trackpad — trackpad touch
+  // points are NOT reported via maxTouchPoints in any desktop browser).
+  if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) {
+    return true
+  }
+
+  return false
 }
 
 // --- Google Cloud Speech-to-Text engine ---
@@ -687,14 +707,22 @@ function isAndroid(): boolean {
 // --- Engine selection ---
 
 export function getBestSTTEngine(): STTEngine {
+  console.error(`[STT] Selecting engine: isIOS=${isIOS()}, isAndroid=${isAndroid()}, platform=${typeof navigator !== 'undefined' ? navigator.platform : 'N/A'}, maxTouchPoints=${typeof navigator !== 'undefined' ? navigator.maxTouchPoints : 'N/A'}, UA=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : 'N/A'}`)
+
   // 1. Prefer Apple SpeechAnalyzer when in native iOS wrapper
   const apple = createAppleSpeechAnalyzerEngine()
-  if (apple.isSupported) return apple
+  if (apple.isSupported) {
+    console.error('[STT] Selected: apple-speech-analyzer')
+    return apple
+  }
 
   // 2. On iOS: use Google Cloud STT (Web Speech API is broken on all iOS browsers)
   if (isIOS()) {
     const googleSTT = createGoogleCloudSTTEngine()
-    if (googleSTT.isSupported) return googleSTT
+    if (googleSTT.isSupported) {
+      console.error('[STT] Selected: google-cloud-stt (iOS)')
+      return googleSTT
+    }
   }
 
   // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
@@ -703,16 +731,25 @@ export function getBestSTTEngine(): STTEngine {
   //    getUserMedia directly — no system sounds, no restart issues.
   if (isAndroid()) {
     const googleSTT = createGoogleCloudSTTEngine()
-    if (googleSTT.isSupported) return googleSTT
+    if (googleSTT.isSupported) {
+      console.error('[STT] Selected: google-cloud-stt (Android)')
+      return googleSTT
+    }
   }
 
-  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
+  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge/Safari)
   const webSpeech = createWebSpeechEngine()
-  if (webSpeech.isSupported) return webSpeech
+  if (webSpeech.isSupported) {
+    console.error('[STT] Selected: web-speech')
+    return webSpeech
+  }
 
   // 5. Google Cloud STT (fallback for any browser with mic access)
   const googleFallback = createGoogleCloudSTTEngine()
-  if (googleFallback.isSupported) return googleFallback
+  if (googleFallback.isSupported) {
+    console.error('[STT] Selected: google-cloud-stt (fallback)')
+    return googleFallback
+  }
 
   // 5. Whisper offline (last resort — requires model download)
   return {

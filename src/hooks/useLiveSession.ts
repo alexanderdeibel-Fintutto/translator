@@ -650,6 +650,8 @@ export function useLiveSession(userTierId: TierId = 'free') {
     startRecording,
     stopRecording,
     currentTranscript: recognition.interimTranscript,
+    sttError: recognition.error,
+    sttProvider: recognition.provider,
     translationHistory,
 
     // Listener
