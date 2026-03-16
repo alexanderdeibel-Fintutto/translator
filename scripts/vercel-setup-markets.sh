@@ -14,7 +14,7 @@
 # What it does:
 #   1. Links each app directory as a new Vercel project
 #   2. Copies environment variables from .env
-#   3. Assigns custom domains (STRATO subdomains under fintutto.cloud)
+#   3. Assigns custom domains (subdomains under fintutto.world)
 #
 # NOTE: Run this from the repository root directory.
 
@@ -26,35 +26,48 @@ set -euo pipefail
 VERCEL_SCOPE="${VERCEL_SCOPE:-}"
 
 # Base domain
-BASE_DOMAIN="fintutto.cloud"
+BASE_DOMAIN="fintutto.world"
 
-# Define market apps: "directory|project-name|full-subdomain"
-# Subdomains to create at STRATO (CNAME -> Vercel):
-#   Schools:      tl-school-teacher, tl-school-student
-#   Authorities:  tl-authority-clerk, tl-authority-visitor
-#   NGO:          tl-helper, tl-client
-#   Hospitality:  tl-counter-staff, tl-counter-guest
-#   Medical:      tl-medical-staff, tl-medical-patient
-#   Conference:   tl-conference-speaker, tl-conference-listener
-MARKET_APPS=(
-  # Schools
-  "apps/school-teacher|fintutto-school-teacher|tl-school-teacher"
-  "apps/school-student|fintutto-school-student|tl-school-student"
-  # Authorities
-  "apps/authority-clerk|fintutto-authority-clerk|tl-authority-clerk"
-  "apps/authority-visitor|fintutto-authority-visitor|tl-authority-visitor"
-  # NGO / Refugee
-  "apps/ngo-helper|fintutto-ngo-helper|tl-helper"
-  "apps/ngo-client|fintutto-ngo-client|tl-client"
-  # Hospitality / Counter
-  "apps/counter-staff|fintutto-counter-staff|tl-counter-staff"
-  "apps/counter-guest|fintutto-counter-guest|tl-counter-guest"
-  # Medical
-  "apps/medical-staff|fintutto-medical-staff|tl-medical-staff"
-  "apps/medical-patient|fintutto-medical-patient|tl-medical-patient"
-  # Conference / Events
-  "apps/conference-speaker|fintutto-conference-speaker|tl-conference-speaker"
-  "apps/conference-listener|fintutto-conference-listener|tl-conference-listener"
+# Define ALL apps: "directory|project-name|subdomain"
+# Format: subdomain.fintutto.world
+#
+# Core apps:
+#   www          -> landing
+#   app          -> consumer
+#   guide        -> enterprise
+#   live         -> listener
+#
+# Market apps:
+#   Schools:      school-teacher, school-student
+#   Authorities:  amt-clerk, amt-visitor
+#   NGO:          ngo-helper, ngo-client
+#   Hospitality:  hotel-staff, hotel-guest
+#   Medical:      medical-staff, medical-patient
+#   Conference:   event-speaker, event-attendee
+ALL_APPS=(
+  # ── Core Apps ──
+  "apps/landing|fintutto-landing|www"
+  "apps/consumer|fintutto-consumer|app"
+  "apps/enterprise|fintutto-enterprise|guide"
+  "apps/listener|fintutto-listener|live"
+  # ── Schools ──
+  "apps/school-teacher|fintutto-school-teacher|school-teacher"
+  "apps/school-student|fintutto-school-student|school-student"
+  # ── Authorities ──
+  "apps/authority-clerk|fintutto-authority-clerk|amt-clerk"
+  "apps/authority-visitor|fintutto-authority-visitor|amt-visitor"
+  # ── NGO / Refugee ──
+  "apps/ngo-helper|fintutto-ngo-helper|ngo-helper"
+  "apps/ngo-client|fintutto-ngo-client|ngo-client"
+  # ── Hospitality / Hotel ──
+  "apps/counter-staff|fintutto-hotel-staff|hotel-staff"
+  "apps/counter-guest|fintutto-hotel-guest|hotel-guest"
+  # ── Medical ──
+  "apps/medical-staff|fintutto-medical-staff|medical-staff"
+  "apps/medical-patient|fintutto-medical-patient|medical-patient"
+  # ── Conference / Events ──
+  "apps/conference-speaker|fintutto-event-speaker|event-speaker"
+  "apps/conference-listener|fintutto-event-attendee|event-attendee"
 )
 
 # Environment variables to copy (add your actual values here)
@@ -174,8 +187,8 @@ main() {
   echo "  Vercel Market Apps Setup"
   echo "========================================="
   echo ""
-  echo "This will create ${#MARKET_APPS[@]} Vercel projects:"
-  for app in "${MARKET_APPS[@]}"; do
+  echo "This will create ${#ALL_APPS[@]} Vercel projects:"
+  for app in "${ALL_APPS[@]}"; do
     IFS='|' read -r dir name subdomain <<< "$app"
     echo "  - $name -> ${subdomain}.${BASE_DOMAIN}"
   done
@@ -196,7 +209,7 @@ main() {
   echo ""
 
   # Setup each project
-  for app in "${MARKET_APPS[@]}"; do
+  for app in "${ALL_APPS[@]}"; do
     IFS='|' read -r dir name subdomain <<< "$app"
     setup_project "$dir" "$name" "$subdomain"
   done
@@ -205,19 +218,15 @@ main() {
   echo "  Setup Complete!"
   echo "========================================="
   echo ""
-  echo "STRATO DNS Setup:"
+  echo "DNS Setup:"
   echo "  Each subdomain needs a CNAME record pointing to"
   echo "  cname.vercel-dns.com (or the project-specific alias)."
-  echo "  New subdomains to create at STRATO:"
-  echo "    tl-counter-staff, tl-counter-guest"
-  echo "    tl-medical-staff, tl-medical-patient"
-  echo "    tl-conference-speaker, tl-conference-listener"
   echo ""
   echo "Trigger first deployment:"
   echo "  git push (or: vercel --prod in each app dir)"
   echo ""
   echo "Verify all apps are live:"
-  for app in "${MARKET_APPS[@]}"; do
+  for app in "${ALL_APPS[@]}"; do
     IFS='|' read -r dir name subdomain <<< "$app"
     echo "  https://${subdomain}.${BASE_DOMAIN}"
   done
