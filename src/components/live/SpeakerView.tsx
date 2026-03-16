@@ -1,9 +1,5 @@
 import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
- claude/futo-translator-strategy-RyELj
-import { useRef, useCallback, useState, useEffect, useMemo } from 'react'
-=======
-import { useRef, useCallback, useState, useEffect, type MouseEvent as ReactMouseEvent } from 'react'
- main
+import { useRef, useCallback, useState, useEffect, useMemo, type MouseEvent as ReactMouseEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'

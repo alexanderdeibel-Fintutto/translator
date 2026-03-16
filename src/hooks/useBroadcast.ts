@@ -35,11 +35,8 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     onTranslation?: TranslationHandler,
     onSessionInfo?: SessionInfoHandler,
     onStatus?: StatusHandler,
- claude/futo-translator-strategy-RyELj
     onBackChannel?: BackChannelHandler,
-=======
     onListenerAnnounce?: (data: ListenerAnnounce) => void,
- main
   ) => {
     // Clean up previous
     cleanupRef.current?.()
@@ -55,11 +52,8 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
       onTranslation,
       onSessionInfo,
       onStatus,
- claude/futo-translator-strategy-RyELj
       onBackChannel,
-=======
       onListenerAnnounce,
- main
     }
 
     transport.subscribe(code, handlers)

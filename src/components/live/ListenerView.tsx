@@ -1,8 +1,4 @@
- claude/futo-translator-strategy-RyELj
-import { useState, useCallback } from 'react'
-=======
 import { useState, useRef, useCallback, useEffect } from 'react'
- main
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -64,8 +60,10 @@ export default function ListenerView({ session }: ListenerViewProps) {
   const langData = getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
- claude/futo-translator-strategy-RyELj
   const [audioMode, setAudioMode] = useState(false)
+  const [showDebug, setShowDebug] = useState(false)
+  const tapCountRef = useRef(0)
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Automatically switch to RTL layout for Arabic, Farsi, etc.
   useRTL(session.selectedLanguage)
@@ -79,10 +77,6 @@ export default function ListenerView({ session }: ListenerViewProps) {
       timestamp: Date.now(),
     })
   }, [session])
-=======
-  const [showDebug, setShowDebug] = useState(false)
-  const tapCountRef = useRef(0)
-  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Triple-tap on session code to toggle debug panel
   const handleDebugTap = useCallback(() => {
@@ -95,7 +89,6 @@ export default function ListenerView({ session }: ListenerViewProps) {
       tapTimerRef.current = setTimeout(() => { tapCountRef.current = 0 }, 600)
     }
   }, [])
- main
 
   if (session.sessionEnded) {
     return (

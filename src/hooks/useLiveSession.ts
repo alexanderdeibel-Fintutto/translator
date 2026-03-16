@@ -13,11 +13,7 @@ import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import { TIERS, type TierId } from '@/lib/tiers'
 import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
- claude/futo-translator-strategy-RyELj
-import type { ConnectionConfig, BackChannelMessage } from '@/lib/transport/types'
-=======
-import type { ConnectionConfig, ListenerAnnounce } from '@/lib/transport/types'
- main
+import type { ConnectionConfig, BackChannelMessage, ListenerAnnounce } from '@/lib/transport/types'
 
 function generateChunkId(): string {
   return `chunk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -108,25 +104,21 @@ export function useLiveSession(userTierId: TierId = 'free') {
       await connection.initialize(config)
     }
 
- claude/futo-translator-strategy-RyELj
-    // Subscribe to broadcast channel (speaker receives backchannel responses)
-    broadcast.subscribe(code, undefined, undefined, undefined, (msg: BackChannelMessage) => {
-      setBackChannelMessages((prev) => [...prev, msg])
-    })
-=======
-    // Subscribe to broadcast channel — listen for listener_announce as fallback to presence
+    // Subscribe to broadcast channel (speaker receives backchannel + listener_announce)
     broadcast.subscribe(
       code,
       undefined, // onTranslation (speaker doesn't receive translations)
       undefined, // onSessionInfo
       undefined, // onStatus
+      (msg: BackChannelMessage) => {
+        setBackChannelMessages((prev) => [...prev, msg])
+      },
       // onListenerAnnounce — track listener languages via broadcast (presence fallback)
       (data: ListenerAnnounce) => {
         const key = `${data.deviceName}:${data.targetLanguage}`
         announcedListenersRef.current.set(key, data)
       },
     )
- main
 
     // Join presence as speaker
     presence.join(code, {
