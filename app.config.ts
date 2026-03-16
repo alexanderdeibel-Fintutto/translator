@@ -62,7 +62,7 @@ export interface AppConfig {
   startUrl: string
   /** iOS URL scheme */
   iosScheme: string
-  /** Subdomain for deployment (e.g. schools.translator.fintutto.cloud) */
+  /** Subdomain for deployment (e.g. tl-school-teacher.fintutto.cloud) */
   subdomain: string
 }
 
@@ -143,7 +143,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5190,
     startUrl: '/',
     iosScheme: 'schooltranslatorteacher',
-    subdomain: 'schools',
+    subdomain: 'tl-school-teacher',
   },
   'school-student': {
     variant: 'school-student',
@@ -158,7 +158,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5191,
     startUrl: '/',
     iosScheme: 'schooltranslatorstudent',
-    subdomain: 'schools-join',
+    subdomain: 'tl-school-student',
   },
 
   // ─── Authorities Market ─────────────────────────────────────
@@ -175,7 +175,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5192,
     startUrl: '/',
     iosScheme: 'amttranslatorclerk',
-    subdomain: 'authorities',
+    subdomain: 'tl-authority-clerk',
   },
   'authority-visitor': {
     variant: 'authority-visitor',
@@ -190,7 +190,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5193,
     startUrl: '/',
     iosScheme: 'amttranslatorvisitor',
-    subdomain: 'authorities-join',
+    subdomain: 'tl-authority-visitor',
   },
 
   // ─── NGO / Refugee Market ───────────────────────────────────
@@ -207,7 +207,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5194,
     startUrl: '/',
     iosScheme: 'refugeetranslatorhelper',
-    subdomain: 'ngo',
+    subdomain: 'tl-helper',
   },
   'ngo-client': {
     variant: 'ngo-client',
@@ -222,7 +222,7 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     devPort: 5195,
     startUrl: '/',
     iosScheme: 'refugeetranslatorclient',
-    subdomain: 'ngo-join',
+    subdomain: 'tl-client',
   },
 }
 
