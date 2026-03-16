@@ -6,12 +6,11 @@
  * multilingual trust signal, large touch targets.
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heart, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import TrustSignal from '@/components/market/TrustSignal'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
@@ -32,10 +31,15 @@ export default function NgoClientJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = (code?: string) => {
-    const c = code || sessionCode
-    if (!c.trim()) return
-    navigate(`/${c.trim().toUpperCase()}`, {
+  const normalizeCode = (raw: string): string => {
+    const cleaned = raw.trim().toUpperCase()
+    return cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+  }
+
+  const handleJoin = () => {
+    if (!sessionCode.trim()) return
+    const code = normalizeCode(sessionCode)
+    navigate(`/${code}`, {
       state: { listenerLang: language },
     })
   }
@@ -73,7 +77,17 @@ export default function NgoClientJoinPage() {
           <label className="text-sm font-medium">
             Code / الرمز / کد
           </label>
-          <SessionCodeInput onSubmit={handleJoin} />
+          <form onSubmit={(e) => { e.preventDefault(); handleJoin() }}>
+            <input
+              type="text"
+              value={sessionCode}
+              onChange={e => setSessionCode(e.target.value.toUpperCase())}
+              placeholder="TR-XXXX"
+              className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={7}
+              autoFocus
+            />
+          </form>
         </div>
 
         {/* Language Selection — Flag Grid */}
@@ -91,7 +105,7 @@ export default function NgoClientJoinPage() {
         {/* Join Button — extra large */}
         <Button
           onClick={handleJoin}
-          disabled={!sessionCode.trim()}
+          disabled={sessionCode.trim().length < 4}
           className="w-full bg-orange-600 hover:bg-orange-700 text-lg py-6"
           size="lg"
         >

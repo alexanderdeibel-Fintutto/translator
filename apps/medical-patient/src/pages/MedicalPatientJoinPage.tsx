@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { Heart, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import PainScale from '@/components/market/PainScale'
 import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
@@ -23,10 +22,15 @@ export default function MedicalPatientJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = (sessionCode?: string) => {
-    const c = sessionCode || code
-    if (!c.trim()) return
-    navigate(`/${c.trim().toUpperCase()}`)
+  const normalizeCode = (raw: string): string => {
+    const cleaned = raw.trim().toUpperCase()
+    return cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+  }
+
+  const handleJoin = () => {
+    if (!code.trim()) return
+    const normalized = normalizeCode(code)
+    navigate(`/${normalized}`)
   }
 
   return (
@@ -51,10 +55,20 @@ export default function MedicalPatientJoinPage() {
           <p className="text-sm text-center text-muted-foreground">
             {t.enterCode}
           </p>
-          <SessionCodeInput onSubmit={handleJoin} />
+          <form onSubmit={(e) => { e.preventDefault(); handleJoin() }}>
+            <input
+              type="text"
+              value={code}
+              onChange={e => setCode(e.target.value.toUpperCase())}
+              placeholder="TR-XXXX"
+              className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={7}
+              autoFocus
+            />
+          </form>
           <Button
-            onClick={() => handleJoin()}
-            disabled={!code.trim()}
+            onClick={handleJoin}
+            disabled={code.trim().length < 4}
             className="w-full bg-red-600 hover:bg-red-700"
             size="lg"
           >

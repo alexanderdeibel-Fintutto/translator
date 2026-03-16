@@ -64,10 +64,10 @@ export default function LiveSessionPage() {
     if (wsParam) {
       return { mode: 'local', localServerUrl: wsParam }
     }
-    // Default: cloud
-    if (state?.connectionMode === 'cloud') {
-      return { mode: 'cloud' }
-    }
+    // Default: cloud — return undefined so useBroadcast uses its internal
+    // Supabase transport. Returning { mode: 'cloud' } would trigger
+    // connection.initialize() which creates a SECOND transport, causing a
+    // race condition where subscribe and broadcast use different transports.
     return undefined
   }, [state, wsParam, bleParam])
 

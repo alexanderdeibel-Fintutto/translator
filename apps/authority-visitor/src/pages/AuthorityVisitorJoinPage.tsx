@@ -6,12 +6,11 @@
  * privacy banner, and accessibility toggle.
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import PrivacyBanner from '@/components/market/PrivacyBanner'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
@@ -29,10 +28,15 @@ export default function AuthorityVisitorJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = (code?: string) => {
-    const c = code || sessionCode
-    if (!c.trim()) return
-    navigate(`/${c.trim().toUpperCase()}`, {
+  const normalizeCode = (raw: string): string => {
+    const cleaned = raw.trim().toUpperCase()
+    return cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+  }
+
+  const handleJoin = () => {
+    if (!sessionCode.trim()) return
+    const code = normalizeCode(sessionCode)
+    navigate(`/${code}`, {
       state: { listenerLang: language },
     })
   }
@@ -61,7 +65,17 @@ export default function AuthorityVisitorJoinPage() {
           <label className="text-sm font-medium">
             {t.enterCode}
           </label>
-          <SessionCodeInput onSubmit={handleJoin} />
+          <form onSubmit={(e) => { e.preventDefault(); handleJoin() }}>
+            <input
+              type="text"
+              value={sessionCode}
+              onChange={e => setSessionCode(e.target.value.toUpperCase())}
+              placeholder="TR-XXXX"
+              className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={7}
+              autoFocus
+            />
+          </form>
         </div>
 
         {/* Language Selection — Flag Grid */}
@@ -79,7 +93,7 @@ export default function AuthorityVisitorJoinPage() {
         {/* Join Button */}
         <Button
           onClick={handleJoin}
-          disabled={!sessionCode.trim()}
+          disabled={sessionCode.trim().length < 4}
           className="w-full bg-teal-700 hover:bg-teal-800"
           size="lg"
         >

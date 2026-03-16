@@ -13,6 +13,10 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
   const [isConnected, setIsConnected] = useState(false)
   const transportRef = useRef<BroadcastTransport | null>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
+  // Track the transport that was actually subscribed — broadcast() must use this same
+  // transport, not externalTransport which may change after subscribe due to React
+  // state batching (connection.initialize sets externalTransport AFTER subscribe runs).
+  const subscribedTransportRef = useRef<BroadcastTransport | null>(null)
 
   // Use external transport or create default Supabase transport
   const getTransport = useCallback((): BroadcastTransport => {
@@ -42,6 +46,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     cleanupRef.current?.()
 
     const transport = getTransport()
+    subscribedTransportRef.current = transport
 
     // Listen for connection changes
     cleanupRef.current = transport.onConnectionChange((connected) => {
@@ -60,7 +65,11 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
   }, [getTransport])
 
   const broadcast = useCallback((event: string, payload: Record<string, unknown>) => {
-    const transport = externalTransport || transportRef.current
+    // Use the transport that was subscribed to the channel. This avoids a race condition
+    // where connection.initialize() sets externalTransport AFTER subscribe already ran
+    // with a different (default) transport — broadcasting on the unsubscribed transport
+    // would silently drop all messages.
+    const transport = subscribedTransportRef.current || externalTransport || transportRef.current
     transport?.broadcast(event, payload)
   }, [externalTransport])
 
@@ -68,8 +77,9 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     cleanupRef.current?.()
     cleanupRef.current = null
 
-    const transport = externalTransport || transportRef.current
+    const transport = subscribedTransportRef.current || externalTransport || transportRef.current
     transport?.unsubscribe()
+    subscribedTransportRef.current = null
 
     if (!externalTransport) {
       transportRef.current = null
@@ -79,7 +89,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
 
   /** Get diagnostic info from the active transport (for debug panel) */
   const getDiagnostics = useCallback(() => {
-    const transport = externalTransport || transportRef.current
+    const transport = subscribedTransportRef.current || externalTransport || transportRef.current
     if (transport && 'diagnosticLastMessageAt' in transport) {
       const t = transport as SupabaseBroadcastTransport
       return {

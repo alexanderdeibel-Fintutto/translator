@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom'
 import { GraduationCap, Settings, Plus, Zap, ArrowRight, MessageSquare, QrCode, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import { useI18n } from '@/context/I18nContext'
 import { useUser } from '@/context/UserContext'
 
@@ -23,10 +22,11 @@ export default function SchoolTeacherHomePage() {
   const { user } = useUser()
   const [activateCode, setActivateCode] = useState('')
 
-  const handleActivate = (code?: string) => {
-    const sessionCode = code || activateCode
-    if (!sessionCode.trim()) return
-    navigate(`/live/${sessionCode.trim().toUpperCase()}`, {
+  const handleActivate = () => {
+    if (!activateCode.trim()) return
+    const cleaned = activateCode.trim().toUpperCase()
+    const code = cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+    navigate(`/live/${code}`, {
       state: { role: 'speaker' },
     })
   }
@@ -73,12 +73,20 @@ export default function SchoolTeacherHomePage() {
         <p className="text-sm text-muted-foreground">
           Session-Code eingeben und sofort mit der Live-Uebersetzung fuer Ihre Klasse beginnen.
         </p>
-        <SessionCodeInput
-          onSubmit={(code) => handleActivate(code)}
-        />
+        <form onSubmit={(e) => { e.preventDefault(); handleActivate() }}>
+          <input
+            type="text"
+            value={activateCode}
+            onChange={e => setActivateCode(e.target.value.toUpperCase())}
+            placeholder="TR-XXXX"
+            className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+            maxLength={7}
+            autoFocus
+          />
+        </form>
         <Button
-          onClick={() => handleActivate()}
-          disabled={!activateCode.trim()}
+          onClick={handleActivate}
+          disabled={activateCode.trim().length < 4}
           className="w-full bg-blue-600 hover:bg-blue-700"
           size="lg"
         >

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { Radio, Mic, ArrowRight, Settings, Users, BarChart3, Presentation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
+
 import ChannelSelector, { type Channel } from '@/components/market/ChannelSelector'
 import { useI18n } from '@/context/I18nContext'
 import { useUser } from '@/context/UserContext'
@@ -28,10 +28,10 @@ export default function ConferenceSpeakerHomePage() {
     { id: 'room-b', name: 'Raum B', sourceLang: 'de', listenerCount: 0, isLive: false, topic: 'Panel' },
   ])
 
-  const handleActivate = (code?: string) => {
-    const sessionCode = code || activateCode
-    if (!sessionCode.trim()) return
-    navigate(`/live/${sessionCode.trim().toUpperCase()}`, {
+  const handleActivate = () => {
+    if (!activateCode.trim()) return
+    const normalized = activateCode.trim().toUpperCase().startsWith('TR-') ? activateCode.trim().toUpperCase() : `TR-${activateCode.trim().toUpperCase()}`
+    navigate(`/live/${normalized}`, {
       state: { role: 'speaker' },
     })
   }
@@ -74,10 +74,20 @@ export default function ConferenceSpeakerHomePage() {
       {/* Activate existing session */}
       <Card className="p-5 space-y-3">
         <h3 className="text-sm font-medium">Bestehende Session aktivieren</h3>
-        <SessionCodeInput onSubmit={(code) => handleActivate(code)} />
+        <form onSubmit={(e) => { e.preventDefault(); handleActivate() }}>
+          <input
+            type="text"
+            value={activateCode}
+            onChange={e => setActivateCode(e.target.value.toUpperCase())}
+            placeholder="TR-XXXX"
+            className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+            maxLength={7}
+            autoFocus
+          />
+        </form>
         <Button
           onClick={() => handleActivate()}
-          disabled={!activateCode.trim()}
+          disabled={activateCode.trim().length < 4}
           variant="outline"
           className="w-full"
         >

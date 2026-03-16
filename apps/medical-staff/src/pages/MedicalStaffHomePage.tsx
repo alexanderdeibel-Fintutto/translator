@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { Heart, MessageSquare, ArrowRight, Stethoscope, Settings, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
+
 import MedicalPhrases from '@/components/market/MedicalPhrases'
 import PainScale from '@/components/market/PainScale'
 import PrivacyBanner from '@/components/market/PrivacyBanner'

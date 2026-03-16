@@ -36,7 +36,10 @@ export default function ListenerSessionPage() {
   const connectionConfig = useMemo((): ConnectionConfig | undefined => {
     if (bleParam) return { mode: 'ble' }
     if (wsParam) return { mode: 'local', localServerUrl: wsParam }
-    return { mode: 'cloud' }
+    // Cloud mode: return undefined so useBroadcast uses its internal transport.
+    // Returning { mode: 'cloud' } triggers connection.initialize() which creates
+    // a separate transport, causing a race with subscribe.
+    return undefined
   }, [wsParam, bleParam])
 
   // Auto-join if language was pre-selected

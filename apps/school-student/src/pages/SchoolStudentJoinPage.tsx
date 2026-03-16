@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { BookOpen, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
 import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
@@ -27,10 +26,15 @@ export default function SchoolStudentJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = (code?: string) => {
-    const c = code || sessionCode
-    if (!c.trim()) return
-    navigate(`/${c.trim().toUpperCase()}`, {
+  const normalizeCode = (raw: string): string => {
+    const cleaned = raw.trim().toUpperCase()
+    return cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+  }
+
+  const handleJoin = () => {
+    if (!sessionCode.trim()) return
+    const code = normalizeCode(sessionCode)
+    navigate(`/${code}`, {
       state: { listenerLang: language },
     })
   }
@@ -59,9 +63,18 @@ export default function SchoolStudentJoinPage() {
           <label className="text-sm font-medium">
             {t.enterCode}
           </label>
-          <SessionCodeInput
-            onSubmit={(code) => handleJoin(code)}
-          />
+          <form onSubmit={(e) => { e.preventDefault(); handleJoin() }}>
+            <input
+              type="text"
+              value={sessionCode}
+              onChange={e => setSessionCode(e.target.value.toUpperCase())}
+              placeholder="TR-XXXX"
+              className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={7}
+              autoFocus
+              aria-label={t.enterCode}
+            />
+          </form>
         </div>
 
         {/* Language Selection — Flag Grid */}
@@ -79,7 +92,7 @@ export default function SchoolStudentJoinPage() {
         {/* Join Button */}
         <Button
           onClick={handleJoin}
-          disabled={!sessionCode.trim()}
+          disabled={sessionCode.trim().length < 4}
           className="w-full bg-blue-600 hover:bg-blue-700"
           size="lg"
         >

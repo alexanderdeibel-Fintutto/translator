@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom'
 import { Headphones, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageChips from '@/components/live/LanguageChips'
 import { useI18n } from '@/context/I18nContext'
 
@@ -21,10 +20,15 @@ export default function ListenerJoinPage() {
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState('en')
 
-  const handleJoin = (code?: string) => {
-    const c = code || sessionCode
-    if (!c.trim()) return
-    navigate(`/${c.trim().toUpperCase()}`, {
+  const normalizeCode = (raw: string): string => {
+    const cleaned = raw.trim().toUpperCase()
+    return cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
+  }
+
+  const handleJoin = () => {
+    if (!sessionCode.trim()) return
+    const code = normalizeCode(sessionCode)
+    navigate(`/${code}`, {
       state: { listenerLang: language },
     })
   }
@@ -48,7 +52,17 @@ export default function ListenerJoinPage() {
           <label className="text-sm font-medium">
             {t('liveSession.sessionCode') || 'Session-Code'}
           </label>
-          <SessionCodeInput onSubmit={handleJoin} />
+          <form onSubmit={(e) => { e.preventDefault(); handleJoin() }}>
+            <input
+              type="text"
+              value={sessionCode}
+              onChange={e => setSessionCode(e.target.value.toUpperCase())}
+              placeholder="TR-XXXX"
+              className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              maxLength={7}
+              autoFocus
+            />
+          </form>
         </div>
 
         {/* Language Selection */}
@@ -62,7 +76,7 @@ export default function ListenerJoinPage() {
         {/* Join Button */}
         <Button
           onClick={handleJoin}
-          disabled={!sessionCode.trim()}
+          disabled={sessionCode.trim().length < 4}
           className="w-full"
           size="lg"
         >

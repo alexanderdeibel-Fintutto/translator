@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { Building2, Settings, MessageSquare, Zap, ArrowRight, Languages, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import SessionCodeInput from '@/components/live/SessionCodeInput'
+
 import QuickPhrases, { AUTHORITY_PHRASES } from '@/components/market/QuickPhrases'
 import PrivacyBanner from '@/components/market/PrivacyBanner'
 import FormTemplates from '@/components/market/FormTemplates'
@@ -26,10 +26,10 @@ export default function AuthorityClerkHomePage() {
   const { user } = useUser()
   const [activateCode, setActivateCode] = useState('')
 
-  const handleActivate = (code?: string) => {
-    const sessionCode = code || activateCode
-    if (!sessionCode.trim()) return
-    navigate(`/live/${sessionCode.trim().toUpperCase()}`, {
+  const handleActivate = () => {
+    if (!activateCode.trim()) return
+    const normalized = activateCode.trim().toUpperCase().startsWith('TR-') ? activateCode.trim().toUpperCase() : `TR-${activateCode.trim().toUpperCase()}`
+    navigate(`/live/${normalized}`, {
       state: { role: 'speaker' },
     })
   }
@@ -72,12 +72,20 @@ export default function AuthorityClerkHomePage() {
         <p className="text-sm text-muted-foreground">
           Session-Code eingeben, um die Live-Uebersetzung fuer Ihren Besucher zu starten.
         </p>
-        <SessionCodeInput
-          onSubmit={(code) => handleActivate(code)}
-        />
+        <form onSubmit={(e) => { e.preventDefault(); handleActivate() }}>
+          <input
+            type="text"
+            value={activateCode}
+            onChange={e => setActivateCode(e.target.value.toUpperCase())}
+            placeholder="TR-XXXX"
+            className="w-full text-center text-2xl font-mono font-bold tracking-widest px-4 py-3 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+            maxLength={7}
+            autoFocus
+          />
+        </form>
         <Button
           onClick={() => handleActivate()}
-          disabled={!activateCode.trim()}
+          disabled={activateCode.trim().length < 4}
           className="w-full bg-teal-700 hover:bg-teal-800"
           size="lg"
         >
