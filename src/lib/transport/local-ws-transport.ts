@@ -217,13 +217,11 @@ export class LocalBroadcastTransport implements BroadcastTransport {
       if (msg.event === 'status' && handlers.onStatus) {
         handlers.onStatus(msg.payload as never)
       }
- claude/futo-translator-strategy-RyELj
       if (msg.event === 'backchannel' && handlers.onBackChannel) {
         handlers.onBackChannel(msg.payload as never)
-=======
+      }
       if (msg.event === 'listener_announce' && handlers.onListenerAnnounce) {
         handlers.onListenerAnnounce(msg.payload as never)
- main
       }
     })
     this.cleanups.push(msgCleanup)
