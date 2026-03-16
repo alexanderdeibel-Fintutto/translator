@@ -13,11 +13,15 @@ import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import PainScale from '@/components/market/PainScale'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
 
 export default function MedicalPatientJoinPage() {
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [painLevel, setPainLevel] = useState<number | null>(null)
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = (sessionCode?: string) => {
     const c = sessionCode || code
@@ -26,7 +30,7 @@ export default function MedicalPatientJoinPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8">
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8" dir={rtl ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-sm space-y-6">
         {/* Branding */}
         <div className="text-center space-y-3">
@@ -35,7 +39,7 @@ export default function MedicalPatientJoinPage() {
           </div>
           <h1 className="text-2xl font-bold">Medical Translator</h1>
           <p className="text-sm text-muted-foreground">
-            Understand your doctor — in your language
+            {t.tagline}
           </p>
         </div>
 
@@ -45,7 +49,7 @@ export default function MedicalPatientJoinPage() {
         {/* Join form */}
         <Card className="p-6 space-y-4">
           <p className="text-sm text-center text-muted-foreground">
-            Enter the code from your doctor or nurse
+            {t.enterCode}
           </p>
           <SessionCodeInput onSubmit={handleJoin} />
           <Button
@@ -54,7 +58,7 @@ export default function MedicalPatientJoinPage() {
             className="w-full bg-red-600 hover:bg-red-700"
             size="lg"
           >
-            Join
+            {t.join}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Card>
@@ -67,7 +71,7 @@ export default function MedicalPatientJoinPage() {
         />
 
         <p className="text-xs text-muted-foreground text-center">
-          No account needed. Your data is not stored.
+          {t.noAccount}
         </p>
       </div>
     </div>

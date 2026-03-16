@@ -12,10 +12,14 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
 
 export default function ConferenceListenerJoinPage() {
   const navigate = useNavigate()
   const [code, setCode] = useState('')
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = (sessionCode?: string) => {
     const c = sessionCode || code
@@ -24,7 +28,7 @@ export default function ConferenceListenerJoinPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8">
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8" dir={rtl ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-sm space-y-6">
         {/* Branding */}
         <div className="text-center space-y-3">
@@ -33,7 +37,7 @@ export default function ConferenceListenerJoinPage() {
           </div>
           <h1 className="text-2xl font-bold">Conference Translator</h1>
           <p className="text-sm text-muted-foreground">
-            Follow the event — in your language
+            {t.tagline}
           </p>
         </div>
 
@@ -43,7 +47,7 @@ export default function ConferenceListenerJoinPage() {
         {/* Join form */}
         <Card className="p-6 space-y-4">
           <p className="text-sm text-center text-muted-foreground">
-            Scan the QR code or enter the session code
+            {t.enterCode}
           </p>
           <SessionCodeInput onSubmit={handleJoin} />
           <Button
@@ -53,13 +57,13 @@ export default function ConferenceListenerJoinPage() {
             size="lg"
           >
             <Radio className="mr-2 h-4 w-4" />
-            Join Channel
+            {t.join}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Card>
 
         <p className="text-xs text-muted-foreground text-center">
-          No account needed. Free for all attendees.
+          {t.noAccount}
         </p>
       </div>
     </div>

@@ -14,6 +14,7 @@ import SessionCodeInput from '@/components/live/SessionCodeInput'
 import LanguageFlags from '@/components/live/LanguageFlags'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
 import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
 
 /** Priority languages for school contexts (common student languages in Germany) */
 const SCHOOL_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'uk', 'ru', 'pl', 'fa', 'ku', 'ro', 'sq', 'fr', 'es']
@@ -22,6 +23,9 @@ export default function SchoolStudentJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState(() => detectBrowserLanguage())
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return
@@ -31,7 +35,7 @@ export default function SchoolStudentJoinPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={rtl ? 'rtl' : 'ltr'}>
       {/* Accessibility toggle */}
       <div className="absolute top-4 right-4">
         <LargeTextToggle />
@@ -44,7 +48,7 @@ export default function SchoolStudentJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">School Translator</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Folge dem Unterricht in deiner Sprache
+          {t.tagline}
         </p>
       </div>
 
@@ -52,7 +56,7 @@ export default function SchoolStudentJoinPage() {
         {/* Session Code Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Code von deinem Lehrer
+            {t.enterCode}
           </label>
           <SessionCodeInput
             onSubmit={(code) => {
@@ -65,7 +69,7 @@ export default function SchoolStudentJoinPage() {
         {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Deine Sprache
+            {t.chooseLanguage}
           </label>
           <LanguageFlags
             selected={language}
@@ -81,7 +85,7 @@ export default function SchoolStudentJoinPage() {
           className="w-full bg-blue-600 hover:bg-blue-700"
           size="lg"
         >
-          Mitmachen
+          {t.join}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Card>

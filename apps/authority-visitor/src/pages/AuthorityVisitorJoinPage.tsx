@@ -16,6 +16,7 @@ import LanguageFlags from '@/components/live/LanguageFlags'
 import PrivacyBanner from '@/components/market/PrivacyBanner'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
 import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
 
 /** Priority languages for government office visitors */
 const AUTHORITY_PRIORITY_LANGS = ['de', 'en', 'tr', 'ar', 'fa', 'uk', 'ru', 'pl', 'ro', 'sq', 'ku', 'fr']
@@ -24,6 +25,9 @@ export default function AuthorityVisitorJoinPage() {
   const navigate = useNavigate()
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState(() => detectBrowserLanguage())
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return
@@ -33,7 +37,7 @@ export default function AuthorityVisitorJoinPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={rtl ? 'rtl' : 'ltr'}>
       {/* Accessibility toggle */}
       <div className="absolute top-4 right-4">
         <LargeTextToggle />
@@ -46,7 +50,7 @@ export default function AuthorityVisitorJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">Amt Translator</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Verstehen Sie Ihren Termin — in Ihrer Sprache
+          {t.tagline}
         </p>
       </div>
 
@@ -54,7 +58,7 @@ export default function AuthorityVisitorJoinPage() {
         {/* Session Code Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Code vom Schalter
+            {t.enterCode}
           </label>
           <SessionCodeInput
             onSubmit={(code) => {
@@ -67,7 +71,7 @@ export default function AuthorityVisitorJoinPage() {
         {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Ihre Sprache / Your language
+            {t.chooseLanguage}
           </label>
           <LanguageFlags
             selected={language}
@@ -83,7 +87,7 @@ export default function AuthorityVisitorJoinPage() {
           className="w-full bg-teal-700 hover:bg-teal-800"
           size="lg"
         >
-          Starten
+          {t.join}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Card>

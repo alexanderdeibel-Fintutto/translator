@@ -144,10 +144,7 @@ export default function AuthorityClerkHomePage() {
       {/* Quick Phrases */}
       <QuickPhrases
         phrases={AUTHORITY_PHRASES}
-        onSpeak={(text) => {
-          // TODO: Connect to translation + TTS engine
-          navigate('/translator', { state: { prefill: text } })
-        }}
+        onSpeak={(text) => navigate('/translator', { state: { prefill: text } })}
         title="Haeufige Saetze"
       />
 

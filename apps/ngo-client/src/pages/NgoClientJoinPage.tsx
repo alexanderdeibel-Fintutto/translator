@@ -16,6 +16,7 @@ import LanguageFlags from '@/components/live/LanguageFlags'
 import TrustSignal from '@/components/market/TrustSignal'
 import { LargeTextToggle } from '@/components/market/AccessibilityToggle'
 import { detectBrowserLanguage } from '@/hooks/useLanguageDetect'
+import { getListenerStrings, detectListenerLocale, isListenerRTL } from '@/lib/listener-i18n'
 
 /** Priority languages for refugee contexts */
 const NGO_PRIORITY_LANGS = ['ar', 'fa', 'ps', 'ku', 'tr', 'uk', 'ru', 'ti', 'am', 'so', 'ur', 'fr', 'en', 'de']
@@ -25,9 +26,11 @@ export default function NgoClientJoinPage() {
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState(() => {
     const detected = detectBrowserLanguage()
-    // Default to Arabic for NGO context if browser gives English
     return detected === 'en' ? 'ar' : detected
   })
+  const locale = detectListenerLocale()
+  const t = getListenerStrings(locale)
+  const rtl = isListenerRTL(locale)
 
   const handleJoin = () => {
     if (!sessionCode.trim()) return
@@ -37,7 +40,7 @@ export default function NgoClientJoinPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={rtl ? 'rtl' : 'ltr'}>
       {/* Accessibility toggle */}
       <div className="absolute top-4 right-4">
         <LargeTextToggle />
@@ -50,7 +53,7 @@ export default function NgoClientJoinPage() {
         </div>
         <h1 className="text-2xl font-bold">Refugee Translator</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Verstehe die Beratung in deiner Sprache
+          {t.tagline}
         </p>
         {/* Multilingual welcome hints */}
         <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -80,7 +83,7 @@ export default function NgoClientJoinPage() {
         {/* Language Selection — Flag Grid */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            Deine Sprache / Your language / لغتك
+            {t.chooseLanguage}
           </label>
           <LanguageFlags
             selected={language}
