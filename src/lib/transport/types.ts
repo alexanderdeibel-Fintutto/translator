@@ -32,10 +32,19 @@ export interface HotspotInfo {
 
 // --- Broadcast transport ---
 
+export interface BackChannelMessage {
+  responseId: string
+  emoji: string
+  label: string
+  senderLang: string
+  timestamp: number
+}
+
 export interface BroadcastHandlers {
   onTranslation?: (chunk: TranslationChunk) => void
   onSessionInfo?: (info: SessionInfo) => void
   onStatus?: (status: StatusMessage) => void
+  onBackChannel?: (msg: BackChannelMessage) => void
 }
 
 export interface BroadcastTransport {

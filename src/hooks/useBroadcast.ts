@@ -2,10 +2,12 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import type { BroadcastTransport, BroadcastHandlers } from '@/lib/transport/types'
 import { SupabaseBroadcastTransport } from '@/lib/transport/supabase-transport'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
+import type { BackChannelMessage } from '@/lib/transport/types'
 
 type TranslationHandler = (chunk: TranslationChunk) => void
 type SessionInfoHandler = (info: SessionInfo) => void
 type StatusHandler = (status: StatusMessage) => void
+type BackChannelHandler = (msg: BackChannelMessage) => void
 
 export function useBroadcast(externalTransport?: BroadcastTransport) {
   const [isConnected, setIsConnected] = useState(false)
@@ -33,6 +35,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     onTranslation?: TranslationHandler,
     onSessionInfo?: SessionInfoHandler,
     onStatus?: StatusHandler,
+    onBackChannel?: BackChannelHandler,
   ) => {
     // Clean up previous
     cleanupRef.current?.()
@@ -48,6 +51,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
       onTranslation,
       onSessionInfo,
       onStatus,
+      onBackChannel,
     }
 
     transport.subscribe(code, handlers)

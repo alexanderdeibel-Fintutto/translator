@@ -13,7 +13,7 @@ import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import { TIERS, type TierId } from '@/lib/tiers'
 import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
-import type { ConnectionConfig } from '@/lib/transport/types'
+import type { ConnectionConfig, BackChannelMessage } from '@/lib/transport/types'
 
 function generateChunkId(): string {
   return `chunk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -44,6 +44,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [listenerLimitReached, setListenerLimitReached] = useState(false)
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
   const [languageLimitReached, setLanguageLimitReached] = useState(false)
+  const [backChannelMessages, setBackChannelMessages] = useState<BackChannelMessage[]>([])
 
   // Tier config
   const tierConfig = TIERS[userTierId] ?? TIERS.free
@@ -92,8 +93,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
       await connection.initialize(config)
     }
 
-    // Subscribe to broadcast channel
-    broadcast.subscribe(code)
+    // Subscribe to broadcast channel (speaker receives backchannel responses)
+    broadcast.subscribe(code, undefined, undefined, undefined, (msg: BackChannelMessage) => {
+      setBackChannelMessages((prev) => [...prev, msg])
+    })
 
     // Join presence as speaker
     presence.join(code, {
@@ -476,8 +479,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
     listenerCount: presence.listeners.filter(l => l.targetLanguage !== '_speaker').length,
     listenersByLanguage: presence.listenersByLanguage,
 
-    // Back channel (raw broadcast access for listener responses)
+    // Back channel
     broadcast: broadcast.broadcast,
+    backChannelMessages,
+    clearBackChannel: () => setBackChannelMessages([]),
 
     // Tier limits
     listenerLimitReached,
