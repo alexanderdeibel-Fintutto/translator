@@ -1,29 +1,118 @@
-# Naming-Recherche: Dachmarke fuer Fintutto Translator
+# fintutto.world — Dachmarke & Subdomain-Struktur
 
 **Datum:** 2026-03-16
-**Status:** Entwurf / Diskussionsgrundlage
+**Status:** Domain gekauft! Subdomain-Planung
+**Domain:** fintutto.world
 
-## Ausgangslage
+---
 
-Der Fintutto Translator umfasst mittlerweile 4 Produktlinien mit 10 App-Varianten:
+## Produktuebersicht
 
-### Produktlinie 1: Guide Translator (Tourismus)
-- Stadtfuehrer, Reiseagenturen, Kreuzfahrt, Events/Museen/Konferenzen
+Die Dachmarke **fintutto.world** umfasst 7 Produktlinien mit 16 App-Varianten:
+
+### Kern: Guide Translator (Tourismus)
+- Stadtfuehrer, Reiseagenturen, Kreuzfahrt
 - Eigene Marke fuer den Tourismusbereich
+- 3 Apps: Consumer, Enterprise Console, Live Listener
 
-### Produktlinie 2: School Translator (Bildung)
+### Loesung 1: School Translator (Bildung)
 - Lehrer-App + Schueler-App
 - Echtzeit-Uebersetzung im Klassenzimmer
 
-### Produktlinie 3: Authority/Amt Translator (Behoerden)
+### Loesung 2: Amt Translator (Behoerden)
 - Sachbearbeiter-App + Besucher-App
 - Kommunikation am Behoerden-Schalter
 
-### Produktlinie 4: NGO/Refugee Translator (Soziales)
+### Loesung 3: NGO/Refugee Translator (Soziales)
 - Helfer-App + Klient-App
 - Unterstuetzung bei Beratung und Betreuung
 
-**Problem:** "Fintutto Translator" ist als Dachmarke zu klein/limitierend fuer diesen Umfang.
+### Loesung 4: Hospitality Translator (Gastgewerbe)
+- Hotel/Restaurant-App + Gast-App
+- Kommunikation mit internationalen Gaesten
+
+### Loesung 5: Medical Translator (Gesundheit)
+- Arzt/Pfleger-App + Patient-App
+- Medizinische Kommunikation, Anamnese, Aufklaerung
+
+### Loesung 6: Events Translator (Veranstaltungen)
+- Veranstalter/Speaker-App + Teilnehmer-App
+- Konferenzen, Messen, Museen, Workshops
+
+---
+
+## fintutto.world — Vollstaendige Subdomain-Struktur
+
+### Dachmarke & Landing
+
+| Subdomain | Beschreibung | Typ |
+|-----------|-------------|-----|
+| `www.fintutto.world` | Haupt-Landing-Page, alle Loesungen | Landing |
+
+### Kern: Guide Translator (Tourismus)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `app.fintutto.world` | Fintutto Translator | Uebersetzer (Free/Pro) | Sky Blue #0369a1 |
+| `guide.fintutto.world` | Enterprise Console | Sprecher (Stadtfuehrer, Reiseleiter) | Purple #7c3aed |
+| `live.fintutto.world` | Fintutto Live | Zuhoerer (Gaeste, Touristen) | Emerald #059669 |
+
+### Loesung 1: School Translator (Bildung)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `school-teacher.fintutto.world` | School Translator - Lehrer | Sprecher (Lehrkraft) | Blue #2563eb |
+| `school-student.fintutto.world` | School Translator - Schueler | Zuhoerer (Schueler) | Blue #2563eb |
+
+### Loesung 2: Amt Translator (Behoerden)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `amt-clerk.fintutto.world` | Amt Translator - Sachbearbeiter | Sprecher (Beamter) | Teal #0f766e |
+| `amt-visitor.fintutto.world` | Amt Translator - Besucher | Zuhoerer (Buerger) | Teal #0f766e |
+
+### Loesung 3: NGO/Refugee Translator (Soziales)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `ngo-helper.fintutto.world` | Refugee Translator - Helfer | Sprecher (Sozialarbeiter) | Orange #ea580c |
+| `ngo-client.fintutto.world` | Refugee Translator - Klient | Zuhoerer (Gefluechtete) | Orange #ea580c |
+
+### Loesung 4: Hospitality Translator (Gastgewerbe)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `hotel-staff.fintutto.world` | Hospitality Translator - Mitarbeiter | Sprecher (Rezeption, Service) | Rose #e11d48 |
+| `hotel-guest.fintutto.world` | Hospitality Translator - Gast | Zuhoerer (Hotelgast) | Rose #e11d48 |
+
+### Loesung 5: Medical Translator (Gesundheit)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `medical-staff.fintutto.world` | Medical Translator - Arzt/Pfleger | Sprecher (Med. Personal) | Red #dc2626 |
+| `medical-patient.fintutto.world` | Medical Translator - Patient | Zuhoerer (Patient) | Red #dc2626 |
+
+### Loesung 6: Events Translator (Veranstaltungen)
+
+| Subdomain | App | Rolle | Farbe |
+|-----------|-----|-------|-------|
+| `event-speaker.fintutto.world` | Events Translator - Speaker | Sprecher (Veranstalter, Redner) | Violet #8b5cf6 |
+| `event-attendee.fintutto.world` | Events Translator - Teilnehmer | Zuhoerer (Publikum) | Violet #8b5cf6 |
+
+---
+
+## Zusammenfassung
+
+| # | Loesung | Subdomains | Apps | Farbe |
+|---|---------|-----------|------|-------|
+| 0 | **Guide / Tourismus** (Kern) | app / guide / live | 3 | Sky/Purple/Emerald |
+| 1 | **School** (Bildung) | school-teacher / school-student | 2 | Blue |
+| 2 | **Amt** (Behoerden) | amt-clerk / amt-visitor | 2 | Teal |
+| 3 | **NGO** (Soziales) | ngo-helper / ngo-client | 2 | Orange |
+| 4 | **Hospitality** (Gastgewerbe) | hotel-staff / hotel-guest | 2 | Rose |
+| 5 | **Medical** (Gesundheit) | medical-staff / medical-patient | 2 | Red |
+| 6 | **Events** (Veranstaltungen) | event-speaker / event-attendee | 2 | Violet |
+| | | **Gesamt: 16 Subdomains** | **15 Apps + 1 Landing** | |
 
 ---
 
@@ -111,8 +200,11 @@ Falls eine eigenstaendige Produktmarke gewuenscht ist:
 
 ## Naechste Schritte
 
-- [ ] Domain-Verfuegbarkeit bei Registrar pruefen (Namecheap, Cloudflare)
-- [ ] Markenrecherche beim DPMA (Deutsches Patent- und Markenamt)
-- [ ] Entscheidung fuer Dachmarke treffen
-- [ ] Subdomain-Struktur festlegen
-- [ ] Landing Page / Branding aktualisieren
+- [x] Domain fintutto.world kaufen
+- [x] Subdomain-Struktur festlegen
+- [ ] DNS-Eintraege bei Registrar anlegen (16 Subdomains)
+- [ ] app.config.ts um Hospitality, Medical, Events Varianten erweitern
+- [ ] Neue App-Verzeichnisse in /apps/ anlegen
+- [ ] Vercel/Hosting fuer neue Subdomains konfigurieren
+- [ ] Landing Page auf www.fintutto.world aktualisieren
+- [ ] Bestehende fintutto.cloud Subdomains auf fintutto.world migrieren
