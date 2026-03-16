@@ -29,9 +29,10 @@ export default function AuthorityVisitorJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = () => {
-    if (!sessionCode.trim()) return
-    navigate(`/${sessionCode.trim().toUpperCase()}`, {
+  const handleJoin = (code?: string) => {
+    const c = code || sessionCode
+    if (!c.trim()) return
+    navigate(`/${c.trim().toUpperCase()}`, {
       state: { listenerLang: language },
     })
   }
@@ -60,12 +61,7 @@ export default function AuthorityVisitorJoinPage() {
           <label className="text-sm font-medium">
             {t.enterCode}
           </label>
-          <SessionCodeInput
-            onSubmit={(code) => {
-              setSessionCode(code)
-              if (code) handleJoin()
-            }}
-          />
+          <SessionCodeInput onSubmit={handleJoin} />
         </div>
 
         {/* Language Selection — Flag Grid */}

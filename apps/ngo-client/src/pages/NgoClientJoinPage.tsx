@@ -32,9 +32,10 @@ export default function NgoClientJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = () => {
-    if (!sessionCode.trim()) return
-    navigate(`/${sessionCode.trim().toUpperCase()}`, {
+  const handleJoin = (code?: string) => {
+    const c = code || sessionCode
+    if (!c.trim()) return
+    navigate(`/${c.trim().toUpperCase()}`, {
       state: { listenerLang: language },
     })
   }
@@ -72,12 +73,7 @@ export default function NgoClientJoinPage() {
           <label className="text-sm font-medium">
             Code / الرمز / کد
           </label>
-          <SessionCodeInput
-            onSubmit={(code) => {
-              setSessionCode(code)
-              if (code) handleJoin()
-            }}
-          />
+          <SessionCodeInput onSubmit={handleJoin} />
         </div>
 
         {/* Language Selection — Flag Grid */}

@@ -21,9 +21,10 @@ export default function ListenerJoinPage() {
   const [sessionCode, setSessionCode] = useState('')
   const [language, setLanguage] = useState('en')
 
-  const handleJoin = () => {
-    if (!sessionCode.trim()) return
-    navigate(`/${sessionCode.trim().toUpperCase()}`, {
+  const handleJoin = (code?: string) => {
+    const c = code || sessionCode
+    if (!c.trim()) return
+    navigate(`/${c.trim().toUpperCase()}`, {
       state: { listenerLang: language },
     })
   }
@@ -47,12 +48,7 @@ export default function ListenerJoinPage() {
           <label className="text-sm font-medium">
             {t('liveSession.sessionCode') || 'Session-Code'}
           </label>
-          <SessionCodeInput
-            onSubmit={(code) => {
-              setSessionCode(code)
-              if (code) handleJoin()
-            }}
-          />
+          <SessionCodeInput onSubmit={handleJoin} />
         </div>
 
         {/* Language Selection */}

@@ -27,9 +27,10 @@ export default function SchoolStudentJoinPage() {
   const t = getListenerStrings(locale)
   const rtl = isListenerRTL(locale)
 
-  const handleJoin = () => {
-    if (!sessionCode.trim()) return
-    navigate(`/${sessionCode.trim().toUpperCase()}`, {
+  const handleJoin = (code?: string) => {
+    const c = code || sessionCode
+    if (!c.trim()) return
+    navigate(`/${c.trim().toUpperCase()}`, {
       state: { listenerLang: language },
     })
   }
@@ -59,10 +60,7 @@ export default function SchoolStudentJoinPage() {
             {t.enterCode}
           </label>
           <SessionCodeInput
-            onSubmit={(code) => {
-              setSessionCode(code)
-              if (code) handleJoin()
-            }}
+            onSubmit={(code) => handleJoin(code)}
           />
         </div>
 

@@ -300,7 +300,7 @@ export default function LiveLandingPage() {
             </div>
           )}
 
-          <SessionCodeInput onJoin={handleJoin} />
+          <SessionCodeInput onSubmit={handleJoin} />
         </Card>
       </div>
     </div>

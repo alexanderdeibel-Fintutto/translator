@@ -5,10 +5,10 @@ import { Card } from '@/components/ui/card'
 import { useI18n } from '@/context/I18nContext'
 
 interface SessionCodeInputProps {
-  onJoin: (code: string) => void
+  onSubmit: (code: string) => void
 }
 
-export default function SessionCodeInput({ onJoin }: SessionCodeInputProps) {
+export default function SessionCodeInput({ onSubmit }: SessionCodeInputProps) {
   const { t } = useI18n()
   const [code, setCode] = useState('')
 
@@ -18,7 +18,7 @@ export default function SessionCodeInput({ onJoin }: SessionCodeInputProps) {
     if (cleaned.length >= 4) {
       // Accept with or without TR- prefix
       const normalized = cleaned.startsWith('TR-') ? cleaned : `TR-${cleaned}`
-      onJoin(normalized)
+      onSubmit(normalized)
     }
   }
 
