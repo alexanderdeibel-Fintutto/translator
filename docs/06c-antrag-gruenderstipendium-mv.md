@@ -2,7 +2,8 @@
 
 **Programm:** Gruendungsstipendium MV (ESF+ kofinanziert)
 **Antragsteller:** Alexander Deibel
-**Beantragte Foerderung:** 1.200 EUR/Monat x 18 Monate = 21.600 EUR (nicht rueckzahlbar)
+**Beantragte Foerderung:** Bis zu 1.800 EUR/Monat x 18 Monate = bis 32.400 EUR (nicht rueckzahlbar)
+**Berechnung:** 1.200 EUR Grundbetrag + Zuschlag je unterhaltspflichtigem Kind (bis max. 1.800 EUR/Mon)
 **Bewilligungsbehoerde:** GSA — Gesellschaft fuer Struktur- und Arbeitsmarktentwicklung mbH, Schwerin
 **Kontakt:** 0385 55775-0 | Schulstrasse 1-3, 19055 Schwerin
 **Quelle:** https://www.gsa-schwerin.de/foerderung/gruendungsstipendien
@@ -210,7 +211,7 @@ Fintutto Translator wird die fuehrende Plattform fuer Echtzeituebersetzung in Um
 
 | Quelle | Betrag | Status |
 |--------|--------|--------|
-| **Gruenderstipendium MV** | 21.600 EUR | Dieser Antrag |
+| **Gruenderstipendium MV** | bis 32.400 EUR | Dieser Antrag (1.200 EUR + Kinderzuschlag x 18 Mon) |
 | **ZIM Einzelprojekt** | 225.000 EUR | Antrag in Vorbereitung |
 | **EFRE MV** (alternativ zu ZIM) | 171.870 EUR | Antrag vorbereitet |
 | **Forschungszulage** | ~29.400 EUR/Jahr | Beantragung geplant |

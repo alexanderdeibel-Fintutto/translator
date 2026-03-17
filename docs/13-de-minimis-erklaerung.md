@@ -116,7 +116,7 @@ Hiermit erklaere ich, Alexander Deibel, als Geschaeftsfuehrer der Fintutto UG (i
 
 | Programm | Beantragt (EUR) | De-minimis? | Status |
 |----------|----------------|-------------|--------|
-| **Gruenderstipendium MV** | 21.600 | **Ja** (ESF+, De-minimis) | Antrag in Vorbereitung |
+| **Gruenderstipendium MV** | bis 32.400 | **Ja** (ESF+, De-minimis) | Antrag in Vorbereitung |
 | **ZIM Einzelprojekt** | 225.000 | **Nein** (AGVO Art. 25) | Antrag in Vorbereitung |
 | **EFRE MV** (alternativ) | 171.870 | **Nein** (AGVO Art. 25) | Antrag vorbereitet |
 | **Forschungszulage** | ~29.400/Jahr | **Nein** (steuerlich) | Beantragung geplant |
@@ -127,11 +127,11 @@ Hiermit erklaere ich, Alexander Deibel, als Geschaeftsfuehrer der Fintutto UG (i
 
 | Beihilfe | Betrag (EUR) |
 |----------|-------------|
-| Gruenderstipendium MV | 21.600 |
+| Gruenderstipendium MV | bis 32.400 |
 | BAFA Beratungsfoerderung (max. 5x) | 14.000 |
-| **Summe De-minimis (geplant)** | **35.600 EUR** |
+| **Summe De-minimis (geplant)** | **bis 46.400 EUR** |
 | **Schwellenwert** | **300.000 EUR** |
-| **Verbleibend nach Beantragung** | **~264.400 EUR** |
+| **Verbleibend nach Beantragung** | **~253.600 EUR** |
 
 > **HINWEIS:** ZIM und EFRE sind KEINE De-minimis-Beihilfen. Sie fallen unter
 > die Allgemeine Gruppenfreistellungsverordnung (AGVO), Art. 25
