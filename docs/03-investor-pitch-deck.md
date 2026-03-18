@@ -473,7 +473,7 @@ MODULARER FINANZIERUNGSPLAN (24 Monate):
 │  ├── ACCELERATE:MV (ESF+)                        0 EUR │
 │  │   (Coaching, Mentoring -- kein Cash)                 │
 │  ├── FFplus Generative AI (100% EU)         100.000 EUR │
-│  └── Gruenderstipendium MV (18 Mon.)         21.600 EUR │
+│  └── Gruenderstipendium MV (18 Mon.)    bis 32.400 EUR │
 │      + Beratungsfoerderung BAFA               2.800 EUR │
 │      + SME Fund IP-Schutz                     1.000 EUR │
 │      + Forschungszulage (35% FuE-Kosten)     24.600 EUR │

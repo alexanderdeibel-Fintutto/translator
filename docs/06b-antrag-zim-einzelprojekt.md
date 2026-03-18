@@ -252,7 +252,7 @@ Enthaltene Positionen:
 > - INVEST-Zuschuss macht Angels attraktiver (15% Erwerbszuschuss)
 > - Gruender-Eigenleistung: 25.000 EUR
 > - Forschungszulage (35% FuE-Personal): ~70.000 EUR (Erstattung via BSFZ)
-> - Gruenderstipendium MV (18 Mon. x 1.200 EUR): 21.600 EUR
+> - Gruenderstipendium MV (18 Mon. x bis 1.800 EUR): bis 32.400 EUR
 >
 > **Keine Doppelfoerderung:** ZIM-Kostenpositionen werden NICHT bei
 > EFRE, FFplus oder anderen Programmen angesetzt. Die Abgrenzung wird
