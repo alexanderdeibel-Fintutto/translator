@@ -12,7 +12,7 @@
 | **Name:** | Alexander Deibel |
 | **Geburtsjahr/-ort:** | 1975, Weimar |
 | **Wohnsitz:** | Mecklenburg-Vorpommern |
-| **Familienstand:** | Vater zweier Soehne |
+| **Familienstand:** | Vater von drei Kindern (2007, 2010, 2013) |
 | **E-Mail:** | alexander.deibel@itour.guide |
 | **Webseite:** | https://guidetranslator.com |
 | **Nationalitaet:** | Deutsch |
@@ -61,7 +61,7 @@ Gruendung und Aufbau einer KI-gestuetzten Echtzeituebersetzungsplattform — vom
 
 - Verwaltung eines umfangreichen Immobilienportfolios (Wohnimmobilien)
 - Sporadische Beratungstaetigkeit fuer Kultur- und Medienprojekte
-- Familienphase — bewusste Entscheidung fuer die Erziehung zweier Soehne
+- Familienphase — bewusste Entscheidung fuer die Erziehung von drei Kindern (*2007, *2010, *2013)
 
 ### 2000-2010 — Gruender & Geschaeftsfuehrer, novapool-Unternehmensgruppe, Berlin
 
