@@ -12,7 +12,7 @@
 | **Name:** | Alexander Deibel |
 | **Geburtsjahr/-ort:** | 1975, Weimar |
 | **Wohnsitz:** | Mecklenburg-Vorpommern |
-| **Familienstand:** | Vater zweier Soehne |
+| **Familienstand:** | Vater von drei Kindern (2007, 2010, 2013) |
 | **E-Mail:** | alexander.deibel@itour.guide |
 | **Webseite:** | https://guidetranslator.com |
 | **Nationalitaet:** | Deutsch |
@@ -30,6 +30,7 @@
 ### Abitur, Weimar
 
 - Bereits waehrend der Schulzeit Mitarbeit beim **Kunstfest Weimar** (ab 1993) — einem der renommiertesten internationalen Kunst- und Theaterfestivals Deutschlands
+- **Mit 17 Jahren:** Organisation, musikalische Leitung und Gesamtregie von **"The Wall"** (Pink Floyd) mit **150 Schuelern** — 15 ausverkaufte Vorstellungen in der Weimarhalle, Open-Air im Schlosshof Weimar und **Europatournee**. Vollstaendig selbstorganisiert
 
 ---
 
@@ -60,15 +61,15 @@ Gruendung und Aufbau einer KI-gestuetzten Echtzeituebersetzungsplattform — vom
 
 - Verwaltung eines umfangreichen Immobilienportfolios (Wohnimmobilien)
 - Sporadische Beratungstaetigkeit fuer Kultur- und Medienprojekte
-- Familienphase — bewusste Entscheidung fuer die Erziehung zweier Soehne
+- Familienphase — bewusste Entscheidung fuer die Erziehung von drei Kindern (*2007, *2010, *2013)
 
 ### 2000-2010 — Gruender & Geschaeftsfuehrer, novapool-Unternehmensgruppe, Berlin
 
-Aufbau und Leitung eines Verbunds von vier Unternehmen im Kultur- und Medienbereich:
+Aufbau und Leitung eines Verbunds von vier Unternehmen im Kultur- und Medienbereich mit **Produktionsbudgets im 7-stelligen Bereich**:
 
 **novapool artists GmbH** — Theaterproduktion & Kuenstleragentur
-- **"Die Dreigroschenoper"** mit **Campino** (Die Toten Hosen) in der Hauptrolle — **70 ausverkaufte Vorstellungen** im Admiralspalast Berlin. Eine der erfolgreichsten freien Theaterproduktionen Deutschlands
-- **"Der Auftrag"** von Heiner Mueller — **17 ausverkaufte Vorstellungen** im Haus der Berliner Festspiele, Gastspiele in Wien
+- **"Die Dreigroschenoper"** mit **Campino** (Die Toten Hosen) in der Hauptrolle — **70 ausverkaufte Vorstellungen** im Admiralspalast Berlin, **Budget: 3,5 Mio. EUR**. Eine der erfolgreichsten freien Theaterproduktionen Deutschlands
+- **"Der Auftrag"** von Heiner Mueller — **17 ausverkaufte Vorstellungen** im Haus der Berliner Festspiele, Gastspiele in Wien, **Budget: 950.000 EUR**
 - Internationale Tanztheaterproduktionen mit Europatourneen (u.a. Bahia Ballet, Salvador da Bahia, Brasilien)
 - **Kuenstleragentur** fuer namhafte Schauspieler, darunter **Ulrich Muehe** und **Klaus Maria Brandauer**
 
@@ -77,7 +78,7 @@ Aufbau und Leitung eines Verbunds von vier Unternehmen im Kultur- und Medienbere
 - Sponsoring-Akquise und Partnermanagement
 
 **novapool production** — Film & Fernsehen
-- Kinofilmproduktionen: **"Unschuld"**, **"Lenz"**
+- Kinofilmproduktionen: **"Unschuld"**, **"Lenz"** (Budgets: 600.000 - 6 Mio. EUR)
 - Auftragsproduktionen fuer Fernsehsender
 - Dokumentarfilmproduktionen
 
@@ -185,16 +186,17 @@ Die Kombination aus jahrzehntelanger Erfahrung in der Leitung kreativer Grosspro
 
 ## AUSGEWAEHLTE REFERENZPROJEKTE
 
-| Projekt | Rolle | Ergebnis |
-|---------|-------|----------|
-| **Fintutto Translator** (2025-heute) | Gruender, CEO | 16 Apps, 41.436 Zeilen Code, 10 Videos — in 3 Monaten |
-| **ArtGuideAI** (2024-heute) | Gruender, Produktarchitekt | 28 KI-gestuetzte Anwendungen |
-| **Die Dreigroschenoper** (Berlin) | Produzent | 70 ausverkaufte Vorstellungen, Admiralspalast |
-| **Der Auftrag** (Berlin/Wien) | Produzent | 17 ausverkaufte Vorstellungen, Berliner Festspiele |
-| **Kulturhauptstadt Weimar 1999** | Projektleitung | 3.000 Veranstaltungen, europaweite Aufmerksamkeit |
-| **Kinofilm "Unschuld"** | Produzent | Kinoproduktion und Verleih |
-| **Kinofilm "Lenz"** | Produzent | Kinoproduktion und Verleih |
-| **Bahia Ballet Europatournee** | Produzent | Internationale Tanztheater-Tournee |
+| Projekt | Rolle | Ergebnis | Budget |
+|---------|-------|----------|--------|
+| **Fintutto Translator** (2025-heute) | Gruender, CEO | 16 Apps, 41.436 Zeilen Code, 10 Videos — in 3 Monaten | — |
+| **ArtGuideAI** (2024-heute) | Gruender, Produktarchitekt | 28 KI-gestuetzte Anwendungen | — |
+| **Die Dreigroschenoper** (Berlin) | Produzent | 70 ausverkaufte Vorstellungen, Admiralspalast | 3,5 Mio. EUR |
+| **Der Auftrag** (Berlin/Wien) | Produzent | 17 ausverkaufte Vorstellungen, Berliner Festspiele | 950.000 EUR |
+| **Kulturhauptstadt Weimar 1999** | Projektleitung | 3.000 Veranstaltungen, europaweite Aufmerksamkeit | Mio.-Budget |
+| **Kinofilm "Unschuld"** | Produzent | Kinoproduktion und Verleih | Mio.-Budget |
+| **Kinofilm "Lenz"** | Produzent | Kinoproduktion und Verleih | 600.000+ EUR |
+| **Bahia Ballet Europatournee** | Produzent | Internationale Tanztheater-Tournee | — |
+| **"The Wall"** (Weimar, mit 17 J.) | Regie, Organisation | 150 Schueler, 15 ausverkaufte Shows, Europatournee | Eigenorg. |
 
 ---
 

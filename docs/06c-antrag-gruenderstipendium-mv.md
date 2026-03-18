@@ -2,8 +2,8 @@
 
 **Programm:** Gruendungsstipendium MV (ESF+ kofinanziert)
 **Antragsteller:** Alexander Deibel
-**Beantragte Foerderung:** Bis zu 1.800 EUR/Monat x 18 Monate = bis 32.400 EUR (nicht rueckzahlbar)
-**Berechnung:** 1.200 EUR Grundbetrag + Zuschlag je unterhaltspflichtigem Kind (bis max. 1.800 EUR/Mon)
+**Beantragte Foerderung:** 1.800 EUR/Monat x 18 Monate = 32.400 EUR (nicht rueckzahlbar)
+**Berechnung:** 1.200 EUR Grundbetrag + 3x Kinderzuschlag (3 unterhaltspflichtige Kinder: *2007, *2010, *2013) = 1.800 EUR/Mon
 **Bewilligungsbehoerde:** GSA — Gesellschaft fuer Struktur- und Arbeitsmarktentwicklung mbH, Schwerin
 **Kontakt:** 0385 55775-0 | Schulstrasse 1-3, 19055 Schwerin
 **Quelle:** https://www.gsa-schwerin.de/foerderung/gruendungsstipendien
@@ -131,8 +131,10 @@ Testing:      Vitest + Playwright
 | Feld | Angabe |
 |------|--------|
 | **Name:** | Alexander Deibel |
+| **Geburtsjahr/-ort:** | 1975, Weimar |
 | **Wohnsitz:** | Mecklenburg-Vorpommern |
 | **Betriebssitz:** | Mecklenburg-Vorpommern |
+| **Kinder:** | 3 unterhaltspflichtige Kinder (*2007, *2010, *2013) |
 | **Firma (i.G.):** | Fintutto UG (haftungsbeschraenkt) |
 | **Branche:** | Software / KI / Sprachuebersetzung |
 | **Gruendungsdatum:** | [einzusetzen — max. 12 Monate vor Antragstellung] |
@@ -211,7 +213,7 @@ Fintutto Translator wird die fuehrende Plattform fuer Echtzeituebersetzung in Um
 
 | Quelle | Betrag | Status |
 |--------|--------|--------|
-| **Gruenderstipendium MV** | bis 32.400 EUR | Dieser Antrag (1.200 EUR + Kinderzuschlag x 18 Mon) |
+| **Gruenderstipendium MV** | 32.400 EUR | Dieser Antrag (1.800 EUR/Mon x 18 Mon, inkl. 3x Kinderzuschlag) |
 | **ZIM Einzelprojekt** | 225.000 EUR | Antrag in Vorbereitung |
 | **EFRE MV** (alternativ zu ZIM) | 171.870 EUR | Antrag vorbereitet |
 | **Forschungszulage** | ~29.400 EUR/Jahr | Beantragung geplant |
