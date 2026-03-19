@@ -1,0 +1,46 @@
+diff --git a/packages/shared/src/deeplinks.ts b/packages/shared/src/deeplinks.ts
+index cd858f4..0fd847b 100644
+--- a/packages/shared/src/deeplinks.ts
++++ b/packages/shared/src/deeplinks.ts
+@@ -144,13 +144,13 @@ export function mietpreisbremseCheckerLink(data: CheckerData): string {
+   return `${FINTUTTO_APPS.portal.url}/checker/mietpreisbremse?${params}`
+ }
+ 
+-// Vermieter-Portal deep links
++// Vermieter-Portal deep links (points to portal rechner)
+ export function vermieterRechnerLink(rechner: string, data: RentData): string {
+   const params = new URLSearchParams()
+   if (data.rent) params.set('rent', String(data.rent))
+   if (data.address) params.set('address', data.address)
+   const qs = params.toString()
+-  return `${FINTUTTO_APPS.vermieterPortal.url}/rechner/${rechner}${qs ? `?${qs}` : ''}`
++  return `${FINTUTTO_APPS.portal.url}/rechner/${rechner}${qs ? `?${qs}` : ''}`
+ }
+ 
+ // Convenience: all cross-app links for a property/unit
+diff --git a/packages/shared/src/index.ts b/packages/shared/src/index.ts
+index 01322f3..c7f1d05 100644
+--- a/packages/shared/src/index.ts
++++ b/packages/shared/src/index.ts
+@@ -221,3 +221,21 @@ export type { PremiumTeaserProps, UpgradePromptConfig } from './components/Premi
+ // Cross-app navigation
+ export { AppSwitcher } from './components/AppSwitcher'
+ export { getEcosystemBarItems, getEcosystemBarGrouped, ECOSYSTEM_BAR_STYLE } from './components/EcosystemBar'
++
++// Cross-app deep links
++export * from './deeplinks'
++
++// Helper to get other apps in the ecosystem (for footers, cross-sell, etc.)
++export function getOtherApps(currentAppSlug: string) {
++  return Object.entries(FINTUTTO_APPS)
++    .filter(([, app]) => app.slug !== currentAppSlug && 'url' in app && app.url)
++    .map(([key, app]) => ({
++      key,
++      name: app.name,
++      slug: app.slug,
++      description: app.description,
++      icon: app.icon,
++      url: (app as any).url as string,
++      category: app.category,
++    }))
++}
