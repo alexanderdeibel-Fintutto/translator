@@ -1,0 +1,23 @@
+diff --git a/packages/shared/src/index.ts b/packages/shared/src/index.ts
+index 01322f3..d94c281 100644
+--- a/packages/shared/src/index.ts
++++ b/packages/shared/src/index.ts
+@@ -221,3 +221,18 @@ export type { PremiumTeaserProps, UpgradePromptConfig } from './components/Premi
+ // Cross-app navigation
+ export { AppSwitcher } from './components/AppSwitcher'
+ export { getEcosystemBarItems, getEcosystemBarGrouped, ECOSYSTEM_BAR_STYLE } from './components/EcosystemBar'
++
++// Helper to get other apps in the ecosystem (for footers, cross-sell, etc.)
++export function getOtherApps(currentAppSlug: string) {
++  return Object.entries(FINTUTTO_APPS)
++    .filter(([, app]) => app.slug !== currentAppSlug && 'url' in app && app.url)
++    .map(([key, app]) => ({
++      key,
++      name: app.name,
++      slug: app.slug,
++      description: app.description,
++      icon: app.icon,
++      url: (app as any).url as string,
++      category: app.category,
++    }))
++}
