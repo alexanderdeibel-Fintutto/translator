@@ -172,6 +172,13 @@ Deno.serve(async (req: Request) => {
 
     // Update lead as converted (only if leadId was provided)
     if (leadId) {
+      // Fetch lead to get created_by for sales attribution
+      const { data: leadData } = await adminClient
+        .from('gt_leads')
+        .select('created_by')
+        .eq('id', leadId)
+        .maybeSingle()
+
       const { error: leadError } = await adminClient
         .from('gt_leads')
         .update({
@@ -183,6 +190,18 @@ Deno.serve(async (req: Request) => {
 
       if (leadError) {
         console.log('Lead update failed:', leadError)
+      }
+
+      // Link customer to sales agent for commission tracking
+      if (leadData?.created_by) {
+        const { error: agentLinkError } = await adminClient
+          .from('gt_users')
+          .update({ sales_agent_id: leadData.created_by })
+          .eq('id', userId)
+
+        if (agentLinkError) {
+          console.log('Sales agent link failed:', agentLinkError)
+        }
       }
     }
 
