@@ -66,7 +66,8 @@
     "dev:artguide-whitelabel": "vite --config apps/artguide-whitelabel/vite.config.ts",
     "build:artguide-whitelabel": "vite build --config apps/artguide-whitelabel/vite.config.ts",
     "dev:artguide-portal": "cd apps/artguide-portal && next dev -p 3001",
-    "build:artguide-portal": "cd apps/artguide-portal && next build"
+    "build:artguide-portal": "cd apps/artguide-portal && next build",
+    "build:artguide-whitelabel:museum": "tsx scripts/build-whitelabel.ts"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
