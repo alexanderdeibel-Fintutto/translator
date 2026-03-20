@@ -68,7 +68,7 @@ export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'ed
 
 export type TtsQuality = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
 
-export type TranslationProvider = 'free' | 'azure' | 'google'
+export type TranslationProvider = 'free' | 'deepl' | 'azure' | 'google'
 
 export interface TierLimits {
   maxListeners: number         // 0 = unlimited
@@ -630,8 +630,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       personalizedExperience: false,
     },
     pricing: {
-      monthlyEur: 1_990,
-      yearlyEur: 19_900,
+      // Increased from EUR 1,990 → EUR 4,990 (cruise lines budget millions for guest tech)
+      monthlyEur: 4_990,
+      yearlyEur: 49_900,
       overagePerMinuteEur: 0.80,
       additionalLanguageEur: 49,
     },
@@ -685,8 +686,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       personalizedExperience: false,
     },
     pricing: {
-      monthlyEur: 6_990,
-      yearlyEur: 69_900,
+      // Increased from EUR 6,990 → EUR 14,990 (fleet = serious investment)
+      monthlyEur: 14_990,
+      yearlyEur: 149_900,
       overagePerMinuteEur: 0.60,
       additionalLanguageEur: 39,
     },
@@ -699,7 +701,7 @@ export const TIERS: Record<TierId, TierDefinition> = {
     segment: 'cruise',
     name: 'Cruise Armada',
     displayName: 'Cruise Armada',
-    description: '10+ Schiffe — alle Sprachen, voller API-Zugang, Dedicated Support.',
+    description: '10+ Schiffe — alle Sprachen, voller API-Zugang, Dedicated Support, SLA 99.9%.',
     badge: 'Enterprise',
     limits: {
       maxListeners: 0,
@@ -740,8 +742,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       personalizedExperience: false,
     },
     pricing: {
-      monthlyEur: 19_990,
-      yearlyEur: 199_900,
+      // Increased from EUR 19,990 → EUR 39,990 (cruise lines = massive budgets)
+      monthlyEur: 39_990,
+      yearlyEur: 399_900,
       overagePerMinuteEur: 0.40,
       additionalLanguageEur: 0,
     },
@@ -1323,7 +1326,7 @@ export const TIERS: Record<TierId, TierDefinition> = {
     segment: 'cityguide',
     name: 'City Enterprise',
     displayName: 'City Guide Enterprise',
-    description: 'Fuer Grossstaedte und Metropolen. Alle Features, API, Dedicated Support.',
+    description: 'Fuer Grossstaedte und Metropolen. Alle Features, API, Dedicated Support, White-Label.',
     badge: 'Enterprise',
     limits: {
       maxListeners: 0,
@@ -1364,8 +1367,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       personalizedExperience: true,
     },
     pricing: {
-      monthlyEur: 1_990,
-      yearlyEur: 19_900,
+      // Increased from EUR 1,990 → EUR 4,990 (cities have EUR 20K-100K IT budgets)
+      monthlyEur: 4_990,
+      yearlyEur: 49_900,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
     },
@@ -1473,8 +1477,9 @@ export const TIERS: Record<TierId, TierDefinition> = {
       personalizedExperience: true,
     },
     pricing: {
-      monthlyEur: 1_490,
-      yearlyEur: 14_900,
+      // Increased from EUR 1,490 → EUR 2,990 (regional tourism boards have EUR 10K-50K budgets)
+      monthlyEur: 2_990,
+      yearlyEur: 29_900,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
     },
@@ -1883,7 +1888,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
       visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
     },
-    pricing: { monthlyEur: 799, yearlyEur: 7_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    // Increased from EUR 799 → EUR 1,990 (airports/transport authorities have large budgets)
+    pricing: { monthlyEur: 1_990, yearlyEur: 19_900, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
     supportLevel: 'priority_4h',
     badge: 'Enterprise',
   },
