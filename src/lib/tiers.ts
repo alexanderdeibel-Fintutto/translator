@@ -40,12 +40,31 @@ export type TierId =
   | 'partner_basic'
   | 'partner_premium'
   | 'partner_featured'
+  // Fintutto World: Additional segments
+  | 'culture_basic'
+  | 'culture_professional'
+  | 'nature_basic'
+  | 'nature_professional'
+  | 'leisure_basic'
+  | 'leisure_professional'
+  | 'retail_basic'
+  | 'retail_professional'
+  | 'transport_basic'
+  | 'transport_professional'
+  | 'gastro_basic'
+  | 'gastro_professional'
+  | 'sacred_basic'
+  | 'sacred_professional'
+  | 'campus_basic'
+  | 'campus_professional'
+  | 'sport_basic'
+  | 'sport_professional'
   // Internal tiers (not shown on pricing page, assigned by role)
   | 'internal_admin'
   | 'internal_tester'
   | 'internal_sales'
 
-export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'education' | 'authority' | 'hospitality' | 'medical' | 'cityguide' | 'regionguide' | 'partner' | 'internal'
+export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'education' | 'authority' | 'hospitality' | 'medical' | 'cityguide' | 'regionguide' | 'partner' | 'culture' | 'nature' | 'leisure' | 'retail' | 'transport' | 'gastro' | 'sacred' | 'campus' | 'sport' | 'internal'
 
 export type TtsQuality = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
 
@@ -1625,6 +1644,444 @@ export const TIERS: Record<TierId, TierDefinition> = {
     supportLevel: 'email_12h',
   },
 
+  // ── SEGMENT: CULTURE (Theater, Oper, Konzerthaeuser, Kulturzentren) ─
+  culture_basic: {
+    id: 'culture_basic',
+    segment: 'culture',
+    name: 'Culture Basic',
+    displayName: 'Kultur Basic',
+    description: 'Fuer Theater, Opernhaeuser und Kulturzentren. Programm und Stueckinfos multilingual.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 99, yearlyEur: 990, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  culture_professional: {
+    id: 'culture_professional',
+    segment: 'culture',
+    name: 'Culture Professional',
+    displayName: 'Kultur Professional',
+    description: 'Fuer grosse Kulturinstitutionen. White-Label, API, erweiterte Analytics.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 349, yearlyEur: 3_490, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'email_12h',
+    badge: 'Empfohlen',
+  },
+
+  // ── SEGMENT: NATURE (Nationalparks, Zoos, Aquarien, Botanische Gaerten) ─
+  nature_basic: {
+    id: 'nature_basic',
+    segment: 'nature',
+    name: 'Nature Basic',
+    displayName: 'Natur Basic',
+    description: 'Fuer Naturparks, Zoos und Botanische Gaerten. Lehrpfade, Tier-/Pflanzeninfos.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 10, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 129, yearlyEur: 1_290, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  nature_professional: {
+    id: 'nature_professional',
+    segment: 'nature',
+    name: 'Nature Professional',
+    displayName: 'Natur Professional',
+    description: 'Fuer grosse Nationalparks und Zoos. GPS-Touren, unbegrenzte Sprachen, API.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 399, yearlyEur: 3_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'email_12h',
+    badge: 'Empfohlen',
+  },
+
+  // ── SEGMENT: LEISURE (Freizeitparks, Erlebniswelten) ─
+  leisure_basic: {
+    id: 'leisure_basic',
+    segment: 'leisure',
+    name: 'Leisure Basic',
+    displayName: 'Freizeit Basic',
+    description: 'Fuer Freizeitparks und Erlebniswelten. Attraktionsinfos, Wartezeitenhinweise.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 199, yearlyEur: 1_990, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  leisure_professional: {
+    id: 'leisure_professional',
+    segment: 'leisure',
+    name: 'Leisure Professional',
+    displayName: 'Freizeit Professional',
+    description: 'Fuer grosse Parks und Resorts. White-Label App, BLE-Beacons, API-Anbindung.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 599, yearlyEur: 5_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'priority_4h',
+    badge: 'Enterprise',
+  },
+
+  // ── SEGMENT: RETAIL (Shopping-Center, Outlets, Einkaufsstrassen) ─
+  retail_basic: {
+    id: 'retail_basic',
+    segment: 'retail',
+    name: 'Retail Basic',
+    displayName: 'Retail Basic',
+    description: 'Fuer Shopping-Center und Outlets. Store-Finder, Angebote, mehrsprachige Navigation.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 149, yearlyEur: 1_490, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  retail_professional: {
+    id: 'retail_professional',
+    segment: 'retail',
+    name: 'Retail Professional',
+    displayName: 'Retail Professional',
+    description: 'Fuer grosse Einkaufszentren und Outlet-Villages. BLE-Indoor, White-Label, API.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 399, yearlyEur: 3_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'email_12h',
+  },
+
+  // ── SEGMENT: TRANSPORT (Flughaefen, Bahnhoefe, OEPNV) ─
+  transport_basic: {
+    id: 'transport_basic',
+    segment: 'transport',
+    name: 'Transport Basic',
+    displayName: 'Transport Basic',
+    description: 'Fuer Bahnhoefe und kleine Flughaefen. Wegeleitung, Infotafeln, Service-POIs.',
+    limits: {
+      maxListeners: 0, maxLanguages: 15, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 10, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: false,
+      apiAccess: 'read', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 249, yearlyEur: 2_490, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  transport_professional: {
+    id: 'transport_professional',
+    segment: 'transport',
+    name: 'Transport Professional',
+    displayName: 'Transport Professional',
+    description: 'Fuer grosse Flughaefen und Verkehrsunternehmen. Echtzeit-Info, BLE, API.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 100_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 799, yearlyEur: 7_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'priority_4h',
+    badge: 'Enterprise',
+  },
+
+  // ── SEGMENT: GASTRO (Weingueter, Brauereien, Food-Touren, Erlebnisgastronomie) ─
+  gastro_basic: {
+    id: 'gastro_basic',
+    segment: 'gastro',
+    name: 'Gastro Basic',
+    displayName: 'Gastro Basic',
+    description: 'Fuer Weingueter, Brauereien und Erlebnisgastronomie. Speisekarten, Fuehrungen.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 15_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'basic', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 69, yearlyEur: 690, overagePerMinuteEur: 0, additionalLanguageEur: 4.90 },
+    supportLevel: 'email_48h',
+  },
+  gastro_professional: {
+    id: 'gastro_professional',
+    segment: 'gastro',
+    name: 'Gastro Professional',
+    displayName: 'Gastro Professional',
+    description: 'Fuer Gastro-Ketten und Food-Tour-Anbieter. Multi-Location, Partner-Netzwerk.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 30_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 199, yearlyEur: 1_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'email_24h',
+  },
+
+  // ── SEGMENT: SACRED (Kirchen, Kloester, Pilgerwege, historische Friedhoefe) ─
+  sacred_basic: {
+    id: 'sacred_basic',
+    segment: 'sacred',
+    name: 'Sacred Basic',
+    displayName: 'Sakral Basic',
+    description: 'Fuer Kirchen, Kloester und Pilgerwege. Geschichte, Architektur, Spiritualitaet.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: false, broadcasting: false, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 49, yearlyEur: 490, overagePerMinuteEur: 0, additionalLanguageEur: 4.90 },
+    supportLevel: 'email_48h',
+  },
+  sacred_professional: {
+    id: 'sacred_professional',
+    segment: 'sacred',
+    name: 'Sacred Professional',
+    displayName: 'Sakral Professional',
+    description: 'Fuer Pilgerwege, Dioezesen und grosse Sakralbauten. Multi-Location, GPS-Touren.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 199, yearlyEur: 1_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'email_24h',
+  },
+
+  // ── SEGMENT: CAMPUS (Firmencampus, Werksbesichtigungen, Industriekultur) ─
+  campus_basic: {
+    id: 'campus_basic',
+    segment: 'campus',
+    name: 'Campus Basic',
+    displayName: 'Campus Basic',
+    description: 'Fuer Werksbesichtigungen und Firmenrundgaenge. Besucherinfos, Sicherheitshinweise.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 10, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: true, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 149, yearlyEur: 1_490, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  campus_professional: {
+    id: 'campus_professional',
+    segment: 'campus',
+    name: 'Campus Professional',
+    displayName: 'Campus Professional',
+    description: 'Fuer grosse Konzerne und Industriekultur-Standorte. White-Label, BLE, API.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 499, yearlyEur: 4_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'priority_4h',
+    badge: 'Enterprise',
+  },
+
+  // ── SEGMENT: SPORT (Stadien, Sportstaetten, Olympia-Parks) ─
+  sport_basic: {
+    id: 'sport_basic',
+    segment: 'sport',
+    name: 'Sport Basic',
+    displayName: 'Sport Basic',
+    description: 'Fuer Sportstaetten und Stadien. Besucherinfo, Stadiontouren, Fan-Erlebnisse.',
+    limits: {
+      maxListeners: 0, maxLanguages: 10, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 5, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'neural2', ttsChirpAvailable: false,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: false,
+      cameraOcr: false, offlineMode: true, bleTransport: false, wifiRelay: false,
+      qrCode: true, customGlossaries: true, preTranslation: false, whiteLabel: false,
+      apiAccess: 'none', analytics: 'dashboard', guideManagement: false, exportTranscripts: false,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: false,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 199, yearlyEur: 1_990, overagePerMinuteEur: 0, additionalLanguageEur: 9.90 },
+    supportLevel: 'email_24h',
+  },
+  sport_professional: {
+    id: 'sport_professional',
+    segment: 'sport',
+    name: 'Sport Professional',
+    displayName: 'Sport Professional',
+    description: 'Fuer grosse Stadien, Olympia-Parks und Sport-Resorts. BLE, White-Label, API.',
+    limits: {
+      maxListeners: 0, maxLanguages: 0, sessionMinutesPerMonth: 0,
+      maxConcurrentSessions: 0, maxGlossaries: 0, preTranslationScripts: 0,
+      dailyTranslationLimit: 0, maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure', ttsQuality: 'chirp3hd', ttsChirpAvailable: true,
+      cloudStt: true, liveSession: true, broadcasting: true, conversationMode: true,
+      cameraOcr: true, offlineMode: true, bleTransport: true, wifiRelay: true,
+      qrCode: true, customGlossaries: true, preTranslation: true, whiteLabel: true,
+      apiAccess: 'full', analytics: 'enterprise', guideManagement: true, exportTranscripts: true,
+      aiDialog: true, notifications: true, contentCms: true, partnerManagement: true,
+      visitorAnalytics: true, multiLanguageContent: true, personalizedExperience: true,
+    },
+    pricing: { monthlyEur: 599, yearlyEur: 5_990, overagePerMinuteEur: 0, additionalLanguageEur: 0 },
+    supportLevel: 'priority_4h',
+    badge: 'Enterprise',
+  },
+
   // ── SEGMENT: INTERNAL (not shown on pricing page) ──────────────────
   // These tiers are assigned automatically based on user role.
   // They bypass all limits and enable all features at zero cost.
@@ -1807,6 +2264,15 @@ export const TIER_ORDER: TierId[] = [
   'cityguide_starter', 'cityguide_professional', 'cityguide_enterprise',
   'regionguide_starter', 'regionguide_professional',
   'partner_basic', 'partner_premium', 'partner_featured',
+  'culture_basic', 'culture_professional',
+  'nature_basic', 'nature_professional',
+  'leisure_basic', 'leisure_professional',
+  'retail_basic', 'retail_professional',
+  'transport_basic', 'transport_professional',
+  'gastro_basic', 'gastro_professional',
+  'sacred_basic', 'sacred_professional',
+  'campus_basic', 'campus_professional',
+  'sport_basic', 'sport_professional',
 ]
 
 /** Internal tier IDs (not shown on pricing page, assigned by role) */
@@ -1838,6 +2304,15 @@ export const SEGMENTS: { id: Segment; label: string; icon: string }[] = [
   { id: 'cityguide', label: 'City Guide', icon: 'landmark' },
   { id: 'regionguide', label: 'Region Guide', icon: 'mountain' },
   { id: 'partner', label: 'Partner', icon: 'store' },
+  { id: 'culture', label: 'Kultur', icon: 'theater' },
+  { id: 'nature', label: 'Natur', icon: 'tree-pine' },
+  { id: 'leisure', label: 'Freizeit', icon: 'ferris-wheel' },
+  { id: 'retail', label: 'Retail', icon: 'shopping-bag' },
+  { id: 'transport', label: 'Transport', icon: 'plane' },
+  { id: 'gastro', label: 'Gastro', icon: 'wine' },
+  { id: 'sacred', label: 'Sakral', icon: 'church' },
+  { id: 'campus', label: 'Campus', icon: 'factory' },
+  { id: 'sport', label: 'Sport', icon: 'trophy' },
 ]
 
 /** Check if a feature is available for a tier */
