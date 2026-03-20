@@ -42,6 +42,14 @@ interface MuseumBranding {
   supabaseUrl?: string       // optional override for dedicated Supabase
   supabaseAnonKey?: string
   museumId: string           // UUID of the museum in ag_museums
+  // City Guide / Region Guide extensions
+  guideType?: 'artguide' | 'cityguide' | 'regionguide'  // default: artguide
+  cityId?: string            // UUID of cg_cities (for City Guide)
+  regionId?: string          // UUID of cg_regions (for Region Guide)
+  defaultRoute?: string      // e.g. "/city/meine-stadt" or "/region/meine-region"
+  enablePartners?: boolean   // show partner directory + booking
+  enableOffers?: boolean     // show offers marketplace
+  enableBookings?: boolean   // enable booking flow
 }
 
 interface BuildOptions {
@@ -135,6 +143,14 @@ function generateEnvFile(branding: MuseumBranding, outputDir: string): void {
     })}`,
     branding.supabaseUrl ? `VITE_SUPABASE_URL=${branding.supabaseUrl}` : '',
     branding.supabaseAnonKey ? `VITE_SUPABASE_ANON_KEY=${branding.supabaseAnonKey}` : '',
+    // City/Region Guide config
+    `VITE_GUIDE_TYPE=${branding.guideType || 'artguide'}`,
+    branding.cityId ? `VITE_CITY_ID=${branding.cityId}` : '',
+    branding.regionId ? `VITE_REGION_ID=${branding.regionId}` : '',
+    branding.defaultRoute ? `VITE_DEFAULT_ROUTE=${branding.defaultRoute}` : '',
+    `VITE_ENABLE_PARTNERS=${branding.enablePartners !== false}`,
+    `VITE_ENABLE_OFFERS=${branding.enableOffers !== false}`,
+    `VITE_ENABLE_BOOKINGS=${branding.enableBookings !== false}`,
   ].filter(Boolean).join('\n')
 
   fs.writeFileSync(path.join(outputDir, '.env.production'), envContent)
