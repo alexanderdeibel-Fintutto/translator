@@ -22,6 +22,8 @@ const ArtworkManagerPage = lazy(() => import('@/components/admin/ArtworkManager'
 const VenueEditorPage = lazy(() => import('@/components/admin/VenueEditor'))
 const StaffManagerPage = lazy(() => import('@/components/admin/StaffManager'))
 const ContentImportPage = lazy(() => import('@/components/admin/ContentImport'))
+const ContentManagerPage = lazy(() => import('@/components/admin/ContentManager'))
+const AiContentPanelPage = lazy(() => import('@/components/admin/AiContentPanel'))
 const TourEditorPage = lazy(() => import('@/components/admin/TourEditor'))
 const QrCodeManagerPage = lazy(() => import('@/components/admin/QrCodeManager'))
 const MuseumAnalyticsPage = lazy(() => import('@/components/admin/MuseumAnalytics'))
@@ -54,6 +56,8 @@ export default function AdminPage() {
           <Route path="venues" element={<Suspense fallback={<PageLoader />}><VenueEditorPage /></Suspense>} />
           <Route path="staff" element={<Suspense fallback={<PageLoader />}><StaffManagerPage /></Suspense>} />
           <Route path="content-import" element={<Suspense fallback={<PageLoader />}><ContentImportPage /></Suspense>} />
+          <Route path="content" element={<Suspense fallback={<PageLoader />}><ContentManagerPage /></Suspense>} />
+          <Route path="ai-content" element={<Suspense fallback={<PageLoader />}><AiContentPanelPage /></Suspense>} />
           <Route path="tours" element={<Suspense fallback={<PageLoader />}><TourEditorPage /></Suspense>} />
           <Route path="qr-codes" element={<Suspense fallback={<PageLoader />}><QrCodeManagerPage /></Suspense>} />
           <Route path="museum-analytics" element={<Suspense fallback={<PageLoader />}><MuseumAnalyticsPage /></Suspense>} />

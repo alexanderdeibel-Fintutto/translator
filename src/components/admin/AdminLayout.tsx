@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {
   BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog, Activity, DollarSign,
   Landmark, Map, Upload, Route, QrCode, Building2, ChevronDown, ChevronRight,
-  Image, UserPlus,
+  Image, UserPlus, Globe, Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -36,6 +36,8 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/tours', label: 'Fuehrungen', icon: Route },
       { path: '/staff', label: 'Team', icon: UserPlus },
       { path: '/content-import', label: 'Content Import', icon: Upload },
+      { path: '/content', label: 'Content & POIs', icon: Globe },
+      { path: '/ai-content', label: 'KI & Uebersetzung', icon: Sparkles },
       { path: '/qr-codes', label: 'QR-Codes', icon: QrCode },
       { path: '/museum-analytics', label: 'Analysen', icon: BarChart3 },
     ],

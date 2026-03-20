@@ -158,11 +158,12 @@ export default function ContentImport() {
       const enriched = (data?.items ?? []) as GeneratedItem[]
       setGeneratedItems(enriched)
 
-      // Import into ag_artworks
+      // Import into ag_artworks + fw_content_items (unified model)
       let count = 0
       for (const item of enriched) {
         if (item.status === 'generated') {
-          const { error: insertErr } = await supabase.from('ag_artworks').insert({
+          // 1. Create in ag_artworks (museum-specific)
+          const { data: artwork, error: insertErr } = await supabase.from('ag_artworks').insert({
             museum_id: museumId,
             title: { de: item.title },
             artist_name: item.artist || null,
@@ -170,8 +171,31 @@ export default function ContentImport() {
             description_standard: { de: item.description },
             status: 'draft',
             tags: [],
-          })
-          if (!insertErr) count++
+          }).select('id').single()
+
+          if (!insertErr) {
+            count++
+            // 2. Also create in fw_content_items (unified content model)
+            const museum = museums.find(m => m.id === museumId)
+            await supabase.from('fw_content_items').insert({
+              content_type: 'artwork',
+              domain: 'artguide',
+              parent_type: 'museum',
+              parent_id: museumId,
+              parent_name: museum?.name || null,
+              name: { de: item.title },
+              slug: item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60),
+              description: { de: item.description },
+              content_standard: { de: item.description },
+              domain_data: {
+                artist_name: item.artist || null,
+                year_created: item.year || null,
+                ag_artwork_id: artwork?.id || null,
+              },
+              status: 'draft',
+              ai_auto_translate_status: 'pending',
+            }).catch(() => {}) // silently skip if fw_content_items not available
+          }
         }
       }
 
