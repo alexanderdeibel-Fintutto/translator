@@ -33,6 +33,17 @@ const navSections = [
     ],
   },
   {
+    title: 'Content Pipeline',
+    items: [
+      { icon: '🧠', label: 'Content Hub', href: '/dashboard/content-hub' },
+      { icon: '📥', label: 'Import-Zentrale', href: '/dashboard/import' },
+      { icon: '🏛', label: 'Museum Import', href: '/dashboard/import/museum' },
+      { icon: '🏙', label: 'Stadt Import', href: '/dashboard/import/city' },
+      { icon: '🎤', label: 'Kongress Import', href: '/dashboard/import/conference' },
+      { icon: '🎪', label: 'Messe Import', href: '/dashboard/import/fair' },
+    ],
+  },
+  {
     title: 'System',
     items: [
       { icon: '👥', label: 'Team', href: '/dashboard/team' },
