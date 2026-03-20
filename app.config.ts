@@ -42,12 +42,15 @@ export type AppVariant =
   | 'medical-patient'
   | 'conference-speaker'
   | 'conference-listener'
+  // Art Guide variants
+  | 'artguide-visitor'
+  | 'artguide-whitelabel'
 
 /** Which core app this flavor is based on */
-export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing'
+export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide'
 
 /** Target market for market-specific flavors */
-export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events'
+export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events' | 'artguide'
 
 export interface AppConfig {
   /** Internal variant identifier */
@@ -349,6 +352,40 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     iosScheme: 'conferencetranslatorlistener',
     subdomain: 'tl-conference-listener',
     iconDir: 'conference',
+  },
+
+  // ─── Art Guide Apps ──────────────────────────────────────────
+  'artguide-visitor': {
+    variant: 'artguide-visitor',
+    base: 'artguide',
+    market: 'artguide',
+    appName: 'Fintutto Art Guide',
+    shortName: 'Art Guide',
+    description: 'Dein persoenlicher KI-Museumsfuehrer. Personalisierte Audio-Fuehrungen, interaktive Karten und KI-Erklaerungen.',
+    appId: 'com.fintutto.artguide',
+    themeColor: '#1e1b4b',
+    accentColor: '#c4a35a',
+    devPort: 5210,
+    startUrl: '/',
+    iosScheme: 'fintuttoartguide',
+    subdomain: 'artguide',
+    iconDir: 'artguide',
+  },
+  'artguide-whitelabel': {
+    variant: 'artguide-whitelabel',
+    base: 'artguide',
+    market: 'artguide',
+    appName: 'Museum Guide',
+    shortName: 'Guide',
+    description: 'White-Label Museum Guide — powered by Fintutto Art Guide.',
+    appId: 'com.fintutto.artguide.whitelabel',
+    themeColor: '#1a1a2e',
+    accentColor: '#c4a35a',
+    devPort: 5211,
+    startUrl: '/',
+    iosScheme: 'museumguide',
+    subdomain: 'guide',
+    iconDir: 'artguide',
   },
 }
 

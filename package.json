@@ -60,7 +60,13 @@
     "build:counter": "npm run build:counter-staff && npm run build:counter-guest",
     "build:medical": "npm run build:medical-staff && npm run build:medical-patient",
     "build:conference": "npm run build:conference-speaker && npm run build:conference-listener",
-    "build:markets": "npm run build:schools && npm run build:authorities && npm run build:ngo && npm run build:counter && npm run build:medical && npm run build:conference"
+    "build:markets": "npm run build:schools && npm run build:authorities && npm run build:ngo && npm run build:counter && npm run build:medical && npm run build:conference",
+    "dev:artguide": "vite --config apps/artguide-visitor/vite.config.ts",
+    "build:artguide": "vite build --config apps/artguide-visitor/vite.config.ts",
+    "dev:artguide-whitelabel": "vite --config apps/artguide-whitelabel/vite.config.ts",
+    "build:artguide-whitelabel": "vite build --config apps/artguide-whitelabel/vite.config.ts",
+    "dev:artguide-portal": "cd apps/artguide-portal && next dev -p 3001",
+    "build:artguide-portal": "cd apps/artguide-portal && next build"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
