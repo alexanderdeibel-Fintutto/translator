@@ -9,15 +9,18 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import {
   Landmark, Plus, Search, ExternalLink, Copy, Check, Users,
-  Globe, MapPin, QrCode, BarChart3,
+  Globe, MapPin, QrCode, BarChart3, Image, Route, Paintbrush,
+  Building2, FileText, Sparkles,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import type { Museum } from '@/lib/artguide/types'
 
 interface MuseumWithStats extends Museum {
-  artwork_count?: number
-  tour_count?: number
-  staff_count?: number
+  artwork_count: number
+  tour_count: number
+  staff_count: number
+  published_count: number
+  draft_count: number
 }
 
 export default function MuseumList() {
@@ -33,14 +36,37 @@ export default function MuseumList() {
 
   async function loadMuseums() {
     setLoading(true)
-    const { data, error } = await supabase
+
+    const { data: museumData } = await supabase
       .from('ag_museums')
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (!error && data) {
-      setMuseums(data as MuseumWithStats[])
-    }
+    if (!museumData) { setLoading(false); return }
+
+    // Fetch counts for each museum in parallel
+    const enriched = await Promise.all(
+      (museumData as Museum[]).map(async (museum) => {
+        const [artworks, tours, staff] = await Promise.all([
+          supabase.from('ag_artworks').select('id, status', { count: 'exact', head: false }).eq('museum_id', museum.id),
+          supabase.from('ag_tours').select('id', { count: 'exact', head: true }).eq('museum_id', museum.id),
+          supabase.from('ag_museum_users').select('id', { count: 'exact', head: true }).eq('museum_id', museum.id).eq('is_active', true),
+        ])
+
+        const artworkList = (artworks.data || []) as { id: string; status: string }[]
+
+        return {
+          ...museum,
+          artwork_count: artworkList.length,
+          published_count: artworkList.filter(a => a.status === 'published').length,
+          draft_count: artworkList.filter(a => a.status === 'draft').length,
+          tour_count: tours.count ?? 0,
+          staff_count: staff.count ?? 0,
+        } as MuseumWithStats
+      }),
+    )
+
+    setMuseums(enriched)
     setLoading(false)
   }
 
@@ -125,50 +151,58 @@ export default function MuseumList() {
 
                   <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Globe className="h-3 w-3" />
-                      {museum.supported_languages?.length ?? 0} Sprachen
+                      <Image className="h-3 w-3" />
+                      {museum.artwork_count} Exponate
+                      {museum.published_count > 0 && (
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 ml-0.5">
+                          {museum.published_count} live
+                        </Badge>
+                      )}
+                      {museum.draft_count > 0 && (
+                        <Badge variant="secondary" className="text-[10px] px-1 py-0 ml-0.5">
+                          {museum.draft_count} Entwurf
+                        </Badge>
+                      )}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {museum.positioning_mode}
+                      <Route className="h-3 w-3" />
+                      {museum.tour_count} Fuehrungen
                     </span>
                     <span className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
-                      {museum.staff_count ?? '—'} Mitarbeiter
+                      {museum.staff_count} Mitarbeiter
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      {museum.supported_languages?.length ?? 0} Sprachen
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 ml-4">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => copyInviteLink(museum)}
-                  >
-                    {copiedId === museum.id
-                      ? <Check className="h-4 w-4 text-emerald-500" />
-                      : <Copy className="h-4 w-4" />}
+                <div className="flex flex-wrap items-center gap-1.5 ml-4">
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/artworks?museum=${museum.id}`)} title="Exponate">
+                    <Image className="h-4 w-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(`/museum/${museum.slug}`, '_blank')}
-                  >
-                    <ExternalLink className="h-4 w-4" />
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/venues?museum=${museum.id}`)} title="Raeume">
+                    <Building2 className="h-4 w-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => navigate(`/admin/qr-codes?museum=${museum.id}`)}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/tours?museum=${museum.id}`)} title="Fuehrungen">
+                    <Route className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/staff?museum=${museum.id}`)} title="Team">
+                    <Users className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/qr-codes?museum=${museum.id}`)} title="QR-Codes">
                     <QrCode className="h-4 w-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => navigate(`/admin/museum-analytics?museum=${museum.id}`)}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/admin/museum-analytics?museum=${museum.id}`)} title="Analysen">
                     <BarChart3 className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => copyInviteLink(museum)} title="Link kopieren">
+                    {copiedId === museum.id ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => window.open(`/museum/${museum.slug}`, '_blank')} title="Vorschau">
+                    <ExternalLink className="h-4 w-4" />
                   </Button>
                 </div>
               </div>

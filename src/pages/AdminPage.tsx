@@ -18,6 +18,9 @@ import SalesPerformanceView from '@/components/admin/SalesPerformance'
 // Lazy-loaded Fintutto World pages
 const MuseumListPage = lazy(() => import('@/components/admin/MuseumList'))
 const MuseumOnboardingPage = lazy(() => import('@/components/admin/MuseumOnboarding'))
+const ArtworkManagerPage = lazy(() => import('@/components/admin/ArtworkManager'))
+const VenueEditorPage = lazy(() => import('@/components/admin/VenueEditor'))
+const StaffManagerPage = lazy(() => import('@/components/admin/StaffManager'))
 const ContentImportPage = lazy(() => import('@/components/admin/ContentImport'))
 const TourEditorPage = lazy(() => import('@/components/admin/TourEditor'))
 const QrCodeManagerPage = lazy(() => import('@/components/admin/QrCodeManager'))
@@ -47,6 +50,9 @@ export default function AdminPage() {
           {/* Museum & Guide Routes */}
           <Route path="museums" element={<Suspense fallback={<PageLoader />}><MuseumListPage /></Suspense>} />
           <Route path="museum-onboarding" element={<Suspense fallback={<PageLoader />}><MuseumOnboardingPage /></Suspense>} />
+          <Route path="artworks" element={<Suspense fallback={<PageLoader />}><ArtworkManagerPage /></Suspense>} />
+          <Route path="venues" element={<Suspense fallback={<PageLoader />}><VenueEditorPage /></Suspense>} />
+          <Route path="staff" element={<Suspense fallback={<PageLoader />}><StaffManagerPage /></Suspense>} />
           <Route path="content-import" element={<Suspense fallback={<PageLoader />}><ContentImportPage /></Suspense>} />
           <Route path="tours" element={<Suspense fallback={<PageLoader />}><TourEditorPage /></Suspense>} />
           <Route path="qr-codes" element={<Suspense fallback={<PageLoader />}><QrCodeManagerPage /></Suspense>} />

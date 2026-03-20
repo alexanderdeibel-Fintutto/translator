@@ -19,6 +19,7 @@ import {
   Clock, Users, Eye, Send, ChevronDown, ChevronUp,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useSearchParams } from 'react-router-dom'
 import type { Tour, Artwork, TargetAudience, DifficultyLevel, TourType } from '@/lib/artguide/types'
 
 const AUDIENCES: { id: TargetAudience; label: string }[] = [
@@ -42,8 +43,9 @@ interface TourStop {
 }
 
 export default function TourEditor() {
+  const [searchParams] = useSearchParams()
   const [museums, setMuseums] = useState<{ id: string; name: string }[]>([])
-  const [museumId, setMuseumId] = useState('')
+  const [museumId, setMuseumId] = useState(searchParams.get('museum') || '')
   const [tours, setTours] = useState<Tour[]>([])
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [loading, setLoading] = useState(false)
