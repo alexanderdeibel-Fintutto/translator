@@ -8,7 +8,72 @@ const corsHeaders = {
 
 // ---------------------------------------------------------------------------
 // Translation provider implementations
+// Cascade: DeepL (best quality, cheapest) → Azure → Google → MyMemory (free)
 // ---------------------------------------------------------------------------
+
+// DeepL: Best quality for European languages, ~EUR 5.49/1M chars (vs Azure EUR 10)
+// Supports: DE, EN, FR, ES, IT, PT, NL, PL, RU, JA, ZH, KO + 20 more
+async function translateWithDeepL(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+  apiKey: string,
+): Promise<{ translatedText: string; provider: string; cost: number }> {
+  // DeepL uses uppercase language codes, with special handling for EN/PT variants
+  const mapLang = (lang: string, isTarget: boolean): string => {
+    const upper = lang.toUpperCase()
+    if (isTarget && upper === 'EN') return 'EN-US'
+    if (isTarget && upper === 'PT') return 'PT-PT'
+    return upper
+  }
+
+  const url = apiKey.endsWith(':fx')
+    ? 'https://api-free.deepl.com/v2/translate'
+    : 'https://api.deepl.com/v2/translate'
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `DeepL-Auth-Key ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      text: [text],
+      source_lang: mapLang(sourceLang, false),
+      target_lang: mapLang(targetLang, true),
+    }),
+  })
+
+  if (!res.ok) {
+    const errorBody = await res.text()
+    throw new Error(`DeepL API error ${res.status}: ${errorBody}`)
+  }
+
+  const data = await res.json()
+  const translatedText = data?.translations?.[0]?.text
+  if (!translatedText) {
+    throw new Error('DeepL returned no translation')
+  }
+
+  // DeepL Pro: ~$5.49 per 1M characters (EUR ~5.49)
+  // DeepL Free: 500K chars/month free, then blocked
+  const charCount = text.length
+  const cost = apiKey.endsWith(':fx') ? 0 : (charCount / 1_000_000) * 5.49
+
+  return { translatedText, provider: 'deepl', cost }
+}
+
+// Languages supported by DeepL (used to decide cascade)
+const DEEPL_LANGUAGES = new Set([
+  'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'hu',
+  'id', 'it', 'ja', 'ko', 'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro',
+  'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh', 'ar',
+])
+
+function isDeepLSupported(sourceLang: string, targetLang: string): boolean {
+  return DEEPL_LANGUAGES.has(sourceLang.split('-')[0].toLowerCase()) &&
+    DEEPL_LANGUAGES.has(targetLang.split('-')[0].toLowerCase())
+}
 
 async function translateWithAzure(
   text: string,
@@ -108,7 +173,10 @@ async function translateWithMyMemory(
 }
 
 // ---------------------------------------------------------------------------
-// Provider cascade: Azure -> Google -> MyMemory
+// Provider cascade: DeepL -> Azure -> Google -> MyMemory
+// DeepL is primary for supported languages (~45% cheaper than Azure)
+// Azure handles exotic languages DeepL doesn't support
+// Google as secondary fallback, MyMemory as free emergency fallback
 // ---------------------------------------------------------------------------
 
 async function translateText(
@@ -116,13 +184,23 @@ async function translateText(
   sourceLang: string,
   targetLang: string,
 ): Promise<{ translatedText: string; provider: string; cost: number }> {
+  const deeplKey = Deno.env.get('DEEPL_API_KEY')
   const azureKey = Deno.env.get('AZURE_TRANSLATE_KEY')
   const azureRegion = Deno.env.get('AZURE_TRANSLATE_REGION')
   const googleKey = Deno.env.get('GOOGLE_TRANSLATE_KEY')
 
   const errors: string[] = []
 
-  // 1. Try Azure
+  // 1. Try DeepL first (best quality + cheapest for EU languages)
+  if (deeplKey && isDeepLSupported(sourceLang, targetLang)) {
+    try {
+      return await translateWithDeepL(text, sourceLang, targetLang, deeplKey)
+    } catch (err) {
+      errors.push(`DeepL: ${(err as Error).message}`)
+    }
+  }
+
+  // 2. Try Azure (supports 130+ languages including exotic ones)
   if (azureKey && azureRegion) {
     try {
       return await translateWithAzure(text, sourceLang, targetLang, azureKey, azureRegion)
@@ -131,7 +209,7 @@ async function translateText(
     }
   }
 
-  // 2. Try Google
+  // 3. Try Google
   if (googleKey) {
     try {
       return await translateWithGoogle(text, sourceLang, targetLang, googleKey)
@@ -140,7 +218,7 @@ async function translateText(
     }
   }
 
-  // 3. Try MyMemory (free fallback)
+  // 4. Try MyMemory (free fallback)
   try {
     return await translateWithMyMemory(text, sourceLang, targetLang)
   } catch (err) {

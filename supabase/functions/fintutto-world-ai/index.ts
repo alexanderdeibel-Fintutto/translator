@@ -7,8 +7,43 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY')!
-const CLAUDE_MODEL = 'claude-sonnet-4-6'
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages'
+
+// Smart Model Routing: Haiku for simple tasks, Sonnet for complex ones
+// Saves ~80% on AI costs for standard interactions
+const MODEL_SONNET = 'claude-sonnet-4-6'
+const MODEL_HAIKU = 'claude-haiku-4-5-20251001'
+
+type ModelTier = 'fast' | 'deep'
+
+function selectModel(action: string, messageCount: number, hasComplexPersonalization: boolean): { model: string; tier: ModelTier } {
+  // Always use Sonnet for:
+  // - Deep multi-turn dialogs (5+ messages)
+  // - Complex personalization (child mode, accessibility, expert knowledge)
+  // - Tour narration (creative, high-quality text)
+  if (action === 'narrate_tour') return { model: MODEL_SONNET, tier: 'deep' }
+  if (action === 'dialog' && messageCount >= 5) return { model: MODEL_SONNET, tier: 'deep' }
+  if (hasComplexPersonalization) return { model: MODEL_SONNET, tier: 'deep' }
+
+  // Use Haiku for everything else:
+  // - Simple POI explanations (structured input → structured output)
+  // - Recommendations (JSON output from list)
+  // - Onboarding (short, guided conversation)
+  // - Short dialogs (< 5 messages)
+  // - Profile extraction (structured extraction)
+  return { model: MODEL_HAIKU, tier: 'fast' }
+}
+
+function isComplexPersonalization(p: Record<string, unknown> | undefined): boolean {
+  if (!p) return false
+  return (
+    p.age_group === 'child' ||
+    p.knowledge_level === 'expert' || p.knowledge_level === 'professional' ||
+    p.ai_detail_level === 'exhaustive' ||
+    (p.accessibility_needs as string[] | undefined)?.length > 0 ||
+    p.child_mode === true
+  )
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -116,12 +151,14 @@ async function handleDialog(
     { role: 'user' as const, content: message },
   ]
 
-  const response = await callClaudeMultiTurn(systemPrompt, claudeMessages, 1024)
+  const { model, tier } = selectModel('dialog', messages.length, isComplexPersonalization(personalization as Record<string, unknown> | undefined))
+  const response = await callClaudeMultiTurn(systemPrompt, claudeMessages, 1024, model)
 
   return jsonResponse({
     response,
     context_type,
     context_id: body.context_id,
+    model_tier: tier,
   })
 }
 
@@ -150,7 +187,8 @@ async function handleOnboarding(
       ]
     : [{ role: 'user' as const, content: 'Hallo!' }]
 
-  const response = await callClaudeMultiTurn(systemPrompt, claudeMessages, 512)
+  const { model: onboardingModel } = selectModel('onboarding', messages.length, false)
+  const response = await callClaudeMultiTurn(systemPrompt, claudeMessages, 512, onboardingModel)
 
   // Try to extract structured profile data from the conversation
   let profileUpdates = null
@@ -198,7 +236,8 @@ async function handleExplainPoi(
     ? `${poiContext}\n\nFrage: ${message}`
     : `${poiContext}\n\nBitte erklaere diesen Ort/dieses Objekt entsprechend meines Profils.`
 
-  const response = await callClaude(systemPrompt, userMessage, 1024)
+  const { model: poiModel, tier: poiTier } = selectModel('explain_poi', 0, isComplexPersonalization(personalization as Record<string, unknown> | undefined))
+  const response = await callClaude(systemPrompt, userMessage, 1024, poiModel)
 
   // Track interaction
   if (body.visitor_id && poi_data.id) {
@@ -270,7 +309,7 @@ async function handleRecommend(
     ),
   ].filter(Boolean).join('\n')
 
-  const response = await callClaude(systemPrompt, userPrompt, 1024)
+  const response = await callClaude(systemPrompt, userPrompt, 1024, MODEL_HAIKU)
 
   let recommendations = []
   try {
@@ -318,13 +357,15 @@ async function handleNarrateTour(
 
   const poiContext = buildPoiPrompt(poi_data, language)
 
+  // Tour narration always uses Sonnet for creative, high-quality text
   const response = await callClaude(
     systemPrompt,
     `${poiContext}\n\nBitte erzaehle zu diesem Stopp der Tour.`,
     768,
+    MODEL_SONNET,
   )
 
-  return jsonResponse({ narration: response, poi_id: poi_data.id })
+  return jsonResponse({ narration: response, poi_id: poi_data.id, model_tier: 'deep' })
 }
 
 // ============================================================================
@@ -351,7 +392,8 @@ async function extractProfileFromConversation(
     .join('\n')
 
   try {
-    const response = await callClaude(systemPrompt, conversationText, 512)
+    // Profile extraction is structured → Haiku is sufficient
+    const response = await callClaude(systemPrompt, conversationText, 512, MODEL_HAIKU)
     const jsonMatch = response.match(/\{[\s\S]*\}/)
     if (jsonMatch) return JSON.parse(jsonMatch[0])
   } catch {
@@ -549,7 +591,7 @@ function buildPoiPrompt(poi: Record<string, unknown>, language: string): string 
 // Claude API
 // ============================================================================
 
-async function callClaude(system: string, user: string, maxTokens = 1024): Promise<string> {
+async function callClaude(system: string, user: string, maxTokens = 1024, model = MODEL_HAIKU): Promise<string> {
   const response = await fetch(CLAUDE_API_URL, {
     method: 'POST',
     headers: {
@@ -558,7 +600,7 @@ async function callClaude(system: string, user: string, maxTokens = 1024): Promi
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model,
       max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content: user }],
@@ -579,6 +621,7 @@ async function callClaudeMultiTurn(
   system: string,
   messages: Array<{ role: 'user' | 'assistant'; content: string }>,
   maxTokens = 1024,
+  model = MODEL_HAIKU,
 ): Promise<string> {
   const response = await fetch(CLAUDE_API_URL, {
     method: 'POST',
@@ -588,7 +631,7 @@ async function callClaudeMultiTurn(
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model,
       max_tokens: maxTokens,
       system,
       messages,
