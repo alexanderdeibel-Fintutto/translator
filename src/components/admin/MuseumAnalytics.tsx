@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select'
 import {
   BarChart3, Users, Eye, Headphones, MessageCircle, Clock,
-  TrendingUp, Route, Star, Loader2,
+  TrendingUp, Route, Star, Loader2, Download,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useSearchParams } from 'react-router-dom'
@@ -132,6 +132,39 @@ export default function MuseumAnalytics() {
     setLoading(false)
   }
 
+  function exportCsv() {
+    if (!stats) return
+    const museumName = museums.find(m => m.id === museumId)?.name || 'museum'
+
+    const rows = [
+      ['Metrik', 'Wert'],
+      ['Besucher', String(stats.total_visitors)],
+      ['Exponate angesehen', String(stats.total_artworks_viewed)],
+      ['Audio abgespielt', String(stats.total_audio_plays)],
+      ['KI-Gespraeche', String(stats.total_ai_chats)],
+      ['Durchschn. Besuchsdauer (Min)', String(stats.avg_visit_duration_minutes)],
+      ['Durchschn. Bewertung', String(stats.avg_rating)],
+      ['', ''],
+      ['Datum', 'Besucher'],
+      ...stats.daily_visitors.map(d => [d.date, String(d.count)]),
+      ['', ''],
+      ['Sprache', 'Anzahl'],
+      ...stats.languages.map(l => [l.language, String(l.count)]),
+      ['', ''],
+      ['Exponat', 'Views'],
+      ...stats.top_artworks.map(a => [a.title, String(a.views)]),
+    ]
+
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n')
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `analytics_${museumName}_${dateRange}_${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const statCards = stats ? [
     { label: 'Besucher', value: stats.total_visitors, icon: Users, color: 'text-blue-500' },
     { label: 'Exponate angesehen', value: stats.total_artworks_viewed, icon: Eye, color: 'text-emerald-500' },
@@ -153,6 +186,11 @@ export default function MuseumAnalytics() {
             Besucherstatistiken, beliebte Exponate und Engagement-Metriken.
           </p>
         </div>
+        {stats && (
+          <Button variant="outline" onClick={exportCsv}>
+            <Download className="h-4 w-4 mr-2" /> CSV Export
+          </Button>
+        )}
       </div>
 
       <div className="flex gap-3 items-end">

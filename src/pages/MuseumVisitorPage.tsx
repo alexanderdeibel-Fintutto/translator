@@ -13,6 +13,8 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { getOrCreateProfile, getCachedProfile } from '@/lib/fintutto-world/visitor-profile'
+import { startAutoSync } from '@/lib/fintutto-world/offline-sync'
+import { loadBranding, resetBranding } from '@/lib/fintutto-world/branding'
 import VisitorOnboarding from '@/components/visitor/VisitorOnboarding'
 import type { UniversalVisitorProfile } from '@/lib/fintutto-world/types'
 import type { Museum, Tour, Artwork, TargetAudience } from '@/lib/artguide/types'
@@ -43,6 +45,10 @@ export default function MuseumVisitorPage() {
     if (slug) loadMuseum()
     // Load or create visitor profile
     loadProfile()
+    // Start offline sync engine
+    startAutoSync()
+    // Cleanup branding on unmount
+    return () => resetBranding()
   }, [slug])
 
   async function loadProfile() {
@@ -71,6 +77,8 @@ export default function MuseumVisitorPage() {
 
     if (museumData) {
       setMuseum(museumData as Museum)
+      // Apply museum branding (custom colors, logo, fonts)
+      loadBranding('museum', museumData.id)
 
       // Load published tours
       const { data: tourData } = await supabase
