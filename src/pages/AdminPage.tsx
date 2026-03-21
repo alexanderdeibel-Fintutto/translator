@@ -27,6 +27,7 @@ const AiContentPanelPage = lazy(() => import('@/components/admin/AiContentPanel'
 const TourEditorPage = lazy(() => import('@/components/admin/TourEditor'))
 const QrCodeManagerPage = lazy(() => import('@/components/admin/QrCodeManager'))
 const MuseumAnalyticsPage = lazy(() => import('@/components/admin/MuseumAnalytics'))
+const CrmDashboardPage = lazy(() => import('@/components/admin/CrmDashboard'))
 
 function PageLoader() {
   return (
@@ -61,6 +62,7 @@ export default function AdminPage() {
           <Route path="tours" element={<Suspense fallback={<PageLoader />}><TourEditorPage /></Suspense>} />
           <Route path="qr-codes" element={<Suspense fallback={<PageLoader />}><QrCodeManagerPage /></Suspense>} />
           <Route path="museum-analytics" element={<Suspense fallback={<PageLoader />}><MuseumAnalyticsPage /></Suspense>} />
+          <Route path="crm" element={<Suspense fallback={<PageLoader />}><CrmDashboardPage /></Suspense>} />
 
           {/* Session Management Routes */}
           <Route path="sessions" element={<SessionList />} />
