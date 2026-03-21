@@ -13,6 +13,8 @@
 import { defineConfig, type UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
 import path from 'path'
 import { appConfigs, type AppVariant } from './app.config'
 
@@ -156,9 +158,15 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
         allow: [rootDir],
       },
     },
-    // Use root-level PostCSS config (tailwind)
+    // Inline PostCSS config with explicit tailwind config path
+    // so Tailwind finds its config regardless of CWD
     css: {
-      postcss: rootDir,
+      postcss: {
+        plugins: [
+          tailwindcss({ config: path.resolve(rootDir, 'tailwind.config.js') }),
+          autoprefixer(),
+        ],
+      },
     },
     // Public assets from root
     publicDir: path.resolve(rootDir, 'public'),
