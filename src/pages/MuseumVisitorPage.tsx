@@ -12,6 +12,9 @@ import {
   Volume2, Sparkles, Eye,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { getOrCreateProfile, getCachedProfile } from '@/lib/fintutto-world/visitor-profile'
+import VisitorOnboarding from '@/components/visitor/VisitorOnboarding'
+import type { UniversalVisitorProfile } from '@/lib/fintutto-world/types'
 import type { Museum, Tour, Artwork, TargetAudience } from '@/lib/artguide/types'
 
 const AUDIENCE_LABELS: Record<TargetAudience, string> = {
@@ -33,10 +36,28 @@ export default function MuseumVisitorPage() {
   const [chatInput, setChatInput] = useState('')
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([])
   const [chatLoading, setChatLoading] = useState(false)
+  const [visitorProfile, setVisitorProfile] = useState<UniversalVisitorProfile | null>(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
     if (slug) loadMuseum()
+    // Load or create visitor profile
+    loadProfile()
   }, [slug])
+
+  async function loadProfile() {
+    const cached = getCachedProfile()
+    if (cached) {
+      setVisitorProfile(cached)
+      if (!cached.onboardingCompleted) setShowOnboarding(true)
+      return
+    }
+    const profile = await getOrCreateProfile()
+    if (profile) {
+      setVisitorProfile(profile)
+      if (!profile.onboardingCompleted) setShowOnboarding(true)
+    }
+  }
 
   async function loadMuseum() {
     setLoading(true)
@@ -93,7 +114,7 @@ export default function MuseumVisitorPage() {
           museum_name: museum.name,
           message: userMsg,
           history: chatMessages.slice(-6),
-          language: museum.default_language || 'de',
+          language: visitorProfile?.primaryLanguage || museum.default_language || 'de',
         },
       })
 
@@ -122,6 +143,23 @@ export default function MuseumVisitorPage() {
         <p className="text-sm text-muted-foreground">
           Dieses Museum ist nicht verfuegbar oder der Link ist ungueltig.
         </p>
+      </div>
+    )
+  }
+
+  // Show onboarding if profile needs it
+  if (showOnboarding && visitorProfile) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <VisitorOnboarding
+          profileId={visitorProfile.id}
+          contextType="museum"
+          contextName={museum.name}
+          onComplete={() => {
+            setShowOnboarding(false)
+            loadProfile()
+          }}
+        />
       </div>
     )
   }

@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select'
 import {
   Upload, FileText, Globe, Loader2, Check, AlertCircle,
-  Sparkles, ArrowRight, Download, Eye,
+  Sparkles, ArrowRight, Download, Eye, Route,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
