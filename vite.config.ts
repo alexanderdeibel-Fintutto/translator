@@ -134,6 +134,47 @@ export default defineConfig({
               },
             },
           },
+          {
+            // Cache Supabase API responses for admin dashboard (content items, stats)
+            urlPattern: /\/rest\/v1\/(fw_content_items|fw_workflow_rules|fw_content_timeline|ag_museums)/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'admin-api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 5, // 5 minutes
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          {
+            // Cache Supabase Storage (cover images, audio files)
+            urlPattern: /\/storage\/v1\/object\/public\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'supabase-storage',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Cache Supabase Edge Functions responses (content-enrich, artguide-tts)
+            urlPattern: /\/functions\/v1\//,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'edge-functions-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 10, // 10 minutes
+              },
+              networkTimeoutSeconds: 30,
+            },
+          },
         ],
       },
     }),
@@ -162,5 +203,8 @@ export default defineConfig({
   },
   server: {
     port: 5180,
+  },
+  test: {
+    exclude: ['e2e/**', 'node_modules/**'],
   },
 })
