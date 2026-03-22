@@ -299,12 +299,49 @@ async function handleGetUsage(supabase: any, museumId: string): Promise<Response
     buildUsageRecord(museumId, 'staff_users', staffCount || 0, limits.maxStaffUsers),
     buildUsageRecord(museumId, 'ai_generations', aiUsage?.length || 0, limits.maxMonthlyAiGenerations),
     buildUsageRecord(museumId, 'tts_minutes', totalTtsMinutes, limits.maxMonthlyTtsMinutes),
-    buildUsageRecord(museumId, 'storage_gb', 0, limits.maxMediaStorageGb), // TODO: calculate from storage
+    buildUsageRecord(museumId, 'storage_gb', await calculateStorageGb(supabase, museumId), limits.maxMediaStorageGb),
   ]
 
   return new Response(JSON.stringify(metrics), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
+}
+
+async function calculateStorageGb(supabase: any, museumId: string): Promise<number> {
+  try {
+    // Count media files from artwork gallery and covers
+    const { data: artworks } = await supabase
+      .from('ag_artworks')
+      .select('cover_image_url, gallery')
+      .eq('museum_id', museumId)
+
+    let fileCount = 0
+    for (const artwork of artworks || []) {
+      if (artwork.cover_image_url) fileCount++
+      const gallery = artwork.gallery as unknown[] | null
+      if (gallery) fileCount += gallery.length
+    }
+
+    // Count audio files from content items
+    const { data: contentItems } = await supabase
+      .from('fw_content_items')
+      .select('audio_url, cover_image_url, gallery')
+      .eq('parent_id', museumId)
+
+    for (const item of contentItems || []) {
+      if (item.cover_image_url) fileCount++
+      const audioUrls = item.audio_url as Record<string, string> | null
+      if (audioUrls) fileCount += Object.keys(audioUrls).length
+      const gallery = item.gallery as unknown[] | null
+      if (gallery) fileCount += gallery.length
+    }
+
+    // Estimate: average 2MB per image, 1MB per audio file
+    const estimatedGb = (fileCount * 2) / 1024
+    return Math.round(estimatedGb * 100) / 100
+  } catch {
+    return 0
+  }
 }
 
 function buildUsageRecord(museumId: string, metric: string, used: number, limit: number): any {

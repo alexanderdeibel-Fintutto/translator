@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase-client'
 
 /**
  * Artwork Detail Editor — full editing of a single artwork
@@ -34,9 +35,29 @@ export default function ArtworkDetailPage({ params }: { params: { id: string } }
   async function generateAiContent(field: string) {
     setIsGenerating(field)
     try {
-      // TODO: Call artguide-ai Edge Function with action: 'generate_content'
-      console.log('Generating AI content for:', field)
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const supabase = createClient()
+      const { data, error } = await supabase.functions.invoke('artguide-ai', {
+        body: {
+          action: 'generate_content',
+          artwork_id: params.id,
+          field,
+          language: activeLanguage,
+        },
+      })
+
+      if (error) {
+        console.error('AI generation failed:', error)
+        return
+      }
+
+      // Find the textarea for this field and update its value
+      const textarea = document.querySelector(`textarea[data-field="${field}"]`) as HTMLTextAreaElement
+      if (textarea && data?.content) {
+        textarea.value = data.content
+        textarea.dispatchEvent(new Event('input', { bubbles: true }))
+      }
+    } catch (err) {
+      console.error('AI generation error:', err)
     } finally {
       setIsGenerating(null)
     }
@@ -180,6 +201,7 @@ export default function ArtworkDetailPage({ params }: { params: { id: string } }
                     </div>
                     <textarea
                       rows={4}
+                      data-field={field.key}
                       placeholder={`${field.label} (${activeLanguage.toUpperCase()}) eingeben oder per KI generieren...`}
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-y"
                     />

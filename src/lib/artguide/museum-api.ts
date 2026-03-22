@@ -385,7 +385,37 @@ export async function inviteStaffMember(
 
   if (error) return { success: false, error: error.message }
 
-  // TODO: Send invitation email via send-email Edge Function
+  // Fetch museum name for email
+  const { data: museum } = await supabase
+    .from('ag_museums')
+    .select('name')
+    .eq('id', museumId)
+    .single()
+
+  // Send invitation email via send-email Edge Function
+  try {
+    await supabase.functions.invoke('send-email', {
+      body: {
+        to: email,
+        subject: `Einladung: ${museum?.name || 'Museum'} — Fintutto Art Guide`,
+        body: [
+          `Hallo,`,
+          ``,
+          `Sie wurden als ${roleId} zum Team von "${museum?.name || 'Museum'}" eingeladen.`,
+          ``,
+          `Bitte registrieren Sie sich unter folgendem Link:`,
+          `${window.location.origin}/auth?invite=museum&museum_id=${museumId}&role=${roleId}`,
+          ``,
+          `Mit freundlichen Gruessen,`,
+          `Fintutto Art Guide`,
+        ].join('\n'),
+      },
+    })
+  } catch {
+    // Email send failure is non-blocking — invite record was already created
+    console.warn('[Museum API] Email send failed for invite:', email)
+  }
+
   return { success: true }
 }
 
