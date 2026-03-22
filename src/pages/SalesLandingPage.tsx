@@ -1,19 +1,22 @@
 // SalesLandingPage — Segment-specific landing page with value props, features, pricing, ROI calculator.
 // Routes: /sales/guide, /sales/agency, /sales/event, /sales/cruise, /sales/personal
+//         /sales/school, /sales/authority, /sales/ngo, /sales/counter, /sales/medical, /sales/conference
 
 import { useParams, useSearchParams, Link, Navigate } from 'react-router-dom'
 import {
   ArrowRight, Mic, Globe2, Users, Wifi, Zap, Ship, Calendar, MapPin,
   Building, Smartphone, Shield, Headphones, Camera, MessageSquare,
   QrCode, Signal, Bluetooth, ChevronRight, Check, Star, TrendingUp,
-  Monitor, Clock, Languages, Volume2, Radio, Lock, Cpu, Download
+  Monitor, Clock, Languages, Volume2, Radio, Lock, Cpu, Download,
+  GraduationCap, BookOpen, Landmark, Heart, HandHelping, Hotel,
+  Stethoscope, Pill, Presentation, Church, Scale, Baby, UserCheck
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ROICalculator from '@/components/pricing/ROICalculator'
 import LeadRegistrationForm from '@/components/sales/LeadRegistrationForm'
 
-type SalesSegment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise'
+type SalesSegment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'school' | 'authority' | 'ngo' | 'counter' | 'medical' | 'conference'
 type CalcSegment = 'guide' | 'agency' | 'event' | 'cruise'
 
 interface SegmentContent {
