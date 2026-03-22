@@ -28,6 +28,12 @@ const TourEditorPage = lazy(() => import('@/components/admin/TourEditor'))
 const QrCodeManagerPage = lazy(() => import('@/components/admin/QrCodeManager'))
 const MuseumAnalyticsPage = lazy(() => import('@/components/admin/MuseumAnalytics'))
 const CrmDashboardPage = lazy(() => import('@/components/admin/CrmDashboard'))
+const CuratorDashboardPage = lazy(() => import('@/components/admin/CuratorDashboard'))
+const SortableContentListPage = lazy(() => import('@/components/admin/SortableContentList'))
+const InlineEditListPage = lazy(() => import('@/components/admin/InlineEditList'))
+const ContentValidationPage = lazy(() => import('@/components/admin/ContentValidation'))
+const WorkflowManagerPage = lazy(() => import('@/components/admin/WorkflowManager'))
+const VisitorPreviewPage = lazy(() => import('@/components/admin/VisitorPreview'))
 
 function PageLoader() {
   return (
@@ -63,6 +69,12 @@ export default function AdminPage() {
           <Route path="qr-codes" element={<Suspense fallback={<PageLoader />}><QrCodeManagerPage /></Suspense>} />
           <Route path="museum-analytics" element={<Suspense fallback={<PageLoader />}><MuseumAnalyticsPage /></Suspense>} />
           <Route path="crm" element={<Suspense fallback={<PageLoader />}><CrmDashboardPage /></Suspense>} />
+          <Route path="dashboard" element={<Suspense fallback={<PageLoader />}><CuratorDashboardPage /></Suspense>} />
+          <Route path="content-sort" element={<Suspense fallback={<PageLoader />}><SortableContentListPage /></Suspense>} />
+          <Route path="content-edit" element={<Suspense fallback={<PageLoader />}><InlineEditListPage /></Suspense>} />
+          <Route path="content-validation" element={<Suspense fallback={<PageLoader />}><ContentValidationPage /></Suspense>} />
+          <Route path="workflow" element={<Suspense fallback={<PageLoader />}><WorkflowManagerPage /></Suspense>} />
+          <Route path="content-preview" element={<Suspense fallback={<PageLoader />}><VisitorPreviewPage /></Suspense>} />
 
           {/* Session Management Routes */}
           <Route path="sessions" element={<SessionList />} />

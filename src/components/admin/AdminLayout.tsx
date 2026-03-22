@@ -3,7 +3,8 @@ import { useState } from 'react'
 import {
   BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog, Activity, DollarSign,
   Landmark, Map, Upload, Route, QrCode, Building2, ChevronDown, ChevronRight,
-  Image, UserPlus, Globe, Sparkles, Target,
+  Image, UserPlus, Globe, Sparkles, Target, LayoutDashboard, GripVertical,
+  Pencil, Clock, Eye, CheckSquare, Search as SearchIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -29,6 +30,7 @@ const NAV_SECTIONS: NavSection[] = [
     id: 'museum',
     label: 'Museum & Guide',
     items: [
+      { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { path: '/museums', label: 'Museen', icon: Landmark },
       { path: '/museum-onboarding', label: 'Onboarding', icon: Building2 },
       { path: '/artworks', label: 'Exponate', icon: Image },
@@ -37,9 +39,14 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/staff', label: 'Team', icon: UserPlus },
       { path: '/content-import', label: 'Content Import', icon: Upload },
       { path: '/content', label: 'Content & POIs', icon: Globe },
+      { path: '/content-sort', label: 'Sortierung', icon: GripVertical },
+      { path: '/content-edit', label: 'Schnellbearbeitung', icon: Pencil },
+      { path: '/content-validation', label: 'Qualitaet', icon: CheckSquare },
+      { path: '/content-preview', label: 'Vorschau', icon: Eye },
       { path: '/ai-content', label: 'KI & Uebersetzung', icon: Sparkles },
       { path: '/qr-codes', label: 'QR-Codes', icon: QrCode },
       { path: '/museum-analytics', label: 'Analysen', icon: BarChart3 },
+      { path: '/workflow', label: 'Workflow', icon: Clock },
       { path: '/crm', label: 'CRM & Sales', icon: Target },
     ],
   },
