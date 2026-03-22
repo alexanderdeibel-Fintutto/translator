@@ -227,6 +227,7 @@ interface ProfileUpdateFields {
   autoPlayAudio: boolean
 }
 
+// Row shape matches the fw_visitor_profiles table columns (snake_case)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapDbToProfile(row: any): UniversalVisitorProfile {
   return {

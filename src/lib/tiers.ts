@@ -2293,7 +2293,9 @@ export function isInternalTier(tierId: TierId): boolean {
 
 /** Get tiers for a specific segment (for pricing page tabs) */
 export function getTiersBySegment(segment: Segment): TierDefinition[] {
-  return TIER_ORDER.map(id => TIERS[id]).filter(t => t.segment === segment)
+  return TIER_ORDER
+    .map(id => TIERS[id])
+    .filter((t): t is TierDefinition => t !== undefined && t.segment === segment)
 }
 
 /** Get all segments with their display info */

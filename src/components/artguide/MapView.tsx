@@ -42,11 +42,13 @@ export function MapView({
       return
     }
 
-    let map: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mapbox-gl types loaded dynamically
+    let map: any = null
 
     async function initMap() {
       try {
         // Dynamic import to avoid loading Mapbox if not needed
+        // @ts-expect-error — mapbox-gl types are not installed; loaded at runtime
         const mapboxgl = await import('mapbox-gl')
         await import('mapbox-gl/dist/mapbox-gl.css')
 

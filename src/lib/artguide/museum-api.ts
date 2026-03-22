@@ -670,14 +670,16 @@ async function createContentVersion(
 
   const nextVersion = (versions?.[0]?.version_number || 0) + 1
 
-  await supabase.from('ag_content_versions').insert({
-    entity_type: entityType,
-    entity_id: entityId,
-    version_number: nextVersion,
-    data,
-    changed_by: user.id,
-    change_summary: summary,
-  }).catch(() => {})
+  try {
+    await supabase.from('ag_content_versions').insert({
+      entity_type: entityType,
+      entity_id: entityId,
+      version_number: nextVersion,
+      data,
+      changed_by: user.id,
+      change_summary: summary,
+    })
+  } catch { /* non-critical */ }
 }
 
 async function logAudit(
@@ -688,12 +690,14 @@ async function logAudit(
   entityId: string,
   details?: Record<string, unknown>,
 ): Promise<void> {
-  await supabase.from('ag_audit_log').insert({
-    museum_id: museumId,
-    user_id: userId,
-    action,
-    entity_type: entityType,
-    entity_id: entityId,
-    details: details || {},
-  }).catch(() => {})
+  try {
+    await supabase.from('ag_audit_log').insert({
+      museum_id: museumId,
+      user_id: userId,
+      action,
+      entity_type: entityType,
+      entity_id: entityId,
+      details: details || {},
+    })
+  } catch { /* non-critical */ }
 }

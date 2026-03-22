@@ -255,11 +255,11 @@ export default function StaffManager() {
                   <div className="space-y-2">
                     {activeStaff.map(member => {
                       const roleInfo = ROLES.find(r => r.id === member.role_id)
-                      const email = (member as Record<string, unknown>).gt_users
-                        ? ((member as Record<string, unknown>).gt_users as { email: string }).email
-                        : null
+                      const memberAny = member as unknown as Record<string, unknown>
+                      const gtUsers = memberAny.gt_users as { email: string; display_name: string | null } | undefined
+                      const email = gtUsers?.email ?? null
                       const displayName = member.display_name
-                        || ((member as Record<string, unknown>).gt_users as { display_name: string | null } | undefined)?.display_name
+                        || gtUsers?.display_name
                         || email
                         || member.user_id.slice(0, 8)
 
