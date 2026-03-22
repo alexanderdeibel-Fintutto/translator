@@ -136,7 +136,16 @@ export default function WorkflowManager() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showTemplates, setShowTemplates] = useState(false)
+  const [showCustomBuilder, setShowCustomBuilder] = useState(false)
   const [executing, setExecuting] = useState<string | null>(null)
+
+  // Custom rule builder state
+  const [customName, setCustomName] = useState('')
+  const [customDescription, setCustomDescription] = useState('')
+  const [customTriggerType, setCustomTriggerType] = useState<TriggerType>('status_change')
+  const [customTriggerParams, setCustomTriggerParams] = useState<Record<string, string>>({})
+  const [customConditions, setCustomConditions] = useState<WorkflowCondition[]>([])
+  const [customActions, setCustomActions] = useState<WorkflowAction[]>([])
 
   useEffect(() => { loadRules() }, [])
 
@@ -211,6 +220,82 @@ export default function WorkflowManager() {
       .eq('id', ruleId)
   }
 
+  function resetCustomBuilder() {
+    setCustomName('')
+    setCustomDescription('')
+    setCustomTriggerType('status_change')
+    setCustomTriggerParams({})
+    setCustomConditions([])
+    setCustomActions([])
+    setShowCustomBuilder(false)
+  }
+
+  function addCustomCondition() {
+    setCustomConditions(prev => [...prev, { field: 'status', operator: 'equals', value: '' }])
+  }
+
+  function updateCustomCondition(index: number, updates: Partial<WorkflowCondition>) {
+    setCustomConditions(prev => prev.map((c, i) => i === index ? { ...c, ...updates } : c))
+  }
+
+  function removeCustomCondition(index: number) {
+    setCustomConditions(prev => prev.filter((_, i) => i !== index))
+  }
+
+  function addCustomAction() {
+    setCustomActions(prev => [...prev, { type: 'change_status', params: {} }])
+  }
+
+  function updateCustomAction(index: number, updates: Partial<WorkflowAction>) {
+    setCustomActions(prev => prev.map((a, i) => i === index ? { ...a, ...updates } : a))
+  }
+
+  function updateCustomActionParam(index: number, key: string, value: string) {
+    setCustomActions(prev => prev.map((a, i) =>
+      i === index ? { ...a, params: { ...a.params, [key]: value } } : a
+    ))
+  }
+
+  function removeCustomAction(index: number) {
+    setCustomActions(prev => prev.filter((_, i) => i !== index))
+  }
+
+  async function saveCustomRule() {
+    if (!customName.trim() || customActions.length === 0) return
+    setSaving(true)
+
+    const newRule: WorkflowRule = {
+      id: `rule-${Date.now()}`,
+      name: customName.trim(),
+      description: customDescription.trim(),
+      trigger: { type: customTriggerType, params: customTriggerParams },
+      conditions: customConditions,
+      actions: customActions,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      last_executed_at: null,
+      execution_count: 0,
+    }
+
+    const { error } = await supabase.from('fw_workflow_rules').insert({
+      name: newRule.name,
+      description: newRule.description,
+      trigger: newRule.trigger,
+      conditions: newRule.conditions,
+      actions: newRule.actions,
+      is_active: newRule.is_active,
+    })
+
+    if (!error) {
+      loadRules()
+    } else {
+      setRules(prev => [newRule, ...prev])
+    }
+
+    resetCustomBuilder()
+    setSaving(false)
+  }
+
   async function deleteRule(ruleId: string) {
     setRules(prev => prev.filter(r => r.id !== ruleId))
     await supabase.from('fw_workflow_rules').delete().eq('id', ruleId)
@@ -268,9 +353,14 @@ export default function WorkflowManager() {
             Regeln fuer automatische Status-Wechsel, Benachrichtigungen und KI-Aktionen.
           </p>
         </div>
-        <Button onClick={() => setShowTemplates(!showTemplates)}>
-          <Plus className="h-4 w-4 mr-2" /> Regel hinzufuegen
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => { setShowCustomBuilder(!showCustomBuilder); setShowTemplates(false) }}>
+            <Settings2 className="h-4 w-4 mr-2" /> Eigene Regel erstellen
+          </Button>
+          <Button onClick={() => { setShowTemplates(!showTemplates); setShowCustomBuilder(false) }}>
+            <Plus className="h-4 w-4 mr-2" /> Regel hinzufuegen
+          </Button>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -324,6 +414,218 @@ export default function WorkflowManager() {
           <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowTemplates(false)}>
             Abbrechen
           </Button>
+        </Card>
+      )}
+
+      {/* Custom rule builder */}
+      {showCustomBuilder && (
+        <Card className="p-4 border-primary space-y-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Settings2 className="h-4 w-4" />
+            Eigene Regel erstellen
+          </h3>
+
+          {/* Name & Description */}
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>Regelname *</Label>
+              <Input
+                placeholder="z.B. Auto-Tag bei Neuanlage"
+                value={customName}
+                onChange={e => setCustomName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Beschreibung</Label>
+              <Input
+                placeholder="Was macht diese Regel?"
+                value={customDescription}
+                onChange={e => setCustomDescription(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Trigger */}
+          <div className="space-y-1.5">
+            <Label>Trigger-Typ</Label>
+            <Select value={customTriggerType} onValueChange={v => { setCustomTriggerType(v as TriggerType); setCustomTriggerParams({}) }}>
+              <SelectTrigger className="w-64">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(TRIGGER_LABELS) as TriggerType[]).map(t => (
+                  <SelectItem key={t} value={t}>{TRIGGER_LABELS[t].label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {(customTriggerType === 'status_change') && (
+              <div className="mt-2">
+                <Label className="text-xs">Ziel-Status</Label>
+                <Select value={customTriggerParams.to || ''} onValueChange={v => setCustomTriggerParams({ to: v })}>
+                  <SelectTrigger className="w-48 mt-1">
+                    <SelectValue placeholder="Status waehlen..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {customTriggerType === 'completeness_reached' && (
+              <div className="mt-2">
+                <Label className="text-xs">Schwellenwert (%)</Label>
+                <Input
+                  className="w-32 mt-1"
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="80"
+                  value={customTriggerParams.threshold || ''}
+                  onChange={e => setCustomTriggerParams({ threshold: e.target.value })}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Conditions */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Bedingungen</Label>
+              <Button variant="outline" size="sm" onClick={addCustomCondition}>
+                <Plus className="h-3 w-3 mr-1" /> Bedingung
+              </Button>
+            </div>
+            {customConditions.length === 0 && (
+              <p className="text-xs text-muted-foreground">Keine Bedingungen — Regel gilt immer.</p>
+            )}
+            {customConditions.map((cond, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Select value={cond.field} onValueChange={v => updateCustomCondition(i, { field: v })}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="status">Status</SelectItem>
+                    <SelectItem value="rating_avg">Bewertung</SelectItem>
+                    <SelectItem value="completeness_pct">Vollstaendigkeit</SelectItem>
+                    <SelectItem value="category">Kategorie</SelectItem>
+                    <SelectItem value="tags">Tags</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={cond.operator} onValueChange={v => updateCustomCondition(i, { operator: v as WorkflowCondition['operator'] })}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="equals">gleich</SelectItem>
+                    <SelectItem value="not_equals">ungleich</SelectItem>
+                    <SelectItem value="contains">enthaelt</SelectItem>
+                    <SelectItem value="greater_than">groesser als</SelectItem>
+                    <SelectItem value="less_than">kleiner als</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  className="w-40"
+                  placeholder="Wert"
+                  value={cond.value}
+                  onChange={e => updateCustomCondition(i, { value: e.target.value })}
+                />
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeCustomCondition(i)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Aktionen *</Label>
+              <Button variant="outline" size="sm" onClick={addCustomAction}>
+                <Plus className="h-3 w-3 mr-1" /> Aktion
+              </Button>
+            </div>
+            {customActions.length === 0 && (
+              <p className="text-xs text-muted-foreground">Mindestens eine Aktion hinzufuegen.</p>
+            )}
+            {customActions.map((action, i) => (
+              <div key={i} className="flex items-center gap-2 flex-wrap">
+                <Select value={action.type} onValueChange={v => updateCustomAction(i, { type: v as ActionType, params: {} })}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(ACTION_LABELS) as ActionType[]).map(a => (
+                      <SelectItem key={a} value={a}>{ACTION_LABELS[a].label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {action.type === 'change_status' && (
+                  <Select value={action.params.to || ''} onValueChange={v => updateCustomActionParam(i, 'to', v)}>
+                    <SelectTrigger className="w-36">
+                      <SelectValue placeholder="Ziel-Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                {action.type === 'send_notification' && (
+                  <Input
+                    className="w-56"
+                    placeholder="Nachricht (z.B. {name} wurde aktualisiert)"
+                    value={action.params.message || ''}
+                    onChange={e => updateCustomActionParam(i, 'message', e.target.value)}
+                  />
+                )}
+                {action.type === 'ai_translate' && (
+                  <Input
+                    className="w-36"
+                    placeholder="en,fr,it"
+                    value={action.params.languages || ''}
+                    onChange={e => updateCustomActionParam(i, 'languages', e.target.value)}
+                  />
+                )}
+                {action.type === 'add_tag' && (
+                  <Input
+                    className="w-36"
+                    placeholder="Tag-Name"
+                    value={action.params.tag || ''}
+                    onChange={e => updateCustomActionParam(i, 'tag', e.target.value)}
+                  />
+                )}
+                {action.type === 'set_highlight' && (
+                  <Select value={action.params.value || 'true'} onValueChange={v => updateCustomActionParam(i, 'value', v)}>
+                    <SelectTrigger className="w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">Ja</SelectItem>
+                      <SelectItem value="false">Nein</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeCustomAction(i)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {/* Save / Cancel */}
+          <div className="flex gap-2 pt-2 border-t">
+            <Button onClick={saveCustomRule} disabled={saving || !customName.trim() || customActions.length === 0}>
+              {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+              Regel speichern
+            </Button>
+            <Button variant="outline" onClick={resetCustomBuilder}>
+              Abbrechen
+            </Button>
+          </div>
         </Card>
       )}
 

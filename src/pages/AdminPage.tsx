@@ -34,6 +34,8 @@ const InlineEditListPage = lazy(() => import('@/components/admin/InlineEditList'
 const ContentValidationPage = lazy(() => import('@/components/admin/ContentValidation'))
 const WorkflowManagerPage = lazy(() => import('@/components/admin/WorkflowManager'))
 const VisitorPreviewPage = lazy(() => import('@/components/admin/VisitorPreview'))
+const RevenueDashboardPage = lazy(() => import('@/components/admin/RevenueDashboard'))
+const EmailTemplateEditorPage = lazy(() => import('@/components/admin/EmailTemplateEditor'))
 
 function PageLoader() {
   return (
@@ -75,6 +77,8 @@ export default function AdminPage() {
           <Route path="content-validation" element={<Suspense fallback={<PageLoader />}><ContentValidationPage /></Suspense>} />
           <Route path="workflow" element={<Suspense fallback={<PageLoader />}><WorkflowManagerPage /></Suspense>} />
           <Route path="content-preview" element={<Suspense fallback={<PageLoader />}><VisitorPreviewPage /></Suspense>} />
+          <Route path="revenue" element={<Suspense fallback={<PageLoader />}><RevenueDashboardPage /></Suspense>} />
+          <Route path="email-templates" element={<Suspense fallback={<PageLoader />}><EmailTemplateEditorPage /></Suspense>} />
 
           {/* Session Management Routes */}
           <Route path="sessions" element={<SessionList />} />

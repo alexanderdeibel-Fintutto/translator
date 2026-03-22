@@ -162,6 +162,56 @@ export const adminDe: AdminStrings = {
   'admin.timeline.created': 'Erstellt',
   'admin.timeline.note': 'Notiz',
 
+  // Revenue
+  'admin.revenue.title': 'Revenue Dashboard',
+  'admin.revenue.subtitle': 'Umsaetze, Transaktionen und Provisionen im Ueberblick.',
+  'admin.revenue.total': 'Gesamtumsatz',
+  'admin.revenue.marketplace': 'Marktplatz',
+  'admin.revenue.premium': 'Premium-Inhalte',
+  'admin.revenue.bookings': 'Buchungen',
+  'admin.revenue.commissions': 'Provisionen',
+  'admin.revenue.transactions': 'Letzte Transaktionen',
+  'admin.revenue.topListings': 'Top Listings',
+  'admin.revenue.monthly': 'Monatlicher Umsatz',
+
+  // Email Templates
+  'admin.email.title': 'E-Mail-Vorlagen',
+  'admin.email.subtitle': 'Vorlagen fuer automatisierte E-Mails an Leads und Partner.',
+  'admin.email.new': 'Neue Vorlage',
+  'admin.email.name': 'Vorlagenname',
+  'admin.email.subject': 'Betreff',
+  'admin.email.body': 'Inhalt',
+  'admin.email.preview': 'Vorschau',
+  'admin.email.vars': 'Verfuegbare Variablen',
+  'admin.email.save': 'Vorlage speichern',
+  'admin.email.delete': 'Vorlage loeschen',
+  'admin.email.empty': 'Keine Vorlagen vorhanden.',
+
+  // Custom Workflow
+  'admin.workflow.custom': 'Eigene Regel erstellen',
+  'admin.workflow.ruleName': 'Regelname',
+  'admin.workflow.ruleDesc': 'Beschreibung',
+  'admin.workflow.trigger': 'Trigger',
+  'admin.workflow.action': 'Aktion',
+  'admin.workflow.addCondition': 'Bedingung hinzufuegen',
+  'admin.workflow.addAction': 'Aktion hinzufuegen',
+  'admin.workflow.saveRule': 'Regel speichern',
+
+  // Data Export / DSGVO
+  'admin.export.title': 'Datenexport',
+  'admin.export.subtitle': 'DSGVO-konformer Export aller Besucherdaten.',
+  'admin.export.download': 'Als JSON herunterladen',
+  'admin.export.delete': 'Alle Daten loeschen',
+  'admin.export.deleteConfirm': 'Alle Besucherdaten unwiderruflich loeschen?',
+
+  // Partner Portal
+  'admin.partner.title': 'Partner-Portal',
+  'admin.partner.subtitle': 'Self-Service fuer Geschaeftspartner.',
+  'admin.partner.offers': 'Aktive Angebote',
+  'admin.partner.bookings': 'Buchungen',
+  'admin.partner.revenue': 'Umsatz',
+  'admin.partner.reviews': 'Bewertungen',
+
   // Tooltips / Help
   'admin.help.contentBrief': 'Wird in Listenansichten und Kartenvorschauen angezeigt.',
   'admin.help.contentStandard': 'Haupttext fuer die Detailseite.',
@@ -351,6 +401,56 @@ export const adminEn: AdminStrings = {
   'admin.timeline.audioGenerate': 'Audio generated',
   'admin.timeline.created': 'Created',
   'admin.timeline.note': 'Note',
+
+  // Revenue
+  'admin.revenue.title': 'Revenue Dashboard',
+  'admin.revenue.subtitle': 'Overview of revenue, transactions, and commissions.',
+  'admin.revenue.total': 'Total Revenue',
+  'admin.revenue.marketplace': 'Marketplace',
+  'admin.revenue.premium': 'Premium Content',
+  'admin.revenue.bookings': 'Bookings',
+  'admin.revenue.commissions': 'Commissions',
+  'admin.revenue.transactions': 'Recent Transactions',
+  'admin.revenue.topListings': 'Top Listings',
+  'admin.revenue.monthly': 'Monthly Revenue',
+
+  // Email Templates
+  'admin.email.title': 'Email Templates',
+  'admin.email.subtitle': 'Templates for automated emails to leads and partners.',
+  'admin.email.new': 'New Template',
+  'admin.email.name': 'Template Name',
+  'admin.email.subject': 'Subject',
+  'admin.email.body': 'Body',
+  'admin.email.preview': 'Preview',
+  'admin.email.vars': 'Available Variables',
+  'admin.email.save': 'Save Template',
+  'admin.email.delete': 'Delete Template',
+  'admin.email.empty': 'No templates found.',
+
+  // Custom Workflow
+  'admin.workflow.custom': 'Create Custom Rule',
+  'admin.workflow.ruleName': 'Rule Name',
+  'admin.workflow.ruleDesc': 'Description',
+  'admin.workflow.trigger': 'Trigger',
+  'admin.workflow.action': 'Action',
+  'admin.workflow.addCondition': 'Add Condition',
+  'admin.workflow.addAction': 'Add Action',
+  'admin.workflow.saveRule': 'Save Rule',
+
+  // Data Export / GDPR
+  'admin.export.title': 'Data Export',
+  'admin.export.subtitle': 'GDPR-compliant export of all visitor data.',
+  'admin.export.download': 'Download as JSON',
+  'admin.export.delete': 'Delete All Data',
+  'admin.export.deleteConfirm': 'Permanently delete all visitor data?',
+
+  // Partner Portal
+  'admin.partner.title': 'Partner Portal',
+  'admin.partner.subtitle': 'Self-service for business partners.',
+  'admin.partner.offers': 'Active Offers',
+  'admin.partner.bookings': 'Bookings',
+  'admin.partner.revenue': 'Revenue',
+  'admin.partner.reviews': 'Reviews',
 
   // Tooltips / Help
   'admin.help.contentBrief': 'Shown in list views and card previews.',

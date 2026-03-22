@@ -178,7 +178,7 @@ export function canSendNotification(
 
 /** Record that a notification was sent */
 export function recordNotificationSent(dedupKey: string): void {
-  notificationTimestamps.set(dedupKey)
+  notificationTimestamps.set(dedupKey, Date.now())
 
   // Clean old entries (older than 24h)
   const cutoff = Date.now() - 24 * 60 * 60 * 1000

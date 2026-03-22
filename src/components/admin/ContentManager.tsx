@@ -121,6 +121,10 @@ export default function ContentManager() {
   // Parents (museums, cities, etc.)
   const [parents, setParents] = useState<{ id: string; name: string; type: string }[]>([])
 
+  // Pagination
+  const [page, setPage] = useState(0)
+  const PAGE_SIZE = 25
+
   // Create/edit
   const [showCreate, setShowCreate] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -143,7 +147,8 @@ export default function ContentManager() {
   const [formIsHighlight, setFormIsHighlight] = useState(false)
 
   useEffect(() => { loadParents() }, [])
-  useEffect(() => { loadItems() }, [domainFilter, typeFilter, statusFilter, parentFilter])
+  useEffect(() => { setPage(0) }, [domainFilter, typeFilter, statusFilter, parentFilter])
+  useEffect(() => { loadItems() }, [domainFilter, typeFilter, statusFilter, parentFilter, page])
 
   async function loadParents() {
     // Load museums
@@ -182,7 +187,7 @@ export default function ContentManager() {
       .from('fw_content_items')
       .select('*', { count: 'exact' })
       .order('updated_at', { ascending: false })
-      .limit(100)
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
     if (domainFilter !== 'all') query = query.eq('domain', domainFilter)
     if (typeFilter !== 'all') query = query.eq('content_type', typeFilter)
@@ -576,6 +581,19 @@ export default function ContentManager() {
         </Card>
       ) : (
         <div className="space-y-2">
+          {/* Pagination */}
+          <div className="flex items-center justify-between pt-4 border-t">
+            <span className="text-sm text-muted-foreground">{total} Eintraege gesamt</span>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
+                Zurueck
+              </Button>
+              <span className="text-sm py-1 px-2">Seite {page + 1} von {Math.ceil(total / PAGE_SIZE) || 1}</span>
+              <Button variant="outline" size="sm" disabled={(page + 1) * PAGE_SIZE >= total} onClick={() => setPage(p => p + 1)}>
+                Weiter
+              </Button>
+            </div>
+          </div>
           {items.map(item => {
             const nameDe = item.name?.de || item.slug || '—'
             const statusInfo = STATUS_CONFIG[item.status] || STATUS_CONFIG.draft
@@ -728,6 +746,19 @@ export default function ContentManager() {
               </Card>
             )
           })}
+          {/* Pagination bottom */}
+          <div className="flex items-center justify-between pt-4 border-t">
+            <span className="text-sm text-muted-foreground">{total} Eintraege gesamt</span>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
+                Zurueck
+              </Button>
+              <span className="text-sm py-1 px-2">Seite {page + 1} von {Math.ceil(total / PAGE_SIZE) || 1}</span>
+              <Button variant="outline" size="sm" disabled={(page + 1) * PAGE_SIZE >= total} onClick={() => setPage(p => p + 1)}>
+                Weiter
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

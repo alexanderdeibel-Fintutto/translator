@@ -4,7 +4,7 @@ import {
   BarChart3, Users, Kanban, MessageSquare, Calendar, UserCog, Activity, DollarSign,
   Landmark, Map, Upload, Route, QrCode, Building2, ChevronDown, ChevronRight,
   Image, UserPlus, Globe, Sparkles, Target, LayoutDashboard, GripVertical,
-  Pencil, Clock, Eye, CheckSquare, Search as SearchIcon,
+  Pencil, Clock, Eye, CheckSquare, Search as SearchIcon, Mail,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -24,6 +24,8 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/stats', label: 'CRM Stats', icon: BarChart3 },
       { path: '/requests', label: 'Anfragen', icon: MessageSquare },
       { path: '/sales', label: 'Vertrieb', icon: DollarSign },
+      { path: '/revenue', label: 'Umsatz', icon: BarChart3 },
+      { path: '/email-templates', label: 'E-Mail Vorlagen', icon: Mail },
     ],
   },
   {

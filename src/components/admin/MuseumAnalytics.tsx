@@ -67,7 +67,7 @@ export default function MuseumAnalytics() {
     const dateFrom = new Date(now.getTime() - days * 86400000).toISOString().split('T')[0]
 
     // Fetch analytics data
-    const [analyticsRes, topArtworksRes, visitsRes] = await Promise.all([
+    const [analyticsRes, topArtworksRes, visitsRes, aiChatsRes] = await Promise.all([
       supabase
         .from('ag_analytics_daily')
         .select('*')
@@ -77,9 +77,14 @@ export default function MuseumAnalytics() {
       supabase.rpc('ag_get_top_artworks', { p_museum_id: museumId, p_limit: 10 }).catch(() => ({ data: [] })),
       supabase
         .from('ag_visits')
-        .select('duration_minutes, artworks_viewed, audio_plays, overall_rating, language')
+        .select('duration_minutes, artworks_viewed, audio_plays, overall_rating, language, tour_id, tour_completed')
         .eq('museum_id', museumId)
         .gte('started_at', dateFrom),
+      supabase
+        .from('ag_ai_chats')
+        .select('id', { count: 'exact', head: true })
+        .eq('museum_id', museumId)
+        .gte('created_at', dateFrom),
     ])
 
     const analytics = analyticsRes.data || []
@@ -89,12 +94,20 @@ export default function MuseumAnalytics() {
     const totalVisitors = analytics.reduce((s: number, d: Record<string, number>) => s + (d.unique_visitors || 0), 0) || visits.length
     const totalViews = visits.reduce((s: number, v: Record<string, number>) => s + (v.artworks_viewed || 0), 0)
     const totalAudio = visits.reduce((s: number, v: Record<string, number>) => s + (v.audio_plays || 0), 0)
+    const totalAiChats = aiChatsRes.count || 0
     const avgDuration = visits.length > 0
       ? visits.reduce((s: number, v: Record<string, number>) => s + (v.duration_minutes || 0), 0) / visits.length
       : 0
     const ratings = visits.filter((v: Record<string, number | null>) => v.overall_rating != null)
     const avgRating = ratings.length > 0
       ? ratings.reduce((s: number, v: Record<string, number>) => s + v.overall_rating, 0) / ratings.length
+      : 0
+
+    // Tour completion rate
+    const tourVisits = visits.filter((v: Record<string, unknown>) => v.tour_id != null)
+    const completedTours = tourVisits.filter((v: Record<string, unknown>) => v.tour_completed === true)
+    const tourCompletionRate = tourVisits.length > 0
+      ? Math.round((completedTours.length / tourVisits.length) * 100)
       : 0
 
     // Language distribution
@@ -113,17 +126,24 @@ export default function MuseumAnalytics() {
       count: (d.unique_visitors as number) || 0,
     }))
 
+    // Fetch artwork titles for top artworks
+    const artworkIds = (topArtworksRes.data || []).map((a: Record<string, unknown>) => a.artwork_id as string)
+    const { data: artworkNames } = artworkIds.length > 0
+      ? await supabase.from('ag_artworks').select('id, title').in('id', artworkIds)
+      : { data: [] }
+    const nameMap = Object.fromEntries((artworkNames || []).map((a: Record<string, unknown>) => [a.id, ((a.title as Record<string, string>)?.de || (a.title as Record<string, string>)?.en || 'Unbekannt')]))
+
     setStats({
       total_visitors: totalVisitors,
       total_artworks_viewed: totalViews,
       total_audio_plays: totalAudio,
-      total_ai_chats: 0, // would need separate query
+      total_ai_chats: totalAiChats,
       avg_visit_duration_minutes: Math.round(avgDuration),
-      tour_completion_rate: 0,
+      tour_completion_rate: tourCompletionRate,
       avg_rating: Math.round(avgRating * 10) / 10,
       top_artworks: (topArtworksRes.data || []).map((a: Record<string, unknown>) => ({
         artwork_id: a.artwork_id as string,
-        title: (a.artwork_id as string)?.slice(0, 8) + '...',
+        title: nameMap[a.artwork_id as string] || (a.artwork_id as string)?.slice(0, 8) + '...',
         views: (a.views as number) || 0,
       })),
       daily_visitors: dailyVisitors,
