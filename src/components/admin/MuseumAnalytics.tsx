@@ -74,7 +74,7 @@ export default function MuseumAnalytics() {
         .eq('museum_id', museumId)
         .gte('date', dateFrom)
         .order('date'),
-      supabase.rpc('ag_get_top_artworks', { p_museum_id: museumId, p_limit: 10 }).catch(() => ({ data: [] })),
+      supabase.rpc('ag_get_top_artworks', { p_museum_id: museumId, p_limit: 10 }),
       supabase
         .from('ag_visits')
         .select('duration_minutes, artworks_viewed, audio_plays, overall_rating, language, tour_id, tour_completed')

@@ -12,7 +12,7 @@ import {
   MapPin, Search, Loader2, Star, ChevronRight, Globe,
   Mountain, Building2, Landmark, TreePine, Route as RouteIcon,
   MessageCircle, Sparkles, X, Navigation, Heart, Share2,
-  Map, Users, Compass, Camera,
+  Map as MapIcon, Users, Compass, Camera,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 

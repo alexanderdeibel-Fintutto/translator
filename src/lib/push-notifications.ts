@@ -31,7 +31,7 @@ export async function requestPushPermission(): Promise<{
     const registration = await navigator.serviceWorker.ready
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
     })
 
     // Store subscription in Supabase
@@ -102,6 +102,7 @@ export async function showLocalNotification(
       badge: options?.badge || '/favicon.svg',
       tag: options?.tag,
       data: options?.data,
+      // @ts-expect-error — actions is part of the Notification API but not in all TS DOM libs
       actions: options?.actions,
       vibrate: [200, 100, 200],
     })

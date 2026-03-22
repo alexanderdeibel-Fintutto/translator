@@ -38,7 +38,7 @@ export function PricingPage({ currentTierId = 'free', onSelectTier, showInternal
       </div>
 
       {/* Segment sales link */}
-      {(['guide', 'event', 'cruise'] as const).includes(activeSegment as any) && (
+      {(['guide', 'event', 'cruise'] as Segment[]).includes(activeSegment) && (
         <div className="text-center mb-6">
           <Link
             to={`/sales/${activeSegment}`}

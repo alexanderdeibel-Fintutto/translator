@@ -62,7 +62,7 @@ describe('inviteStaffMember', () => {
   it('returns error when not authenticated', async () => {
     mockGetUser.mockResolvedValueOnce({ data: { user: null } })
 
-    const result = await inviteStaffMember('museum-1', 'test@example.com', 'editor')
+    const result = await inviteStaffMember('museum-1', 'test@example.com', 'redakteur')
     expect(result.success).toBe(false)
     expect(result.error).toBe('Nicht authentifiziert')
   })
@@ -70,13 +70,13 @@ describe('inviteStaffMember', () => {
   it('returns error when invite insert fails', async () => {
     mockInsert.mockResolvedValueOnce({ error: { message: 'Duplicate' } })
 
-    const result = await inviteStaffMember('museum-1', 'test@example.com', 'editor')
+    const result = await inviteStaffMember('museum-1', 'test@example.com', 'redakteur')
     expect(result.success).toBe(false)
     expect(result.error).toBe('Duplicate')
   })
 
   it('creates invite and sends email on success', async () => {
-    const result = await inviteStaffMember('museum-1', 'new@example.com', 'viewer')
+    const result = await inviteStaffMember('museum-1', 'new@example.com', 'rechercheur')
 
     expect(result.success).toBe(true)
 
@@ -84,7 +84,7 @@ describe('inviteStaffMember', () => {
     expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
       museum_id: 'museum-1',
       email: 'new@example.com',
-      role_id: 'viewer',
+      role_id: 'rechercheur',
       invited_by: 'admin-1',
     }))
 
@@ -103,16 +103,16 @@ describe('inviteStaffMember', () => {
   it('succeeds even if email sending fails', async () => {
     mockInvoke.mockRejectedValueOnce(new Error('Email service down'))
 
-    const result = await inviteStaffMember('museum-1', 'test@example.com', 'editor')
+    const result = await inviteStaffMember('museum-1', 'test@example.com', 'redakteur')
     expect(result.success).toBe(true) // non-blocking
   })
 
   it('includes role and museum_id in email body', async () => {
-    await inviteStaffMember('museum-1', 'curator@museum.de', 'curator')
+    await inviteStaffMember('museum-1', 'curator@museum.de', 'fotograf')
 
     const emailCall = mockInvoke.mock.calls[0]
     const emailBody = emailCall[1].body.body
-    expect(emailBody).toContain('curator')
+    expect(emailBody).toContain('fotograf')
     expect(emailBody).toContain('Kunsthalle Berlin')
     expect(emailBody).toContain('museum_id=museum-1')
   })

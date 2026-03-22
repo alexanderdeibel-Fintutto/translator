@@ -72,31 +72,31 @@ describe('ai-service', () => {
     })
 
     it('adapts tone for formal setting', () => {
-      const ctx = { ...mockPersonalization, ai_tone: 'formal' }
+      const ctx = { ...mockPersonalization, ai_tone: 'formal' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('formell')
     })
 
     it('adapts tone for casual setting', () => {
-      const ctx = { ...mockPersonalization, ai_tone: 'casual' }
+      const ctx = { ...mockPersonalization, ai_tone: 'casual' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('locker')
     })
 
     it('adapts for child age group', () => {
-      const ctx = { ...mockPersonalization, age_group: 'child' }
+      const ctx = { ...mockPersonalization, age_group: 'child' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('Kind')
     })
 
     it('adapts for youth age group', () => {
-      const ctx = { ...mockPersonalization, age_group: 'youth' }
+      const ctx = { ...mockPersonalization, age_group: 'youth' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('Jugendlicher')
     })
 
     it('adapts for expert knowledge level', () => {
-      const ctx = { ...mockPersonalization, knowledge_level: 'expert' }
+      const ctx = { ...mockPersonalization, knowledge_level: 'expert' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('Kunstkenner')
     })
@@ -114,13 +114,13 @@ describe('ai-service', () => {
     })
 
     it('handles minimal detail level', () => {
-      const ctx = { ...mockPersonalization, ai_detail_level: 'minimal' }
+      const ctx = { ...mockPersonalization, ai_detail_level: 'minimal' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('2-3 Saetze')
     })
 
     it('handles detailed level', () => {
-      const ctx = { ...mockPersonalization, ai_detail_level: 'detailed' }
+      const ctx = { ...mockPersonalization, ai_detail_level: 'detailed' as const }
       const prompt = buildArtworkSystemPrompt(ctx, 'Museum')
       expect(prompt).toContain('8-12 Saetze')
     })

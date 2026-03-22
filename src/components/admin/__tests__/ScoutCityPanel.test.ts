@@ -100,7 +100,7 @@ describe('ScoutCityPanel', () => {
 
     it('should fallback to string name', () => {
       const rawPoi = { name: 'Simple Name' }
-      const name = (rawPoi.name as Record<string, string>)?.de || (rawPoi.name as string) || ''
+      const name = (rawPoi.name as unknown as Record<string, string>)?.de || (rawPoi.name as string) || ''
       expect(name).toBe('Simple Name')
     })
 

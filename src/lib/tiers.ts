@@ -242,9 +242,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 49.90,
       overagePerMinuteEur: 0,
       additionalLanguageEur: 0,
-      // TODO: Set after Stripe product creation
-      // stripePriceIdMonthly: 'price_...',
-      // stripePriceIdYearly: 'price_...',
+      stripePriceIdMonthly: 'price_1TAZlF52lqSgjCzeg4nVEs5s',
+      stripePriceIdYearly: 'price_1TAZlG52lqSgjCzekACp0g8D',
     },
     supportLevel: 'email_48h',
   },
@@ -299,9 +298,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 199,
       overagePerMinuteEur: 0.15,
       additionalLanguageEur: 2.99,
-      // TODO: Set after Stripe product creation
-      // stripePriceIdMonthly: 'price_...',
-      // stripePriceIdYearly: 'price_...',
+      stripePriceIdMonthly: 'price_1TAZlH52lqSgjCzerPjlBsWu',
+      stripePriceIdYearly: 'price_1TAZlI52lqSgjCzeLrss3EV5',
     },
     supportLevel: 'email_24h',
   },
@@ -355,9 +353,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 399,
       overagePerMinuteEur: 0.12,
       additionalLanguageEur: 1.99,
-      // TODO: Set after Stripe product creation
-      // stripePriceIdMonthly: 'price_...',
-      // stripePriceIdYearly: 'price_...',
+      stripePriceIdMonthly: 'price_1TAZlJ52lqSgjCzeXDqB4gfs',
+      stripePriceIdYearly: 'price_1TAZlJ52lqSgjCzeLsp3Zei2',
     },
     supportLevel: 'email_12h',
   },
@@ -412,9 +409,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 990,
       overagePerMinuteEur: 0.10,
       additionalLanguageEur: 1.49,
-      // TODO: Set after Stripe product creation
-      // stripePriceIdMonthly: 'price_...',
-      // stripePriceIdYearly: 'price_...',
+      stripePriceIdMonthly: 'price_1TAZlK52lqSgjCze2Ffw1wrS',
+      stripePriceIdYearly: 'price_1TAZlL52lqSgjCzet3iq1gBb',
     },
     supportLevel: 'email_12h',
   },
@@ -469,9 +465,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 2_490,
       overagePerMinuteEur: 0.08,
       additionalLanguageEur: 0,
-      // TODO: Set after Stripe product creation
-      // stripePriceIdMonthly: 'price_...',
-      // stripePriceIdYearly: 'price_...',
+      stripePriceIdMonthly: 'price_1TAZlM52lqSgjCzeSrtwQFx6',
+      stripePriceIdYearly: 'price_1TAZlM52lqSgjCzeYse1SAcB',
     },
     supportLevel: 'priority_4h',
   },
@@ -526,6 +521,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 1_990,
       overagePerMinuteEur: 0.08,
       additionalLanguageEur: 0.99,
+      stripePriceIdMonthly: 'price_1TAZlO52lqSgjCzevH2MBbye',
+      stripePriceIdYearly: 'price_1TAZlO52lqSgjCzerNV93OYK',
     },
     supportLevel: 'email_12h',
   },
@@ -580,6 +577,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 4_990,
       overagePerMinuteEur: 0.06,
       additionalLanguageEur: 0,
+      stripePriceIdMonthly: 'price_1TAZlP52lqSgjCzevmKb8f8I',
+      stripePriceIdYearly: 'price_1TAZlQ52lqSgjCzeu9i6Tdwr',
     },
     supportLevel: 'priority_4h',
   },
@@ -635,6 +634,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 49_900,
       overagePerMinuteEur: 0.80,
       additionalLanguageEur: 49,
+      stripePriceIdMonthly: 'price_1TAZlR52lqSgjCzei6J8UloN',
+      stripePriceIdYearly: 'price_1TAZlS52lqSgjCzeLrk06yPL',
     },
     sla: 'standard',
     supportLevel: 'email_12h',
@@ -691,6 +692,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 149_900,
       overagePerMinuteEur: 0.60,
       additionalLanguageEur: 39,
+      stripePriceIdMonthly: 'price_1TAZlT52lqSgjCzeVyOkMZ7W',
+      stripePriceIdYearly: 'price_1TAZlT52lqSgjCzemBLv2eSa',
     },
     sla: '99.5%',
     supportLevel: 'priority_4h',
@@ -747,6 +750,8 @@ export const TIERS: Record<TierId, TierDefinition> = {
       yearlyEur: 399_900,
       overagePerMinuteEur: 0.40,
       additionalLanguageEur: 0,
+      stripePriceIdMonthly: 'price_1TAZlU52lqSgjCzec3pmP2py',
+      stripePriceIdYearly: 'price_1TAZlV52lqSgjCzeDYKOVO66',
     },
     sla: '99.9%',
     supportLevel: 'dedicated',
@@ -2293,7 +2298,9 @@ export function isInternalTier(tierId: TierId): boolean {
 
 /** Get tiers for a specific segment (for pricing page tabs) */
 export function getTiersBySegment(segment: Segment): TierDefinition[] {
-  return TIER_ORDER.map(id => TIERS[id]).filter(t => t.segment === segment)
+  return TIER_ORDER
+    .map(id => TIERS[id])
+    .filter((t): t is TierDefinition => t !== undefined && t.segment === segment)
 }
 
 /** Get all segments with their display info */
