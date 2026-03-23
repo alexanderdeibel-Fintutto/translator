@@ -45,12 +45,14 @@ export type AppVariant =
   // Art Guide variants
   | 'artguide-visitor'
   | 'artguide-whitelabel'
+  // City Guide variant
+  | 'cityguide-visitor'
 
 /** Which core app this flavor is based on */
-export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide'
+export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide' | 'cityguide'
 
 /** Target market for market-specific flavors */
-export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events' | 'artguide'
+export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events' | 'artguide' | 'cityguide'
 
 export interface AppConfig {
   /** Internal variant identifier */
@@ -386,6 +388,24 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     iosScheme: 'museumguide',
     subdomain: 'guide',
     iconDir: 'artguide',
+  },
+
+  // ─── City Guide Apps ──────────────────────────────────────────
+  'cityguide-visitor': {
+    variant: 'cityguide-visitor',
+    base: 'cityguide',
+    market: 'cityguide',
+    appName: 'Fintutto City Guide',
+    shortName: 'City Guide',
+    description: 'Dein persoenlicher Stadtfuehrer mit KI-Erzaehlungen, POI-Karten und mehrsprachigen Inhalten.',
+    appId: 'com.fintutto.cityguide',
+    themeColor: '#0f766e',
+    accentColor: '#f59e0b',
+    devPort: 5212,
+    startUrl: '/',
+    iosScheme: 'fintuttocityguide',
+    subdomain: 'cityguide',
+    iconDir: 'cityguide',
   },
 }
 
