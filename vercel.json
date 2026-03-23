@@ -1,7 +1,7 @@
 {
   "framework": "vite",
   "buildCommand": "npm run build:artguide-whitelabel",
-  "outputDirectory": "dist",
+  "outputDirectory": "apps/artguide-whitelabel/dist",
   "headers": [
     {
       "source": "/sw.js",

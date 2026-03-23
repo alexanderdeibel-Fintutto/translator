@@ -1,6 +1,6 @@
 {
-  "framework": "vite",
   "installCommand": "cd ../.. && npm install",
-  "buildCommand": "npm run build:artguide",
-  "outputDirectory": "dist"
+  "buildCommand": "cd ../.. && npm run build:artguide",
+  "outputDirectory": "dist",
+  "framework": "vite"
 }
