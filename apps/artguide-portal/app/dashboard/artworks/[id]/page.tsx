@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, use } from 'react'
 import { createClient } from '@/lib/supabase-client'
 
 /**
@@ -16,7 +16,8 @@ import { createClient } from '@/lib/supabase-client'
  * - Version history
  * - Tags and categories
  */
-export default function ArtworkDetailPage({ params }: { params: { id: string } }) {
+export default function ArtworkDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const [activeTab, setActiveTab] = useState<'content' | 'media' | 'position' | 'ai' | 'history'>('content')
   const [activeLanguage, setActiveLanguage] = useState('de')
   const [isGenerating, setIsGenerating] = useState<string | null>(null)
@@ -39,7 +40,7 @@ export default function ArtworkDetailPage({ params }: { params: { id: string } }
       const { data, error } = await supabase.functions.invoke('artguide-ai', {
         body: {
           action: 'generate_content',
-          artwork_id: params.id,
+          artwork_id: id,
           field,
           language: activeLanguage,
         },
@@ -74,7 +75,7 @@ export default function ArtworkDetailPage({ params }: { params: { id: string } }
             </a>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Kunstwerk bearbeiten</h1>
-              <p className="text-gray-500 text-sm mt-1">ID: {params.id}</p>
+              <p className="text-gray-500 text-sm mt-1">ID: {id}</p>
             </div>
           </div>
           <div className="flex gap-3">
