@@ -8,15 +8,24 @@ import {
   Building, Smartphone, Shield, Headphones, Camera, MessageSquare,
   QrCode, Signal, Bluetooth, ChevronRight, Check, Star, TrendingUp,
   Monitor, Clock, Languages, Volume2, Radio, Lock, Cpu, Download,
+ claude/setup-museum-workflow-PGiTn
+  GraduationCap, BookOpen, School, Building2, FileText, Heart,
+  Stethoscope, Hotel, HandHelping, ClipboardList
+=======
   GraduationCap, BookOpen, Landmark, Heart, HandHelping, Hotel,
   Stethoscope, Pill, Presentation, Church, Scale, Baby, UserCheck
+ main
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ROICalculator from '@/components/pricing/ROICalculator'
 import LeadRegistrationForm from '@/components/sales/LeadRegistrationForm'
 
+ claude/setup-museum-workflow-PGiTn
+type SalesSegment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'education' | 'authority' | 'hospitality' | 'medical' | 'conference'
+=======
 type SalesSegment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'school' | 'authority' | 'ngo' | 'counter' | 'medical' | 'conference'
+ main
 type CalcSegment = 'guide' | 'agency' | 'event' | 'cruise'
 
 interface SegmentContent {
@@ -413,6 +422,391 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       { value: '99,9%', label: 'SLA (Armada)' },
     ],
     cta: 'Cruise-Plan starten',
+    hasCalculator: true,
+  },
+
+  education: {
+    hero: {
+      title: 'Jedes Kind versteht — in seiner Sprache.',
+      subtitle: 'GuideTranslator macht Unterricht mehrsprachig. Lehrkraefte sprechen Deutsch — Schueler lesen und hoeren in ihrer Muttersprache. Einzellizenz ab 9,90 EUR/Monat, Schullizenz ab 49,90 EUR.',
+      badge: 'Ab 9,90 EUR/Monat',
+    },
+    painPoints: [
+      {
+        icon: GraduationCap,
+        title: 'Willkommensklassen',
+        description: 'Neu zugewanderte Schueler verstehen den Unterricht sofort — ohne auf einen Dolmetscher zu warten. 15 Sprachen inkl. Arabisch, Ukrainisch, Dari.',
+      },
+      {
+        icon: Globe2,
+        title: '15-130+ Sprachen',
+        description: 'Einzellizenz: 15 Sprachen. Schullizenz: Alle 130+ Sprachen inklusive. Deckung aller Herkunftssprachen Ihrer Schuelerschaft.',
+      },
+      {
+        icon: Users,
+        title: 'Bis zu 30 Schueler',
+        description: 'QR-Code an die Tafel — alle Schueler scannen und lesen mit. Schullizenz: Unbegrenzte Schueler, 20 parallele Sessions.',
+      },
+      {
+        icon: Smartphone,
+        title: 'Kein Extra-Geraet',
+        description: 'Laeuft auf Tablets und Smartphones der Schule oder BYOD. Keine App-Installation — einfach Browser oeffnen.',
+      },
+    ],
+    features: [
+      {
+        icon: BookOpen,
+        title: 'Gespraechsmodus',
+        description: 'Elternabend, Beratungsgespraech, Aufnahmegespraech — Face-to-Face-Uebersetzung mit Split-Screen. Beide Seiten sprechen und verstehen.',
+      },
+      {
+        icon: Camera,
+        title: 'Kamera-Uebersetzer',
+        description: 'Arbeitsblaetter, Infobriefe oder Aushänge fotografieren — die Uebersetzung erscheint sofort. Ideal fuer Eltern ohne Deutschkenntnisse.',
+      },
+      {
+        icon: Volume2,
+        title: 'Sprachausgabe',
+        description: 'Schueler koennen sich Texte vorlesen lassen statt selbst zu lesen. Neural2-Stimmen klingen natuerlich und sind gut verstaendlich.',
+      },
+      {
+        icon: School,
+        title: 'Schullizenz',
+        description: 'Unbegrenzte Lehrkraefte, alle Sprachen, 20 parallele Sessions. Eine Lizenz fuer die gesamte Schule — zentrale Abrechnung ueber den Schultraeger.',
+      },
+    ],
+    howItWorks: [
+      { step: '1', title: 'Lizenz waehlen', description: 'Einzellizenz fuer eine Lehrkraft oder Schullizenz fuer alle. Kostenloser Testzeitraum.' },
+      { step: '2', title: 'QR-Code zeigen', description: 'QR-Code an Tafel oder per Beamer zeigen. Schueler scannen mit Tablet oder Smartphone.' },
+      { step: '3', title: 'Unterricht starten', description: 'Lehrkraft spricht Deutsch — Schueler lesen und hoeren in ihrer Muttersprache mit.' },
+    ],
+    pricing: [
+      { name: 'Einzellizenz', price: '9,90 EUR', period: '/Monat', highlights: ['1 Lehrkraft, 30 Schueler', '15 Sprachen inkl.', '600 Min/Monat (~10h)', 'Gespraechsmodus + OCR', 'Offline-Modus'] },
+      { name: 'Schullizenz', price: '49,90 EUR', period: '/Monat', highlights: ['Unbegrenzte Lehrkraefte', 'Alle 130+ Sprachen', 'Unbegrenzte Minuten', '20 parallele Sessions', 'Team-Verwaltung + Dashboard'] },
+    ],
+    useCases: [
+      'Willkommensklasse — Unterricht fuer neu zugewanderte Schueler',
+      'Elternabend — Eltern ohne Deutschkenntnisse einbinden',
+      'Beratungsgespraech — Schulberatung mit Migrationsfamilien',
+      'Projekttage — Internationale Schuelergruppen zusammenarbeiten',
+      'Foerderschule — Individualisierter Sprachsupport',
+      'Nachmittagsbetreuung — Hausaufgabenhilfe mehrsprachig',
+    ],
+    stats: [
+      { value: '9,90 EUR', label: 'ab/Monat' },
+      { value: '30', label: 'Schueler/Session' },
+      { value: '130+', label: 'Sprachen (Schullizenz)' },
+      { value: '0 EUR', label: 'Hardware-Kosten' },
+    ],
+    cta: 'Schul-Plan starten',
+    hasCalculator: false,
+  },
+
+  authority: {
+    hero: {
+      title: 'Buergerservice ohne Sprachbarriere.',
+      subtitle: 'Ob Buergeramt, Auslaenderbehoerde oder Jobcenter — GuideTranslator uebersetzt Gespraeche in Echtzeit. Kein Dolmetscher noetig. Einzelplatz ab 14,90 EUR/Monat.',
+      badge: 'DSGVO-konform',
+    },
+    painPoints: [
+      {
+        icon: Building2,
+        title: 'Sofort einsatzbereit',
+        description: 'Kein IT-Projekt, keine Installation. Browser oeffnen, Sprache waehlen, losreden. Funktioniert auf jedem Rechner mit Mikrofon.',
+      },
+      {
+        icon: Globe2,
+        title: '20-130+ Sprachen',
+        description: 'Einzelplatz: 20 Sprachen inkl. Migrationssprachen (Arabisch, Dari, Tigrinya, Ukrainisch). Behoerdenlizenz: Alle Sprachen unbegrenzt.',
+      },
+      {
+        icon: Shield,
+        title: 'DSGVO-konform',
+        description: 'E2E-verschluesselt (AES-256-GCM). Offline-Modus verfuegbar — keine Daten verlassen das Geraet. Made in Germany.',
+      },
+      {
+        icon: Zap,
+        title: '90% guenstiger als Dolmetscher',
+        description: 'Dolmetscher kosten 60-120 EUR/Stunde. GuideTranslator Einzelplatz: 14,90 EUR/Monat fuer unbegrenzte Gespraeche.',
+      },
+    ],
+    features: [
+      {
+        icon: MessageSquare,
+        title: 'Gespraechsmodus',
+        description: 'Face-to-Face-Uebersetzung mit 180-Grad-Split-Screen. Sachbearbeiter und Buerger sprechen — beide verstehen. Ideal am Schalter.',
+      },
+      {
+        icon: FileText,
+        title: 'Formular-Hilfe (OCR)',
+        description: 'Formulare, Bescheide und Antraege fotografieren — sofortige Uebersetzung. Buerger verstehen, was sie unterschreiben.',
+      },
+      {
+        icon: Volume2,
+        title: 'Sprachausgabe',
+        description: 'Wichtige Informationen werden vorgelesen. Besonders hilfreich fuer Buerger, die nicht lesen koennen oder Analphabeten sind.',
+      },
+      {
+        icon: Lock,
+        title: 'Offline-Modus',
+        description: 'Sensible Gespraeche komplett offline fuehren. Keine Cloud, keine Protokollierung. Volle DSGVO-Konformitaet.',
+      },
+    ],
+    howItWorks: [
+      { step: '1', title: 'Platz einrichten', description: 'Browser oeffnen, anmelden. QR-Code auf den Tresen stellen oder Tablet bereithalten.' },
+      { step: '2', title: 'Buerger kommt', description: 'Buerger scannt QR-Code oder nutzt das bereitgestellte Tablet. Sprache wird automatisch erkannt.' },
+      { step: '3', title: 'Gespraech fuehren', description: 'Beide sprechen in ihrer Sprache. Die Uebersetzung erscheint in Echtzeit auf beiden Bildschirmen.' },
+    ],
+    pricing: [
+      { name: 'Einzelplatz', price: '14,90 EUR', period: '/Monat', highlights: ['1 Schalter, unbegr. Buerger', '20 Sprachen inkl.', 'Unbegrenzte Minuten', 'Gespraechsmodus + OCR', 'Offline-Modus + DSGVO'] },
+      { name: 'Behoerdenlizenz', price: '99 EUR', period: '/Monat', highlights: ['Unbegrenzte Schalter', 'Alle 130+ Sprachen', 'Unbegrenzte Minuten', 'Team-Verwaltung + Dashboard', 'Pre-Translation fuer Standardtexte'] },
+    ],
+    useCases: [
+      'Buergeramt — Meldeangelegenheiten, Ausweisbeantragung',
+      'Auslaenderbehoerde — Aufenthaltstitel, Visumverlaengerung',
+      'Jobcenter — Beratungsgespraeche, Eingliederungsvereinbarungen',
+      'Standesamt — Eheschließung, Geburtsurkunden',
+      'Sozialamt — Antraege, Bescheide erklaeren',
+      'Gesundheitsamt — Beratung, Impfaufklaerung',
+    ],
+    stats: [
+      { value: '14,90 EUR', label: 'ab/Monat' },
+      { value: '20+', label: 'Sprachen inkl.' },
+      { value: '0 EUR', label: 'Hardware-Kosten' },
+      { value: '100%', label: 'DSGVO-konform' },
+    ],
+    cta: 'Behoerden-Plan starten',
+    hasCalculator: false,
+  },
+
+  hospitality: {
+    hero: {
+      title: 'Gaeste verstehen — in jeder Sprache.',
+      subtitle: 'Hotel-Rezeption, Tourist-Info oder Empfang — GuideTranslator macht jeden Counter mehrsprachig. Gespraechsmodus fuer Face-to-Face-Kommunikation. Ab 29,90 EUR/Monat.',
+      badge: 'Ab 29,90 EUR/Monat',
+    },
+    painPoints: [
+      {
+        icon: Hotel,
+        title: 'Rezeption & Empfang',
+        description: 'Check-in, Beschwerden, Concierge-Service — alles in der Sprache des Gastes. Kein mehrsprachiges Personal noetig.',
+      },
+      {
+        icon: Globe2,
+        title: '20-130+ Sprachen',
+        description: 'Einzelplatz: 20 Sprachen. Business: Alle 130+ Sprachen inklusive. Deckung aller gaengigen Touristen-Sprachen.',
+      },
+      {
+        icon: MessageSquare,
+        title: 'Gespraechsmodus',
+        description: 'Split-Screen fuer Mitarbeiter und Gast. Beide sprechen in ihrer Sprache — die Uebersetzung erscheint in Echtzeit.',
+      },
+      {
+        icon: Zap,
+        title: 'Sofort einsatzbereit',
+        description: 'Tablet auf den Counter stellen, QR-Code zeigen oder Smartphone nutzen. Keine Installation, kein IT-Projekt.',
+      },
+    ],
+    features: [
+      {
+        icon: Camera,
+        title: 'Kamera-Uebersetzer',
+        description: 'Speisekarten, Hausordnung, Infoblaetter — Gast fotografiert und liest in seiner Sprache. Keine manuellen Uebersetzungen noetig.',
+      },
+      {
+        icon: QrCode,
+        title: 'QR-Code am Counter',
+        description: 'Gaeste scannen den QR-Code am Empfang und waehlen ihre Sprache. Keine App, kein Download — laeuft im Browser.',
+      },
+      {
+        icon: Volume2,
+        title: 'Sprachausgabe',
+        description: 'Wichtige Infos werden vorgelesen. Ideal fuer Gaeste, die die lateinische Schrift nicht lesen (z.B. chinesische, arabische Gaeste).',
+      },
+      {
+        icon: Users,
+        title: 'Business: Multi-Counter',
+        description: 'Mehrere Counter gleichzeitig. Team-Verwaltung, Dashboard-Analytics, Pre-Translation fuer Standardtexte (Willkommensgruss, Hausregeln).',
+      },
+    ],
+    howItWorks: [
+      { step: '1', title: 'Counter einrichten', description: 'Tablet bereitstellen oder QR-Code-Aufsteller platzieren. Anmeldung in 2 Minuten.' },
+      { step: '2', title: 'Gast kommt', description: 'Gast scannt QR-Code oder nutzt bereitgestelltes Tablet. Sprache wird automatisch erkannt.' },
+      { step: '3', title: 'Kommunizieren', description: 'Gespraechsmodus: Beide Seiten sprechen, beide verstehen. Texte, Karten und Infos in Echtzeit uebersetzt.' },
+    ],
+    pricing: [
+      { name: 'Einzelplatz', price: '29,90 EUR', period: '/Monat', highlights: ['1 Counter, unbegr. Gaeste', '20 Sprachen inkl.', 'Unbegrenzte Minuten', 'Gespraechsmodus + OCR', 'Offline-Modus'] },
+      { name: 'Business', price: '99 EUR', period: '/Monat', highlights: ['Unbegrenzte Counter', 'Alle 130+ Sprachen', 'Unbegrenzte Minuten', '10 parallele Sessions', 'Team-Verwaltung + Dashboard'] },
+    ],
+    useCases: [
+      'Hotel-Rezeption — Check-in, Concierge, Beschwerdemanagement',
+      'Tourist-Information — Beratung internationaler Besucher',
+      'Messe-Counter — Aussteller beraten Besucher mehrsprachig',
+      'Flughafen-Info — Passagiere aus aller Welt',
+      'Freizeitpark — Ticketverkauf und Gaesteinformation',
+      'Kreuzfahrt-Terminal — Einschiffung und Auskunft',
+    ],
+    stats: [
+      { value: '29,90 EUR', label: 'ab/Monat' },
+      { value: '20+', label: 'Sprachen inkl.' },
+      { value: '<1s', label: 'Latenz' },
+      { value: '0 EUR', label: 'Hardware-Kosten' },
+    ],
+    cta: 'Counter-Plan starten',
+    hasCalculator: false,
+  },
+
+  medical: {
+    hero: {
+      title: 'Patientengespraeche ohne Sprachbarriere.',
+      subtitle: 'Arztpraxis, Klinik oder Apotheke — GuideTranslator uebersetzt medizinische Gespraeche in Echtzeit. Mit Schmerzskala, Med-Phrasen und DSGVO-konformem Offline-Modus. Ab 29,90 EUR/Monat.',
+      badge: 'DSGVO-konform',
+    },
+    painPoints: [
+      {
+        icon: Stethoscope,
+        title: 'Anamnese & Diagnose',
+        description: 'Symptome, Vorerkrankungen, Medikamente — praezise uebersetzen statt mit Haenden und Fuessen erklaeren. Medizinische Fachbegriffe korrekt.',
+      },
+      {
+        icon: Globe2,
+        title: '25-130+ Sprachen',
+        description: 'Praxis: 25 Sprachen inkl. Arabisch, Tuerkisch, Ukrainisch, Dari. Klinik: Alle 130+ Sprachen fuer jede Patientenkonstellation.',
+      },
+      {
+        icon: Shield,
+        title: 'DSGVO & Datenschutz',
+        description: 'E2E-verschluesselt. Offline-Modus verfuegbar — keine Patientendaten verlassen das Geraet. Keine Aufzeichnung, keine Cloud.',
+      },
+      {
+        icon: Zap,
+        title: '95% guenstiger als Dolmetscher',
+        description: 'Dolmetscherkosten: 80-150 EUR/Stunde + Wartezeit. GuideTranslator Praxis: 29,90 EUR/Monat fuer unbegrenzte Gespraeche.',
+      },
+    ],
+    features: [
+      {
+        icon: MessageSquare,
+        title: 'Gespraechsmodus',
+        description: 'Face-to-Face mit Split-Screen. Arzt und Patient sprechen — beide verstehen sofort. Ideal im Sprechzimmer, in der Notaufnahme, am Bett.',
+      },
+      {
+        icon: ClipboardList,
+        title: 'Med-Phrasen & Schmerzskala',
+        description: 'Vorgefertigte medizinische Phrasen: Anamnese-Fragen, Schmerzskala, Medikamenten-Anweisungen. In 25+ Sprachen sofort abrufbar.',
+      },
+      {
+        icon: Camera,
+        title: 'Befunde & Rezepte (OCR)',
+        description: 'Befunde, Beipackzettel oder Einverstaendniserklaerungen fotografieren — Patient liest in seiner Sprache.',
+      },
+      {
+        icon: Lock,
+        title: 'Offline-Modus',
+        description: 'Sensible Patientengespraeche komplett offline fuehren. 54 Sprachpaare lokal verfuegbar. Keine Internetverbindung noetig.',
+      },
+    ],
+    howItWorks: [
+      { step: '1', title: 'Praxis anmelden', description: 'Online registrieren, Plan waehlen. In 2 Minuten einsatzbereit — auf Tablet, Laptop oder Smartphone.' },
+      { step: '2', title: 'Patient kommt', description: 'Tablet bereithalten oder QR-Code im Wartezimmer. Patient waehlt Sprache — automatische Spracherkennung.' },
+      { step: '3', title: 'Gespraech fuehren', description: 'Arzt spricht Deutsch, Patient antwortet in seiner Sprache. Echtzeit-Uebersetzung auf beiden Seiten.' },
+    ],
+    pricing: [
+      { name: 'Praxis', price: '29,90 EUR', period: '/Monat', highlights: ['1 Arzt/Apotheker, 3 Patienten', '25 Sprachen inkl.', 'Unbegrenzte Minuten', 'Med-Phrasen + Schmerzskala', 'Offline-Modus + DSGVO'] },
+      { name: 'Klinik', price: '199 EUR', period: '/Monat', highlights: ['Unbegrenzte Aerzte/Stationen', 'Alle 130+ Sprachen', 'Unbegrenzte Minuten', 'Chirp 3 HD Sprachqualitaet', 'Team-Verwaltung + Export'] },
+    ],
+    useCases: [
+      'Hausarztpraxis — Anamnese mit Migranten und Gefluechteten',
+      'Notaufnahme — Schnelle Verstaendigung in Akutsituationen',
+      'Apotheke — Medikamenten-Beratung mehrsprachig',
+      'Zahnarzt — Behandlungsaufklaerung in der Muttersprache',
+      'Psychiatrie/Psychotherapie — Gespraeche mit sprachsensiblem Kontext',
+      'Geburtshilfe — Kreißsaal, Vorsorge, Nachsorge',
+    ],
+    stats: [
+      { value: '29,90 EUR', label: 'ab/Monat' },
+      { value: '25+', label: 'Sprachen inkl.' },
+      { value: '100%', label: 'DSGVO-konform' },
+      { value: '54', label: 'Offline-Paare' },
+    ],
+    cta: 'Praxis-Plan starten',
+    hasCalculator: false,
+  },
+
+  conference: {
+    hero: {
+      title: 'Ihre Konferenz spricht jede Sprache.',
+      subtitle: 'Echtzeit-Uebersetzung fuer Konferenzen, Tagungen und Workshops — ohne Dolmetscher, ohne teure Plattformen. Teilnehmer scannen einen QR-Code und lesen/hoeren in ihrer Sprache. Ab 199 EUR/Monat.',
+      badge: '90% guenstiger als Simultandolmetscher',
+    },
+    painPoints: [
+      {
+        icon: Mic,
+        title: 'Live-Broadcasting',
+        description: 'Speaker spricht, bis zu 500 Teilnehmer sehen die Uebersetzung sofort auf ihrem Geraet. Unter 1 Sekunde Latenz.',
+      },
+      {
+        icon: Zap,
+        title: '90% guenstiger',
+        description: 'Simultandolmetscher: 1.500-3.000 EUR/Tag/Sprache. GuideTranslator: Ab 199 EUR/Monat mit 2.000 Minuten inklusive fuer alle Sprachen.',
+      },
+      {
+        icon: Users,
+        title: 'Bis zu 500 Teilnehmer',
+        description: 'QR-Code auf den Beamer — 500 Teilnehmer joinen in 30 Sekunden. Jeder waehlt seine Sprache. Keine App noetig.',
+      },
+      {
+        icon: Calendar,
+        title: 'Multi-Track-Konferenzen',
+        description: 'Bis zu 10 parallele Sessions (Pro). Hauptbuehne, Workshops und Breakout-Sessions — alles mehrsprachig.',
+      },
+    ],
+    features: [
+      {
+        icon: Languages,
+        title: 'Unbegrenzte Sprachen (Pro)',
+        description: 'Basic: 20 Sprachen. Pro: Alle 130+ Sprachen inklusive. Kein Teilnehmer wird ausgeschlossen.',
+      },
+      {
+        icon: Volume2,
+        title: 'Chirp 3 HD Audio (Pro)',
+        description: 'Hoechste Sprachqualitaet — Teilnehmer koennen zuhoeren statt lesen. Ideal fuer Keynotes und Podiumsdiskussionen.',
+      },
+      {
+        icon: Clock,
+        title: 'Session-Protokoll',
+        description: 'Gesamte Konferenz als Transkript exportierbar (TXT/MD). Mit Zeitstempeln und allen Uebersetzungen.',
+      },
+      {
+        icon: Shield,
+        title: 'White-Label (Pro)',
+        description: 'Eigenes Konferenz-Branding. Kein GuideTranslator-Logo — Ihre Veranstaltung, Ihr Erscheinungsbild.',
+      },
+    ],
+    howItWorks: [
+      { step: '1', title: 'Plan buchen', description: 'Basic oder Pro waehlen. In 5 Minuten einsatzbereit — kein IT-Projekt.' },
+      { step: '2', title: 'QR-Code projizieren', description: 'QR-Code auf Leinwand oder in die Konferenz-App einbinden. Teilnehmer scannen und waehlen ihre Sprache.' },
+      { step: '3', title: 'Speaker spricht', description: 'Echtzeit-Uebersetzung auf allen Geraeten. Unter 1 Sekunde Latenz. Protokoll wird automatisch erstellt.' },
+    ],
+    pricing: [
+      { name: 'Conference Basic', price: '199 EUR', period: '/Monat', highlights: ['100 Teilnehmer (x3 Sessions)', '20 Sprachen inkl.', '2.000 Min/Monat (~33h)', 'Neural2-TTS', 'Session-Protokoll-Export'] },
+      { name: 'Conference Pro', price: '499 EUR', period: '/Monat', highlights: ['500 Teilnehmer (x10 Sessions)', 'Alle 130+ Sprachen', '8.000 Min/Monat (~133h)', 'Chirp 3 HD + White-Label', 'API-Zugang + Transkript-Export'] },
+    ],
+    useCases: [
+      'Wissenschaftliche Konferenzen — Vortraege in 20+ Sprachen simultan',
+      'Firmenmeetings — Internationale Teams und Board Meetings',
+      'NGO-Konferenzen — Delegierte aus aller Welt',
+      'Kirchentage & Synoden — Mehrsprachige Gottesdienste und Vortraege',
+      'Politische Veranstaltungen — Buergerversammlungen mit Migrationssprachen',
+      'Webinare — Remote-Teilnehmer mit Live-Untertiteln',
+    ],
+    stats: [
+      { value: '199 EUR', label: 'ab/Monat' },
+      { value: '500', label: 'Teilnehmer max.' },
+      { value: '130+', label: 'Sprachen (Pro)' },
+      { value: '<1s', label: 'Latenz' },
+    ],
+    cta: 'Konferenz-Plan starten',
     hasCalculator: true,
   },
 }
@@ -887,7 +1281,11 @@ const TRUST_SIGNALS = [
   'Made in Germany — ai tour ug',
 ]
 
+ claude/setup-museum-workflow-PGiTn
+const VALID_SEGMENTS: SalesSegment[] = ['personal', 'guide', 'agency', 'event', 'cruise', 'education', 'authority', 'hospitality', 'medical', 'conference']
+=======
 const VALID_SEGMENTS: SalesSegment[] = ['personal', 'guide', 'agency', 'event', 'cruise', 'school', 'authority', 'ngo', 'counter', 'medical', 'conference']
+ main
 
 export default function SalesLandingPage() {
   const { segment } = useParams<{ segment: string }>()
