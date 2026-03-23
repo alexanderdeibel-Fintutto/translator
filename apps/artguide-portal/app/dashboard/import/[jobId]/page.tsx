@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, use } from 'react'
 import Link from 'next/link'
 
 /**
@@ -115,7 +115,8 @@ const categoryIcons: Record<string, string> = {
   other: '📌',
 }
 
-export default function ImportJobDetailPage({ params }: { params: { jobId: string } }) {
+export default function ImportJobDetailPage({ params }: { params: Promise<{ jobId: string }> }) {
+  const { jobId } = use(params)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const [filterStatus, setFilterStatus] = useState<string>('')
