@@ -118,10 +118,9 @@ export interface ContactRequest {
 // Tag presets per segment
 // ---------------------------------------------------------------------------
 
-export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
-  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Priorität-Hoch'],
-  personal: [],
-  guide: ['Stadtführer', 'Freelancer', 'Tourismus-Verband'],
+export const SEGMENT_TAG_PRESETS: Partial<Record<Segment | 'all', string[]>> & { all: string[] } = {
+  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Prioritaet-Hoch'],
+  guide: ['Stadtfuehrer', 'Freelancer', 'Tourismus-Verband'],
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],

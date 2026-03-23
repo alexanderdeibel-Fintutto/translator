@@ -572,17 +572,37 @@ async function handleSendInvite(
     userId,
   )
 
-  // NOTE: Actual email sending is a stub — would need an email provider integration
+  // Send email via send-email Edge Function (Resend)
+  let emailSent = false
+  try {
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+    const emailRes = await fetch(`${SUPABASE_URL}/functions/v1/send-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+      },
+      body: JSON.stringify({
+        to: lead.contact_email,
+        subject: renderedSubject,
+        body: renderedBody,
+      }),
+    })
+    emailSent = emailRes.ok
+  } catch {
+    // Email sending failed — non-blocking, invite is still recorded
+  }
+
   return jsonResponse({
     success: true,
     invite_code: inviteCode,
     landing_url: landingUrl,
+    email_sent: emailSent,
     rendered_email: {
       to: lead.contact_email,
       subject: renderedSubject,
       body: renderedBody,
     },
-    note: 'Email rendering only — actual sending requires email provider integration.',
   })
 }
 

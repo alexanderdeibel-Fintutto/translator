@@ -8,6 +8,8 @@ import { PIPELINE_STAGES, type Lead, type PipelineStage } from '@/lib/admin-type
 export default function PipelineBoard() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
+  const [draggedLeadId, setDraggedLeadId] = useState<string | null>(null)
+  const [dropTargetStage, setDropTargetStage] = useState<string | null>(null)
 
   useEffect(() => {
     fetchLeads()
@@ -23,6 +25,45 @@ export default function PipelineBoard() {
     )
   }
 
+  function onDragStart(e: React.DragEvent, leadId: string) {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', leadId)
+    setDraggedLeadId(leadId)
+  }
+
+  function onDragEnd() {
+    setDraggedLeadId(null)
+    setDropTargetStage(null)
+  }
+
+  function onDragOver(e: React.DragEvent, stageId: string) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDropTargetStage(stageId)
+  }
+
+  function onDragLeave(e: React.DragEvent, stageId: string) {
+    // Only clear if leaving the column itself, not a child
+    const related = e.relatedTarget as HTMLElement | null
+    const currentTarget = e.currentTarget as HTMLElement
+    if (!related || !currentTarget.contains(related)) {
+      if (dropTargetStage === stageId) setDropTargetStage(null)
+    }
+  }
+
+  function onDrop(e: React.DragEvent, stageId: string) {
+    e.preventDefault()
+    const leadId = e.dataTransfer.getData('text/plain')
+    setDropTargetStage(null)
+    setDraggedLeadId(null)
+    if (leadId) {
+      const lead = leads.find(l => l.id === leadId)
+      if (lead && lead.pipeline_stage !== stageId) {
+        handleStageChange(leadId, stageId as PipelineStage)
+      }
+    }
+  }
+
   if (loading) {
     return <div className="text-sm text-muted-foreground py-8 text-center">Lade Pipeline...</div>
   }
@@ -33,8 +74,18 @@ export default function PipelineBoard() {
       <div className="flex gap-3 overflow-x-auto pb-4">
         {PIPELINE_STAGES.map(stage => {
           const stageLeads = leads.filter(l => l.pipeline_stage === stage.id)
+          const isDropTarget = dropTargetStage === stage.id
           return (
-            <div key={stage.id} className="min-w-[220px] flex-shrink-0">
+            <div
+              key={stage.id}
+              className={cn(
+                'min-w-[220px] flex-shrink-0 rounded-lg p-2 transition-colors',
+                isDropTarget && 'bg-accent/40 ring-2 ring-primary/30',
+              )}
+              onDragOver={e => onDragOver(e, stage.id)}
+              onDragLeave={e => onDragLeave(e, stage.id)}
+              onDrop={e => onDrop(e, stage.id)}
+            >
               <div className="flex items-center gap-2 mb-2">
                 <div className={cn('w-2.5 h-2.5 rounded-full', stage.color)} />
                 <span className="text-sm font-medium">{stage.label}</span>
@@ -45,7 +96,13 @@ export default function PipelineBoard() {
                   <Link
                     key={lead.id}
                     to={`/admin/leads/${lead.id}`}
-                    className="block rounded-lg border border-border p-3 bg-card hover:bg-accent/50 transition-colors"
+                    draggable="true"
+                    onDragStart={e => onDragStart(e, lead.id)}
+                    onDragEnd={onDragEnd}
+                    className={cn(
+                      'block rounded-lg border border-border p-3 bg-card hover:bg-accent/50 transition-colors cursor-grab active:cursor-grabbing',
+                      draggedLeadId === lead.id && 'opacity-40',
+                    )}
                   >
                     <div className="text-sm font-medium truncate">{lead.name}</div>
                     {lead.company && (
@@ -61,26 +118,13 @@ export default function PipelineBoard() {
                         </Badge>
                       ))}
                     </div>
-                    {/* Stage move dropdown */}
-                    <select
-                      className="mt-2 w-full text-xs rounded border border-input bg-transparent px-1 py-0.5"
-                      value={lead.pipeline_stage}
-                      onClick={e => e.preventDefault()}
-                      onChange={e => {
-                        e.preventDefault()
-                        handleStageChange(lead.id, e.target.value as PipelineStage)
-                      }}
-                    >
-                      {PIPELINE_STAGES.map(s => (
-                        <option key={s.id} value={s.id}>
-                          {s.label}
-                        </option>
-                      ))}
-                    </select>
                   </Link>
                 ))}
                 {stageLeads.length === 0 && (
-                  <div className="text-xs text-muted-foreground text-center py-4 rounded-lg border border-dashed border-border">
+                  <div className={cn(
+                    'text-xs text-muted-foreground text-center py-4 rounded-lg border border-dashed border-border',
+                    isDropTarget && 'border-primary/50 bg-primary/5',
+                  )}>
                     Keine Leads
                   </div>
                 )}

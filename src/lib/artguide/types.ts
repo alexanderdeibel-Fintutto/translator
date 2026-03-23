@@ -153,6 +153,8 @@ export interface Artwork {
   sort_order: number
   tags: string[]
   published_at: string | null
+  created_by: string | null
+  updated_by: string | null
   created_at: string
   updated_at: string
 }
@@ -338,6 +340,7 @@ export interface Beacon {
   major: number
   minor: number
   label: string | null
+  floor_id: string | null
   position_x: number | null
   position_y: number | null
   tx_power: number
@@ -370,6 +373,7 @@ export interface PositioningConfig {
   ble_smoothing_window: number
   wifi_scan_interval_ms: number
   gps_accuracy_threshold_meters: number
+  gps_update_interval_ms: number
   auto_trigger_enabled: boolean
   proximity_threshold_meters: number
 }
