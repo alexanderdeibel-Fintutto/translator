@@ -23,6 +23,9 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import MedicalStaffHomePage from './pages/MedicalStaffHomePage'
+import StandaloneMedicalPage from './pages/StandaloneMedicalPage'
+import AnamnesisPage from './pages/AnamnesisPage'
+import EmergencyPhrasesPage from './pages/EmergencyPhrasesPage'
 
 // Lazy-loaded routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -63,6 +66,11 @@ function App() {
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route index element={<MedicalStaffHomePage />} />
+
+                  {/* Medical-specific standalone routes */}
+                  <Route path="standalone" element={<StandaloneMedicalPage />} />
+                  <Route path="anamnesis" element={<AnamnesisPage />} />
+                  <Route path="emergency" element={<EmergencyPhrasesPage />} />
 
                   {/* Core translation */}
                   <Route path="translator" element={<Suspense fallback={<PageLoader />}><TranslatorPage /></Suspense>} />
