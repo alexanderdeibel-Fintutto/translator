@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
+import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2, Radio } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageChips from './LanguageChips'
@@ -247,17 +247,31 @@ export default function ListenerView({ session }: ListenerViewProps) {
 
       {/* Controls */}
       <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          variant={session.autoTTS ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => session.setAutoTTS(!session.autoTTS)}
-          className="gap-1.5"
-          aria-pressed={session.autoTTS}
-          aria-label={t('live.autoSpeak')}
-        >
-          {session.autoTTS ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
-          {t('live.autoSpeak')}
-        </Button>
+        {/* _live mode: show audio activate button (iOS requires user gesture to start AudioContext) */}
+        {session.selectedLanguage === '_live' ? (
+          <Button
+            variant={session.isAudioPlaying ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => session.resumeAudio?.()}
+            className="gap-1.5"
+            aria-label="Live-Audio aktivieren"
+          >
+            <Radio className="h-3.5 w-3.5" />
+            {session.isAudioPlaying ? 'Audio läuft ●' : 'Audio aktivieren'}
+          </Button>
+        ) : (
+          <Button
+            variant={session.autoTTS ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => session.setAutoTTS(!session.autoTTS)}
+            className="gap-1.5"
+            aria-pressed={session.autoTTS}
+            aria-label={t('live.autoSpeak')}
+          >
+            {session.autoTTS ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+            {t('live.autoSpeak')}
+          </Button>
+        )}
 
         <Button
           variant={subtitleMode ? 'default' : 'outline'}

@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useBroadcast } from './useBroadcast'
 import { usePresence } from './usePresence'
+import { useAudioBroadcast } from './useAudioBroadcast'
+import { useAudioReceiver } from './useAudioReceiver'
+import type { AudioChunkPayload } from './useAudioBroadcast'
 import { useConnectionMode } from './useConnectionMode'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useSpeechSynthesis } from './useSpeechSynthesis'
@@ -45,6 +48,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
   const [languageLimitReached, setLanguageLimitReached] = useState(false)
   const [backChannelMessages, setBackChannelMessages] = useState<BackChannelMessage[]>([])
+  // Audio streaming state for _live mode
+  const [isAudioStreaming, setIsAudioStreaming] = useState(false)
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
 
   // Tier config
   const tierConfig = TIERS[userTierId] ?? TIERS.free
@@ -59,6 +65,21 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const presence = usePresence(connection.presenceTransport)
   const recognition = useSpeechRecognition()
   const tts = useSpeechSynthesis()
+
+  // Audio broadcast (speaker side) — streams mic audio for _live listeners
+  const audioBroadcast = useAudioBroadcast({
+    chunkMs: 500,
+    sampleRate: 16000,
+    onChunk: (chunk: AudioChunkPayload) => {
+      broadcastRef.current.broadcast('audio_chunk', chunk as unknown as Record<string, unknown>)
+    },
+  })
+
+  // Audio receiver (listener side) — plays incoming audio chunks
+  const audioReceiver = useAudioReceiver({
+    enabled: true,
+    onPlaybackChange: (playing) => setIsAudioPlaying(playing),
+  })
 
   // Wrap setAutoTTS to unlock iOS audio when user enables auto-speak
   const setAutoTTS = useCallback((value: boolean) => {
@@ -89,6 +110,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
   broadcastRef.current = broadcast
   const presenceRef = useRef(presence)
   presenceRef.current = presence
+  // Stable ref for audioReceiver to avoid re-render loops
+  const audioReceiverRef = useRef(audioReceiver)
+  audioReceiverRef.current = audioReceiver
+  const audioBroadcastRef = useRef(audioBroadcast)
+  audioBroadcastRef.current = audioBroadcast
 
   // --- SPEAKER ---
 
@@ -460,14 +486,34 @@ export function useLiveSession(userTierId: TierId = 'free') {
     drainQueue()
   }, [drainQueue])
 
+  // Audio streaming: start when recording starts (if _live listeners present)
+  // We track whether we need to stream audio based on listener languages
+  const startAudioStreamIfNeeded = useCallback(() => {
+    const langs = Object.keys(presenceRef.current.listenersByLanguage)
+    const hasLiveListeners = langs.includes('_live') ||
+      [...announcedListenersRef.current.values()].some(l => l.targetLanguage === '_live')
+    if (hasLiveListeners && audioBroadcastRef.current.isSupported && !audioBroadcastRef.current.isStreaming) {
+      audioBroadcastRef.current.startAudioStream().then(() => setIsAudioStreaming(true)).catch(() => {})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const startRecording = useCallback(() => {
     const lang = getLanguageByCode(sourceLanguage)
     // markSTTStart is called per-utterance via handleSpeechResult flow
     recognition.startListening(lang?.speechCode || sourceLanguage, handleSpeechResult)
-  }, [sourceLanguage, recognition, handleSpeechResult])
+    // Start audio streaming if _live listeners are connected
+    startAudioStreamIfNeeded()
+  }, [sourceLanguage, recognition, handleSpeechResult, startAudioStreamIfNeeded])
 
   const stopRecording = useCallback(() => {
     recognition.stopListening()
+    // Stop audio streaming
+    if (audioBroadcastRef.current.isStreaming) {
+      audioBroadcastRef.current.stopAudioStream()
+      setIsAudioStreaming(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recognition])
 
   const endSession = useCallback(() => {
@@ -535,6 +581,15 @@ export function useLiveSession(userTierId: TierId = 'free') {
       // onTranslation
       (chunk: TranslationChunk) => {
         lastBroadcastReceivedRef.current = Date.now()
+
+        // Handle audio_chunk events for _live audio streaming mode
+        if ((chunk as unknown as AudioChunkPayload).type === 'audio_chunk') {
+          if (selectedLanguageRef.current === '_live') {
+            audioReceiverRef.current.receiveChunk(chunk as unknown as AudioChunkPayload)
+          }
+          return
+        }
+
         console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
@@ -546,12 +601,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
           })
 
           // Auto-TTS — for _live mode use the source language's voice
-          if (autoTTSRef.current && chunk.translatedText) {
-            const ttsLangCode = selectedLanguageRef.current === '_live'
-              ? chunk.sourceLang
-              : selectedLanguageRef.current
-            const lang = getLanguageByCode(ttsLangCode)
-            ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
+          // (only when audio streaming is not active — audio stream takes priority)
+          if (autoTTSRef.current && chunk.translatedText && selectedLanguageRef.current !== '_live') {
+            const lang = getLanguageByCode(selectedLanguageRef.current)
+            ttsRef.current(chunk.translatedText, lang?.speechCode || selectedLanguageRef.current)
           }
         }
       },
@@ -756,6 +809,14 @@ export function useLiveSession(userTierId: TierId = 'free') {
     languageLimitReached,
     maxListeners: tierConfig.limits.maxListeners,
     maxLanguages: tierConfig.limits.maxLanguages,
+
+    // Audio streaming (_live mode)
+    isAudioStreaming,
+    isAudioPlaying,
+    startAudioStream: audioBroadcast.startAudioStream,
+    stopAudioStream: audioBroadcast.stopAudioStream,
+    resumeAudio: audioReceiver.resume,
+    isAudioSupported: audioBroadcast.isSupported,
 
     // Diagnostics (for debug panel)
     getDiagnostics: broadcast.getDiagnostics,
