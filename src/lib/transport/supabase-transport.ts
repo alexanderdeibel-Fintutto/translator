@@ -108,6 +108,16 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
         console.error(`[Supabase] Keepalive: reconnecting (connected=${this.connected}, lastMsg=${Date.now() - this.lastMessageAt}ms ago)`)
         this.retries = 0
         this.reconnectCount++
+
+        // Force the underlying Supabase Realtime WebSocket to disconnect and
+        // reconnect. On iOS Safari/WebKit, the WebSocket can die silently
+        // (no close event), so creating a new channel on the SAME dead WebSocket
+        // doesn't help. This forces a truly fresh TCP connection.
+        try {
+          supabase.realtime.disconnect()
+          supabase.realtime.connect()
+        } catch { /* best-effort */ }
+
         this.doSubscribe(this.subscribeArgs.code, this.subscribeArgs.handlers)
       }
     }, 10_000) // check every 10 seconds
@@ -284,6 +294,8 @@ export class SupabasePresenceTransport implements PresenceTransport {
   private syncListeners = new Set<(listeners: PresenceState[]) => void>()
   private visibilityHandler: (() => void) | null = null
   private lastCode: string | null = null
+  private keepaliveTimer: ReturnType<typeof setInterval> | null = null
+  private lastSyncAt = 0
 
   onSync(callback: (listeners: PresenceState[]) => void): () => void {
     this.syncListeners.add(callback)
@@ -321,6 +333,28 @@ export class SupabasePresenceTransport implements PresenceTransport {
       }
     }
     document.addEventListener('visibilitychange', this.visibilityHandler)
+
+    // Keepalive: periodically check if presence is still syncing.
+    // On iOS Safari, the underlying WebSocket can die silently, killing both
+    // broadcast AND presence channels. The broadcast keepalive only reconnects
+    // the broadcast channel — presence needs its own keepalive.
+    this.clearKeepalive()
+    this.keepaliveTimer = setInterval(() => {
+      if (!this.lastCode || !this.myPresence) return
+      // If we haven't received a presence sync in 45s, the channel is likely dead
+      const stale = this.lastSyncAt > 0 && (Date.now() - this.lastSyncAt) > 45_000
+      if (stale) {
+        console.error(`[Supabase] Presence keepalive: no sync for ${Math.round((Date.now() - this.lastSyncAt) / 1000)}s, re-joining...`)
+        this.doJoin(this.lastCode, this.myPresence)
+      }
+    }, 15_000) // check every 15 seconds
+  }
+
+  private clearKeepalive() {
+    if (this.keepaliveTimer) {
+      clearInterval(this.keepaliveTimer)
+      this.keepaliveTimer = null
+    }
   }
 
   private doJoin(code: string, data: PresenceState): void {
@@ -333,6 +367,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
     const channel = supabase.channel(getChannelName(code) + '-presence')
 
     channel.on('presence', { event: 'sync' }, () => {
+      this.lastSyncAt = Date.now()
       const state = channel.presenceState<PresenceState>()
       const allListeners: PresenceState[] = []
       for (const key of Object.keys(state)) {
@@ -367,6 +402,7 @@ export class SupabasePresenceTransport implements PresenceTransport {
   }
 
   leave(): void {
+    this.clearKeepalive()
     if (this.visibilityHandler) {
       document.removeEventListener('visibilitychange', this.visibilityHandler)
       this.visibilityHandler = null

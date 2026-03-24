@@ -509,8 +509,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
       code,
       // onTranslation
       (chunk: TranslationChunk) => {
-        console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
-        if (chunk.targetLanguage === selectedLanguageRef.current) {
+        // Accept chunks that match our selected language OR _live chunks (fallback
+        // when speaker doesn't know our language yet — common on iOS where
+        // presence/announce can lag or fail silently).
+        const isMatch = chunk.targetLanguage === selectedLanguageRef.current
+        const isLiveFallback = chunk.targetLanguage === '_live' && selectedLanguageRef.current !== '_live'
+        console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${isMatch}, liveFallback=${isLiveFallback}, text="${chunk.translatedText?.slice(0, 30)}"`)
+        if (isMatch || isLiveFallback) {
           setCurrentTranslation(chunk.translatedText)
           setReceivedChunks(prev => {
             // Dedup: skip if chunk with same ID already exists (duplicate from reconnect)
@@ -519,9 +524,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
             return next.length > 100 ? next.slice(-100) : next
           })
 
-          // Auto-TTS — for _live mode use the source language's voice
+          // Auto-TTS — for _live chunks use the source language's voice
           if (autoTTSRef.current && chunk.translatedText) {
-            const ttsLangCode = selectedLanguageRef.current === '_live'
+            const ttsLangCode = (chunk.targetLanguage === '_live')
               ? chunk.sourceLang
               : selectedLanguageRef.current
             const lang = getLanguageByCode(ttsLangCode)
@@ -610,7 +615,9 @@ export function useLiveSession(userTierId: TierId = 'free') {
       const myLang = selectedLanguageRef.current
 
       for (const chunk of chunks) {
-        if (chunk.targetLanguage !== myLang) continue
+        // Accept chunks matching our language OR _live fallback (speaker doesn't
+        // know our language yet — common on iOS where announce/presence can lag)
+        if (chunk.targetLanguage !== myLang && chunk.targetLanguage !== '_live') continue
 
         // Check if we already received this chunk via broadcast (dedup by ID)
         setReceivedChunks(prev => {
@@ -625,7 +632,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
           // Auto-TTS for fallback-delivered chunks
           if (autoTTSRef.current && fullChunk.translatedText) {
-            const ttsLangCode = myLang === '_live' ? fullChunk.sourceLang : myLang
+            const ttsLangCode = (fullChunk.targetLanguage === '_live') ? fullChunk.sourceLang : myLang
             const lang = getLanguageByCode(ttsLangCode)
             ttsRef.current(fullChunk.translatedText, lang?.speechCode || ttsLangCode)
           }
