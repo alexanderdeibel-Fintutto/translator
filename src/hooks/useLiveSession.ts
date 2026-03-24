@@ -481,6 +481,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
   // --- LISTENER ---
 
+  // Track last broadcast message received on listener side for stale connection detection
+  const lastBroadcastReceivedRef = useRef(0)
+  const listenerReconnectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const joinArgsRef = useRef<{ code: string; targetLang: string; connectionConfig?: ConnectionConfig } | null>(null)
+
   const joinSession = useCallback(async (
     code: string,
     targetLang: string,
@@ -498,6 +503,8 @@ export function useLiveSession(userTierId: TierId = 'free') {
     setReceivedChunks([])
     setCurrentTranslation('')
     setError(null)
+    lastBroadcastReceivedRef.current = Date.now()
+    joinArgsRef.current = { code, targetLang, connectionConfig }
 
     // Initialize connection mode
     if (connectionConfig) {
@@ -509,6 +516,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
       code,
       // onTranslation
       (chunk: TranslationChunk) => {
+        lastBroadcastReceivedRef.current = Date.now()
         console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
@@ -529,10 +537,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
           }
         }
       },
-      // onSessionInfo
-      undefined,
+      // onSessionInfo — track heartbeat from speaker to detect dead broadcast channel
+      () => {
+        lastBroadcastReceivedRef.current = Date.now()
+      },
       // onStatus
       (status: StatusMessage) => {
+        lastBroadcastReceivedRef.current = Date.now()
         if (status.ended) {
           setSessionEnded(true)
         }
@@ -558,6 +569,62 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }, 15_000)
   }, [broadcast, presence, connection])
 
+ claude/nice-jones
+  // Listener-side stale connection detector: if no broadcast message for 20s,
+  // the broadcast channel is likely dead (iOS Safari silent disconnect).
+  // Re-subscribe to force a fresh WebSocket connection.
+  useEffect(() => {
+    if (role !== 'listener' || sessionEnded) {
+      if (listenerReconnectTimerRef.current) {
+        clearInterval(listenerReconnectTimerRef.current)
+        listenerReconnectTimerRef.current = null
+      }
+      return
+    }
+
+    listenerReconnectTimerRef.current = setInterval(() => {
+      const sinceLastMsg = Date.now() - lastBroadcastReceivedRef.current
+      if (sinceLastMsg > 20_000 && joinArgsRef.current && broadcast.isConnected) {
+        console.warn(`[LiveSession] No broadcast received for ${Math.round(sinceLastMsg / 1000)}s, re-subscribing...`)
+        // Re-subscribe to force a new channel connection
+        const { code } = joinArgsRef.current
+        broadcast.subscribe(
+          code,
+          (chunk: TranslationChunk) => {
+            lastBroadcastReceivedRef.current = Date.now()
+            if (chunk.targetLanguage === selectedLanguageRef.current) {
+              setCurrentTranslation(chunk.translatedText)
+              setReceivedChunks(prev => {
+                const next = [...prev, chunk]
+                return next.length > 100 ? next.slice(-100) : next
+              })
+              if (autoTTSRef.current && chunk.translatedText) {
+                const ttsLangCode = selectedLanguageRef.current === '_live'
+                  ? chunk.sourceLang
+                  : selectedLanguageRef.current
+                const lang = getLanguageByCode(ttsLangCode)
+                ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
+              }
+            }
+          },
+          () => { lastBroadcastReceivedRef.current = Date.now() },
+          (status: StatusMessage) => {
+            lastBroadcastReceivedRef.current = Date.now()
+            if (status.ended) setSessionEnded(true)
+          },
+        )
+        lastBroadcastReceivedRef.current = Date.now()
+      }
+    }, 10_000)
+
+    return () => {
+      if (listenerReconnectTimerRef.current) {
+        clearInterval(listenerReconnectTimerRef.current)
+        listenerReconnectTimerRef.current = null
+      }
+    }
+  }, [role, sessionEnded, broadcast])
+=======
   // --- Reactive listener announce: fires on EVERY connect/reconnect ---
   // The old approach used a fixed 1s setTimeout which was too early for iOS
   // (channel not yet SUBSCRIBED). This useEffect sends the announce as soon as
@@ -571,6 +638,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
       ts: Date.now(),
     })
   }, [role, broadcast.isConnected, sessionCode, broadcast])
+ main
 
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
@@ -646,6 +714,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
     broadcast.unsubscribe()
     presence.leave()
+    joinArgsRef.current = null
+    if (listenerReconnectTimerRef.current) {
+      clearInterval(listenerReconnectTimerRef.current)
+      listenerReconnectTimerRef.current = null
+    }
     setRole(null)
     setSessionCode('')
   }, [broadcast, presence, tts])

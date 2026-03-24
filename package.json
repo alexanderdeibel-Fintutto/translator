@@ -115,7 +115,7 @@
     "autoprefixer": "^10.4.17",
     "jsdom": "^29.0.1",
     "postcss": "^8.4.35",
-    "stripe": "^20.4.0",
+    "stripe": "^20.4.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
     "vite": "^6.4.1",
