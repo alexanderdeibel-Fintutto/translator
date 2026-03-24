@@ -31,9 +31,9 @@
 
 **Loesung:** Eine Progressive Web App (PWA) mit proprietaerem BLE-GATT-Transportprotokoll, die automatisch zwischen vier Netzwerkstufen degradiert. Ein Sprecher, unbegrenzt Zuhoerer, jeder in seiner Sprache -- offline, verschluesselt, ohne App-Download.
 
-**Status:** Production-ready MVP (v3.1), 13.296 Zeilen Code, 87 automatisierte Tests (100% pass rate), Google Play Ready.
+**Status:** Production-ready MVP (v5.2), 41.436 Zeilen Code, 295 TypeScript-Dateien, 87 automatisierte Tests (100% pass rate), Google Play Ready. Die Plattform umfasst 16 App-Varianten fuer 7 Marktsegmente: General, Schools, Authorities, NGO, Hospitality, Medical und Events.
 
-**Markt:** SAM 4,4 Mrd. USD (Live-Uebersetzung + Behoerden/NGO + Tourismus). Ziel: 12 Mio. EUR ARR in 3 Jahren.
+**Markt:** SAM ~6,7 Mrd. USD (Live-Uebersetzung + Behoerden/NGO + Tourismus + Medical + Hospitality). Ziel: 12 Mio. EUR ARR in 3 Jahren.
 
 ---
 
@@ -48,6 +48,8 @@
 | Internationale Konferenzen | 30.000/Jahr | Nur 3-4 Sprachen moeglich | Simultandolmetscher | 10.000+ EUR/Tag |
 | Willkommensschueler | 1,4 Mio (DE) | Lehrer kann nicht kommunizieren | Aeltere Geschwister | Unzuverlaessig |
 | Kreuzfahrt-Passagiere | 30 Mio/Jahr | Landausfluege nur in 2-3 Sprachen | 8 Dolmetscher pro Ausflug | 2.800 EUR/Ausflug |
+| Kliniken/Arztpraxen | 20.000+ (DE) | Patienten verstehen Diagnose nicht | Telefondolmetscher (80-120 EUR/h) | Nicht skalierbar |
+| Hotels/Gastronomie | 50.000+ (DE) | Gaeste an Rezeption/Restaurant | Mehrsprachiges Personal | Teuer, schwer verfuegbar |
 
 ### 2.2 Der blinde Fleck aller Wettbewerber
 
@@ -89,6 +91,20 @@ TIER 4: OFFLINE (On-Device ML)
 
 ### 3.2 Produkte
 
+**16 App-Varianten in 7 Marktsegmenten:**
+
+| # | Marktsegment | App-Varianten |
+|---|-------------|---------------|
+| 1 | General | Allgemeine Uebersetzung, Live-Session, Gespraechsmodus |
+| 2 | Schools | Willkommensklassen, Elternkommunikation |
+| 3 | Authorities | Behoerden-Kommunikation, Formularhilfe |
+| 4 | NGO | Fluechtlingsbetreuung, Feldarbeit |
+| 5 | Hospitality | Hotel-Rezeption, Gastronomie, Messen |
+| 6 | Medical | Kliniken, Arztpraxen, Apotheken |
+| 7 | Events | Konferenzen, Kreuzfahrt, Grossveranstaltungen |
+
+**Kernprodukte (in allen Varianten):**
+
 | # | Produkt | Status |
 |---|---------|--------|
 | 1 | Text-Uebersetzer (45 Sprachen, 4-Provider-Cascade) | Production |
@@ -101,7 +117,7 @@ TIER 4: OFFLINE (On-Device ML)
 
 ### 3.3 Technische Metriken
 
-- **13.296 Zeilen** Production Code (React/TypeScript)
+- **41.436 Zeilen** Production Code (React/TypeScript), 295 TypeScript-Dateien, 16 App-Varianten
 - **87 automatisierte Tests**, 100% pass rate
 - **Build-Zeit:** 12 Sekunden (Vite 6)
 - **Bundle:** 407 KB gzipped (ohne WASM-Modelle)
@@ -149,7 +165,9 @@ SaaS (B2B)              → Recurring Revenue (MRR)
 ├── Guide: 19,90-39,90  (Tour-Guides, 10-25 Hoerer)
 ├── Agentur: 99-249     (Multi-Guide, White-Label)
 ├── Event: 199-499      (Konferenzen, 100-500 Hoerer)
-└── Cruise: 1.990-19.990 (Kreuzfahrt, Unbegrenzte Hoerer)
+├── Cruise: 1.990-19.990 (Kreuzfahrt, Unbegrenzte Hoerer)
+├── Medical: 79-249     (Krankenhaeuser, Arztpraxen, Apotheken)
+└── Hospitality: 49-99  (Hotels, Empfang, Gastronomie)
 
 Enterprise              → Annual Revenue (ARR)
 └── Custom: ab 149.990/Jahr (Konzerne, dedizierte Infrastruktur)
@@ -183,7 +201,7 @@ Enterprise              → Annual Revenue (ARR)
 | Ebene | Markt | Groesse |
 |-------|-------|---------|
 | **TAM** | Globaler maschineller Uebersetzungsmarkt | 8 Mrd. USD (2025), 15% CAGR |
-| **SAM** | Live-Uebersetzung + Behoerden/NGO + Tourismus | 4,4 Mrd. USD |
+| **SAM** | Live-Uebersetzung + Behoerden/NGO + Tourismus + Medical + Hospitality | ~6,7 Mrd. USD |
 | **SOM** | DACH-Region, 3 Jahre | 180 Mio. USD (12 Mio. EUR ARR) |
 
 ### 6.2 Markttreiber
@@ -214,7 +232,7 @@ Enterprise              → Annual Revenue (ARR)
 ### Phase 1: DACH (Monat 1-12)
 
 **Bottom-Up (B2C):**
-- Google Play Launch (Android, v3.1 ready)
+- Google Play Launch (Android, v5.2 ready)
 - SEO: "Offline Uebersetzer", "Tour Translation", "Fluechtling Uebersetzer"
 - Ziel: 5.000 Free-Nutzer, 300 Pro
 
@@ -239,7 +257,7 @@ Enterprise              → Annual Revenue (ARR)
 
 **Alexander Deibel** — CEO / Product
 - Gruender Fintutto UG (i.G.), Sitz Mecklenburg-Vorpommern
-- Bisherige Leistung: Komplette v3.1 Codebase (13.296 Zeilen) als Solo-Founder mit KI-Unterstuetzung in <6 Monaten gebaut
+- Bisherige Leistung: Komplette v5.2 Codebase (41.436 Zeilen, 295 Dateien) als Solo-Founder mit KI-Unterstuetzung gebaut
 - Mitgruender AI Tour Guide UG (seit 2024), Tourismus-Tech, Branchenkenntnis
 
 ### Advisor
@@ -325,4 +343,4 @@ Mecklenburg-Vorpommern, Deutschland
 
 ---
 
-*Stand: 06.03.2026 | Fintutto Translator v3.1.0 | Vertraulich*
+*Stand: 16.03.2026 | Fintutto Translator v5.2.0 | Vertraulich*

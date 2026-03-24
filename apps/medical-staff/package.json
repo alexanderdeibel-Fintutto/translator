@@ -1,0 +1,15 @@
+{
+  "name": "@fintutto/app-medical-staff",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:sync": "npx cap sync",
+    "cap:ios": "npx cap open ios",
+    "cap:android": "npx cap open android",
+    "build:native": "vite build && npx cap sync"
+  }
+}

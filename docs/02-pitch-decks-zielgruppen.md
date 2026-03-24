@@ -520,4 +520,115 @@ MIT FINTUTTO:
 
 ---
 
-*Alle Preise sind Vorschlaege und koennen angepasst werden. Stand: Maerz 2026 | Fintutto Translator v3.1*
+# PITCH 7: Medical / Gesundheitswesen
+
+## Das Problem
+
+Patient spricht kein Deutsch, Arzt braucht Anamnese, Notaufnahme hat keine Dolmetscher. Missverstaendnisse koennen lebensgefaehrlich sein. Telefondolmetscher: 80-120 EUR/h, oft nicht sofort verfuegbar.
+
+## Die Loesung
+
+**Medical Translator App** (medical-staff + medical-patient). Gespraechsmodus am Tablet, med. Phrasebook (Schmerzskala, Symptome, Medikamente, Notfall-Phrasen), RTL-Sprachen, Offline-Modus.
+
+## Key Features fuer Gesundheitswesen
+
+| Feature | Nutzen |
+|---------|--------|
+| **Med. Phrasebook** | Anamnese, Schmerzskala 1-10, Symptome, Medikamente, Allergien, OP-Aufklaerung |
+| **Datenschutz-Modus** | Keine Speicherung von Patientengespraechen |
+| **Offline-Modus** | Funktioniert in der Notaufnahme ohne Internet |
+| **10 Migrationssprachen** | Farsi, Dari, Paschtu, Kurdisch, Tigrinya, Amharisch, Somali, Urdu, Bengali, Albanisch |
+| **Gespraechsmodus** | Bidirektionale Kommunikation am Tablet |
+| **Formelle Anrede** | Professionelle Kommunikation mit Patienten |
+
+## ROI-Berechnung
+
+```
+OHNE Fintutto:
+  5 gescheiterte Arzt-Patient-Gespraeche/Tag x 150 EUR = 750 EUR/Tag
+
+MIT Fintutto:
+  Lizenz: 79 EUR/Monat
+
+ERSPARNIS: ~17.000 EUR/Jahr
+```
+
+## Einsatzszenarien
+
+1. **Notaufnahme**: Schnelle Kommunikation in Akutsituationen
+2. **Arztpraxis**: Anamnese und Behandlungserklaerung
+3. **Apotheke**: Medikamentenausgabe und Dosierungshinweise
+4. **Pflegeheim**: Taegliche Kommunikation mit Bewohnern
+5. **Geburtshilfe**: Begleitung waehrend Schwangerschaft und Geburt
+6. **Psychiatrie/Psychotherapie**: Therapeutische Gespraeche
+
+## Preismodell fuer Medical
+
+| Tier | Preis | Leistung |
+|------|-------|----------|
+| **Praxis** | 79 EUR/Monat | 3 Geraete, Gespraechsmodus, Med. Phrasebook |
+| **Klinik** | 249 EUR/Monat | 10 Geraete, Offline, Priority Support |
+| **Krankenhaus** | Auf Anfrage | Unbegrenzt, MDM, LDAP-Integration |
+
+## Call to Action
+
+> **Jetzt testen**: Starten Sie einen 30-Tage-Piloten in Ihrer Praxis oder Klinik. Wir richten alles ein und schulen Ihr Team. Kein Risiko, keine Vertragsbindung.
+
+---
+
+# PITCH 8: Hospitality / Empfang / Counter
+
+## Das Problem
+
+Rezeptionist spricht Englisch, Gast spricht nur Mandarin. Haende-und-Fuesse-Kommunikation. Negative Bewertungen. Messestand mit internationalen Besuchern — Produkterklaerungen scheitern.
+
+## Die Loesung
+
+**Counter Translator App** (counter-staff + counter-guest). Bidirektionale Echtzeit-Uebersetzung am Counter, Empfang, Schalter. Tourismussprachen + asiatische Maerkte.
+
+## Key Features fuer Hospitality
+
+| Feature | Nutzen |
+|---------|--------|
+| **Bidirektionaler Gespraechsmodus** | Echtzeit-Kommunikation am Schalter |
+| **45 Sprachen** | Inkl. ZH, JA, KO, TH, VI, ID |
+| **Counter-Modus** | Optimiert fuer Schalter/Empfang |
+| **Kamera-OCR** | Reisepass, Formulare scannen und uebersetzen |
+| **Phrasebook** | Hotel, Restaurant, Shopping — vorgefertigte Phrasen |
+
+## ROI-Berechnung
+
+```
+OHNE Fintutto:
+  3 verlorene Buchungen/Woche x 200 EUR = 2.400 EUR/Monat
+
+MIT Fintutto:
+  Lizenz: 99 EUR/Monat
+
+ERSPARNIS: ~2.300 EUR/Monat
+```
+
+## Einsatzszenarien
+
+1. **Hotel-Rezeption**: Check-in, Concierge, Beschwerdemanagement
+2. **Restaurant**: Bestellungen, Allergien, Empfehlungen
+3. **Messestand**: Produkterklaerungen fuer internationale Besucher
+4. **Einzelhandel (Luxus/Tax-Free)**: Beratung und Verkauf
+5. **Tourist-Info**: Auskuenfte und Empfehlungen
+6. **Flughafen-Counter**: Boarding, Umbuchungen, Gepaeck
+
+## Preismodell fuer Hospitality
+
+| Tier | Preis | Leistung |
+|------|-------|----------|
+| **Einzelplatz** | 49 EUR/Monat | 1 Geraet, Gespraechsmodus, Phrasebook |
+| **Business** | 99 EUR/Monat | 3 Schalter, Counter-Modus, OCR |
+| **Enterprise** | Auf Anfrage | Multi-Standort, White-Label, API |
+
+## Call to Action
+
+> **Testen Sie es an Ihrem Empfang**: Starten Sie eine Live-Session am Tablet. Kein Vertrag, kein Risiko. Ihre Gaeste werden den Unterschied sofort bemerken.
+
+---
+
+*Alle Preise sind Vorschlaege und koennen angepasst werden. 8 Pitch Decks fuer verschiedene Zielgruppen. Stand: 16.03.2026 | Fintutto Translator v5.2*

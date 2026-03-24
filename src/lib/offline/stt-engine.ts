@@ -24,13 +24,33 @@ async function getWhisperPipeline(onProgress?: (pct: number) => void) {
   isLoading = true
   try {
     const { pipeline: createPipeline } = await import('@huggingface/transformers')
+
+    // Track overall progress across all files (weighted by bytes)
+    const fileProgress = new Map<string, { loaded: number; total: number }>()
+    let totalRecordedBytes = 0
+
     pipeline = await createPipeline('automatic-speech-recognition', WHISPER_MODEL, {
-      progress_callback: (data: { status: string; progress?: number; loaded?: number }) => {
-        if (data.status === 'progress' && data.progress !== undefined && onProgress) {
-          onProgress(data.progress)
+      progress_callback: (data: { status: string; progress?: number; loaded?: number; total?: number; file?: string }) => {
+        if (data.status === 'progress' && onProgress && data.file) {
+          fileProgress.set(data.file, {
+            loaded: data.loaded || 0,
+            total: data.total || 0,
+          })
+          let totalLoaded = 0
+          let totalSize = 0
+          for (const fp of fileProgress.values()) {
+            totalLoaded += fp.loaded
+            totalSize += fp.total
+          }
+          if (totalSize > 0) {
+            onProgress((totalLoaded / totalSize) * 100)
+          }
+        } else if (data.status === 'progress' && onProgress && !data.file) {
+          onProgress(data.progress ?? 0)
         }
         if (data.status === 'done') {
-          recordModelDownload(WHISPER_MODEL, 'stt', data.loaded || 0).catch(() => {})
+          totalRecordedBytes += data.loaded || 0
+          recordModelDownload(WHISPER_MODEL, 'stt', totalRecordedBytes).catch(() => {})
         }
       },
     })

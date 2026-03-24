@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'آفلاین — مدل زبانی برای این جفت زبان دانلود نشده. به تنظیمات → زبان‌های آفلاین بروید.',
   'error.allProvidersFailed': 'ترجمه ناموفق بود — لطفاً دوباره امتحان کنید.',
   'error.unknown': 'خطایی رخ داد.',
+  'error.networkDownload': 'دانلود ناموفق بود — لطفاً اتصال اینترنت خود را بررسی کنید و دوباره امتحان کنید.',
   'error.cameraNoApiKey': 'ترجمه دوربین به کلید API گوگل نیاز دارد. لطفاً در تنظیمات پیکربندی کنید.',
   'error.cameraOcrFailed': 'تشخیص متن ناموفق بود. لطفاً دوباره امتحان کنید.',
   'error.cameraNoText': 'متنی در تصویر شناسایی نشد.',

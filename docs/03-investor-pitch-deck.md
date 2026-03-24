@@ -6,7 +6,7 @@
 
 ### "Sprache darf keine Mauer sein."
 
-Fintutto Translator ist die weltweit erste Uebersetzungsplattform, die **auch ohne Internet funktioniert** — per Bluetooth, WiFi-Hotspot oder lokale ML-Modelle. Live, in Echtzeit, fuer Gruppen bis 500 Personen, in 45 Sprachen gleichzeitig.
+Fintutto Translator ist die weltweit erste Uebersetzungsplattform, die **auch ohne Internet funktioniert** — per Bluetooth, WiFi-Hotspot oder lokale ML-Modelle. Live, in Echtzeit, fuer Gruppen bis 500 Personen, in 45 Sprachen gleichzeitig. **16 App-Varianten fuer 7 Marktsegmente** — von Schulen ueber Behoerden bis zu Kliniken und Hotels.
 
 **Wir bauen die Infrastruktur fuer eine Welt, in der jeder jeden versteht — ueberall.**
 
@@ -22,6 +22,8 @@ Fintutto Translator ist die weltweit erste Uebersetzungsplattform, die **auch oh
 | Fluechtling versteht Sachbearbeiter nicht | 110 Mio Gefluechtete weltweit | Dolmetscher (80-120 EUR/h) | Nicht verfuegbar, teuer, nicht skalierbar |
 | Konferenz hat nur 3 Sprachen | 30.000 int. Konferenzen/Jahr | Simultan-Dolmetscher | 10.000+ EUR/Tag, nur 3-4 Sprachen |
 | Schulkind versteht Lehrer nicht | 1.4 Mio Willkommensschueler (DE) | Aeltere Geschwister | Unzuverlaessig, ethisch fragwuerdig |
+| Patient versteht Arzt nicht | Krankenhaeuser weltweit | Telefondolmetscher 80-120 EUR/h | Nicht sofort verfuegbar, teuer |
+| Hotel-Gast versteht Rezeption nicht | 1.4 Mrd int. Hotelgaeste | Englisch-only | Viele Gaeste sprechen kein Englisch |
 | Kein Internet an touristischem Ort | Millionen Orte weltweit | Nichts | Bisherige Translator-Apps versagen |
 
 ### Der blinde Fleck aller Wettbewerber:
@@ -72,17 +74,17 @@ Ruinen. Berge. Fluechtlingscamps. Boote. Busse. Schulen in laendlichen Gebieten.
 
 ## SLIDE 4: Produkt-Demo (Screenshots)
 
-### 7 Kernprodukte in einer App
+### 16 App-Varianten fuer 7 Maerkte
 
-| # | Produkt | Beschreibung |
-|---|---------|-------------|
-| 1 | **Text-Uebersetzer** | 45 Sprachen, 4-Provider-Cascade, Kontextmodi, Alternativen |
-| 2 | **Live-Session** | 1→N Echtzeit-Broadcast mit QR-Join, Untertitel-Modus |
-| 3 | **Gespraechsmodus** | Split-Screen, 180-Grad, 2 Personen, Auto-Speak |
-| 4 | **Kamera-OCR** | Foto → Text → Uebersetzung (Google Vision) |
-| 5 | **Phrasebook** | 18 Kategorien, 16 Sprachen, vorgefertigte Saetze |
-| 6 | **Offline-Engine** | Opus-MT WASM + Whisper, 100% ohne Netzwerk |
-| 7 | **BLE-Transport** | Custom GATT Protocol, 2-5 Geraete, Bluetooth-only |
+| Marktsegment | App-Varianten | Beschreibung |
+|-------------|---------------|-------------|
+| **General** | consumer, listener, enterprise, landing | Kernprodukt: Text, Live-Session, Gespraech, Kamera-OCR, Phrasebook, Offline, BLE |
+| **Schools** | teacher, student | Willkommensklassen, Sprachfoerderung, Elternkommunikation |
+| **Authorities** | clerk, visitor | Behoerden-Gespraeche, Migrationssprachen, Datenschutz |
+| **NGO** | helper, client | Fluechtlingshilfe, Beratung, Camps |
+| **Hospitality** | counter-staff, counter-guest | Hotel-Rezeption, Messe-Info, Gaestekommunikation |
+| **Medical** | medical-staff, medical-patient | Arzt-Patient, Klinik-Aufnahme, Notaufnahme |
+| **Events** | conference-speaker, conference-listener | Konferenzen, Messen, 1→N Broadcast, Untertitel |
 
 ---
 
@@ -100,7 +102,9 @@ SAM (Serviceable Addressable Market):
 ├── Live-Uebersetzung (Events/Tours/Edu):  $2.4 Mrd
 ├── Behoerden/NGO (Migrationssprachen):    $1.2 Mrd
 ├── Tourismus (Guided Tours):              $0.8 Mrd
-└── TOTAL SAM:                             $4.4 Mrd
+├── Medical (Kliniken/Praxen):             $1.5 Mrd
+├── Hospitality (Hotels/Messen):           $0.8 Mrd
+└── TOTAL SAM:                            ~$6.7 Mrd
 
 SOM (Serviceable Obtainable Market):
 ├── DACH-Region zuerst:                    $180 Mio
@@ -233,6 +237,7 @@ MARKT-MOAT:
   1. Erste Loesung fuer Offline-Gruppen-Uebersetzung
   2. Migrationssprachen-Fokus (unterversorgter Markt)
   3. B2B-Beziehungen zu Behoerden und Schulen
+  4. 16 App-Varianten fuer 7 Marktsegmente aus einer Codebase
 ```
 
 ---
@@ -254,7 +259,9 @@ MARKT-MOAT:
 │  ├── 50 Behoerden-Piloten (Auslaenderbehoerden)   │
 │  ├── 30 Schulen (Willkommensklassen)              │
 │  ├── 20 Tourismus-Unternehmen                     │
-│  └── Ziel: 100 B2B-Kunden, 150K EUR ARR           │
+│  ├── 20 Arztpraxen/Kliniken                       │
+│  ├── 15 Hotels/Messen                             │
+│  └── Ziel: 135 B2B-Kunden, 150K EUR ARR           │
 └──────────────────────────────────────────────────┘
 ```
 
@@ -288,13 +295,14 @@ MARKT-MOAT:
 
 ## SLIDE 10: Technologie-Status
 
-### Was bereits gebaut ist (v3.1, Maerz 2026)
+### Was bereits gebaut ist (v5.2, Maerz 2026)
 
 | Komponente | Status | Codebase |
 |-----------|--------|----------|
-| PWA Frontend (React/TypeScript) | Production | 13.296 Zeilen |
+| PWA Frontend (React/TypeScript) | Production | 41.436 Zeilen, 295 TypeScript-Dateien |
+| 16 App-Varianten fuer 7 Maerkte | Production | Monorepo mit Turborepo |
 | 45 Sprachen + RTL | Production | Vollstaendig |
-| 4-Provider Translation Cascade | Production | Getestet (87 Tests) |
+| 4-Provider Translation Cascade | Production | Getestet (87+ Tests) |
 | Live-Session (Cloud) | Production | Supabase Realtime |
 | Gespraechsmodus | Production | Split-Screen, Auto-Speak |
 | Kamera-OCR | Production | Google Vision |
@@ -305,15 +313,18 @@ MARKT-MOAT:
 | HD-TTS (Neural2 + Chirp 3 HD) | Production | 45 Sprachen |
 | Service Worker / PWA | Production | Workbox, Precache |
 | 9 UI-Sprachen | Production | DE, EN, FR, ES, RU, UK, AR, FA, TR |
+| 28 Pages | Production | Alle Marktsegmente abgedeckt |
 | BLE Discovery | Production | Capacitor Plugin |
 | BLE GATT Transport | Production | Native Java + Swift |
 | Hotspot Relay Server | Production | Native + Node.js |
-| Android App | Beta | Google Play Ready (v3.1) |
+| Android App | Beta | Google Play Ready (v5.2) |
 | iOS App | Alpha | Capacitor Shell, Permissions |
 
 ### Technologie-Highlights
 
-- **87 automatisierte Tests**, 100% pass rate
+- **41.436 Zeilen Code**, 295 TypeScript-Dateien, 16 App-Varianten
+- **87+ automatisierte Tests**, 100% pass rate
+- **Monorepo mit Turborepo** fuer 7 Marktsegmente
 - **Build: 12 Sekunden** (Vite 6)
 - **Bundle: 407 KB** gzipped (ohne WASM-Modelle)
 - **Latenz: 400-800ms** End-to-End (Sprache → Uebersetzung → Ausgabe)
@@ -394,6 +405,10 @@ Gross Margin:         85% (SaaS-typisch)
    Nahtloser Wechsel zwischen Cloud-APIs und On-Device WASM-Modellen
    mit gemeinsamer Cache-Schicht
 
+5. **Multi-Market-Architecture**
+   16 App-Varianten fuer 7 Marktsegmente aus einer einzigen Codebase
+   mit marktspezifischen Konfigurationen und UI-Anpassungen
+
 ### Technische Barrieren fuer Wettbewerber
 
 | Barriere | Nachahmungsaufwand |
@@ -413,7 +428,7 @@ Gross Margin:         85% (SaaS-typisch)
 
 | Rolle | Person | Hintergrund |
 |-------|--------|-------------|
-| **CEO / Product** | Alexander Deibel | Fintutto UG, Product Strategy, Solo-Development v3.1 |
+| **CEO / Product** | Alexander Deibel | Fintutto UG, Product Strategy, Solo-Development v5.2 |
 | **CTO / Lead Dev** | [zu besetzen, Monat 3] | Full-Stack, Native Mobile, ML/AI |
 | **Sales / BD** | [zu besetzen, Monat 4] | B2B SaaS, Behoerden, Tourismus |
 
@@ -425,7 +440,7 @@ Gross Margin:         85% (SaaS-typisch)
 
 ### Aktuelle Teamgroesse
 - 1 Gruender + KI-unterstuetzte Entwicklung
-- Komplette v3.1 Codebase (13.296 Zeilen) in weniger als 6 Monaten gebaut
+- Komplette v5.2 Codebase (41.436 Zeilen, 295 TypeScript-Dateien) in weniger als 6 Monaten gebaut
 - AI Tour Guide UG (Rostock, seit 2024) als Referenz und erster Pilot-Partner
 
 ### Einstellungsplan (mit Finanzierung)
@@ -458,7 +473,7 @@ MODULARER FINANZIERUNGSPLAN (24 Monate):
 │  ├── ACCELERATE:MV (ESF+)                        0 EUR │
 │  │   (Coaching, Mentoring -- kein Cash)                 │
 │  ├── FFplus Generative AI (100% EU)         100.000 EUR │
-│  └── Gruenderstipendium MV (18 Mon.)         21.600 EUR │
+│  └── Gruenderstipendium MV (18 Mon.)    bis 32.400 EUR │
 │      + Beratungsfoerderung BAFA               2.800 EUR │
 │      + SME Fund IP-Schutz                     1.000 EUR │
 │      + Forschungszulage (35% FuE-Kosten)     24.600 EUR │
@@ -563,9 +578,10 @@ Voraussetzung: 100K+ EUR MRR, 500+ B2B-Kunden, <3% monatliche Churn, Profitabili
 **Bewertung**: 3 Mio EUR Pre-Money (verhandelbar)
 
 **Was wir bieten**:
-- Funktionierendes Produkt mit 13.296 Zeilen Production Code
-- 87 automatisierte Tests, 100% pass rate
-- Google Play Ready (v3.1)
+- Funktionierendes Produkt mit 41.436 Zeilen Production Code, 295 TypeScript-Dateien
+- 87+ automatisierte Tests, 100% pass rate
+- 16 App-Varianten fuer 7 Marktsegmente
+- Google Play Ready (v5.2)
 - Einzigartiges 4-Tier-Transport-System (patentfaehig)
 - Erster im Markt fuer Offline-Gruppen-Uebersetzung
 - 500.000 EUR Foerderung bereits in Pipeline (EFRE/ZIM, Gruenderstipendium, Forschungszulage)
@@ -597,4 +613,4 @@ Alexander Deibel
 
 ---
 
-*Stand: Maerz 2026 | Fintutto Translator v3.1.0 | Vertraulich*
+*Stand: 16.03.2026 | Fintutto Translator v5.2.0 | Vertraulich*

@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ag-primary: #1e1b4b;
+  --ag-accent: #c4a35a;
+  --ag-surface: #ffffff;
+  --ag-surface-hover: #f8fafc;
+  --ag-border: #e2e8f0;
+  --ag-text: #1e293b;
+  --ag-text-secondary: #64748b;
+}
+
+body {
+  color: var(--ag-text);
+  background: #f1f5f9;
+}

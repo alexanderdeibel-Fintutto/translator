@@ -28,11 +28,15 @@
 
 Das Vorhaben zielt auf die Weiterentwicklung und Marktreife des **Fintutto Translator** — einer Progressive Web App (PWA), die Echtzeit-Sprachuebersetzung in 45 Sprachen ermoeglicht, auch **vollstaendig ohne Internetverbindung**. Die Innovation liegt in einer weltweit einzigartigen 4-Tier-Transportarchitektur (Cloud → WiFi-Hotspot → Bluetooth Low Energy → On-Device Machine Learning), die automatisch zwischen Netzwerkstufen wechselt.
 
+Die Plattform umfasst inzwischen 16 spezialisierte App-Varianten fuer 7 Marktsegmente, darunter Bildung, Behoerden, NGO, Gesundheitswesen, Hospitality und Events.
+
 Das Produkt adressiert eine erhebliche Marktluecke: Bestehende Uebersetzungsloesungen (Google Translate, DeepL, Microsoft) versagen an genau den Orten, wo Uebersetzung am meisten gebraucht wird — touristische Sehenswuerdigkeiten ohne Mobilfunknetz, Behoerden mit gesperrten Netzwerken, Fluechtlingsunterkuenfte.
 
 ### 1.3 Ausgangssituation
 
-- Funktionsfaehiger Prototyp (MVP) in Version 3.1, 13.296 Zeilen Production Code
+- Funktionsfaehiger Prototyp (MVP) in Version 5.2, 41.436 Zeilen Production Code, 295 TypeScript-Dateien
+- 16 App-Varianten fuer 7 Marktsegmente (General, Schools, Authorities, NGO, Hospitality, Medical, Events)
+- Monorepo-Architektur mit geteilter Codebasis
 - 87 automatisierte Tests, 100% pass rate
 - Google Play Store Launch vorbereitet
 - 7 Kernprodukte: Text-Uebersetzer, Live-Session, Gespraechsmodus, Kamera-OCR, Phrasebook, Offline-Engine, BLE-Transport
@@ -56,6 +60,8 @@ Das Produkt adressiert eine erhebliche Marktluecke: Bestehende Uebersetzungsloes
 - **Regionale Wertschoepfung:** Nutzung regionaler Dienstleister (Steuerberatung, Rechtsberatung, TBI-Beratung)
 - **Tourismus-Bezug:** MV als Tourismusland profitiert direkt — Guide-Translation fuer Ruegen, Usedom, Wismar, Stralsund (UNESCO-Welterbe)
 - **Pilotprojekte:** Geplante B2B-Piloten mit Tourismus-Unternehmen in MV
+- **Kliniken und Arztpraxen in MV** als zusaetzliche Pilotzielgruppe (z.B. Universitaetsmedizin Rostock)
+- **Hotels und Gastronomie in MV-Tourismusregionen** (Ruegen, Usedom, Warnemuende)
 - **AI Tour Guide UG** (Rostock) als erster Pilot-Partner und Referenzkunde
 
 ---
@@ -198,7 +204,9 @@ AP 5: IP-Schutz              █████████████████
 | Konferenzen & Events | 30.000/Jahr (int.) | 100-400 |
 | Bildungseinrichtungen | 40.000 Schulen (DE) | 200-500 |
 | Kreuzfahrt & Hotels | 2.000 Schiffe (EU) | 10-50 |
-| **TOTAL** | | **1.000-2.500 B2B-Kunden** |
+| Krankenhaeuser/Arztpraxen | 20.000+ (DE) | 100-300 |
+| Hotels/Gastronomie | 50.000+ (DE) | 100-300 |
+| **TOTAL** | | **1.200-3.100 B2B-Kunden** |
 
 ### 5.2 Umsatzprognose
 
@@ -267,4 +275,4 @@ Mecklenburg-Vorpommern
 
 ---
 
-*Stand: 06.03.2026 | Vertraulich*
+*Stand: 16.03.2026 | Fintutto Translator v5.2 | Vertraulich*

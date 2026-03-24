@@ -28,6 +28,7 @@ export default function LanguagePackCard({
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const srcLang = getLanguageByCode(src)
   const tgtLang = getLanguageByCode(tgt)
@@ -35,14 +36,41 @@ export default function LanguagePackCard({
   const handleDownload = async () => {
     setIsDownloading(true)
     setProgress(0)
-    try {
-      await preloadModel(src, tgt, (pct) => setProgress(Math.round(pct)))
-      onStatusChange()
-    } catch (err) {
-      console.error('[LanguagePack] Download failed:', err)
-    } finally {
-      setIsDownloading(false)
+    setError(null)
+
+    // Retry up to 2 times on network errors
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await preloadModel(src, tgt, (pct) => setProgress(Math.round(pct)))
+        onStatusChange()
+        setIsDownloading(false)
+        return
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        const errName = err instanceof Error ? err.name : ''
+        // Only treat actual fetch/network failures as network errors
+        const isNetworkError =
+          msg === 'Failed to fetch' ||
+          msg.includes('NetworkError') ||
+          errName === 'TypeError' && msg.includes('fetch') ||
+          msg.includes('AbortError') ||
+          msg.includes('net::')
+        if (isNetworkError && attempt < 2) {
+          console.warn(`[LanguagePack] Download attempt ${attempt + 1} failed, retrying...`, msg)
+          await new Promise(r => setTimeout(r, 2000 * (attempt + 1)))
+          continue
+        }
+        console.error(`[LanguagePack] Download failed (attempt ${attempt + 1}):`, err)
+        // Show actual error for non-network errors so we can diagnose
+        setError(
+          isNetworkError
+            ? t('error.networkDownload')
+            : `${t('error.networkDownload')} (${msg.slice(0, 100)})`
+        )
+        break
+      }
     }
+    setIsDownloading(false)
   }
 
   const handleDelete = async () => {
@@ -99,15 +127,20 @@ export default function LanguagePackCard({
             </Button>
           </>
         ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownload}
-            className="gap-1.5"
-          >
-            <Download className="h-3.5 w-3.5" />
-            {t('settings.downloadPack')}
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownload}
+              className="gap-1.5"
+            >
+              <Download className="h-3.5 w-3.5" />
+              {t('settings.downloadPack')}
+            </Button>
+            {error && (
+              <p className="text-[10px] text-destructive max-w-[160px] text-right">{error}</p>
+            )}
+          </div>
         )}
       </div>
     </Card>

@@ -1,8 +1,8 @@
 # Fintutto Translator — 24-Monats-Cashflow-Planung
 
-**Stand:** 06.03.2026 | **Version:** 1.0
-**Basis:** Investor Pitch Deck v3.1, Kostenanalyse, Preismodell-Revision
-**Fokus:** Translator-App (fitTutto-Universum als Roadmap-Vision)
+**Stand:** 16.03.2026 | **Version:** 2.0
+**Basis:** Investor Pitch Deck v5.2, Kostenanalyse, Preismodell-Revision
+**Fokus:** 16 App-Varianten fuer 7 Marktsegmente (General, Schools, Authorities, NGO, Hospitality, Medical, Events) (fitTutto-Universum als Roadmap-Vision)
 
 ---
 
@@ -190,39 +190,41 @@
 
 ### 6.1 Nutzer- und Kundenwachstum
 
-| Monat | Free User | Personal Pro | Guide/Agentur | Event | Cruise | B2B Custom |
-|-------|-----------|-------------|--------------|-------|--------|-----------|
-| M1 | 100 | 5 | 0 | 0 | 0 | 0 |
-| M3 | 500 | 25 | 5 | 0 | 0 | 0 |
-| M6 | 1.500 | 80 | 20 | 2 | 0 | 1 |
-| M9 | 3.000 | 150 | 50 | 5 | 0 | 3 |
-| M12 | 5.000 | 300 | 100 | 10 | 1 | 5 |
-| M15 | 8.000 | 500 | 180 | 20 | 2 | 8 |
-| M18 | 12.000 | 800 | 300 | 35 | 3 | 12 |
-| M21 | 18.000 | 1.200 | 450 | 50 | 5 | 18 |
-| M24 | 25.000 | 1.800 | 650 | 80 | 8 | 25 |
+| Monat | Free User | Personal Pro | Guide/Agentur | Event | Cruise | Medical | Hospitality | B2B Custom |
+|-------|-----------|-------------|--------------|-------|--------|---------|-------------|-----------|
+| M1 | 100 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
+| M3 | 500 | 25 | 5 | 0 | 0 | 0 | 0 | 0 |
+| M6 | 1.500 | 80 | 20 | 2 | 0 | 1 | 1 | 1 |
+| M9 | 3.000 | 150 | 50 | 5 | 0 | 3 | 4 | 3 |
+| M12 | 5.000 | 300 | 100 | 10 | 1 | 5 | 8 | 5 |
+| M15 | 8.000 | 500 | 180 | 20 | 2 | 8 | 12 | 8 |
+| M18 | 12.000 | 800 | 300 | 35 | 3 | 10 | 15 | 12 |
+| M21 | 18.000 | 1.200 | 450 | 50 | 5 | 13 | 18 | 18 |
+| M24 | 25.000 | 1.800 | 650 | 80 | 8 | 15 | 20 | 25 |
 
 ### 6.2 Monatlicher Umsatz (MRR) nach Segment
 
 Annahmen:
-- Personal Pro: Ø 4,99 EUR/Monat
-- Guide Basic/Pro: Ø 30 EUR/Monat (Blended)
-- Agentur: Ø 174 EUR/Monat (Blended Standard/Premium)
-- Event: Ø 349 EUR/Monat (Blended Basic/Pro)
-- Cruise: Ø 6.990 EUR/Monat (Blended)
-- B2B Custom/Enterprise: Ø 500 EUR/Monat
+- Personal Pro: Oe 4,99 EUR/Monat
+- Guide Basic/Pro: Oe 30 EUR/Monat (Blended)
+- Agentur: Oe 174 EUR/Monat (Blended Standard/Premium)
+- Event: Oe 349 EUR/Monat (Blended Basic/Pro)
+- Cruise: Oe 6.990 EUR/Monat (Blended)
+- Medical: Oe 200 EUR/Monat (Blended)
+- Hospitality: Oe 120 EUR/Monat (Blended)
+- B2B Custom/Enterprise: Oe 500 EUR/Monat
 
-| Monat | Personal Pro | Guide/Agentur | Event | Cruise | B2B | **MRR Gesamt** |
-|-------|-------------|--------------|-------|--------|-----|---------------|
-| M1 | 25 | 0 | 0 | 0 | 0 | **25** |
-| M3 | 125 | 150 | 0 | 0 | 0 | **275** |
-| M6 | 399 | 1.440 | 698 | 0 | 500 | **3.037** |
-| M9 | 749 | 4.200 | 1.745 | 0 | 1.500 | **8.194** |
-| M12 | 1.497 | 8.400 | 3.490 | 6.990 | 2.500 | **22.877** |
-| M15 | 2.495 | 13.860 | 6.980 | 13.980 | 4.000 | **41.315** |
-| M18 | 3.992 | 21.600 | 12.215 | 20.970 | 6.000 | **64.777** |
-| M21 | 5.988 | 31.050 | 17.450 | 34.950 | 9.000 | **98.438** |
-| M24 | 8.982 | 42.900 | 27.920 | 55.920 | 12.500 | **148.222** |
+| Monat | Personal Pro | Guide/Agentur | Event | Cruise | Medical | Hospitality | B2B | **MRR Gesamt** |
+|-------|-------------|--------------|-------|--------|---------|-------------|-----|---------------|
+| M1 | 25 | 0 | 0 | 0 | 0 | 0 | 0 | **25** |
+| M3 | 125 | 150 | 0 | 0 | 0 | 0 | 0 | **275** |
+| M6 | 399 | 1.440 | 698 | 0 | 200 | 120 | 500 | **3.357** |
+| M9 | 749 | 4.200 | 1.745 | 0 | 600 | 480 | 1.500 | **9.274** |
+| M12 | 1.497 | 8.400 | 3.490 | 6.990 | 1.000 | 960 | 2.500 | **24.837** |
+| M15 | 2.495 | 13.860 | 6.980 | 13.980 | 1.600 | 1.440 | 4.000 | **44.355** |
+| M18 | 3.992 | 21.600 | 12.215 | 20.970 | 2.000 | 1.800 | 6.000 | **68.577** |
+| M21 | 5.988 | 31.050 | 17.450 | 34.950 | 2.600 | 2.160 | 9.000 | **103.198** |
+| M24 | 8.982 | 42.900 | 27.920 | 55.920 | 3.000 | 2.400 | 12.500 | **153.622** |
 
 ### 6.3 Kumulierter Umsatz
 
@@ -385,9 +387,9 @@ Annahmen:
 | Quartal | Meilenstein | KPI-Ziel | Foerder-Relevanz |
 |---------|-----------|---------|-----------------|
 | **Q1 (M1-3)** | Google Play Launch, erste Nutzer | 500 Free, 25 Pro, 5 B2B Leads | ACCELERATE:MV Nachweis |
-| **Q2 (M4-6)** | B2B-Piloten starten, AI Engineer an Bord | 1.500 Free, 80 Pro, 20 B2B | EFRE Meilenstein 1 |
-| **Q3 (M7-9)** | iOS Beta, Offline-Modus optimiert | 3.000 Free, 150 Pro, 50 B2B, 8K MRR | FFplus Nachweis |
-| **Q4 (M10-12)** | Erster Cruise-Kunde, 100 B2B | 5.000 Free, 300 Pro, 100 B2B, 23K MRR | EFRE Meilenstein 2 |
+| **Q2 (M4-6)** | B2B-Piloten starten, AI Engineer an Bord, Erste Medical-Piloten | 1.500 Free, 80 Pro, 20 B2B | EFRE Meilenstein 1 |
+| **Q3 (M7-9)** | iOS Beta, Offline-Modus optimiert, Hotel-Pilotprojekte | 3.000 Free, 150 Pro, 50 B2B, 9K MRR | FFplus Nachweis |
+| **Q4 (M10-12)** | Erster Cruise-Kunde, 100 B2B, 10 Medical + 10 Hospitality Kunden | 5.000 Free, 300 Pro, 100 B2B, 25K MRR | EFRE Meilenstein 2 |
 | **Q5 (M13-15)** | Europa-Expansion beginnt | 8.000 Free, 500 Pro, 180 B2B, 41K MRR | EIT Digital Nachweis |
 | **Q6 (M16-18)** | Break-even in Sicht, 3 Cruise-Kunden | 12.000 Free, 800 Pro, 300 B2B, 65K MRR | EIC Meilenstein |
 | **Q7 (M19-21)** | Monatl. Break-even erreicht | 18.000 Free, 1.200 Pro, 450 B2B, 98K MRR | Series A Readiness |
@@ -467,5 +469,5 @@ Der Kassenstand sollte zu keinem Zeitpunkt unter **2 Monatsausgaben** (ca. 160.0
 
 ---
 
-*Erstellt am 06.03.2026 | Fintutto Translator | Vertraulich*
-*Basis: Investor Pitch Deck v3.1, Kostenanalyse-und-Preismodell-Revision.md, Marktrecherche 03/2026*
+*Erstellt am 16.03.2026 | Fintutto Translator | Vertraulich*
+*Basis: Investor Pitch Deck v5.2, Kostenanalyse-und-Preismodell-Revision.md, Marktrecherche 03/2026*

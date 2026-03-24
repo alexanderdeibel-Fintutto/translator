@@ -36,7 +36,7 @@
 ### 1.2 Gruender-Profil
 
 **Alexander Deibel**
-- Solo-Entwicklung einer Production-ready Uebersetzungsplattform (13.296 Zeilen Code, 87 Tests, 100% pass rate)
+- Solo-Entwicklung einer Production-ready Uebersetzungsplattform (41.436 Zeilen Code, 295 TypeScript-Dateien, 16 App-Varianten, 87 Tests, 100% pass rate)
 - Mitgruender AI Tour Guide UG (seit 2024) — Tourismus-Tech, Branchenexpertise
 - Technologieverstaendnis: React/TypeScript, ML/AI, Mobile (Capacitor), BLE-Protokolle
 - Standort: Mecklenburg-Vorpommern
@@ -80,11 +80,12 @@ Eine Progressive Web App mit **4-Tier-Transportarchitektur**:
 
 | Metrik | Wert |
 |--------|------|
-| Code | 13.296 Zeilen (React/TypeScript) |
+| Code | 41.436 Zeilen (React/TypeScript), 295 Dateien |
+| App-Varianten | 16 (7 Marktsegmente) |
 | Tests | 87 automatisierte Tests, 100% pass rate |
 | Build | 12 Sekunden |
 | Latenz | 400-800ms End-to-End |
-| Google Play | Ready (v3.1) |
+| Google Play | Ready (v5.2) |
 
 ---
 
@@ -105,6 +106,8 @@ Eine Progressive Web App mit **4-Tier-Transportarchitektur**:
 3. **Konferenzen & Events** — 45 Sprachen statt 3-4
 4. **Schulen** (Willkommensklassen) — Lehrer-Schueler-Kommunikation
 5. **Kreuzfahrt-Reedereien** — Landausfluege in 8+ Sprachen statt 2
+6. **Medical** (Krankenhaeuser, Arztpraxen, Apotheken) — Patientenkommunikation ohne Telefondolmetscher
+7. **Hospitality** (Hotels, Empfang, Messen, Einzelhandel) — Gaestekommunikation an Rezeption und Counter
 
 ### Wettbewerbsvorteil
 
@@ -128,6 +131,8 @@ Kein einziger Wettbewerber bietet **alle vier** zusammen:
 | **Agentur** | 99-249 EUR/Mon | Reiseagenturen |
 | **Event** | 199-499 EUR/Mon | Konferenzen, Messen |
 | **Cruise** | 1.990-19.990 EUR/Mon | Kreuzfahrt-Reedereien |
+| **Medical** | 79-249 EUR/Mon | Krankenhaeuser/Praxen |
+| **Hospitality** | 49-99 EUR/Mon | Hotels/Counter |
 
 **Gross Margin:** 77-91% (SaaS-typisch, variable API-Kosten gering)
 
@@ -151,6 +156,8 @@ Kein einziger Wettbewerber bietet **alle vier** zusammen:
    - Auslaenderbehoerden in Rostock und Schwerin
    - Willkommensklassen an MV-Schulen
    - Hotels und Kreuzfahrt-Terminals in Warnemuende
+   - Kliniken und Arztpraxen in MV (Universitaetsmedizin Rostock)
+   - Hotels in MV-Tourismusregionen
 
 3. **Arbeitsplaetze:** 5 neue Stellen in 12 Monaten (Coworking-Space in MV)
 
@@ -167,7 +174,7 @@ Kein einziger Wettbewerber bietet **alle vier** zusammen:
 | Thema | Bedarf | Prioritaet |
 |-------|--------|-----------|
 | **Go-to-Market DACH** | B2B-Vertriebsstrategie fuer Behoerden und Tourismus | Hoch |
-| **Pricing-Validierung** | 11-Tier-Modell pruefen, vereinfachen? | Hoch |
+| **Pricing-Validierung** | Pricing ueber 7 Marktsegmente pruefen, vereinfachen? | Hoch |
 | **Finanzplanung** | Cashflow-Optimierung, Foerdermittel-Kombination | Mittel |
 | **Team-Aufbau** | CTO- und Sales-Recruiting in MV/Remote | Mittel |
 | **Investoren-Pitch** | Pitch-Training, Investor-Matching | Mittel |
@@ -212,4 +219,4 @@ Mecklenburg-Vorpommern
 
 ---
 
-*Stand: 06.03.2026 | Vertraulich*
+*Stand: 16.03.2026 | Fintutto Translator v5.2 | Vertraulich*

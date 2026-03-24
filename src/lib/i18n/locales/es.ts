@@ -85,6 +85,7 @@ const strings: Record<string, string> = {
   'error.offlineNoModel': 'Sin conexión — no se descargó modelo para este par de idiomas. Ve a Ajustes → Idiomas sin conexión.',
   'error.allProvidersFailed': 'La traducción falló — inténtalo de nuevo.',
   'error.unknown': 'Ocurrió un error.',
+  'error.networkDownload': 'La descarga falló — por favor verifica tu conexión a internet e inténtalo de nuevo.',
   'error.cameraNoApiKey': 'La traducción por cámara requiere una clave API de Google Cloud. Configúrala en Ajustes.',
   'error.cameraOcrFailed': 'El reconocimiento de texto falló. Inténtalo de nuevo.',
   'error.cameraNoText': 'No se detectó texto en la imagen.',

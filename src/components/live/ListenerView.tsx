@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import LanguageChips from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
+import BackChannel, { type BackChannelResponse } from './BackChannel'
+import { AudioModeToggle, AudioModeDisplay } from './AudioModeToggle'
+import TapWord from './TapWord'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
+import { useRTL } from '@/hooks/useRTL'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -15,11 +19,76 @@ interface ListenerViewProps {
   session: Session
 }
 
+/** Live-updating debug panel with transport diagnostics */
+function DebugPanel({ session }: { session: Session }) {
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 2000)
+    return () => clearInterval(id)
+  }, [])
+  const diag = session.getDiagnostics()
+  const lastMsgAgo = diag.lastMessageAt > 0 ? `${Math.round((Date.now() - diag.lastMessageAt) / 1000)}s ago` : 'never'
+  // suppress unused var warning
+  void tick
+
+  return (
+    <Card className="p-3 text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300">
+      <p className="font-bold text-yellow-700 dark:text-yellow-400">DEBUG INFO</p>
+      <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+      <p>Mode: {session.connectionMode}</p>
+      <p>Session: {session.sessionCode}</p>
+      <p>Selected lang: {session.selectedLanguage}</p>
+      <p className="font-bold">--- Broadcast Channel ---</p>
+      <p>Messages received: {diag.receivedCount}</p>
+      <p>Last message: {lastMsgAgo}</p>
+      <p>Reconnects: {diag.reconnectCount}</p>
+      <p className="font-bold">--- Translations ---</p>
+      <p>Chunks (broadcast): {session.receivedChunks.length}</p>
+      <p>Chunks (presence fallback): {session.presenceFallbackCount}</p>
+      <p>Current: {session.currentTranslation ? `"${session.currentTranslation.slice(0, 50)}"` : '(none)'}</p>
+      <p className="font-bold">--- Status ---</p>
+      <p>Session ended: {session.sessionEnded ? 'YES' : 'NO'}</p>
+      <p>Error: {session.error || '(none)'}</p>
+      <p>Listeners: {session.listenerCount}</p>
+      <p className="text-yellow-600 dark:text-yellow-500 pt-1">Tap 3x on session code to close</p>
+    </Card>
+  )
+}
+
 export default function ListenerView({ session }: ListenerViewProps) {
   const { t } = useI18n()
   const langData = getLanguageByCode(session.selectedLanguage)
   const [subtitleMode, setSubtitleMode] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [audioMode, setAudioMode] = useState(false)
+  const [showDebug, setShowDebug] = useState(false)
+  const tapCountRef = useRef(0)
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Automatically switch to RTL layout for Arabic, Farsi, etc.
+  useRTL(session.selectedLanguage)
+
+  const handleBackChannelSend = useCallback((response: BackChannelResponse) => {
+    session.broadcast?.('backchannel', {
+      responseId: response.id,
+      emoji: response.emoji,
+      label: response.label,
+      senderLang: session.selectedLanguage,
+      timestamp: Date.now(),
+    })
+  }, [session])
+
+  // Triple-tap on session code to toggle debug panel
+  const handleDebugTap = useCallback(() => {
+    tapCountRef.current++
+    if (tapTimerRef.current) clearTimeout(tapTimerRef.current)
+    if (tapCountRef.current >= 3) {
+      tapCountRef.current = 0
+      setShowDebug(prev => !prev)
+    } else {
+      tapTimerRef.current = setTimeout(() => { tapCountRef.current = 0 }, 600)
+    }
+  }, [])
 
   if (session.sessionEnded) {
     return (
@@ -109,23 +178,33 @@ export default function ListenerView({ session }: ListenerViewProps) {
         </div>
       )}
 
-      {/* Current translation - large display */}
+      {/* Current translation - large display (or audio mode) */}
       <Card className="p-6 min-h-[200px] flex items-center justify-center relative">
-        {/* Fullscreen button */}
-        <button
-          onClick={() => setFullscreen(true)}
-          className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label={t('live.fullscreen')}
-        >
-          <Maximize2 className="h-4 w-4" />
-        </button>
+        {!audioMode && (
+          <button
+            onClick={() => setFullscreen(true)}
+            className="absolute top-3 right-3 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label={t('live.fullscreen')}
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        )}
 
         <div aria-live="polite">
-          {session.currentTranslation ? (
+          {audioMode ? (
+            <AudioModeDisplay
+              isSpeaking={session.isSpeaking}
+              isConnected={session.isConnected}
+              sessionCode={session.sessionCode}
+            />
+          ) : session.currentTranslation ? (
             <div className="text-center space-y-2 w-full">
-              <p className="text-2xl md:text-3xl font-medium leading-relaxed break-words">
-                {session.currentTranslation}
-              </p>
+              <TapWord
+                text={session.currentTranslation}
+                sourceLang={session.sourceLanguage}
+                targetLang={session.selectedLanguage}
+                className="text-center"
+              />
               {session.isSpeaking && (
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Volume2 className="h-4 w-4 animate-pulse" aria-hidden="true" />
@@ -137,7 +216,7 @@ export default function ListenerView({ session }: ListenerViewProps) {
             <div className="text-center text-muted-foreground space-y-3">
               <Loader2 className="h-8 w-8 animate-spin mx-auto opacity-40" aria-hidden="true" />
               <p className="text-lg">{t('live.waitingTranslation')}</p>
-              <p className="text-sm">
+              <p className="text-sm" onClick={handleDebugTap}>
                 Session <span className="font-mono font-bold">{session.sessionCode}</span>
               </p>
               {session.isConnected && (
@@ -192,6 +271,16 @@ export default function ListenerView({ session }: ListenerViewProps) {
           {t('live.subtitles')}
         </Button>
 
+        <AudioModeToggle
+          enabled={audioMode}
+          onToggle={(on) => {
+            setAudioMode(on)
+            if (on && !session.autoTTS) session.setAutoTTS(true)
+          }}
+        />
+
+        <BackChannel onSend={handleBackChannelSend} />
+
         <div className="flex-1" />
 
         <span className="text-sm text-muted-foreground">
@@ -219,6 +308,9 @@ export default function ListenerView({ session }: ListenerViewProps) {
       {session.receivedChunks.length > 1 && (
         <LiveTranscript chunks={session.receivedChunks} isListener />
       )}
+
+      {/* Debug panel — triple-tap session code to toggle */}
+      {showDebug && <DebugPanel session={session} />}
     </div>
   )
 }
