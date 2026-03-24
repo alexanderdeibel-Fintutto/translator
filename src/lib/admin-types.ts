@@ -105,6 +105,10 @@ export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],
+  education: ['Schule', 'Universität', 'Volkshochschule', 'Sprachschule'],
+  authority: ['Bürgeramt', 'Ausländerbehörde', 'Jobcenter', 'Sozialamt'],
+  hospitality: ['Hotel', 'Restaurant', 'Hotelkette', 'Resort'],
+  medical: ['Arztpraxis', 'Klinik', 'Krankenhaus', 'MVZ'],
   internal: ['Admin', 'Entwickler', 'QA', 'Sales-Team'],
 }
 

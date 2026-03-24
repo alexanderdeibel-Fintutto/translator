@@ -22,12 +22,21 @@ export type TierId =
   | 'cruise_starter'
   | 'cruise_fleet'
   | 'cruise_armada'
+  // Market segment tiers
+  | 'education_single'
+  | 'education_school'
+  | 'authority_single'
+  | 'authority_office'
+  | 'hospitality_single'
+  | 'hospitality_business'
+  | 'medical_practice'
+  | 'medical_clinic'
   // Internal tiers (not shown on pricing page, assigned by role)
   | 'internal_admin'
   | 'internal_tester'
   | 'internal_sales'
 
-export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'internal'
+export type Segment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'education' | 'authority' | 'hospitality' | 'medical' | 'internal'
 
 export type TtsQuality = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
 
@@ -637,6 +646,402 @@ export const TIERS: Record<TierId, TierDefinition> = {
     supportLevel: 'dedicated',
   },
 
+  // ── SEGMENT: EDUCATION ──────────────────────────────────────────────
+  education_single: {
+    id: 'education_single',
+    segment: 'education',
+    name: 'Education Einzellizenz',
+    displayName: 'Bildung Einzellizenz',
+    description: 'Für Lehrkräfte und Dozenten — Unterricht mehrsprachig gestalten.',
+    limits: {
+      maxListeners: 5,
+      maxLanguages: 10,
+      sessionMinutesPerMonth: 300,
+      maxConcurrentSessions: 1,
+      maxGlossaries: 5,
+      preTranslationScripts: 3,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 10_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'standard',
+      ttsChirpAvailable: false,
+      cloudStt: false,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'basic',
+      guideManagement: false,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 9.90,
+      yearlyEur: 99,
+      overagePerMinuteEur: 0.12,
+      additionalLanguageEur: 1.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_48h',
+  },
+
+  education_school: {
+    id: 'education_school',
+    segment: 'education',
+    name: 'Education Schullizenz',
+    displayName: 'Bildung Schullizenz',
+    description: 'Für Schulen und Bildungseinrichtungen — alle Lehrkräfte abgedeckt.',
+    limits: {
+      maxListeners: 30,
+      maxLanguages: 20,
+      sessionMinutesPerMonth: 1_500,
+      maxConcurrentSessions: 5,
+      maxGlossaries: 15,
+      preTranslationScripts: 10,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'neural2',
+      ttsChirpAvailable: false,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'dashboard',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 49.90,
+      yearlyEur: 499,
+      overagePerMinuteEur: 0.10,
+      additionalLanguageEur: 1.49,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_24h',
+  },
+
+  // ── SEGMENT: AUTHORITY ─────────────────────────────────────────────
+  authority_single: {
+    id: 'authority_single',
+    segment: 'authority',
+    name: 'Authority Einzelplatz',
+    displayName: 'Behörde Einzelplatz',
+    description: 'Für einzelne Sachbearbeiter — Bürgerservice mehrsprachig.',
+    limits: {
+      maxListeners: 3,
+      maxLanguages: 15,
+      sessionMinutesPerMonth: 500,
+      maxConcurrentSessions: 1,
+      maxGlossaries: 5,
+      preTranslationScripts: 3,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 10_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'standard',
+      ttsChirpAvailable: false,
+      cloudStt: false,
+      liveSession: true,
+      broadcasting: false,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: false,
+      qrCode: false,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'basic',
+      guideManagement: false,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 14.90,
+      yearlyEur: 149,
+      overagePerMinuteEur: 0.12,
+      additionalLanguageEur: 1.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_48h',
+  },
+
+  authority_office: {
+    id: 'authority_office',
+    segment: 'authority',
+    name: 'Authority Behördenlizenz',
+    displayName: 'Behörde Amtslizenz',
+    description: 'Für Ämter und Behörden — mehrere Arbeitsplätze abgedeckt.',
+    limits: {
+      maxListeners: 20,
+      maxLanguages: 30,
+      sessionMinutesPerMonth: 3_000,
+      maxConcurrentSessions: 5,
+      maxGlossaries: 20,
+      preTranslationScripts: 15,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'neural2',
+      ttsChirpAvailable: false,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'dashboard',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 99,
+      yearlyEur: 990,
+      overagePerMinuteEur: 0.10,
+      additionalLanguageEur: 0.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_24h',
+  },
+
+  // ── SEGMENT: HOSPITALITY ───────────────────────────────────────────
+  hospitality_single: {
+    id: 'hospitality_single',
+    segment: 'hospitality',
+    name: 'Hospitality Einzelplatz',
+    displayName: 'Gastgewerbe Einzelplatz',
+    description: 'Für Hotels und Restaurants — Gäste in ihrer Sprache bedienen.',
+    limits: {
+      maxListeners: 5,
+      maxLanguages: 15,
+      sessionMinutesPerMonth: 500,
+      maxConcurrentSessions: 1,
+      maxGlossaries: 5,
+      preTranslationScripts: 5,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 10_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'standard',
+      ttsChirpAvailable: false,
+      cloudStt: false,
+      liveSession: true,
+      broadcasting: false,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'basic',
+      guideManagement: false,
+      exportTranscripts: false,
+    },
+    pricing: {
+      monthlyEur: 29.90,
+      yearlyEur: 299,
+      overagePerMinuteEur: 0.12,
+      additionalLanguageEur: 1.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_48h',
+  },
+
+  hospitality_business: {
+    id: 'hospitality_business',
+    segment: 'hospitality',
+    name: 'Hospitality Business',
+    displayName: 'Gastgewerbe Business',
+    description: 'Für Hotelketten und größere Betriebe — mehrere Standorte.',
+    limits: {
+      maxListeners: 20,
+      maxLanguages: 30,
+      sessionMinutesPerMonth: 2_000,
+      maxConcurrentSessions: 5,
+      maxGlossaries: 15,
+      preTranslationScripts: 15,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 20_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'neural2',
+      ttsChirpAvailable: false,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'dashboard',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 99,
+      yearlyEur: 990,
+      overagePerMinuteEur: 0.10,
+      additionalLanguageEur: 0.99,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_24h',
+  },
+
+  // ── SEGMENT: MEDICAL ───────────────────────────────────────────────
+  medical_practice: {
+    id: 'medical_practice',
+    segment: 'medical',
+    name: 'Medical Praxis',
+    displayName: 'Medizin Praxis',
+    description: 'Für Arztpraxen — Patientengespräche mehrsprachig führen.',
+    limits: {
+      maxListeners: 3,
+      maxLanguages: 20,
+      sessionMinutesPerMonth: 500,
+      maxConcurrentSessions: 1,
+      maxGlossaries: 10,
+      preTranslationScripts: 5,
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 10_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'neural2',
+      ttsChirpAvailable: false,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: false,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: false,
+      qrCode: false,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'none',
+      analytics: 'basic',
+      guideManagement: false,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 29.90,
+      yearlyEur: 299,
+      overagePerMinuteEur: 0.12,
+      additionalLanguageEur: 1.49,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_24h',
+  },
+
+  medical_clinic: {
+    id: 'medical_clinic',
+    segment: 'medical',
+    name: 'Medical Klinik',
+    displayName: 'Medizin Klinik',
+    description: 'Für Kliniken und Krankenhäuser — alle Stationen versorgt.',
+    limits: {
+      maxListeners: 30,
+      maxLanguages: 0, // unlimited
+      sessionMinutesPerMonth: 5_000,
+      maxConcurrentSessions: 10,
+      maxGlossaries: 0, // unlimited
+      preTranslationScripts: 0, // unlimited
+      dailyTranslationLimit: 0,
+      maxCharsPerRequest: 50_000,
+    },
+    features: {
+      translationProvider: 'azure',
+      ttsQuality: 'neural2',
+      ttsChirpAvailable: true,
+      cloudStt: true,
+      liveSession: true,
+      broadcasting: true,
+      conversationMode: true,
+      cameraOcr: true,
+      offlineMode: true,
+      bleTransport: false,
+      wifiRelay: true,
+      qrCode: true,
+      customGlossaries: true,
+      preTranslation: true,
+      whiteLabel: false,
+      apiAccess: 'read',
+      analytics: 'dashboard',
+      guideManagement: true,
+      exportTranscripts: true,
+    },
+    pricing: {
+      monthlyEur: 199,
+      yearlyEur: 1_990,
+      overagePerMinuteEur: 0.08,
+      additionalLanguageEur: 0,
+      // TODO: Set after Stripe product creation
+      // stripePriceIdMonthly: 'price_...',
+      // stripePriceIdYearly: 'price_...',
+    },
+    supportLevel: 'email_12h',
+  },
+
   // ── SEGMENT: INTERNAL (not shown on pricing page) ──────────────────
   // These tiers are assigned automatically based on user role.
   // They bypass all limits and enable all features at zero cost.
@@ -791,6 +1196,10 @@ export const TIER_ORDER: TierId[] = [
   'agency_standard', 'agency_premium',
   'event_basic', 'event_pro',
   'cruise_starter', 'cruise_fleet', 'cruise_armada',
+  'education_single', 'education_school',
+  'authority_single', 'authority_office',
+  'hospitality_single', 'hospitality_business',
+  'medical_practice', 'medical_clinic',
 ]
 
 /** Internal tier IDs (not shown on pricing page, assigned by role) */
@@ -815,6 +1224,10 @@ export const SEGMENTS: { id: Segment; label: string; icon: string }[] = [
   { id: 'agency', label: 'Business', icon: 'building' },
   { id: 'event', label: 'Event', icon: 'calendar' },
   { id: 'cruise', label: 'Cruise', icon: 'ship' },
+  { id: 'education', label: 'Bildung', icon: 'graduation-cap' },
+  { id: 'authority', label: 'Behörde', icon: 'landmark' },
+  { id: 'hospitality', label: 'Gastgewerbe', icon: 'hotel' },
+  { id: 'medical', label: 'Medizin', icon: 'stethoscope' },
 ]
 
 /** Check if a feature is available for a tier */
