@@ -1,7 +1,9 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase-client'
 
 const navSections = [
   {
@@ -57,6 +59,36 @@ const navSections = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? null)
+    })
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? null)
+      if (!session) {
+        router.push('/login')
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [router])
+
+  async function handleLogout() {
+    setLoggingOut(true)
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push('/login')
+      router.refresh()
+    } catch {
+      setLoggingOut(false)
+    }
+  }
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 bg-indigo-950 text-white p-6 flex flex-col overflow-y-auto z-50">
@@ -97,8 +129,39 @@ export default function DashboardSidebar() {
         ))}
       </nav>
 
-      <div className="text-xs text-white/30 mt-4">
-        powered by Fintutto
+      {/* User info + Logout */}
+      <div className="mt-4 pt-4 border-t border-white/10">
+        {userEmail ? (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 px-3">
+              <div className="w-7 h-7 rounded-full bg-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                {userEmail[0].toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs text-white/70 truncate">{userEmail}</div>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/50 hover:bg-white/10 hover:text-white transition disabled:opacity-50"
+            >
+              <span>🚪</span>
+              {loggingOut ? 'Wird ausgeloggt...' : 'Ausloggen'}
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/50 hover:bg-white/10 hover:text-white transition"
+          >
+            <span>🔑</span>
+            Einloggen
+          </Link>
+        )}
+        <div className="text-xs text-white/20 mt-3 px-3">
+          powered by Fintutto
+        </div>
       </div>
     </aside>
   )
