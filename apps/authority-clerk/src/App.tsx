@@ -1,14 +1,18 @@
 /**
- * Authority Clerk App — Amt Translator (Sachbearbeiter)
+ * Authority Clerk App — AmtTranslator (Sachbearbeiter)
  *
- * Speaker app for government office clerks. Based on Enterprise app
- * with authority-specific branding and workflow.
+ * Speaker app for government office clerks.
+ * Supports: Ausländerbehörde + Jobcenter modes.
  *
  * Features:
+ * - Mode selector (Ausländerbehörde / Jobcenter)
  * - Quick session activation (counter/desk use case)
  * - Conversation mode (1:1 with visitors)
- * - Live session as speaker
+ * - Live session as speaker (Broadcasting for groups)
  * - Text translator for forms/documents
+ * - Asylum workflow (step-by-step with legal basis)
+ * - Jobcenter workflow (SGB II/III procedures)
+ * - Offline mode indicator (DSGVO Art. 9 compliance)
  *
  * Excludes: phrasebook, camera OCR, pricing, sales.
  */
@@ -24,9 +28,12 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import AuthorityClerkHomePage from './pages/AuthorityClerkHomePage'
-const FormTemplatesPage = lazy(() => import('./pages/FormTemplatesPage'))
 
-// Lazy-loaded routes
+const FormTemplatesPage = lazy(() => import('./pages/FormTemplatesPage'))
+const AsylumWorkflowPage = lazy(() => import('./pages/AsylumWorkflowPage'))
+const JobcenterWorkflowPage = lazy(() => import('./pages/JobcenterWorkflowPage'))
+
+// Lazy-loaded shared routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
 const LiveSessionPage = lazy(() => import('@/pages/LiveSessionPage'))
 const ConversationPage = lazy(() => import('@/pages/ConversationPage'))
@@ -64,29 +71,131 @@ function App() {
               <RouteTracker />
               <Routes>
                 <Route path="/" element={<Layout />}>
-                  {/* Main: Desk/counter session activation */}
+                  {/* Main: Mode selector + desk/counter session activation */}
                   <Route index element={<AuthorityClerkHomePage />} />
-                  <Route path="form-templates" element={<Suspense fallback={<PageLoader />}><FormTemplatesPage /></Suspense>} />
+
+                  {/* Authority-specific workflows */}
+                  <Route
+                    path="asylum-workflow"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AsylumWorkflowPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="jobcenter-workflow"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <JobcenterWorkflowPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="form-templates"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <FormTemplatesPage />
+                      </Suspense>
+                    }
+                  />
 
                   {/* Core translation */}
-                  <Route path="translator" element={<Suspense fallback={<PageLoader />}><TranslatorPage /></Suspense>} />
-                  <Route path="conversation" element={<Suspense fallback={<PageLoader />}><ConversationPage /></Suspense>} />
-                  <Route path="history" element={<Suspense fallback={<PageLoader />}><HistoryPage /></Suspense>} />
+                  <Route
+                    path="translator"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <TranslatorPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="conversation"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <ConversationPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="history"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <HistoryPage />
+                      </Suspense>
+                    }
+                  />
 
-                  {/* Live sessions */}
-                  <Route path="live" element={<Suspense fallback={<PageLoader />}><LiveLandingPage /></Suspense>} />
-                  <Route path="live/:code" element={<Suspense fallback={<PageLoader />}><LiveSessionPage /></Suspense>} />
+                  {/* Live sessions / Broadcasting */}
+                  <Route
+                    path="live"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <LiveLandingPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="live/:code"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <LiveSessionPage />
+                      </Suspense>
+                    }
+                  />
 
                   {/* Admin */}
-                  <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
+                  <Route
+                    path="admin/*"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AdminPage />
+                      </Suspense>
+                    }
+                  />
 
                   {/* Auth & account */}
-                  <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
-                  <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />
-                  <Route path="account/admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
-                  <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
+                  <Route
+                    path="auth"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AuthPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="account"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AccountPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="account/admin/*"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AdminPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="settings"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <SettingsPage />
+                      </Suspense>
+                    }
+                  />
 
-                  <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />
+                  <Route
+                    path="*"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <NotFoundPage />
+                      </Suspense>
+                    }
+                  />
                 </Route>
               </Routes>
               <Toaster position="top-right" richColors />
