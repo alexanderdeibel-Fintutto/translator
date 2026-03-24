@@ -3,9 +3,9 @@
 import { useState, use, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
-import { useMuseum } from '../../../lib/hooks'
-import { QrCodePanel } from '../../../../components/QrCodePanel'
-import type { Artwork, Museum } from '../../../lib/types'
+import { useMuseum } from '@/lib/hooks'
+import { QrCodePanel } from '@/components/QrCodePanel'
+import type { Artwork, Museum } from '@/lib/types'
 
 const LANGUAGES = ['de', 'en', 'fr', 'es', 'it', 'zh', 'ja', 'ar']
 const CONTENT_FIELDS = [
@@ -18,6 +18,17 @@ const CONTENT_FIELDS = [
   { key: 'historical_context', label: 'Historischer Kontext', hint: 'Zeitgeschichtlicher Hintergrund' },
   { key: 'technique_details', label: 'Technik-Details', hint: 'Materialien & Arbeitsweise' },
 ]
+
+// Helper: extract localized text from MultiLang object
+function t(value: unknown, lang = 'de'): string {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'object') {
+    const obj = value as Record<string, string>
+    return obj[lang] || obj['de'] || obj['en'] || Object.values(obj)[0] || ''
+  }
+  return String(value)
+}
 
 const STATUS_CONFIG = {
   draft: { label: 'Entwurf', color: 'bg-gray-100 text-gray-600', dot: 'bg-gray-400' },
@@ -209,7 +220,7 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
             ← Zurück
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{artwork.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t(artwork.title, activeLanguage)}</h1>
             <p className="text-gray-500 text-sm mt-0.5">{artwork.artist_name || 'Unbekannter Künstler'} {artwork.year_created ? `· ${artwork.year_created}` : ''}</p>
           </div>
         </div>
@@ -278,11 +289,14 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                   ))}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Titel</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Titel ({activeLanguage.toUpperCase()})</label>
                     <input
                       type="text"
-                      value={form.title || ''}
-                      onChange={e => setForm(prev => ({ ...prev, title: e.target.value }))}
+                      value={t(form.title, activeLanguage)}
+                      onChange={e => setForm(prev => ({
+                        ...prev,
+                        title: { ...(typeof prev.title === 'object' ? prev.title : {}), [activeLanguage]: e.target.value }
+                      }))}
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none"
                     />
                   </div>
@@ -339,9 +353,9 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'media' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Medien</h3>
-              {artwork.image_url && (
+{(artwork as any).image_url && (
                 <div className="mb-4">
-                  <img src={artwork.image_url} alt={artwork.title} className="max-h-64 rounded-lg border border-gray-200 object-contain" />
+                  <img src={(artwork as any).image_url} alt={t(artwork.title, activeLanguage)} className="max-h-64 rounded-lg border border-gray-200 object-contain" />
                 </div>
               )}
               <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-indigo-300 transition cursor-pointer">

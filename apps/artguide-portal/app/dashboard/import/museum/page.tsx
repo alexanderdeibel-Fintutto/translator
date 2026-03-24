@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useMuseum, useImportJob, importActions } from '../../../../lib/hooks'
-import type { Lang } from '../../../../lib/types'
+import { useMuseum, useImportJob, importActions } from '@/lib/hooks'
+import type { Lang } from '@/lib/types'
 
 type WizardStep = 'upload' | 'analyze' | 'mapping' | 'enrich' | 'review'
 

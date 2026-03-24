@@ -1,0 +1,236 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/dashboard/artworks/[id]",
+      "regex": "^/dashboard/artworks/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/dashboard/artworks/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import/[jobId]",
+      "regex": "^/dashboard/import/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPjobId": "nxtPjobId"
+      },
+      "namedRegex": "^/dashboard/import/(?<nxtPjobId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/dashboard/partner-crm/[id]",
+      "regex": "^/dashboard/partner\\-crm/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/dashboard/partner\\-crm/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/dashboard/partners/[id]",
+      "regex": "^/dashboard/partners/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/dashboard/partners/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/analytics",
+      "regex": "^/dashboard/analytics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/analytics(?:/)?$"
+    },
+    {
+      "page": "/dashboard/artworks",
+      "regex": "^/dashboard/artworks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/artworks(?:/)?$"
+    },
+    {
+      "page": "/dashboard/audio",
+      "regex": "^/dashboard/audio(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/audio(?:/)?$"
+    },
+    {
+      "page": "/dashboard/billing",
+      "regex": "^/dashboard/billing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/billing(?:/)?$"
+    },
+    {
+      "page": "/dashboard/bookings",
+      "regex": "^/dashboard/bookings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/bookings(?:/)?$"
+    },
+    {
+      "page": "/dashboard/city-tours",
+      "regex": "^/dashboard/city\\-tours(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/city\\-tours(?:/)?$"
+    },
+    {
+      "page": "/dashboard/content-hub",
+      "regex": "^/dashboard/content\\-hub(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/content\\-hub(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import",
+      "regex": "^/dashboard/import(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/import(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import/city",
+      "regex": "^/dashboard/import/city(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/import/city(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import/conference",
+      "regex": "^/dashboard/import/conference(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/import/conference(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import/fair",
+      "regex": "^/dashboard/import/fair(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/import/fair(?:/)?$"
+    },
+    {
+      "page": "/dashboard/import/museum",
+      "regex": "^/dashboard/import/museum(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/import/museum(?:/)?$"
+    },
+    {
+      "page": "/dashboard/invite-campaigns",
+      "regex": "^/dashboard/invite\\-campaigns(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/invite\\-campaigns(?:/)?$"
+    },
+    {
+      "page": "/dashboard/offers",
+      "regex": "^/dashboard/offers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/offers(?:/)?$"
+    },
+    {
+      "page": "/dashboard/partner-crm",
+      "regex": "^/dashboard/partner\\-crm(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/partner\\-crm(?:/)?$"
+    },
+    {
+      "page": "/dashboard/partners",
+      "regex": "^/dashboard/partners(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/partners(?:/)?$"
+    },
+    {
+      "page": "/dashboard/pois",
+      "regex": "^/dashboard/pois(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/pois(?:/)?$"
+    },
+    {
+      "page": "/dashboard/region",
+      "regex": "^/dashboard/region(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/region(?:/)?$"
+    },
+    {
+      "page": "/dashboard/settings",
+      "regex": "^/dashboard/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/dashboard/team",
+      "regex": "^/dashboard/team(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/team(?:/)?$"
+    },
+    {
+      "page": "/dashboard/tours",
+      "regex": "^/dashboard/tours(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/tours(?:/)?$"
+    },
+    {
+      "page": "/dashboard/venue",
+      "regex": "^/dashboard/venue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/venue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/workflow",
+      "regex": "^/dashboard/workflow(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/workflow(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

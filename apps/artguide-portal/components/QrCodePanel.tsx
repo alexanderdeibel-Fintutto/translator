@@ -3,6 +3,17 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Artwork, Museum } from '../lib/types'
 
+// Helper: extract localized text from MultiLang object
+function t(value: unknown, lang = 'de'): string {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'object') {
+    const obj = value as Record<string, string>
+    return obj[lang] || obj['de'] || obj['en'] || Object.values(obj)[0] || ''
+  }
+  return String(value)
+}
+
 interface QrCodePanelProps {
   artwork: Artwork
   museum: Museum
@@ -49,7 +60,7 @@ export function QrCodePanel({ artwork, museum }: QrCodePanelProps) {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>QR-Code — ${artwork.title}</title>
+        <title>QR-Code — ${t(artwork.title)}</title>
         <style>
           body { font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: white; }
           .card { border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; text-align: center; max-width: 320px; }
@@ -66,11 +77,11 @@ export function QrCodePanel({ artwork, museum }: QrCodePanelProps) {
           ${labelStyle !== 'minimal' ? `<div class="museum">${museum.name}</div>` : ''}
           <img src="${qrDataUrl}" alt="QR Code" />
           ${labelStyle === 'full' ? `
-            <div class="title">${artwork.title}</div>
+            <div class="title">${t(artwork.title)}</div>
             ${artwork.artist_name ? `<div class="artist">${artwork.artist_name}</div>` : ''}
             ${artwork.inventory_number ? `<div class="inv">Inv. ${artwork.inventory_number}</div>` : ''}
           ` : labelStyle === 'branded' ? `
-            <div class="title">${artwork.title}</div>
+            <div class="title">${t(artwork.title)}</div>
           ` : ''}
         </div>
         <script>window.onload = () => { window.print(); window.close(); }</script>
@@ -100,13 +111,13 @@ export function QrCodePanel({ artwork, museum }: QrCodePanelProps) {
             )}
             {labelStyle === 'full' && (
               <div className="mt-2">
-                <p className="font-bold text-gray-900 text-sm">{artwork.title}</p>
+                <p className="font-bold text-gray-900 text-sm">{t(artwork.title)}</p>
                 {artwork.artist_name && <p className="text-gray-500 text-xs">{artwork.artist_name}</p>}
                 {artwork.inventory_number && <p className="text-gray-400 text-xs font-mono">Inv. {artwork.inventory_number}</p>}
               </div>
             )}
             {labelStyle === 'branded' && (
-              <p className="font-medium text-gray-800 text-sm mt-2">{artwork.title}</p>
+              <p className="font-medium text-gray-800 text-sm mt-2">{t(artwork.title)}</p>
             )}
           </div>
         </div>

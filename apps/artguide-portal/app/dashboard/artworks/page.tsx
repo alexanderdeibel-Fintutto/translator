@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useMuseum, useArtworks } from '../../../lib/hooks'
-import type { Artwork } from '../../../lib/types'
+import { useMuseum, useArtworks } from '@/lib/hooks'
+import type { Artwork } from '@/lib/types'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-600',
@@ -19,24 +19,32 @@ const statusLabels: Record<string, string> = {
   archived: 'Archiviert',
 }
 
+// Helper: extract localized text from MultiLang object
+function t(value: unknown, lang = 'de'): string {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'object') {
+    const obj = value as Record<string, string>
+    return obj[lang] || obj['de'] || obj['en'] || Object.values(obj)[0] || ''
+  }
+  return String(value)
+}
+
 export default function ArtworksPage() {
   const { museum } = useMuseum()
   const [view, setView] = useState<'list' | 'grid'>('list')
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [roomFilter, setRoomFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'draft' | 'review' | 'published' | 'archived' | 'all' | undefined>(undefined)
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 300)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
   }, [search])
 
-  const { artworks, loading, total, rooms, reload } = useArtworks({
-    museumId: museum?.id,
-    search: debouncedSearch,
-    status: statusFilter || undefined,
-    room: roomFilter || undefined,
+  const { artworks, loading, total, reload } = useArtworks(museum?.id, {
+    search: debouncedSearch || undefined,
+    status: statusFilter,
   })
 
   return (
@@ -71,11 +79,11 @@ export default function ArtworksPage() {
               className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 outline-none text-sm"
             />
           </div>
-          <select value={roomFilter} onChange={e => setRoomFilter(e.target.value)} className="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none">
-            <option value="">Alle Räume</option>
-            {rooms.map(r => <option key={r} value={r}>{r}</option>)}
-          </select>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none">
+          <select
+            value={statusFilter || ''}
+            onChange={e => setStatusFilter((e.target.value || undefined) as typeof statusFilter)}
+            className="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none"
+          >
             <option value="">Alle Status</option>
             <option value="draft">Entwurf</option>
             <option value="review">In Review</option>
@@ -119,7 +127,7 @@ export default function ArtworksPage() {
             </thead>
             <tbody>
               {artworks.map(artwork => (
-                <ArtworkRow key={artwork.id} artwork={artwork} museumSlug={museum?.slug} onReload={reload} />
+                <ArtworkRow key={artwork.id} artwork={artwork} onReload={reload} />
               ))}
             </tbody>
           </table>
@@ -135,26 +143,29 @@ export default function ArtworksPage() {
   )
 }
 
-function ArtworkRow({ artwork, museumSlug, onReload }: { artwork: Artwork; museumSlug?: string; onReload: () => void }) {
+function ArtworkRow({ artwork, onReload }: { artwork: Artwork; onReload: () => void }) {
+  const imageUrl = (artwork as any).image_url as string | null
+  const roomName = artwork.room ? t(artwork.room.name) : null
+
   return (
     <tr className="border-b border-gray-100 hover:bg-gray-50 transition">
       <td className="p-4">
-        {artwork.image_url ? (
-          <img src={artwork.image_url} alt={artwork.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200" />
+        {imageUrl ? (
+          <img src={imageUrl} alt={t(artwork.title)} className="w-12 h-12 object-cover rounded-lg border border-gray-200" />
         ) : (
           <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xl">🖼</div>
         )}
       </td>
       <td className="p-4">
         <Link href={`/dashboard/artworks/${artwork.id}`} className="font-medium text-gray-900 hover:text-indigo-700 transition">
-          {artwork.title}
+          {t(artwork.title)}
         </Link>
         {artwork.inventory_number && (
           <p className="text-xs text-gray-400 font-mono mt-0.5">{artwork.inventory_number}</p>
         )}
       </td>
       <td className="p-4 text-gray-600 text-sm">{artwork.artist_name || '—'}</td>
-      <td className="p-4 text-gray-500 text-sm">{artwork.room || '—'}</td>
+      <td className="p-4 text-gray-500 text-sm">{roomName || '—'}</td>
       <td className="p-4">
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[artwork.status] || 'bg-gray-100 text-gray-600'}`}>
           {statusLabels[artwork.status] || artwork.status}
@@ -171,15 +182,17 @@ function ArtworkRow({ artwork, museumSlug, onReload }: { artwork: Artwork; museu
 }
 
 function ArtworkCard({ artwork }: { artwork: Artwork }) {
+  const imageUrl = (artwork as any).image_url as string | null
+
   return (
     <Link href={`/dashboard/artworks/${artwork.id}`} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-indigo-300 hover:shadow-sm transition group">
-      {artwork.image_url ? (
-        <img src={artwork.image_url} alt={artwork.title} className="w-full h-40 object-cover" />
+      {imageUrl ? (
+        <img src={imageUrl} alt={t(artwork.title)} className="w-full h-40 object-cover" />
       ) : (
         <div className="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-300 text-4xl">🖼</div>
       )}
       <div className="p-3">
-        <p className="font-medium text-gray-900 text-sm truncate group-hover:text-indigo-700 transition">{artwork.title}</p>
+        <p className="font-medium text-gray-900 text-sm truncate group-hover:text-indigo-700 transition">{t(artwork.title)}</p>
         <p className="text-xs text-gray-500 mt-0.5 truncate">{artwork.artist_name || '—'}</p>
         <div className="flex items-center justify-between mt-2">
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[artwork.status] || 'bg-gray-100 text-gray-600'}`}>
