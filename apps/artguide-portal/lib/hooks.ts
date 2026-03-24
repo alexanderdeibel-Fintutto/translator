@@ -444,6 +444,71 @@ export const importActions = {
   },
 
   /**
+   * Create a city import job and trigger the AI city scout
+   */
+  async scoutCity(params: {
+    museumId: string
+    cityName: string
+    country: string
+    radiusKm: number
+    categories: string[]
+    languages: string[]
+    generateTours: boolean
+  }): Promise<ImportJob> {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Nicht eingeloggt')
+
+    // Create import job for city
+    const { data: job, error: jobErr } = await supabase
+      .from('ag_import_jobs')
+      .insert({
+        museum_id: params.museumId,
+        created_by: user.id,
+        source_type: 'google_places',
+        target_type: 'pois',
+        import_mode: 'city',
+        status: 'analyzing',
+        enrichment_config: {
+          city_name: params.cityName,
+          country: params.country,
+          radius_km: params.radiusKm,
+          categories: params.categories,
+          languages: params.languages,
+          generate_tours: params.generateTours,
+        },
+      })
+      .select()
+      .single()
+    if (jobErr) throw jobErr
+
+    // Trigger city scout via Edge Function
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/content-enrich`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({
+        action: 'scout_city',
+        job_id: job.id,
+        city_name: params.cityName,
+        country: params.country,
+        radius_km: params.radiusKm,
+        categories: params.categories,
+        languages: params.languages,
+        generate_tours: params.generateTours,
+      }),
+    })
+    if (!res.ok) {
+      const err = await res.text()
+      throw new Error(`City Scout fehlgeschlagen: ${err}`)
+    }
+    return job as ImportJob
+  },
+
+  /**
    * Finalize import: create artworks from approved items
    */
   async finalizeImport(jobId: string): Promise<{ imported: number; errors: number }> {
