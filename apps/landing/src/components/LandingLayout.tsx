@@ -23,6 +23,8 @@ const NAV_ITEMS = [
   {
     label: 'Loesungen',
     children: [
+      { label: 'Stadtfuehrer', path: '/solutions/tourguides' },
+      { label: 'Agenturen', path: '/solutions/agencies' },
       { label: 'Schulen', path: '/solutions/schools' },
       { label: 'Behoerden', path: '/solutions/authorities' },
       { label: 'NGO', path: '/solutions/ngo' },
@@ -234,6 +236,8 @@ export default function LandingLayout() {
             <div className="space-y-2">
               <h4 className="font-semibold">Loesungen</h4>
               <div className="space-y-1 text-muted-foreground">
+                <Link to="/solutions/tourguides" className="block hover:text-foreground">Stadtfuehrer</Link>
+                <Link to="/solutions/agencies" className="block hover:text-foreground">Agenturen</Link>
                 <Link to="/solutions/schools" className="block hover:text-foreground">Schulen</Link>
                 <Link to="/solutions/authorities" className="block hover:text-foreground">Behoerden</Link>
                 <Link to="/solutions/ngo" className="block hover:text-foreground">NGO</Link>
