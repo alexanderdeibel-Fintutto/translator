@@ -37,6 +37,8 @@ const QRPosterPage = lazy(() => import('./pages/QRPosterPage'))
 const BroadcastingPage = lazy(() => import('./pages/BroadcastingPage'))
 const AccessibilityStatementPage = lazy(() => import('./pages/AccessibilityStatementPage'))
 const ImpressumPage = lazy(() => import('./pages/ImpressumPage'))
+const SessionProtocolPage = lazy(() => import('./pages/SessionProtocolPage'))
+const PilotOfferPage = lazy(() => import('./pages/PilotOfferPage'))
 
 // Lazy-loaded shared routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -207,6 +209,26 @@ function App() {
                     element={
                       <Suspense fallback={<PageLoader />}>
                         <SettingsPage />
+                      </Suspense>
+                    }
+                  />
+
+                  {/* Pilot Offer */}
+                  <Route
+                    path="pilot"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <PilotOfferPage />
+                      </Suspense>
+                    }
+                  />
+
+                  {/* Protocol */}
+                  <Route
+                    path="protocol"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <SessionProtocolPage />
                       </Suspense>
                     }
                   />
