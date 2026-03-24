@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Languages } from 'lucide-react'
 import { useI18n } from '@/context/I18nContext'
 
 export default function Footer() {
@@ -6,21 +7,6 @@ export default function Footer() {
   return (
     <footer className="border-t border-border py-8 mt-auto">
       <div className="container">
- claude/analyze-chat-history-D5axK
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <img src="/logo-transparent.svg" alt="guidetranslator" className="h-5 w-5" />
-            <span>guidetranslator <span className="text-muted-foreground/60">(by fintutto)</span></span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link to="/impressum" className="hover:text-foreground transition-colors">Impressum</Link>
-            <Link to="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</Link>
-            <span>&copy; {new Date().getFullYear()} AI Tour Guide UG (haftungsbeschränkt)</span>
-          </div>
-        </div>
-        <div className="mt-3 text-center text-[11px] text-muted-foreground/60">
-          Ein Produkt der <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Fintutto</a> Gruppe
-=======
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
           {/* Produkte */}
           <div>
@@ -79,7 +65,6 @@ export default function Footer() {
             <span>·</span>
             <a href="https://itour.de/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">itour.de</a>
           </div>
- main
         </div>
       </div>
     </footer>
