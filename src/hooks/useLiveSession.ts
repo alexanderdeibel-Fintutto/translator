@@ -227,19 +227,37 @@ export function useLiveSession(userTierId: TierId = 'free') {
     let targetLangs = allTargetLangs.filter(lang => lang !== '_live')
 
     if (allTargetLangs.length === 0) {
-      // No listeners yet — still record source text in speaker's history
-      // so the speaker sees their own transcript
+      // No listeners detected via presence/announce yet.
+      // Still broadcast as _live so listeners who ARE connected but not yet
+      // visible (common on iOS — presence/announce can lag) get the source text.
+      // Also record in speaker's history and presence fallback.
       const chunk: TranslationChunk = {
         id: generateChunkId(),
         sourceText: text,
         translatedText: text,
         sourceLang: sourceLanguage,
-        targetLanguage: sourceLanguage,
+        targetLanguage: '_live',
         isFinal: true,
         timestamp: Date.now(),
       }
+      // Broadcast as _live — listeners with _live selected will receive it,
+      // and listeners with other languages at least see the speaker is active
+      broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
+      // Write to presence fallback so iOS listeners can pick it up
+      try {
+        presence.updatePresence({
+          lastChunks: JSON.stringify([{
+            id: chunk.id,
+            sourceText: chunk.sourceText,
+            translatedText: chunk.translatedText,
+            sourceLang: chunk.sourceLang,
+            targetLanguage: chunk.targetLanguage,
+            timestamp: chunk.timestamp,
+          }]),
+          lastChunkBatch: Date.now(),
+        })
+      } catch { /* best-effort */ }
       setTranslationHistory(prev => {
-        // Dedup by source text within last 3 seconds
         const cutoff = Date.now() - 3000
         if (prev.some(c => c.sourceText === text && c.timestamp > cutoff)) return prev
         const next = [...prev, chunk]
@@ -395,16 +413,26 @@ export function useLiveSession(userTierId: TierId = 'free') {
     const trimmed = text.trim()
     if (!trimmed) return
 
-    // Dedup: skip if we already processed this exact text in the last 3 seconds
+    // Dedup: skip if we already processed this exact or very similar text recently.
+    // Also catches near-duplicates from STT punctuation revisions (e.g., "hello" vs "Hello!").
     const now = Date.now()
     const recents = recentFinalsRef.current
     // Purge old entries
-    while (recents.length > 0 && now - recents[0].time > 3000) {
+    while (recents.length > 0 && now - recents[0].time > 5000) {
       recents.shift()
     }
-    const normalized = trimmed.toLowerCase()
-    if (recents.some(f => f.text === normalized)) {
-      console.log(`[Live] Dedup: skipping duplicate final "${trimmed.slice(0, 40)}..."`)
+    const normalized = trimmed.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim()
+    if (recents.some(f => {
+      // Exact match
+      if (f.text === normalized) return true
+      // Containment match: new text is contained in a recent final or vice versa
+      // (catches cases where STT re-emits partial or extended versions)
+      if (normalized.length > 5 && f.text.length > 5) {
+        if (f.text.includes(normalized) || normalized.includes(f.text)) return true
+      }
+      return false
+    })) {
+      console.log(`[Live] Dedup: skipping duplicate/similar final "${trimmed.slice(0, 40)}..."`)
       return
     }
     recents.push({ text: normalized, time: now })
@@ -529,21 +557,19 @@ export function useLiveSession(userTierId: TierId = 'free') {
       joinedAt: new Date().toISOString(),
     })
 
-    // Broadcast-based announce — fallback when presence is unreliable (iOS Safari)
-    // Send immediately and then every 15s so speaker always knows our language
-    const sendAnnounce = () => {
+    // Broadcast-based announce — see useEffect below for connection-aware sending.
+    // The 15s interval keeps the speaker's announce map fresh.
+    if (announceIntervalRef.current) clearInterval(announceIntervalRef.current)
+    announceIntervalRef.current = setInterval(() => {
       broadcast.broadcast('listener_announce', {
         targetLanguage: selectedLanguageRef.current,
         deviceName: getDeviceName(),
         ts: Date.now(),
       })
-    }
-    // Small delay to let the channel connect first
-    setTimeout(sendAnnounce, 1000)
-    if (announceIntervalRef.current) clearInterval(announceIntervalRef.current)
-    announceIntervalRef.current = setInterval(sendAnnounce, 15_000)
+    }, 15_000)
   }, [broadcast, presence, connection])
 
+ claude/nice-jones
   // Listener-side stale connection detector: if no broadcast message for 20s,
   // the broadcast channel is likely dead (iOS Safari silent disconnect).
   // Re-subscribe to force a fresh WebSocket connection.
@@ -598,6 +624,21 @@ export function useLiveSession(userTierId: TierId = 'free') {
       }
     }
   }, [role, sessionEnded, broadcast])
+=======
+  // --- Reactive listener announce: fires on EVERY connect/reconnect ---
+  // The old approach used a fixed 1s setTimeout which was too early for iOS
+  // (channel not yet SUBSCRIBED). This useEffect sends the announce as soon as
+  // the broadcast channel is actually connected, and re-sends on every reconnect.
+  useEffect(() => {
+    if (role !== 'listener' || !broadcast.isConnected || !sessionCode) return
+    console.error(`[Listener] Connected! Sending listener_announce for lang=${selectedLanguageRef.current}`)
+    broadcast.broadcast('listener_announce', {
+      targetLanguage: selectedLanguageRef.current,
+      deviceName: getDeviceName(),
+      ts: Date.now(),
+    })
+  }, [role, broadcast.isConnected, sessionCode, broadcast])
+ main
 
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
