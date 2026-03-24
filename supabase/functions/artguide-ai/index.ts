@@ -6,9 +6,11 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY')!
+const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY') || ''
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || ''
 const CLAUDE_MODEL = 'claude-sonnet-4-6'
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages'
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,7 +18,7 @@ const corsHeaders = {
 }
 
 interface ArtGuideAIRequest {
-  action: 'explain' | 'chat' | 'generate_content' | 'suggest_tours'
+  action: 'explain' | 'chat' | 'generate_content' | 'generate_all' | 'suggest_tours'
   artwork_id?: string
   museum_id?: string
   visitor_id?: string
@@ -54,6 +56,8 @@ Deno.serve(async (req: Request) => {
         return await handleChat(supabase, body, user?.id)
       case 'generate_content':
         return await handleGenerateContent(supabase, body, user?.id)
+      case 'generate_all':
+        return await handleGenerateAll(supabase, body, user?.id)
       case 'suggest_tours':
         return await handleSuggestTours(supabase, body, user?.id)
       default:
@@ -232,9 +236,75 @@ async function handleGenerateContent(
     fieldInstructions[target_field] || 'Schreibe eine passende Beschreibung.',
   ].join('\n')
 
-  const generatedText = await callClaude(systemPrompt, userPrompt)
+  const generatedText = await callAI(systemPrompt, userPrompt)
 
   return jsonResponse({ text: generatedText, field: target_field, language })
+}
+
+async function handleGenerateAll(
+  supabase: ReturnType<typeof createClient>,
+  body: ArtGuideAIRequest,
+  userId?: string,
+) {
+  const { artwork_id, language = 'de' } = body
+  if (!artwork_id) return jsonResponse({ error: 'artwork_id required' }, 400)
+  if (!userId) return jsonResponse({ error: 'Authentication required' }, 401)
+
+  const { data: artwork, error } = await supabase
+    .from('ag_artworks').select('*').eq('id', artwork_id).single()
+  if (error || !artwork) return jsonResponse({ error: 'Artwork not found' }, 404)
+
+  const { data: museum } = await supabase
+    .from('ag_museums').select('name').eq('id', artwork.museum_id).single()
+
+  const systemPrompt = [
+    `Du bist ein Kunstexperte der Museumstexte fuer ${museum?.name || 'ein Museum'} verfasst.`,
+    'Verwende NUR die bereitgestellten Fakten als Grundlage. Erfinde NICHTS.',
+    `Schreibe auf ${getLanguageName(language)}.`,
+    'Antworte AUSSCHLIESSLICH mit einem validen JSON-Objekt, ohne Markdown-Codeblock.',
+  ].join('\n')
+
+  const userPrompt = [
+    buildArtworkPrompt(artwork, language),
+    '',
+    '=== AUFGABE ===',
+    'Generiere alle folgenden Felder als JSON-Objekt:',
+    '{',
+    '  "description_brief": "1-2 Saetze Kurzuebersicht",',
+    '  "description_standard": "4-6 Saetze fuer allgemeines Publikum",',
+    '  "description_detailed": "8-15 Saetze fuer Kunstinteressierte",',
+    '  "description_children": "3-5 Saetze fuer Kinder 6-12 Jahre",',
+    '  "description_youth": "3-5 Saetze fuer Jugendliche 13-17 Jahre",',
+    '  "fun_facts": "3-5 ueberraschende Fakten, durch Zeilenumbruch getrennt",',
+    '  "historical_context": "3-5 Saetze historischer Kontext",',
+    '  "technique_details": "3-5 Saetze zur kuenstlerischen Technik"',
+    '}',
+  ].join('\n')
+
+  const rawText = await callAI(systemPrompt, userPrompt)
+  let generated: Record<string, string> = {}
+  try {
+    const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    generated = JSON.parse(cleaned)
+  } catch {
+    return jsonResponse({ error: 'AI returned invalid JSON', raw: rawText }, 500)
+  }
+
+  // Build update object: each field is a JSONB {lang: text}
+  const updates: Record<string, Record<string, string>> = {}
+  for (const [field, value] of Object.entries(generated)) {
+    const existing = (artwork[field] as Record<string, string>) || {}
+    updates[field] = { ...existing, [language]: String(value) }
+  }
+
+  const { error: updateError } = await supabase
+    .from('ag_artworks')
+    .update({ ...updates, status: 'review', updated_at: new Date().toISOString() })
+    .eq('id', artwork_id)
+
+  if (updateError) return jsonResponse({ error: 'Failed to save', details: updateError }, 500)
+
+  return jsonResponse({ success: true, generated, language, fields_count: Object.keys(generated).length })
 }
 
 async function handleSuggestTours(
@@ -313,6 +383,37 @@ async function handleSuggestTours(
   }
 
   return jsonResponse({ suggestions })
+}
+
+// ============================================================================
+// ============================================================================
+// AI Provider Wrapper (OpenAI preferred, Claude fallback)
+// ============================================================================
+
+async function callAI(systemPrompt: string, userPrompt: string): Promise<string> {
+  if (OPENAI_API_KEY) {
+    const response = await fetch(OPENAI_API_URL, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-4.1-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
+      }),
+    })
+    if (!response.ok) {
+      const err = await response.text()
+      console.error('OpenAI API error:', err)
+      throw new Error(`OpenAI API error: ${response.status}`)
+    }
+    const data = await response.json()
+    return data.choices?.[0]?.message?.content || ''
+  }
+  return callClaude(systemPrompt, userPrompt)
 }
 
 // ============================================================================

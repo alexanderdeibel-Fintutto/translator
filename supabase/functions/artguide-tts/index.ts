@@ -1,18 +1,19 @@
 // Fintutto Art Guide — TTS (Text-to-Speech) Edge Function
-// Generates audio files for artworks/POIs using Google Cloud TTS or ElevenLabs
-// Stores results in Supabase Storage and updates content items
+// Generates audio files for artworks using OpenAI TTS, Google Cloud TTS, or ElevenLabs
+// Stores results in Supabase Storage and updates ag_artworks
 //
 // Actions:
-//   generate_single  — Generate audio for one content item + language
-//   generate_batch   — Generate audio for multiple items
-//   list_voices       — List available voices per language
+//   generate_single  — Generate audio for one artwork + language
+//   generate_batch   — Generate audio for multiple artworks
+//   list_voices      — List available voices per language
 //
-// Required secrets: GOOGLE_TTS_API_KEY (or ELEVENLABS_API_KEY)
+// Required secrets: OPENAI_API_KEY or GOOGLE_TTS_API_KEY or ELEVENLABS_API_KEY
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') || ''
 const GOOGLE_TTS_KEY = Deno.env.get('GOOGLE_TTS_API_KEY') || ''
 const ELEVENLABS_KEY = Deno.env.get('ELEVENLABS_API_KEY') || ''
 
@@ -22,7 +23,7 @@ const corsHeaders = {
 }
 
 // Voice presets per language (Google Cloud TTS Neural2 voices)
-const VOICE_PRESETS: Record<string, { male: string; female: string; languageCode: string }> = {
+const GOOGLE_VOICE_PRESETS: Record<string, { male: string; female: string; languageCode: string }> = {
   de: { male: 'de-DE-Neural2-B', female: 'de-DE-Neural2-C', languageCode: 'de-DE' },
   en: { male: 'en-US-Neural2-D', female: 'en-US-Neural2-F', languageCode: 'en-US' },
   fr: { male: 'fr-FR-Neural2-B', female: 'fr-FR-Neural2-C', languageCode: 'fr-FR' },
@@ -37,15 +38,21 @@ const VOICE_PRESETS: Record<string, { male: string; female: string; languageCode
   ar: { male: 'ar-XA-Neural2-B', female: 'ar-XA-Neural2-A', languageCode: 'ar-XA' },
 }
 
+// OpenAI TTS voices (multilingual, best quality)
+const OPENAI_VOICES = {
+  female: 'nova',  // warm, clear
+  male: 'onyx',   // deep, authoritative
+}
+
 interface TtsRequest {
   action: 'generate_single' | 'generate_batch' | 'list_voices'
-  content_id?: string
-  content_ids?: string[]
+  artwork_id?: string
+  artwork_ids?: string[]
   language?: string
   languages?: string[]
   voice_gender?: 'male' | 'female'
   speaking_rate?: number  // 0.5 - 2.0, default 1.0
-  field?: string          // which text field to read: content_standard, content_brief, etc.
+  field?: string          // which text field: description_standard, description_brief, etc.
 }
 
 Deno.serve(async (req: Request) => {
@@ -59,29 +66,31 @@ Deno.serve(async (req: Request) => {
 
     switch (body.action) {
       case 'list_voices':
-        return jsonResponse(Object.entries(VOICE_PRESETS).map(([lang, v]) => ({
-          language: lang,
-          languageCode: v.languageCode,
-          maleVoice: v.male,
-          femaleVoice: v.female,
-        })))
+        return jsonResponse({
+          providers: {
+            openai: OPENAI_API_KEY ? { available: true, voices: OPENAI_VOICES } : { available: false },
+            google: GOOGLE_TTS_KEY ? { available: true, voices: GOOGLE_VOICE_PRESETS } : { available: false },
+            elevenlabs: ELEVENLABS_KEY ? { available: true } : { available: false },
+          },
+          active_provider: OPENAI_API_KEY ? 'openai' : GOOGLE_TTS_KEY ? 'google' : ELEVENLABS_KEY ? 'elevenlabs' : 'none',
+        })
 
       case 'generate_single': {
-        if (!body.content_id || !body.language) {
-          return jsonResponse({ error: 'content_id and language required' }, 400)
+        if (!body.artwork_id || !body.language) {
+          return jsonResponse({ error: 'artwork_id and language required' }, 400)
         }
-        const result = await generateAudio(supabase, body.content_id, body.language, {
+        const result = await generateAudio(supabase, body.artwork_id, body.language, {
           voiceGender: body.voice_gender || 'female',
           speakingRate: body.speaking_rate || 1.0,
-          field: body.field || 'content_standard',
+          field: body.field || 'description_standard',
         })
         return jsonResponse(result)
       }
 
       case 'generate_batch': {
-        const ids = body.content_ids || []
+        const ids = body.artwork_ids || []
         const langs = body.languages || [body.language || 'de']
-        if (ids.length === 0) return jsonResponse({ error: 'content_ids required' }, 400)
+        if (ids.length === 0) return jsonResponse({ error: 'artwork_ids required' }, 400)
 
         const results = []
         for (const id of ids.slice(0, 50)) {  // max 50 per batch
@@ -89,7 +98,7 @@ Deno.serve(async (req: Request) => {
             const result = await generateAudio(supabase, id, lang, {
               voiceGender: body.voice_gender || 'female',
               speakingRate: body.speaking_rate || 1.0,
-              field: body.field || 'content_standard',
+              field: body.field || 'description_standard',
             })
             results.push(result)
           }
@@ -112,58 +121,84 @@ Deno.serve(async (req: Request) => {
 
 async function generateAudio(
   supabase: ReturnType<typeof createClient>,
-  contentId: string,
+  artworkId: string,
   language: string,
   options: { voiceGender: 'male' | 'female'; speakingRate: number; field: string },
-): Promise<{ success: boolean; content_id: string; language: string; audio_url?: string; error?: string; duration_seconds?: number }> {
-  // 1. Fetch content text
-  const { data: content, error: fetchErr } = await supabase
-    .from('fw_content_items')
-    .select(`${options.field}, name, description`)
-    .eq('id', contentId)
+): Promise<{ success: boolean; artwork_id: string; language: string; audio_url?: string; error?: string; duration_seconds?: number; provider?: string }> {
+
+  // 1. Fetch artwork text
+  const { data: artwork, error: fetchErr } = await supabase
+    .from('ag_artworks')
+    .select(`${options.field}, description_standard, title, artist_name`)
+    .eq('id', artworkId)
     .single()
 
-  if (fetchErr || !content) {
-    return { success: false, content_id: contentId, language, error: 'Content not found' }
+  if (fetchErr || !artwork) {
+    return { success: false, artwork_id: artworkId, language, error: 'Artwork not found' }
   }
 
-  // Get text from the requested field
-  const fieldData = content[options.field] as Record<string, string> | null
+  // Get text from the requested field (JSONB {lang: text})
+  const fieldData = artwork[options.field] as Record<string, string> | null
   let text = fieldData?.[language]
 
-  // Fallback chain: requested field → description → name
+  // Fallback chain: requested field → description_standard → title
   if (!text) {
-    const desc = content.description as Record<string, string> | null
-    text = desc?.[language]
+    const std = artwork.description_standard as Record<string, string> | null
+    text = std?.[language] || std?.['de'] || std?.['en']
   }
   if (!text) {
-    const name = content.name as Record<string, string> | null
-    text = name?.[language]
+    const title = artwork.title as Record<string, string> | null
+    text = title?.[language] || title?.['de'] || title?.['en']
   }
 
   if (!text || text.length < 5) {
-    return { success: false, content_id: contentId, language, error: 'No text available for this language' }
+    return { success: false, artwork_id: artworkId, language, error: 'No text available for this language' }
   }
 
-  // 2. Generate audio via Google Cloud TTS
-  const preset = VOICE_PRESETS[language] || VOICE_PRESETS.en
-  const voiceName = options.voiceGender === 'male' ? preset.male : preset.female
+  // 2. Generate audio
+  let audioBuffer: ArrayBuffer
+  let provider: string
+  const durationEstimate = Math.round((text.length / 5 / 150) * 60)
 
-  let audioBase64: string
-  let durationEstimate: number
+  if (OPENAI_API_KEY) {
+    // OpenAI TTS (best quality, multilingual)
+    provider = 'openai'
+    const voice = OPENAI_VOICES[options.voiceGender]
+    const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'tts-1',
+        input: text.slice(0, 4096),
+        voice,
+        speed: Math.min(Math.max(options.speakingRate, 0.25), 4.0),
+        response_format: 'mp3',
+      }),
+    })
 
-  if (GOOGLE_TTS_KEY) {
+    if (!ttsResponse.ok) {
+      const errText = await ttsResponse.text()
+      return { success: false, artwork_id: artworkId, language, error: `OpenAI TTS error: ${errText}` }
+    }
+    audioBuffer = await ttsResponse.arrayBuffer()
+
+  } else if (GOOGLE_TTS_KEY) {
+    // Google Cloud TTS fallback
+    provider = 'google'
+    const preset = GOOGLE_VOICE_PRESETS[language] || GOOGLE_VOICE_PRESETS.en
+    const voiceName = options.voiceGender === 'male' ? preset.male : preset.female
+
     const ttsResponse = await fetch(
       `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          input: { text: text.slice(0, 5000) }, // Google TTS limit
-          voice: {
-            languageCode: preset.languageCode,
-            name: voiceName,
-          },
+          input: { text: text.slice(0, 5000) },
+          voice: { languageCode: preset.languageCode, name: voiceName },
           audioConfig: {
             audioEncoding: 'MP3',
             speakingRate: options.speakingRate,
@@ -176,23 +211,22 @@ async function generateAudio(
 
     if (!ttsResponse.ok) {
       const errText = await ttsResponse.text()
-      return { success: false, content_id: contentId, language, error: `TTS API error: ${errText}` }
+      return { success: false, artwork_id: artworkId, language, error: `Google TTS error: ${errText}` }
     }
 
     const ttsData = await ttsResponse.json()
-    audioBase64 = ttsData.audioContent
-    // Rough estimate: ~150 words/min, ~5 chars/word
-    durationEstimate = Math.round((text.length / 5 / 150) * 60)
+    const audioBase64: string = ttsData.audioContent
+    audioBuffer = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0)).buffer
+
   } else if (ELEVENLABS_KEY) {
-    // ElevenLabs fallback (multilingual v2 model)
+    // ElevenLabs fallback
+    provider = 'elevenlabs'
+    const voiceId = options.voiceGender === 'female' ? '21m00Tcm4TlvDq8ikWAM' : 'TxGEqnHWrfWFTfGW9XjX'
     const elevenResponse = await fetch(
-      'https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM', // Rachel voice
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_KEY,
-        },
+        headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_KEY },
         body: JSON.stringify({
           text: text.slice(0, 5000),
           model_id: 'eleven_multilingual_v2',
@@ -202,19 +236,17 @@ async function generateAudio(
     )
 
     if (!elevenResponse.ok) {
-      return { success: false, content_id: contentId, language, error: 'ElevenLabs API error' }
+      return { success: false, artwork_id: artworkId, language, error: 'ElevenLabs API error' }
     }
+    audioBuffer = await elevenResponse.arrayBuffer()
 
-    const audioBuffer = await elevenResponse.arrayBuffer()
-    audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)))
-    durationEstimate = Math.round((text.length / 5 / 150) * 60)
   } else {
-    return { success: false, content_id: contentId, language, error: 'No TTS provider configured (GOOGLE_TTS_API_KEY or ELEVENLABS_API_KEY)' }
+    return { success: false, artwork_id: artworkId, language, error: 'No TTS provider configured' }
   }
 
   // 3. Upload to Supabase Storage
-  const audioBytes = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))
-  const filePath = `tts/${contentId}/${language}_${options.voiceGender}.mp3`
+  const audioBytes = new Uint8Array(audioBuffer)
+  const filePath = `artworks/${artworkId}/${language}_${options.voiceGender}_${options.field}.mp3`
 
   const { error: uploadErr } = await supabase.storage
     .from('audio')
@@ -224,34 +256,36 @@ async function generateAudio(
     })
 
   if (uploadErr) {
-    return { success: false, content_id: contentId, language, error: `Storage upload failed: ${uploadErr.message}` }
+    return { success: false, artwork_id: artworkId, language, error: `Storage upload failed: ${uploadErr.message}` }
   }
 
   // 4. Get public URL
   const { data: urlData } = supabase.storage.from('audio').getPublicUrl(filePath)
   const audioUrl = urlData.publicUrl
 
-  // 5. Update content item with audio URL
+  // 5. Update artwork with audio URL in JSONB field
   const { data: existing } = await supabase
-    .from('fw_content_items')
+    .from('ag_artworks')
     .select('audio_url, audio_duration_seconds')
-    .eq('id', contentId)
+    .eq('id', artworkId)
     .single()
 
   const currentAudioUrls = (existing?.audio_url as Record<string, string>) || {}
   currentAudioUrls[language] = audioUrl
 
-  await supabase.from('fw_content_items').update({
+  await supabase.from('ag_artworks').update({
     audio_url: currentAudioUrls,
     audio_duration_seconds: durationEstimate,
-  }).eq('id', contentId)
+    updated_at: new Date().toISOString(),
+  }).eq('id', artworkId)
 
   return {
     success: true,
-    content_id: contentId,
+    artwork_id: artworkId,
     language,
     audio_url: audioUrl,
     duration_seconds: durationEstimate,
+    provider,
   }
 }
 

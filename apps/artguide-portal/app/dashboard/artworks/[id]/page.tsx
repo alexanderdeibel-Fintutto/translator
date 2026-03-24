@@ -60,19 +60,20 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
       setArtwork(data)
       setForm(data)
 
-      // Load translations
-      const { data: trans } = await supabase
-        .from('ag_artwork_translations')
-        .select('*')
-        .eq('artwork_id', id)
-      if (trans) {
-        const map: Record<string, Record<string, string>> = {}
-        for (const t of trans) {
-          if (!map[t.language]) map[t.language] = {}
-          map[t.language] = { ...map[t.language], ...t }
+      // Extract translations from JSONB fields in ag_artworks
+      // Each content field is stored as {"de": "...", "en": "...", ...}
+      const contentFields = ['description_brief', 'description_standard', 'description_detailed', 'description_children', 'description_youth', 'fun_facts', 'historical_context', 'technique_details']
+      const map: Record<string, Record<string, string>> = {}
+      for (const field of contentFields) {
+        const fieldData = data[field] as Record<string, string> | null
+        if (fieldData && typeof fieldData === 'object') {
+          for (const [lang, text] of Object.entries(fieldData)) {
+            if (!map[lang]) map[lang] = {}
+            map[lang][field] = text
+          }
         }
-        setTranslations(map)
       }
+      setTranslations(map)
       setLoading(false)
     }
     load()
@@ -103,18 +104,20 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
     setSaving(false)
   }
 
-  // Save translation field
+  // Save translation field directly into ag_artworks JSONB field
   async function saveTranslationField(lang: string, field: string, value: string) {
+    // Update local state immediately
     setTranslations(prev => ({
       ...prev,
       [lang]: { ...(prev[lang] || {}), [field]: value }
     }))
-    await supabase.from('ag_artwork_translations').upsert({
-      artwork_id: id,
-      language: lang,
-      [field]: value,
+    // Merge into existing JSONB field: {lang: value}
+    const currentFieldData = (artwork as any)?.[field] as Record<string, string> || {}
+    const updatedFieldData = { ...currentFieldData, [lang]: value }
+    await supabase.from('ag_artworks').update({
+      [field]: updatedFieldData,
       updated_at: new Date().toISOString(),
-    }, { onConflict: 'artwork_id,language' })
+    }).eq('id', id)
   }
 
   // AI generate single field
@@ -122,10 +125,12 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
     setIsGenerating(field)
     try {
       const { data, error } = await supabase.functions.invoke('artguide-ai', {
-        body: { action: 'generate_content', artwork_id: id, field, language: activeLanguage },
+        body: { action: 'generate_content', artwork_id: id, target_field: field, language: activeLanguage },
       })
-      if (!error && data?.content) {
-        await saveTranslationField(activeLanguage, field, data.content)
+      if (!error && (data?.text || data?.content)) {
+        await saveTranslationField(activeLanguage, field, data.text || data.content)
+      } else if (error) {
+        console.error('AI generate error:', error)
       }
     } catch (err) { console.error(err) }
     finally { setIsGenerating(null) }
@@ -138,10 +143,16 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
       const { data, error } = await supabase.functions.invoke('artguide-ai', {
         body: { action: 'generate_all', artwork_id: id, language: activeLanguage },
       })
-      if (!error && data?.translations) {
-        for (const [field, value] of Object.entries(data.translations)) {
-          await saveTranslationField(activeLanguage, field, value as string)
+      // Edge function returns { generated: {...} } or { translations: {...} }
+      const fields = data?.generated || data?.translations
+      if (!error && fields) {
+        for (const [field, value] of Object.entries(fields)) {
+          if (typeof value === 'string' && value.length > 0) {
+            await saveTranslationField(activeLanguage, field, value)
+          }
         }
+      } else if (error) {
+        console.error('AI generate all error:', error)
       }
     } catch (err) { console.error(err) }
     finally { setIsGeneratingAll(false) }
@@ -151,9 +162,15 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
   async function generateTts() {
     setIsTtsGenerating(true)
     try {
-      await supabase.functions.invoke('artguide-tts', {
-        body: { action: 'generate_for_artwork', artwork_id: id },
+      const { data, error } = await supabase.functions.invoke('artguide-tts', {
+        body: { action: 'generate_single', artwork_id: id, language: activeLanguage, field: 'description_standard' },
       })
+      if (error) console.error('TTS error:', error)
+      else if (data?.audio_url) {
+        // Reload artwork to show updated audio_url
+        const { data: updated } = await supabase.from('ag_artworks').select('audio_url').eq('id', id).single()
+        if (updated) setArtwork(prev => prev ? { ...prev, audio_url: updated.audio_url } : prev)
+      }
     } catch (err) { console.error(err) }
     finally { setIsTtsGenerating(false) }
   }

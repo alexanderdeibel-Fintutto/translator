@@ -203,6 +203,7 @@ export default defineConfig({
   },
   server: {
     port: 5180,
+    allowedHosts: true,
   },
   test: {
     exclude: ['e2e/**', 'node_modules/**'],
