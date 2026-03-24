@@ -13,10 +13,12 @@ class NetworkStatusManager {
   private listeners = new Set<Listener>()
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null
   private consecutiveFailures = 0
+  private onlineHandler = () => this.handleBrowserEvent(true)
+  private offlineHandler = () => this.handleBrowserEvent(false)
 
   constructor() {
-    window.addEventListener('online', () => this.handleBrowserEvent(true))
-    window.addEventListener('offline', () => this.handleBrowserEvent(false))
+    window.addEventListener('online', this.onlineHandler)
+    window.addEventListener('offline', this.offlineHandler)
 
     // Start heartbeat for more reliable detection
     this.startHeartbeat()
@@ -95,10 +97,14 @@ class NetworkStatusManager {
       }
     } catch {
       this.consecutiveFailures++
-      if (this.consecutiveFailures >= 2) {
+      // Trust navigator.onLine when heartbeat fails (may be blocked by CSP)
+      // Only go offline after 3+ failures AND navigator.onLine is false
+      if (this.consecutiveFailures >= 3 && !navigator.onLine) {
         this.setMode('offline')
-      } else {
-        this.setMode('degraded')
+      } else if (this.consecutiveFailures >= 2) {
+        // Heartbeat failed but browser says online — stay degraded, not offline
+        // This prevents CSP-blocked heartbeats from breaking all translations
+        this.setMode(navigator.onLine ? 'degraded' : 'offline')
       }
     }
   }
@@ -108,6 +114,8 @@ class NetworkStatusManager {
       clearInterval(this.heartbeatTimer)
       this.heartbeatTimer = null
     }
+    window.removeEventListener('online', this.onlineHandler)
+    window.removeEventListener('offline', this.offlineHandler)
     this.listeners.clear()
   }
 }

@@ -131,6 +131,12 @@ export class BleBroadcastTransport implements BroadcastTransport {
   private connectionListeners = new Set<(connected: boolean) => void>()
   private cleanups: (() => void)[] = []
   private deviceId: string | null = null
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null
+  private reconnectAttempt = 0
+  private maxReconnectAttempts = 5
+  private destroyed = false
+  private lastCode: string | null = null
+  private lastHandlers: BroadcastHandlers | null = null
 
   constructor(private targetDeviceId: string) {
     this.deviceId = targetDeviceId
@@ -151,21 +157,44 @@ export class BleBroadcastTransport implements BroadcastTransport {
     this.connectionListeners.forEach(fn => fn(value))
   }
 
-  async subscribe(code: string, handlers: BroadcastHandlers): Promise<void> {
-    this.unsubscribe()
+  private scheduleReconnect() {
+    if (this.destroyed || this.reconnectAttempt >= this.maxReconnectAttempts) {
+      console.warn(`[BLE Transport] Giving up after ${this.reconnectAttempt} attempts`)
+      return
+    }
+    const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempt), 16000)
+    this.reconnectAttempt++
+    console.log(`[BLE Transport] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempt}/${this.maxReconnectAttempts})`)
+    this.reconnectTimer = setTimeout(() => {
+      if (this.destroyed || !this.lastCode || !this.lastHandlers) return
+      this.connectAndSubscribe(this.lastCode, this.lastHandlers)
+    }, delay)
+  }
 
+  async subscribe(code: string, handlers: BroadcastHandlers): Promise<void> {
+    this.cleanupConnection()
+    this.destroyed = false
+    this.reconnectAttempt = 0
+    this.lastCode = code
+    this.lastHandlers = handlers
+    await this.connectAndSubscribe(code, handlers)
+  }
+
+  private async connectAndSubscribe(code: string, handlers: BroadcastHandlers): Promise<void> {
     try {
       const { BleClient } = await import('@capacitor-community/bluetooth-le')
 
       await BleClient.initialize()
 
       // Connect to the speaker's GATT server
-      await BleClient.connect(this.deviceId!, (deviceId) => {
-        console.log('[BLE Transport] Disconnected from', deviceId)
+      await BleClient.connect(this.deviceId!, (_deviceId) => {
+        console.log('[BLE Transport] Disconnected from', _deviceId)
         this.setConnected(false)
+        this.scheduleReconnect()
       })
 
       this.setConnected(true)
+      this.reconnectAttempt = 0 // Reset on successful connection
 
       // Read session info
       const sessionInfoData = await BleClient.read(
@@ -224,6 +253,7 @@ export class BleBroadcastTransport implements BroadcastTransport {
     } catch (err) {
       console.error('[BLE Transport] Connection failed:', err)
       this.setConnected(false)
+      this.scheduleReconnect()
     }
   }
 
@@ -232,9 +262,18 @@ export class BleBroadcastTransport implements BroadcastTransport {
     console.warn('[BLE Transport] broadcast() called on listener — not supported in BLE mode')
   }
 
-  unsubscribe(): void {
+  private cleanupConnection(): void {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer)
+      this.reconnectTimer = null
+    }
     this.cleanups.forEach(fn => fn())
     this.cleanups = []
+  }
+
+  unsubscribe(): void {
+    this.destroyed = true
+    this.cleanupConnection()
 
     if (this.deviceId) {
       import('@capacitor-community/bluetooth-le').then(({ BleClient }) => {
@@ -243,6 +282,8 @@ export class BleBroadcastTransport implements BroadcastTransport {
     }
 
     this.setConnected(false)
+    this.lastCode = null
+    this.lastHandlers = null
     chunkBuffers.clear()
   }
 }

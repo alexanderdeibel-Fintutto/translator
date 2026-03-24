@@ -174,9 +174,11 @@ public class HotspotRelayPlugin: CAPPlugin, CAPBridgedPlugin {
 class EmbeddedRelayServer {
     private let port: UInt16
     private var listener: NWListener?
+    private var healthListener: NWListener?
     private var connections: [Int: ClientConnection] = [:]
     private var nextConnectionId = 0
     private let queue = DispatchQueue(label: "com.fintutto.translator.relay", qos: .userInitiated)
+    private let startTime = Date()
 
     // Session state
     private var sessions: [String: RelaySession] = [:]
@@ -202,6 +204,7 @@ class EmbeddedRelayServer {
             switch state {
             case .ready:
                 NSLog("[EmbeddedRelay] Server ready on port \(self.port)")
+                self.startHealthEndpoint()
                 completion(nil)
             case .failed(let error):
                 NSLog("[EmbeddedRelay] Server failed: \(error)")
@@ -221,12 +224,59 @@ class EmbeddedRelayServer {
     func stop() {
         listener?.cancel()
         listener = nil
+        healthListener?.cancel()
+        healthListener = nil
         for (_, conn) in connections {
             conn.connection.cancel()
         }
         connections.removeAll()
         sessions.removeAll()
         NSLog("[EmbeddedRelay] Server stopped")
+    }
+
+    // MARK: - HTTP Health Endpoint (port + 1)
+
+    private func startHealthEndpoint() {
+        let healthPort = port + 1
+        do {
+            healthListener = try NWListener(using: .tcp, on: NWEndpoint.Port(integerLiteral: healthPort))
+        } catch {
+            NSLog("[EmbeddedRelay] Health endpoint failed to bind on port \(healthPort): \(error)")
+            return
+        }
+
+        healthListener?.stateUpdateHandler = { state in
+            if case .ready = state {
+                NSLog("[EmbeddedRelay] Health endpoint ready on port \(healthPort)")
+            }
+        }
+
+        healthListener?.newConnectionHandler = { [weak self] connection in
+            self?.handleHealthRequest(connection)
+        }
+
+        healthListener?.start(queue: queue)
+    }
+
+    private func handleHealthRequest(_ connection: NWConnection) {
+        connection.start(queue: queue)
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 1024) { [weak self] data, _, _, _ in
+            guard let self = self else { connection.cancel(); return }
+
+            let uptime = Int(Date().timeIntervalSince(self.startTime))
+            let totalClients = self.connections.count
+            let sessionCount = self.sessions.count
+
+            let json = """
+            {"status":"ok","server":"embedded-ios","version":"1.0.0","uptime":\(uptime),"sessions":\(sessionCount),"clients":\(totalClients)}
+            """
+            let body = json.data(using: .utf8)!
+            let response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: \(body.count)\r\nConnection: close\r\nAccess-Control-Allow-Origin: *\r\n\r\n\(json)"
+
+            connection.send(content: response.data(using: .utf8), completion: .contentProcessed({ _ in
+                connection.cancel()
+            }))
+        }
     }
 
     // MARK: - Connection handling

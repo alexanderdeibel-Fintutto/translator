@@ -1,65 +1,81 @@
+ claude/analyze-chat-history-D5axK
 import { Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe } from 'lucide-react'
+=======
+import { Languages, Sun, Moon, Settings, Wifi, WifiOff, Signal, Globe, Menu, X, User, Crown, LogOut, Shield } from 'lucide-react'
+ main
 import { useState, useEffect, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useOffline } from '@/context/OfflineContext'
 import { useI18n } from '@/context/I18nContext'
+import { useUser } from '@/context/UserContext'
 import { UI_LANGUAGES, type UILanguage } from '@/lib/i18n'
+import { useTheme } from '@/hooks/useTheme'
 
 export default function Header() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { networkMode } = useOffline()
   const { t, uiLang, setUILang } = useI18n()
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return document.documentElement.classList.contains('dark')
-  })
+  const { theme, toggle: toggleTheme } = useTheme()
+  const { user, isAuthenticated, tier, isSalesAgent, signOut } = useUser()
+  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [langOpen, setLangOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   const NAV_ITEMS = [
     { label: t('nav.translator'), path: '/' },
     { label: t('nav.live'), path: '/live' },
+    { label: t('nav.conversation'), path: '/conversation' },
+    { label: t('nav.camera'), path: '/camera' },
     { label: t('nav.phrasebook'), path: '/phrasebook' },
+    { label: t('nav.favorites'), path: '/favorites' },
+    { label: t('nav.history'), path: '/history' },
     { label: t('nav.info'), path: '/info' },
   ]
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-    localStorage.setItem('theme', isDark ? 'dark' : 'light')
-  }, [isDark])
-
-  useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved === 'dark') setIsDark(true)
-    else if (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) setIsDark(true)
-  }, [])
-
-  // Close language picker on outside click
+  // Close menus on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (langRef.current && !langRef.current.contains(event.target as Node)) {
         setLangOpen(false)
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false)
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
       <div className="container flex h-14 items-center gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <img src="/logo-transparent.svg" alt="guidetranslator" className="h-8 w-8 rounded-lg" />
           <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span> <span className="text-xs text-muted-foreground font-normal">(by fintutto)</span></span>
+=======
+        <Link to="/" className="flex items-center gap-2 font-semibold" aria-label={t('header.homeAriaLabel')}>
+          <img src="/app-logo.svg" alt="Fintutto" className="h-8 w-8 rounded-lg" />
+          <span className="hidden sm:inline">guide<span className="gradient-text-translator">translator</span></span>
+ main
         </Link>
 
-        <nav className="flex items-center gap-1 ml-4">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-1 ml-4" aria-label={t('nav.mainNavigation')}>
           {NAV_ITEMS.map(item => (
             <Link
               key={item.path}
@@ -76,6 +92,77 @@ export default function Header() {
           ))}
         </nav>
 
+        {/* Mobile hamburger */}
+        <div className="md:hidden ml-2" ref={mobileMenuRef}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? t('header.menuClose') : t('header.menuOpen')}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+          </Button>
+
+          {mobileMenuOpen && (
+            <div className="absolute top-14 left-0 right-0 bg-background border-b border-border shadow-lg z-50 animate-in slide-in-from-top-2 duration-200">
+              <nav className="container py-2 flex flex-col" aria-label="Mobile Navigation">
+                {NAV_ITEMS.map(item => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                      location.pathname === item.path
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <Link
+                  to="/pricing"
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                    location.pathname === '/pricing'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  Preise
+                </Link>
+                <Link
+                  to="/settings"
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                    location.pathname === '/settings'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  {t('nav.settings')}
+                </Link>
+                <Link
+                  to={isSalesAgent ? '/admin' : '/crm'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+                    (location.pathname.startsWith('/admin') || location.pathname === '/crm')
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-primary hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  <span className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    CRM
+                  </span>
+                </Link>
+              </nav>
+            </div>
+          )}
+        </div>
+
         <div className="ml-auto flex items-center gap-2">
           {/* Network Status Indicator */}
           <div
@@ -85,15 +172,16 @@ export default function Header() {
               networkMode === 'degraded' ? 'text-amber-700 dark:text-amber-400' :
               'text-destructive'
             )}
-            title={
+            role="status"
+            aria-label={
               networkMode === 'online' ? t('status.online') :
               networkMode === 'degraded' ? t('status.degraded') :
               t('status.offline')
             }
           >
-            {networkMode === 'online' ? <Wifi className="h-3.5 w-3.5" /> :
-             networkMode === 'degraded' ? <Signal className="h-3.5 w-3.5" /> :
-             <WifiOff className="h-3.5 w-3.5" />}
+            {networkMode === 'online' ? <Wifi className="h-3.5 w-3.5" aria-hidden="true" /> :
+             networkMode === 'degraded' ? <Signal className="h-3.5 w-3.5" aria-hidden="true" /> :
+             <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />}
             <span className="hidden sm:inline">
               {networkMode === 'online' ? t('status.online') :
                networkMode === 'degraded' ? t('status.degraded') :
@@ -107,15 +195,24 @@ export default function Header() {
               variant="ghost"
               size="icon"
               onClick={() => setLangOpen(!langOpen)}
-              title={t('lang.select')}
+              aria-expanded={langOpen}
+              aria-haspopup="listbox"
+              aria-label={t('lang.select')}
             >
-              <Globe className="h-4 w-4" />
+              <Globe className="h-4 w-4" aria-hidden="true" />
             </Button>
             {langOpen && (
-              <div className="absolute top-full right-0 mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+              <div
+                className="absolute top-full right-0 mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden"
+                role="listbox"
+                aria-label={t('lang.select')}
+                onKeyDown={(e) => { if (e.key === 'Escape') setLangOpen(false) }}
+              >
                 {UI_LANGUAGES.map(lang => (
                   <button
                     key={lang.code}
+                    role="option"
+                    aria-selected={uiLang === lang.code}
                     onClick={() => {
                       setUILang(lang.code as UILanguage)
                       setLangOpen(false)
@@ -128,7 +225,7 @@ export default function Header() {
                     <span>{lang.flag}</span>
                     <span className="flex-1">{lang.nativeName}</span>
                     {uiLang === lang.code && (
-                      <div className="h-2 w-2 rounded-full bg-primary" />
+                      <div className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
                     )}
                   </button>
                 ))}
@@ -136,17 +233,17 @@ export default function Header() {
             )}
           </div>
 
-          {/* Settings */}
-          <Link to="/settings">
+          {/* Settings (desktop only) */}
+          <Link to="/settings" className="hidden md:block">
             <Button
               variant="ghost"
               size="icon"
-              title={t('nav.settings')}
+              aria-label={t('nav.settings')}
               className={cn(
                 location.pathname === '/settings' && 'bg-accent'
               )}
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4" aria-hidden="true" />
             </Button>
           </Link>
 
@@ -154,11 +251,102 @@ export default function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsDark(!isDark)}
-            title={isDark ? t('theme.light') : t('theme.dark')}
+            onClick={toggleTheme}
+            aria-label={isDark ? t('theme.light') : t('theme.dark')}
           >
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {isDark ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
           </Button>
+
+          {/* CRM Direct Login */}
+          <Link to={isSalesAgent ? '/admin' : '/crm'} className="hidden md:block">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="CRM"
+              className={cn(
+                location.pathname === '/crm' || location.pathname.startsWith('/admin')
+                  ? 'bg-accent'
+                  : ''
+              )}
+            >
+              <Shield className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </Link>
+
+          {/* User menu / Login */}
+          {isAuthenticated ? (
+            <div className="relative" ref={userMenuRef}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="menu"
+                aria-label="Benutzermenu"
+                className="relative"
+              >
+                <User className="h-4 w-4" aria-hidden="true" />
+                {tier.id !== 'free' && (
+                  <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background" />
+                )}
+              </Button>
+              {userMenuOpen && (
+                <div className="absolute top-full right-0 mt-1 w-56 bg-popover border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+                  <div className="px-3 py-2 border-b border-border">
+                    <div className="text-sm font-medium truncate">{user?.displayName || user?.email}</div>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <Crown className="h-3 w-3 text-primary" />
+                      <span className="text-xs text-primary font-medium">{tier.displayName}</span>
+                    </div>
+                  </div>
+                  <Link
+                    to="/account"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    Mein Konto
+                  </Link>
+                  <Link
+                    to="/pricing"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    <Crown className="h-4 w-4 text-muted-foreground" />
+                    Preise & Pakete
+                  </Link>
+                  {isSalesAgent && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                    >
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      Admin CRM
+                    </Link>
+                  )}
+                  <button
+                    onClick={async () => {
+                      setUserMenuOpen(false)
+                      await signOut()
+                      navigate('/')
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors w-full text-left text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Abmelden
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/auth">
+              <Button variant="default" size="sm" className="text-xs gap-1.5">
+                <User className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Anmelden</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>

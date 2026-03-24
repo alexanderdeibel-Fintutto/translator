@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 
-export default function DatenschutzPage() {
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">{title}</CardTitle>
@@ -11,7 +11,9 @@ export default function DatenschutzPage() {
       </CardContent>
     </Card>
   )
+}
 
+export default function DatenschutzPage() {
   return (
     <div className="container py-8 space-y-6 max-w-3xl mx-auto">
       <div className="text-center space-y-2">

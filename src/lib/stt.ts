@@ -2,6 +2,9 @@
 // Supports: Web Speech API (Chrome/Edge), Google Cloud STT (iOS + fallback)
 // Future: Apple SpeechAnalyzer (iOS 26)
 
+import { getTranslation, type UILanguage } from '@/lib/i18n'
+import { getGoogleApiKey } from '@/lib/api-key'
+
 // Type declarations for Web Speech API (not in all TS lib bundles)
 interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList
@@ -68,9 +71,11 @@ export interface STTEngine {
 
 export function createWebSpeechEngine(): STTEngine {
   let recognition: SpeechRecognitionInstance | null = null
-  let stream: MediaStream | null = null
   let shouldBeListening = false
   let lastSyntheticFinal = '' // Tracks text emitted as synthetic isFinal from interim results
+  let serviceCheckTimer: ReturnType<typeof setTimeout> | null = null
+  let restartTimer: ReturnType<typeof setTimeout> | null = null // Debounce restart to prevent rapid beeps on Android
+  const recentFinals: Array<{ text: string; time: number }> = [] // Dedup buffer for recently emitted finals
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -86,19 +91,32 @@ export function createWebSpeechEngine(): STTEngine {
         try { recognition.abort() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
+
+      // Require secure context for mediaDevices API
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        onError('Voice input requires HTTPS. Please use a secure connection.')
+        return
       }
 
-      // Request mic permission
+      // Request mic permission — getUserMedia is needed to prompt permission dialog.
+      // We immediately release the stream because SpeechRecognition captures its own
+      // audio internally. Keeping a parallel getUserMedia stream open causes audio
+      // artifacts (ringing/feedback) on some Android devices (e.g., Pixel).
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const permStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        })
+        // Release immediately — SpeechRecognition uses its own mic stream
+        permStream.getTracks().forEach(t => t.stop())
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
         } else {
-          onError('Mikrofon nicht verfügbar. Bitte prüfen Sie Ihre Geräte-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micUnavailableHint'))
         }
         return
       }
@@ -109,30 +127,83 @@ export function createWebSpeechEngine(): STTEngine {
       recognition.interimResults = true
       recognition.lang = lang
 
+      // Helper: check if text was recently emitted as final (dedup for Android restarts)
+      // Only dedup within a short window after a restart — legitimate repeated
+      // sentences (user genuinely says the same thing twice) should pass through.
+      let lastRestartTime = 0 // Set when onend restarts recognition
+      // Post-restart suppression: ignore interim results for a brief window after restart
+      // to prevent echo/duplicate fragments that Chrome often emits right after start()
+      const POST_RESTART_SUPPRESSION_MS = 400
+
+      const isDuplicateFinal = (text: string): boolean => {
+        const now = Date.now()
+        // Purge entries older than 2.5 seconds
+        while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
+          recentFinals.shift()
+        }
+        const normalized = text.trim().toLowerCase()
+        // Always check for exact duplicates within the 2.5s window.
+        // Previously we only checked after restarts, but the Web Speech API
+        // can emit the same final result multiple times even without a restart
+        // (especially on Android Chrome with continuous mode).
+        return recentFinals.some(f => f.text === normalized)
+      }
+
+      const trackFinal = (text: string) => {
+        recentFinals.push({ text: text.trim().toLowerCase(), time: Date.now() })
+        // Keep buffer bounded
+        if (recentFinals.length > 20) recentFinals.shift()
+      }
+
       recognition.onresult = (event) => {
+        // Clear service check — we got results, the service works
+        if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]
           const text = result[0].transcript
           const confidence = result[0].confidence
+
+          // After a restart, Chrome often re-emits the tail of the previous utterance
+          // as interim results. Suppress interims during the post-restart window to
+          // avoid duplicate/echo fragments appearing in the UI and translation pipeline.
+          if (!result.isFinal && lastRestartTime > 0) {
+            const sinceRestart = Date.now() - lastRestartTime
+            if (sinceRestart < POST_RESTART_SUPPRESSION_MS) {
+              continue // Skip this interim — too soon after restart
+            }
+          }
 
           if (result.isFinal) {
             // Dedup: if we already synthetically finalized part of this text, emit only the delta
             if (lastSyntheticFinal && text.startsWith(lastSyntheticFinal)) {
               const delta = text.slice(lastSyntheticFinal.length).trim()
               lastSyntheticFinal = ''
-              if (delta) {
+              if (delta && !isDuplicateFinal(delta)) {
+                trackFinal(delta)
                 onResult({ text: delta, isFinal: true, confidence })
               }
             } else {
               lastSyntheticFinal = ''
-              onResult({ text, isFinal: true, confidence })
+              if (!isDuplicateFinal(text)) {
+                trackFinal(text)
+                onResult({ text, isFinal: true, confidence })
+              }
             }
           } else {
             // Interim result: check for sentence boundaries to emit early finals
             const boundary = detectSentenceBoundary(text)
             if (boundary) {
-              // Emit completed sentence(s) as synthetic final
-              onResult({ text: boundary.final, isFinal: true, confidence })
+              // Only emit NEW sentences — subtract already-emitted synthetic final prefix
+              let newFinal = boundary.final
+              if (lastSyntheticFinal && newFinal.startsWith(lastSyntheticFinal)) {
+                newFinal = newFinal.slice(lastSyntheticFinal.length).trim()
+              }
+              if (newFinal && !isDuplicateFinal(newFinal)) {
+                trackFinal(newFinal)
+                onResult({ text: newFinal, isFinal: true, confidence })
+              }
+              // Track full cumulative text for future delta calculations
               lastSyntheticFinal = boundary.final
               // Emit remainder as interim
               if (boundary.remainder) {
@@ -151,46 +222,76 @@ export function createWebSpeechEngine(): STTEngine {
         if (err.error === 'aborted') return
 
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
 
-        if (err.error === 'not-allowed') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
-        } else if (err.error === 'network') {
-          onError('Netzwerkfehler bei der Spracherkennung. Bitte prüfen Sie Ihre Internetverbindung.')
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+
+        // getUserMedia already succeeded above, so 'not-allowed' here means the
+        // speech SERVICE is blocked (Opera, certain WebKit browsers), NOT a mic
+        // permission issue. Tag all non-mic errors so the hook can detect & fallback.
+        if (err.error === 'not-allowed' || err.error === 'service-not-allowed' || err.error === 'network') {
+          console.warn(`[STT] Web Speech service error: ${err.error}`)
+          onError(`[web-speech-unavailable] ${getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error)}`)
         } else {
-          onError(`Spracheingabe-Fehler: ${err.error}`)
+          onError(getTranslation(uiLang, 'error.sttGeneric').replace('{error}', err.error))
         }
       }
 
       recognition.onend = () => {
         if (shouldBeListening && recognition) {
-          try { recognition.start(); return } catch { /* fall through */ }
+          // Reset synthetic final tracking — new recognition session starts fresh
+          lastSyntheticFinal = ''
+          // Debounce restart to prevent rapid audio artifacts on Android Chrome.
+          // 900ms gives the OS enough time to fully release the audio session
+          // before starting a new one, reducing system notification sounds
+          // (blips) that some Android devices play on mic activation.
+          if (restartTimer) clearTimeout(restartTimer)
+          restartTimer = setTimeout(() => {
+            restartTimer = null
+            if (shouldBeListening && recognition) {
+              lastRestartTime = Date.now()
+              try { recognition.start(); return } catch { /* fall through */ }
+            }
+            shouldBeListening = false
+          }, 900)
+          return
         }
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
       }
 
       shouldBeListening = true
       try {
         recognition.start()
+        // Detect broken Web Speech services (Opera, some WebKit):
+        // If no result arrives within 4s, assume the service is non-functional
+        serviceCheckTimer = setTimeout(() => {
+          if (shouldBeListening && recognition) {
+            console.warn('[STT] Web Speech started but no results after 4s — triggering fallback')
+            onError(`[web-speech-unavailable] Speech service not responding`)
+          }
+          serviceCheckTimer = null
+        }, 4000)
       } catch {
         shouldBeListening = false
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
         recognition = null
-        onError('Spracheingabe konnte nicht gestartet werden')
+        const uiLang = (localStorage.getItem('ui-language') || 'de') as UILanguage
+        onError(getTranslation(uiLang, 'error.sttStartFailed'))
       }
     },
 
     stop() {
       shouldBeListening = false
+      if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
+      if (restartTimer) { clearTimeout(restartTimer); restartTimer = null }
       if (recognition) {
-        try { recognition.abort() } catch { /* ignore */ }
+        // Use stop() instead of abort() — stop() lets Chrome finalize the current
+        // audio session cleanly, which avoids transient sounds on Android devices.
+        // abort() terminates immediately and can cause audio artifacts.
+        try { recognition.stop() } catch { /* ignore */ }
         recognition = null
       }
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop())
-        stream = null
-      }
+      // No stream to stop — getUserMedia stream was released immediately after permission check
+      // Clear dedup buffer
+      recentFinals.length = 0
     },
   }
 }
@@ -215,7 +316,7 @@ export function createAppleSpeechAnalyzerEngine(): STTEngine {
     isSupported,
 
     async start(_lang, _onResult, onError) {
-      onError('Apple SpeechAnalyzer ist noch nicht verfügbar. Wird mit der nativen iOS-App freigeschaltet.')
+      onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.appleSpeechNotAvailable'))
     },
 
     stop() {
@@ -238,7 +339,6 @@ function isIOS(): boolean {
 // Primary STT on iOS (where Web Speech API is broken) and general fallback.
 // Uses the same API key as TTS and Translate.
 
-const STT_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
 const STT_API_URL = 'https://speech.googleapis.com/v1/speech:recognize'
 
 function pcmToBase64Linear16(chunks: Float32Array[]): string {
@@ -281,10 +381,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   let activeLang = ''
   let actualSampleRate = 16000
   let emittedFinalText = '' // Tracks text already emitted as isFinal for sentence segmentation
+  let lastInterimText = '' // Tracks last interim text for stability detection
+  let interimStableCount = 0 // How many consecutive intervals returned similar/identical text
+  let lastFinalEmitTime = 0 // Timestamp of last isFinal emission for time-based fallback
+  let visibilityHandler: (() => void) | null = null // iOS AudioContext resume on visibility change
 
   const isSupported =
     typeof window !== 'undefined' &&
-    !!STT_API_KEY &&
+    !!getGoogleApiKey() &&
     typeof navigator !== 'undefined' &&
     !!navigator.mediaDevices?.getUserMedia
 
@@ -295,7 +399,10 @@ export function createGoogleCloudSTTEngine(): STTEngine {
     const timeout = setTimeout(() => controller.abort(), 8000) // 8s timeout
 
     try {
-      const response = await fetch(`${STT_API_URL}?key=${STT_API_KEY}`, {
+      const apiKey = getGoogleApiKey()
+      if (!apiKey) throw new Error('Google STT API key not configured')
+
+      const response = await fetch(`${STT_API_URL}?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -311,7 +418,9 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       })
 
       if (!response.ok) {
-        throw new Error(`Google STT ${response.status}`)
+        const errorBody = await response.text()
+        console.error(`[STT] Google Cloud STT error ${response.status}:`, errorBody)
+        throw new Error(`Google STT ${response.status}: ${errorBody}`)
       }
 
       const data = await response.json()
@@ -338,14 +447,17 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       activeLang = lang
       audioChunks = []
       emittedFinalText = ''
+      lastInterimText = ''
+      interimStableCount = 0
+      lastFinalEmitTime = Date.now()
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       } catch (e) {
         if (e instanceof DOMException && e.name === 'NotAllowedError') {
-          onError('Mikrofon-Zugriff verweigert. Bitte erlauben Sie den Zugriff in den Browser-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micDeniedHint'))
         } else {
-          onError('Mikrofon nicht verfügbar. Bitte prüfen Sie Ihre Geräte-Einstellungen.')
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.micUnavailableHint'))
         }
         return
       }
@@ -355,6 +467,25 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       actualSampleRate = audioContext.sampleRate
       const source = audioContext.createMediaStreamSource(stream)
       processor = audioContext.createScriptProcessor(4096, 1, 1)
+
+      // iOS WebKit suspends AudioContext when page goes to background or after inactivity.
+      // Auto-resume to prevent recording from silently stopping.
+      const tryResumeAudioContext = () => {
+        if (audioContext && audioContext.state === 'suspended' && isActive) {
+          console.log('[STT] AudioContext suspended, attempting resume...')
+          audioContext.resume().catch(() => {})
+        }
+      }
+
+      audioContext.addEventListener('statechange', tryResumeAudioContext)
+
+      // Also resume on visibility change (user switches back to tab/app)
+      visibilityHandler = () => {
+        if (document.visibilityState === 'visible') {
+          tryResumeAudioContext()
+        }
+      }
+      document.addEventListener('visibilitychange', visibilityHandler)
 
       // Hard limit: keep max ~30 seconds of audio to prevent memory issues
       const maxBufferChunks = Math.ceil((30 * actualSampleRate) / 4096)
@@ -368,81 +499,205 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         }
       }
 
+      // Connect processor through a zero-gain node to prevent mic audio from playing
+      // through speakers (which causes feedback/echo). ScriptProcessorNode needs to be
+      // connected to the audio graph to fire onaudioprocess events.
+      const silencer = audioContext.createGain()
+      silencer.gain.value = 0
       source.connect(processor)
-      processor.connect(audioContext.destination)
+      processor.connect(silencer)
+      silencer.connect(audioContext.destination)
       isActive = true
 
       onResult({ text: '...', isFinal: false })
 
+      // Helper: emit text as isFinal and trim audio buffer
+      const emitFinal = (text: string) => {
+        if (!onResultCallback) return
+        onResultCallback({ text, isFinal: true })
+        emittedFinalText += (emittedFinalText ? ' ' : '') + text
+        lastFinalEmitTime = Date.now()
+        lastInterimText = ''
+        interimStableCount = 0
+
+        // Trim audio buffer: keep only last ~5 seconds for context
+        const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
+        if (audioChunks.length > keepChunks * 2) {
+          audioChunks = audioChunks.slice(-keepChunks)
+        }
+      }
+
+      let isRecognizing = false // Guard against overlapping API calls
       sendInterval = setInterval(async () => {
-        if (!isActive || audioChunks.length === 0) return
+        if (!isActive || audioChunks.length === 0 || isRecognizing) return
+        isRecognizing = true
         // Cap audio sent per request to ~15 seconds max to limit payload size
         const maxSendChunks = Math.ceil((15 * actualSampleRate) / 4096)
         const sendFrom = Math.max(0, audioChunks.length - maxSendChunks)
         const snapshot = audioChunks.slice(sendFrom)
         try {
           const fullText = await recognizeChunks(snapshot, activeLang)
-          if (!fullText || !onResultCallback) return
+          if (!onResultCallback) return
+
+          if (!fullText) {
+            // No text recognized — if we had pending interim text, check stability timeout
+            if (lastInterimText) {
+              interimStableCount++
+              // After 2 empty polls (~4s silence) with pending interim text, emit as final
+              if (interimStableCount >= 2) {
+                console.log('[STT] Silence timeout — emitting pending interim as final')
+                emitFinal(lastInterimText)
+              }
+            }
+            return
+          }
 
           // Extract only the NEW text (beyond what we already finalized)
-          const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
-            ? fullText.slice(emittedFinalText.length).trim()
-            : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
+          // Use fuzzy word-level prefix matching to handle Google's punctuation revisions
+          // (e.g., "Hello world" → "Hello, world! How are you?" — word match still works)
+          let newText = ''
+          if (!emittedFinalText) {
+            newText = fullText
+          } else if (fullText.startsWith(emittedFinalText)) {
+            newText = fullText.slice(emittedFinalText.length).trim()
+          } else {
+            // Exact prefix failed — try word-level match ignoring punctuation
+            const stripPunct = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim()
+            const emittedNorm = stripPunct(emittedFinalText)
+            const fullNorm = stripPunct(fullText)
 
-          if (!newText) return
+            if (fullNorm.startsWith(emittedNorm)) {
+              // Word content matches — skip the matched word count in original text
+              const emittedWordCount = emittedNorm.split(' ').filter(Boolean).length
+              const fullWords = fullText.trim().split(/\s+/)
+              newText = fullWords.slice(emittedWordCount).join(' ')
+            } else {
+              // Try partial word-level overlap from the end of emitted text
+              const emittedWords = emittedNorm.split(' ').filter(Boolean)
+              const fullWords = fullNorm.split(' ').filter(Boolean)
+              let matchLen = 0
+              for (let i = 0; i < Math.min(emittedWords.length, fullWords.length); i++) {
+                if (emittedWords[i] === fullWords[i]) matchLen = i + 1
+                else break
+              }
+              if (matchLen > 0 && matchLen >= emittedWords.length * 0.5) {
+                // Substantial overlap — extract only new words
+                const origWords = fullText.trim().split(/\s+/)
+                newText = origWords.slice(matchLen).join(' ')
+              } else {
+                // Complete mismatch — Google revised significantly.
+                // Reset tracking and start fresh to avoid re-emitting old content.
+                console.log(`[STT] Prefix mismatch, resetting. emitted="${emittedFinalText.slice(0, 30)}", full="${fullText.slice(0, 30)}"`)
+                emittedFinalText = ''
+                newText = fullText
+              }
+            }
+          }
+
+          if (!newText) {
+            // Same text as before — increment stability counter
+            if (lastInterimText) {
+              interimStableCount++
+              if (interimStableCount >= 3) {
+                console.log('[STT] Stable text timeout — emitting as final')
+                emitFinal(lastInterimText)
+              }
+            }
+            return
+          }
 
           // Check for sentence boundaries → emit synthetic isFinal
           const boundary = detectSentenceBoundary(newText)
           if (boundary) {
-            onResultCallback({ text: boundary.final, isFinal: true })
-            emittedFinalText += (emittedFinalText ? ' ' : '') + boundary.final
-
-            // Trim audio buffer: keep only last ~5 seconds for context
-            const keepChunks = Math.ceil((5 * actualSampleRate) / 4096)
-            if (audioChunks.length > keepChunks * 2) {
-              audioChunks = audioChunks.slice(-keepChunks)
-            }
+            emitFinal(boundary.final)
 
             // Emit remainder as interim
             if (boundary.remainder) {
+              lastInterimText = boundary.remainder
+              interimStableCount = 0
               onResultCallback({ text: boundary.remainder, isFinal: false })
             }
           } else {
-            // No sentence boundary yet — emit as interim
-            onResultCallback({ text: newText, isFinal: false })
+            // No sentence boundary — check for time-based or stability-based finalization
+            const timeSinceLastFinal = Date.now() - lastFinalEmitTime
+            const wordCount = newText.split(/\s+/).length
+
+            // Stability check: same text for 2+ consecutive polls (~4s)
+            const isStable = newText === lastInterimText
+            if (isStable) {
+              interimStableCount++
+            } else {
+              interimStableCount = 0
+            }
+
+            // Force emit as isFinal if:
+            // 1a. Short text (< 5 words) stable for 1+ interval (~2s) — fast single-word capture, OR
+            // 1b. Longer text stable for 2+ intervals (~4s of no change), OR
+            // 2. More than 6 seconds since last isFinal and we have substantial text (3+ words), OR
+            // 3. Word count exceeds 20 (long utterance without punctuation)
+            if (
+              (isStable && wordCount < 5 && interimStableCount >= 1) ||
+              (isStable && interimStableCount >= 2) ||
+              (timeSinceLastFinal > 6000 && wordCount >= 3) ||
+              wordCount >= 20
+            ) {
+              console.log(`[STT] Force-finalizing: stable=${interimStableCount}, elapsed=${timeSinceLastFinal}ms, words=${wordCount}`)
+              emitFinal(newText)
+            } else {
+              // Emit as interim
+              lastInterimText = newText
+              onResultCallback({ text: newText, isFinal: false })
+            }
           }
         } catch (err) {
-          // Non-fatal — continue recording
-          if (err instanceof Error && err.message.includes('403')) {
-            onError('Spracheingabe nicht verfügbar. Bitte Cloud Speech-to-Text API im Google Cloud Console aktivieren.')
+          console.error('[STT] Recognition error:', err)
+          if (err instanceof Error && (err.message.includes('403') || err.message.includes('401') || err.message.includes('400'))) {
+            // Extract the actual Google API error message for better diagnostics
+            let detail = ''
+            try {
+              const jsonStart = err.message.indexOf('{')
+              if (jsonStart >= 0) {
+                const parsed = JSON.parse(err.message.slice(jsonStart))
+                detail = parsed?.error?.message || ''
+              }
+            } catch { /* ignore parse errors */ }
+
+            const apiKey = getGoogleApiKey()
+            const keyHint = apiKey ? ` (Key: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)})` : ''
+            const errorDetail = detail
+              ? `Cloud STT API: ${detail}${keyHint}`
+              : getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.cloudSttNotAvailable') + keyHint
+
+            onError(errorDetail)
             isActive = false
           }
+        } finally {
+          isRecognizing = false
         }
-      }, 3000)
+      }, 2000) // 2s interval (was 3s) for smoother updates on iOS
     },
 
     stop() {
       isActive = false
+
+      // Clean up visibility listener (iOS AudioContext resume)
+      if (visibilityHandler) {
+        document.removeEventListener('visibilitychange', visibilityHandler)
+        visibilityHandler = null
+      }
 
       if (sendInterval) {
         clearInterval(sendInterval)
         sendInterval = null
       }
 
-      if (audioChunks.length > 0 && onResultCallback) {
-        const finalChunks = [...audioChunks]
-        const callback = onResultCallback
-        const lang = activeLang
-        const alreadyEmitted = emittedFinalText
-
-        recognizeChunks(finalChunks, lang).then(text => {
-          if (!text) return
-          // Only emit the portion not yet finalized via synthetic finals
-          const remainder = alreadyEmitted && text.startsWith(alreadyEmitted)
-            ? text.slice(alreadyEmitted.length).trim()
-            : text
-          if (remainder) callback({ text: remainder, isFinal: true })
-        }).catch(() => {})
+      // Flush any pending interim text as final before stopping.
+      // Skip the async final recognition — it frequently re-recognizes text that was
+      // already emitted via the 2s polling, causing duplicate sentences. The interim
+      // flush above captures any remaining text that hasn't been finalized yet.
+      if (lastInterimText && onResultCallback) {
+        onResultCallback({ text: lastInterimText, isFinal: true })
+        lastInterimText = ''
       }
 
       if (processor) { processor.disconnect(); processor = null }
@@ -452,8 +707,23 @@ export function createGoogleCloudSTTEngine(): STTEngine {
       onResultCallback = null
       activeLang = ''
       emittedFinalText = ''
+      lastInterimText = ''
+      interimStableCount = 0
+      lastFinalEmitTime = 0
     },
   }
+}
+
+// --- Android detection ---
+// Chrome on Android plays an unavoidable system beep/ding every time
+// SpeechRecognition.start() is called. With continuous mode, the recognition
+// periodically stops and restarts, causing repeated beeps. The beep also
+// interferes with mic input, degrading recognition quality.
+// Solution: use Google Cloud STT on Android (no system sounds, direct mic access).
+
+function isAndroid(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /Android/i.test(navigator.userAgent)
 }
 
 // --- Engine selection ---
@@ -469,11 +739,20 @@ export function getBestSTTEngine(): STTEngine {
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. Web Speech API (streaming, real-time — Chrome/Edge/Android)
+  // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
+  //    Chrome Android plays a "ding" on every recognition.start(), which repeats
+  //    in continuous mode and interferes with mic capture. Google Cloud STT uses
+  //    getUserMedia directly — no system sounds, no restart issues.
+  if (isAndroid()) {
+    const googleSTT = createGoogleCloudSTTEngine()
+    if (googleSTT.isSupported) return googleSTT
+  }
+
+  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
   const webSpeech = createWebSpeechEngine()
   if (webSpeech.isSupported) return webSpeech
 
-  // 4. Google Cloud STT (fallback for any browser with mic access)
+  // 5. Google Cloud STT (fallback for any browser with mic access)
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 
@@ -489,7 +768,7 @@ export function getBestSTTEngine(): STTEngine {
         // Store engine reference for stop()
         ;(this as unknown as Record<string, STTEngine>)._activeEngine = engine
       } catch {
-        onError('Offline-Spracherkennung nicht verfügbar. Bitte Whisper-Modell unter Einstellungen herunterladen.')
+        onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.whisperNotAvailable'))
       }
     },
     stop() {

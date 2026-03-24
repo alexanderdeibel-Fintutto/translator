@@ -1,12 +1,22 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 import { useLiveSession } from '@/hooks/useLiveSession'
-import SpeakerView from '@/components/live/SpeakerView'
-import ListenerView from '@/components/live/ListenerView'
+import { useTierId } from '@/context/UserContext'
 import LanguageChips from '@/components/live/LanguageChips'
+
+const LoadingSpinner = (
+  <div className="flex items-center justify-center min-h-[200px]">
+    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  </div>
+)
+
+const SpeakerView = lazy(() => import('@/components/live/SpeakerView'))
+const ListenerView = lazy(() => import('@/components/live/ListenerView'))
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Wifi, Cloud, Bluetooth } from 'lucide-react'
+import { useI18n } from '@/context/I18nContext'
 import type { ConnectionConfig, ConnectionMode } from '@/lib/transport/types'
 
 export default function LiveSessionPage() {
@@ -14,7 +24,9 @@ export default function LiveSessionPage() {
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const session = useLiveSession()
+  const { t } = useI18n()
+  const tierId = useTierId()
+  const session = useLiveSession(tierId)
   const [listenerLang, setListenerLang] = useState('en')
 
   const state = location.state as {
@@ -77,11 +89,19 @@ export default function LiveSessionPage() {
 
   // Already in a session — show the right view
   if (session.role === 'speaker') {
-    return <SpeakerView session={session} />
+    return (
+      <Suspense fallback={LoadingSpinner}>
+        <SpeakerView session={session} />
+      </Suspense>
+    )
   }
 
   if (session.role === 'listener') {
-    return <ListenerView session={session} />
+    return (
+      <Suspense fallback={LoadingSpinner}>
+        <ListenerView session={session} />
+      </Suspense>
+    )
   }
 
   // Not yet joined — show language selection for listener
@@ -93,7 +113,7 @@ export default function LiveSessionPage() {
     return (
       <div className="max-w-lg mx-auto space-y-6">
         <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">Session beitreten</p>
+          <p className="text-sm text-muted-foreground">{t('liveSession.joining')}</p>
           <p className="text-2xl font-mono font-bold tracking-widest">{code}</p>
         </div>
 
@@ -101,25 +121,25 @@ export default function LiveSessionPage() {
         {state?.bleDeviceId || bleParam ? (
           <div className="flex items-center justify-center gap-2 text-xs text-blue-600 dark:text-blue-400">
             <Bluetooth className="h-3.5 w-3.5" />
-            <span>BLE Direkt (Offline)</span>
+            <span>{t('liveSession.bleDirect')}</span>
           </div>
         ) : wsParam ? (
           <div className="flex items-center justify-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
             <Wifi className="h-3.5 w-3.5" />
-            <span>Lokales Netzwerk (Offline-Modus)</span>
+            <span>{t('liveSession.localNetwork')}</span>
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <Cloud className="h-3.5 w-3.5" />
-            <span>Cloud-Verbindung</span>
+            <span>{t('liveSession.cloudConnection')}</span>
           </div>
         )}
 
         <Card className="p-6 space-y-4">
-          <p className="font-medium">In welcher Sprache möchtest du hören?</p>
-          <LanguageChips selected={listenerLang} onSelect={setListenerLang} />
+          <p className="font-medium">{t('liveSession.chooseLanguage')}</p>
+          <LanguageChips selected={listenerLang} onSelect={setListenerLang} showLive />
           <Button onClick={handleJoin} className="w-full" size="lg">
-            Beitreten
+            {t('liveSession.join')}
           </Button>
         </Card>
       </div>

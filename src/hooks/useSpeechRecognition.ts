@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from 'react'
 import { getBestSTTEngine, createGoogleCloudSTTEngine, type STTEngine, type STTResult } from '@/lib/stt'
+import { useI18n } from '@/context/I18nContext'
 
 export function useSpeechRecognition() {
+  const { t } = useI18n()
   const [isListening, setIsListening] = useState(false)
   const [interimTranscript, setInterimTranscript] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -31,7 +33,7 @@ export function useSpeechRecognition() {
     const engine = getEngine()
 
     if (!engine.isSupported) {
-      setError('Spracheingabe wird von diesem Browser nicht unterstützt')
+      setError(t('error.speechNotSupported'))
       return
     }
 
@@ -49,22 +51,27 @@ export function useSpeechRecognition() {
     }
 
     const errorHandler = (errorMsg: string) => {
-      // Auto-fallback: if Web Speech fails with service-not-allowed, switch to Google Cloud STT
-      if (errorMsg.includes('service-not-allowed') && engineRef.current?.provider === 'web-speech') {
+      // Auto-fallback: if Web Speech service doesn't work (Opera, WebKit, network),
+      // switch to Google Cloud STT transparently
+      if (errorMsg.includes('[web-speech-unavailable]') && engineRef.current?.provider === 'web-speech') {
+        console.error('[STT] Web Speech unavailable, falling back to Google Cloud STT')
         const fallback = createGoogleCloudSTTEngine()
         if (fallback.isSupported) {
           engineRef.current = fallback
-          // Retry with Google Cloud STT engine
           fallback.start(lang, resultHandler, (fallbackError: string) => {
             setError(fallbackError)
             setIsListening(false)
           }).then(() => {
             setIsListening(true)
+          }).catch((fallbackErr) => {
+            console.error('[STT] Google Cloud STT fallback failed:', fallbackErr)
+            setError(errorMsg.replace('[web-speech-unavailable] ', ''))
+            setIsListening(false)
           })
           return
         }
       }
-      setError(errorMsg)
+      setError(errorMsg.replace('[web-speech-unavailable] ', ''))
       setIsListening(false)
     }
 

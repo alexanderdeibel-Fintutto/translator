@@ -273,6 +273,7 @@ public class HotspotRelayPlugin extends Plugin {
     private void stopRelayServer() {
         if (relayServer != null) {
             try {
+                relayServer.stopAll();
                 relayServer.stop(500);
                 Log.i(TAG, "Relay server stopped");
             } catch (Exception e) {

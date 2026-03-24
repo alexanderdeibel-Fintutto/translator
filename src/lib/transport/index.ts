@@ -23,4 +23,7 @@ export {
   discoverLocalServer,
   getSessionUrlWithTransport,
   parseSessionUrl,
+  type CreateTransportsOptions,
 } from './connection-manager'
+export { EncryptedBroadcastTransport } from './encrypted-transport'
+export { encrypt, decrypt, isE2ESupported, clearKeyCache } from './crypto'

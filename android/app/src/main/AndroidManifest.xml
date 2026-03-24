@@ -38,6 +38,13 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Microphone: speech recognition and conversation mode -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Camera: OCR camera translator -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Hotspot mode: create local-only WiFi hotspot -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -46,4 +53,18 @@
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
         android:usesPermissionFlags="neverForLocation"
         android:minSdkVersion="33" />
+
+    <!-- BLE transport: GATT server for direct Bluetooth translation -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Hardware features (not required, graceful degradation) -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
 </manifest>

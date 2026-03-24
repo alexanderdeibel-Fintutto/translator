@@ -1,18 +1,38 @@
-// Translation providers: Google Cloud (primary) → MyMemory (fallback) → LibreTranslate (fallback) → Offline (Opus-MT)
+// Translation providers: Azure (cheapest paid) → Google → MyMemory (free) → LibreTranslate (free) → Offline (Opus-MT)
+// Tier-aware: free tier only gets free providers; paid tiers get Azure/Google first.
 
 import { getCachedTranslation, cacheTranslation } from './offline/translation-cache'
 import { translateOffline, isLanguagePairAvailable } from './offline/translation-engine'
 import { getNetworkStatus } from './offline/network-status'
-
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+import { getGoogleApiKey } from './api-key'
+import { TIERS, type TierId } from './tiers'
+import { recordTranslation } from './usage-tracker'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
+const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
 const LIBRE_API = 'https://libretranslate.com/translate'
 
 export interface TranslationResult {
   translatedText: string
   match: number
-  provider?: 'google' | 'mymemory' | 'libre' | 'offline' | 'cache'
+  provider?: 'google' | 'azure' | 'mymemory' | 'libre' | 'offline' | 'cache'
+}
+
+/** Azure API key — set via env or localStorage */
+function getAzureApiKey(): string {
+  try {
+    return localStorage.getItem('gt_azure_key') || import.meta.env.VITE_AZURE_TRANSLATE_KEY || ''
+  } catch {
+    return ''
+  }
+}
+
+function getAzureRegion(): string {
+  try {
+    return localStorage.getItem('gt_azure_region') || import.meta.env.VITE_AZURE_TRANSLATE_REGION || 'westeurope'
+  } catch {
+    return 'westeurope'
+  }
 }
 
 // In-memory cache to avoid duplicate API calls for same text+language pair
@@ -30,6 +50,8 @@ interface CircuitState {
 }
 
 const circuits: Record<string, CircuitState> = {
+  proxy: { failCount: 0, isOpen: false, resetAt: 0 },
+  azure: { failCount: 0, isOpen: false, resetAt: 0 },
   google: { failCount: 0, isOpen: false, resetAt: 0 },
   mymemory: { failCount: 0, isOpen: false, resetAt: 0 },
 }
@@ -51,15 +73,26 @@ function isHealthy(provider: string): boolean {
   return false
 }
 
-function recordFailure(provider: string) {
+function recordFailure(provider: string, retryAfterMs?: number) {
   const c = circuits[provider]
   if (!c) return
   c.failCount++
   if (c.failCount >= CIRCUIT_THRESHOLD) {
     c.isOpen = true
-    c.resetAt = Date.now() + CIRCUIT_RESET_MS
-    console.warn(`[Translate] ${provider} circuit breaker open for ${CIRCUIT_RESET_MS / 1000}s`)
+    c.resetAt = Date.now() + (retryAfterMs || CIRCUIT_RESET_MS)
+    console.warn(`[Translate] ${provider} circuit breaker open for ${(retryAfterMs || CIRCUIT_RESET_MS) / 1000}s`)
   }
+}
+
+/** Parse Retry-After header (seconds or HTTP-date) into ms */
+function parseRetryAfter(response: Response): number | undefined {
+  const val = response.headers?.get?.('Retry-After')
+  if (!val) return undefined
+  const secs = Number(val)
+  if (!isNaN(secs)) return secs * 1000
+  const date = Date.parse(val)
+  if (!isNaN(date)) return Math.max(0, date - Date.now())
+  return undefined
 }
 
 function recordSuccess(provider: string) {
@@ -71,12 +104,63 @@ function recordSuccess(provider: string) {
 
 // --- Provider implementations ---
 
+/** Fetch with AbortController timeout — prevents hanging requests from blocking the cascade */
+const PROVIDER_TIMEOUT_MS = 6000 // 6 seconds per provider
+
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS)
+  try {
+    return await fetch(input, { ...init, signal: controller.signal })
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error(`Request timed out after ${PROVIDER_TIMEOUT_MS / 1000}s`)
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+/** Server-side proxy (Vercel Edge Function) — hides API keys, bypasses CSP/ad-blockers */
+async function translateWithProxy(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const response = await fetchWithTimeout('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, source: sourceLang, target: targetLang }),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    throw new Error(`Proxy failed (${response.status}): ${err}`)
+  }
+
+  const data = await response.json()
+  if (!data.translatedText) {
+    throw new Error('Proxy returned empty result')
+  }
+
+  return {
+    translatedText: data.translatedText,
+    match: data.match ?? 1.0,
+    provider: (data.provider as TranslationResult['provider']) || 'google',
+  }
+}
+
 async function translateWithGoogle(
   text: string,
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch(`${GOOGLE_TRANSLATE_URL}?key=${GOOGLE_API_KEY}`, {
+  if (!getGoogleApiKey()) {
+    throw new Error('Google API key not configured')
+  }
+
+  const response = await fetchWithTimeout(`${GOOGLE_TRANSLATE_URL}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -89,7 +173,12 @@ async function translateWithGoogle(
 
   if (!response.ok) {
     const err = await response.text()
-    throw new Error(`Google Translate failed (${response.status}): ${err}`)
+    const retryMs = response.status === 429 ? parseRetryAfter(response) : undefined
+    const error = Object.assign(
+      new Error(`Google Translate failed (${response.status}): ${err}`),
+      { retryAfterMs: retryMs },
+    )
+    throw error
   }
 
   const data = await response.json()
@@ -114,7 +203,7 @@ async function translateWithMyMemory(
   const langPair = `${sourceLang}|${targetLang}`
   const url = `${MYMEMORY_API}?q=${encodeURIComponent(text)}&langpair=${encodeURIComponent(langPair)}`
 
-  const response = await fetch(url)
+  const response = await fetchWithTimeout(url)
 
   if (!response.ok) {
     throw new Error(`MyMemory failed: ${response.statusText}`)
@@ -138,7 +227,7 @@ async function translateWithLibre(
   sourceLang: string,
   targetLang: string,
 ): Promise<TranslationResult> {
-  const response = await fetch(LIBRE_API, {
+  const response = await fetchWithTimeout(LIBRE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -162,6 +251,53 @@ async function translateWithLibre(
   }
 }
 
+// --- Azure Translator (50% cheaper than Google, $10/1M chars) ---
+
+async function translateWithAzure(
+  text: string,
+  sourceLang: string,
+  targetLang: string,
+): Promise<TranslationResult> {
+  const apiKey = getAzureApiKey()
+  if (!apiKey) {
+    throw new Error('Azure Translator API key not configured')
+  }
+
+  const url = `${AZURE_TRANSLATE_URL}?api-version=3.0&from=${sourceLang}&to=${targetLang}`
+
+  const response = await fetchWithTimeout(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': apiKey,
+      'Ocp-Apim-Subscription-Region': getAzureRegion(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([{ Text: text }]),
+  })
+
+  if (!response.ok) {
+    const err = await response.text()
+    const retryMs = response.status === 429 ? parseRetryAfter(response) : undefined
+    throw Object.assign(
+      new Error(`Azure Translate failed (${response.status}): ${err}`),
+      { retryAfterMs: retryMs },
+    )
+  }
+
+  const data = await response.json()
+  const translated = data?.[0]?.translations?.[0]?.text
+
+  if (!translated) {
+    throw new Error('Azure Translate returned empty result')
+  }
+
+  return {
+    translatedText: translated,
+    match: 1.0,
+    provider: 'azure',
+  }
+}
+
 // --- Main translation function with cascading fallback ---
 
 type ProviderDef = {
@@ -170,22 +306,55 @@ type ProviderDef = {
   circuitKey?: string
 }
 
-const providers: ProviderDef[] = [
+// Provider cascade: Proxy (server-side, hides keys) → direct fallbacks
+// Proxy internally cascades: Azure → Google → MyMemory
+const paidProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
+  { name: 'Azure', fn: translateWithAzure, circuitKey: 'azure' },
   { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
   { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
   { name: 'LibreTranslate', fn: translateWithLibre },
 ]
 
+const freeProviders: ProviderDef[] = [
+  { name: 'Proxy', fn: translateWithProxy, circuitKey: 'proxy' },
+  { name: 'Google', fn: translateWithGoogle, circuitKey: 'google' },
+  { name: 'MyMemory', fn: translateWithMyMemory, circuitKey: 'mymemory' },
+  { name: 'LibreTranslate', fn: translateWithLibre },
+]
+
+/** Get the provider cascade for a given tier */
+function getProvidersForTier(tierId: TierId): ProviderDef[] {
+  const tier = TIERS[tierId]
+  if (!tier) return freeProviders
+  if (tier.features.translationProvider === 'free') return freeProviders
+  return paidProviders
+}
+
+/** @internal — exposed for testing only */
+export function _resetInternals() {
+  cache.clear()
+  for (const key of Object.keys(circuits)) {
+    circuits[key] = { failCount: 0, isOpen: false, resetAt: 0 }
+  }
+}
+
 export async function translateText(
   text: string,
   sourceLang: string,
-  targetLang: string
+  targetLang: string,
+  tierId?: TierId,
 ): Promise<TranslationResult> {
   if (!text.trim()) {
     return { translatedText: '', match: 0 }
   }
 
-  const cacheKey = getCacheKey(text, sourceLang, targetLang)
+  // Enforce max chars per request based on tier
+  const tier = tierId ? TIERS[tierId] : undefined
+  const maxChars = tier?.limits.maxCharsPerRequest ?? 5_000
+  const trimmedText = text.length > maxChars ? text.slice(0, maxChars) : text
+
+  const cacheKey = getCacheKey(trimmedText, sourceLang, targetLang)
 
   // 1. In-memory cache (fastest, 5min TTL)
   const memCached = cache.get(cacheKey)
@@ -197,10 +366,16 @@ export async function translateText(
   const existing = inflight.get(cacheKey)
   if (existing) return existing
 
-  const promise = translateTextInner(text, sourceLang, targetLang, cacheKey)
+  const activeProviders = getProvidersForTier(tierId ?? 'free')
+  const promise = translateTextInner(trimmedText, sourceLang, targetLang, cacheKey, activeProviders)
   inflight.set(cacheKey, promise)
   try {
-    return await promise
+    const result = await promise
+    // Record usage (only for non-cache hits — cache hits are recorded inside translateTextInner)
+    if (result.provider !== 'cache') {
+      recordTranslation(trimmedText.length, targetLang)
+    }
+    return result
   } finally {
     inflight.delete(cacheKey)
   }
@@ -211,6 +386,7 @@ async function translateTextInner(
   sourceLang: string,
   targetLang: string,
   cacheKey: string,
+  activeProviders: ProviderDef[] = paidProviders,
 ): Promise<TranslationResult> {
 
   // 2. IndexedDB persistent cache (30-day TTL)
@@ -227,12 +403,13 @@ async function translateTextInner(
 
   const networkStatus = getNetworkStatus()
 
-  // 3-5. Online providers (only if network available)
-  if (networkStatus.isOnline) {
-    let lastError: Error | null = null
+  // 3-5. Online providers (try unless definitely offline)
+  const providerErrors: string[] = []
 
-    for (const provider of providers) {
+  if (!networkStatus.isOffline) {
+    for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
+        providerErrors.push(`${provider.name}: circuit-open`)
         continue
       }
 
@@ -254,16 +431,20 @@ async function translateTextInner(
 
         return result
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        providerErrors.push(`${provider.name}: ${msg.slice(0, 80)}`)
         console.warn(`[Translate] ${provider.name} failed:`, err)
-        if (provider.circuitKey) recordFailure(provider.circuitKey)
-        lastError = err instanceof Error ? err : new Error(String(err))
+        const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
+        if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
       }
     }
 
     // All online providers failed — log but continue to offline
-    if (lastError) {
+    if (providerErrors.length > 0) {
       console.warn('[Translate] All online providers failed, trying offline engine...')
     }
+  } else {
+    providerErrors.push('Network: offline')
   }
 
   // 6. Offline translation engine (Opus-MT via Transformers.js)
@@ -282,9 +463,14 @@ async function translateTextInner(
     console.warn('[Translate] Offline engine failed:', err)
   }
 
+  // Include provider details so the user can see WHY it failed
+  const detail = providerErrors.length > 0
+    ? providerErrors.join(' | ')
+    : 'no providers available'
+
   throw new Error(
     networkStatus.isOffline
-      ? 'Offline — kein Sprachmodell für dieses Sprachpaar heruntergeladen. Gehe zu Einstellungen → Offline-Sprachen.'
-      : 'Übersetzung fehlgeschlagen — bitte versuche es erneut'
+      ? 'OFFLINE_NO_MODEL'
+      : `ALL_PROVIDERS_FAILED [${detail}]`
   )
 }

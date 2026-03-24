@@ -1,14 +1,19 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth } from 'lucide-react'
-import { useRef, useCallback } from 'react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+import { useRef, useCallback, useState, useEffect, useMemo, type MouseEvent as ReactMouseEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
 import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
+import EndSessionConfirmDialog from './EndSessionConfirmDialog'
+import BackChannelInbox, { type IncomingResponse } from './BackChannelInbox'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
+import { getLatencyHistory, getAverageLatency, type LatencyReport } from '@/lib/latency'
+import { useTierId } from '@/context/UserContext'
+import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import type { useLiveSession } from '@/hooks/useLiveSession'
 
 type Session = ReturnType<typeof useLiveSession>
@@ -19,6 +24,7 @@ interface SpeakerViewProps {
 
 export default function SpeakerView({ session }: SpeakerViewProps) {
   const { t } = useI18n()
+  const tierId = useTierId()
   const sessionStartRef = useRef(Date.now())
 
   const isBleMode = session.connectionMode === 'ble'
@@ -28,12 +34,46 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
   const hasHotspot = session.hotspotInfo?.ssid && session.hotspotInfo?.password
 
-  const downloadProtocol = useCallback(() => {
+  const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [showEndConfirm, setShowEndConfirm] = useState(false)
+  const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
+  const [showDebug, setShowDebug] = useState(false)
+  const debugTapRef = useRef(0)
+  const debugTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Map backchannel messages to IncomingResponse format
+  const inboxResponses: IncomingResponse[] = useMemo(
+    () =>
+      (session.backChannelMessages || []).map((msg) => ({
+        response: { id: msg.responseId, emoji: msg.emoji, label: msg.label },
+        senderLang: msg.senderLang,
+        timestamp: msg.timestamp,
+      })),
+    [session.backChannelMessages]
+  )
+
+  // Poll latency stats while recording
+  useEffect(() => {
+    if (!session.isRecording) return
+    const interval = setInterval(() => {
+      const history = getLatencyHistory()
+      const last = history.length > 0 ? history[history.length - 1] : null
+      const avg = getAverageLatency()
+      setLatency({ last, avg })
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [session.isRecording])
+
+  const getProtocolMeta = useCallback(() => {
     const now = new Date()
     const durationMs = Date.now() - sessionStartRef.current
     const durationMin = Math.round(durationMs / 60000)
     const sourceLangData = getLanguageByCode(session.sourceLanguage)
+    const connectionLabel = session.connectionMode === 'ble' ? t('liveSession.bleDirect') : session.connectionMode === 'local' ? t('liveSession.localNetwork') : t('liveSession.cloudConnection')
+    return { now, durationMin, sourceLangData, connectionLabel }
+  }, [session.sourceLanguage, session.connectionMode])
 
+ claude/analyze-chat-history-D5axK
     let protocol = `========================================\n`
     protocol += `GUIDETRANSLATOR (BY FINTUTTO) - SESSION-PROTOKOLL\n`
     protocol += `========================================\n\n`
@@ -58,15 +98,80 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     protocol += `----------------------------------------\n`
     protocol += `Ende des Protokolls\n`
     protocol += `Erstellt mit guidetranslator.com (by fintutto)\n`
+=======
+  const downloadProtocol = useCallback((format: 'txt' | 'md') => {
+    const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
+    setExportMenuOpen(false)
 
-    const blob = new Blob([protocol], { type: 'text/plain;charset=utf-8' })
+    const dateStr = now.toLocaleDateString(undefined) + ' ' + now.toLocaleTimeString(undefined)
+
+    // Use array + join instead of += to avoid O(n²) string concatenation (crashes Android Chrome)
+    const parts: string[] = []
+    let mimeType: string
+    let ext: string
+
+    if (format === 'md') {
+      mimeType = 'text/markdown;charset=utf-8'
+      ext = 'md'
+      parts.push(`# guidetranslator — ${t('protocol.title')}\n\n`)
+      parts.push(`| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`)
+      parts.push(`| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`)
+      parts.push(`| ${t('protocol.date')} | ${dateStr} |\n`)
+      parts.push(`| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`)
+      parts.push(`| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`)
+      parts.push(`| ${t('protocol.listeners')} | ${session.listenerCount} |\n`)
+      parts.push(`| ${t('protocol.connection')} | ${connectionLabel} |\n\n`)
+      parts.push(`---\n\n## ${t('protocol.translations')}\n\n`)
+
+      for (const chunk of session.translationHistory) {
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        const targetLangData = getLanguageByCode(chunk.targetLanguage)
+        parts.push(`**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`)
+        parts.push(`> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`)
+        parts.push(`> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`)
+      }
+ main
+
+      parts.push(`---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`)
+    } else {
+      mimeType = 'text/plain;charset=utf-8'
+      ext = 'txt'
+      parts.push(`========================================\n`)
+      parts.push(`GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`)
+      parts.push(`========================================\n\n`)
+      parts.push(`${t('protocol.session')}: ${session.sessionCode}\n`)
+      parts.push(`${t('protocol.date')}: ${dateStr}\n`)
+      parts.push(`${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`)
+      parts.push(`${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`)
+      parts.push(`${t('protocol.listeners')}: ${session.listenerCount}\n`)
+      parts.push(`${t('protocol.connection')}: ${connectionLabel}\n`)
+      parts.push(`\n----------------------------------------\n`)
+      parts.push(`${t('protocol.translations').toUpperCase()}\n`)
+      parts.push(`----------------------------------------\n\n`)
+
+      for (const chunk of session.translationHistory) {
+        const time = new Date(chunk.timestamp).toLocaleTimeString(undefined)
+        const targetLangData = getLanguageByCode(chunk.targetLanguage)
+        parts.push(`[${time}]\n`)
+        parts.push(`  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`)
+        parts.push(`  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`)
+      }
+
+      parts.push(`----------------------------------------\n`)
+      parts.push(`${t('protocol.endOfProtocol')}\n`)
+      parts.push(`${t('protocol.createdWith')} guidetranslator.com\n`)
+    }
+
+    const protocol = parts.join('')
+    const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `protokoll-${session.sessionCode}-${now.toISOString().slice(0, 10)}.txt`
+    a.download = `${t('protocol.filename')}-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
-    URL.revokeObjectURL(url)
-  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, session.connectionMode])
+    // Delay revokeObjectURL to avoid race condition on slow Android devices
+    setTimeout(() => URL.revokeObjectURL(url), 3000)
+  }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
 
   return (
     <div className="space-y-4">
@@ -82,18 +187,24 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           />
           {(isAdvertising || isBleMode) && (
             <span className="flex items-center gap-1 text-[10px] text-blue-600 dark:text-blue-400">
-              <Bluetooth className="h-3 w-3" />
+              <Bluetooth className="h-3 w-3" aria-hidden="true" />
               {isBleMode ? 'GATT' : 'BLE'}
             </span>
           )}
         </div>
+
+        {/* BackChannel Inbox */}
+        <BackChannelInbox
+          responses={inboxResponses}
+          onClear={() => session.clearBackChannel?.()}
+        />
       </div>
 
       {/* iOS manual hotspot instruction */}
       {session.hotspotInfo?.manualHotspotRequired && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm">
-          <WifiOff className="h-4 w-4 shrink-0" />
-          <span>Bitte aktiviere den <strong>Persönlichen Hotspot</strong> in den Einstellungen</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-700 dark:text-sky-400 rounded-lg text-sm" role="alert">
+          <WifiOff className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{t('live.hotspotInstruction')}</span>
         </div>
       )}
 
@@ -104,6 +215,17 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           <span>{t('live.disconnected')}</span>
           <Loader2 className="h-4 w-4 animate-spin ml-auto shrink-0" />
         </div>
+      )}
+
+      {/* Tier limit warnings */}
+      {session.listenerLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="listeners" />
+      )}
+      {session.sessionLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="session_minutes" />
+      )}
+      {session.languageLimitReached && (
+        <UpgradePrompt tierId={tierId} limitType="languages" />
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -122,9 +244,14 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           {isBleMode ? (
             <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-center space-y-2">
               <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
-              <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
+              <p className="font-mono font-bold text-lg tracking-widest" onClick={() => {
+                debugTapRef.current++
+                if (debugTimerRef.current) clearTimeout(debugTimerRef.current)
+                if (debugTapRef.current >= 3) { debugTapRef.current = 0; setShowDebug(p => !p) }
+                else { debugTimerRef.current = setTimeout(() => { debugTapRef.current = 0 }, 600) }
+              }}>{session.sessionCode}</p>
               <p className="text-xs text-muted-foreground">
-                Listener finden diese Session automatisch per Bluetooth
+                {t('live.bleAutoDiscovery')}
               </p>
             </div>
           ) : (
@@ -158,24 +285,59 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
           {/* Download Protocol Button - appears after first translation */}
           {session.translationHistory.length > 0 && (
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={downloadProtocol}
-            >
-              <Download className="h-4 w-4" />
-              {t('live.downloadProtocol')}
-            </Button>
+            <div className="relative">
+              <Button
+                variant="outline"
+                className="w-full gap-2"
+                onClick={() => setExportMenuOpen(!exportMenuOpen)}
+              >
+                <Download className="h-4 w-4" />
+                {t('live.downloadProtocol')}
+              </Button>
+              {exportMenuOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 overflow-hidden">
+                  <button
+                    onClick={() => downloadProtocol('txt')}
+                    className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportText')}
+                  >
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportText')}
+                  </button>
+                  <button
+                    onClick={() => downloadProtocol('md')}
+                    className="flex items-center gap-2 px-3 py-2.5 w-full text-left hover:bg-accent transition-colors text-sm"
+                    aria-label={t('protocol.exportMarkdown')}
+                  >
+                    <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('protocol.exportMarkdown')}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           <Button
             variant="outline"
             className="w-full gap-2 text-destructive hover:text-destructive"
-            onClick={session.endSession}
+            onClick={() => {
+              if (session.listenerCount > 0) {
+                setShowEndConfirm(true)
+              } else {
+                session.endSession()
+              }
+            }}
           >
             <StopCircle className="h-4 w-4" />
             {t('live.endSession')}
           </Button>
+
+          <EndSessionConfirmDialog
+            open={showEndConfirm}
+            onOpenChange={setShowEndConfirm}
+            listenerCount={session.listenerCount}
+            onConfirm={session.endSession}
+          />
 
           <ListenerStatus
             listeners={session.listeners}
@@ -197,6 +359,26 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
             </div>
           )}
 
+          {/* Pipeline latency stats */}
+          {session.isRecording && latency.last && (
+            <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-muted/50 rounded-lg text-[11px] font-mono text-muted-foreground">
+              <Activity className="h-3 w-3 shrink-0" />
+              <span title="Speech-to-Text">STT {latency.last.sttMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Translation">Translate {latency.last.translateMs.toFixed(0)}ms</span>
+              <span className="text-muted-foreground/30">|</span>
+              <span title="Total pipeline" className="font-semibold text-foreground/70">
+                Σ {latency.last.totalMs.toFixed(0)}ms
+              </span>
+              {latency.avg && (
+                <>
+                  <span className="text-muted-foreground/30">|</span>
+                  <span>ø {latency.avg.totalMs.toFixed(0)}ms</span>
+                </>
+              )}
+            </div>
+          )}
+
           <LiveTranscript
             chunks={session.translationHistory}
             currentText={session.isRecording ? session.currentTranscript : undefined}
@@ -205,8 +387,22 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       </div>
 
       {session.error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
           {session.error}
+        </div>
+      )}
+
+      {/* Debug panel — triple-tap session code to toggle (not shown by default) */}
+      {showDebug && (
+        <div className="text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 p-3 rounded-lg">
+          <p className="font-bold text-yellow-700 dark:text-yellow-400">SPEAKER DEBUG</p>
+          <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+          <p>Mode: {session.connectionMode}</p>
+          <p>Recording: {session.isRecording ? 'YES' : 'NO'}</p>
+          <p>Listeners (presence): {session.listenerCount}</p>
+          <p>Langs: {Object.entries(session.listenersByLanguage).filter(([k]) => k !== '_speaker').map(([k, v]) => `${k}(${v})`).join(', ') || '(none)'}</p>
+          <p>History chunks: {session.translationHistory.length}</p>
+          <p>Error: {session.error || '(none)'}</p>
         </div>
       )}
     </div>

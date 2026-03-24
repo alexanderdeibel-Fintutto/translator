@@ -3,8 +3,7 @@
 // Audio responses are cached in IndexedDB for offline playback
 
 import { getCachedTTSAudio, cacheTTSAudio } from './offline/tts-cache'
-
-const API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY || 'AIzaSyD0jpDgyihxFytR-jDIxEHj17kl4Oz9FGY'
+import { getGoogleApiKey } from './api-key'
 const API_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 const API_URL_BETA = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'
 
@@ -94,7 +93,16 @@ const CHIRP_VOICE_MAP: Record<string, { languageCode: string; name: string }> = 
 }
 
 export function isCloudTTSAvailable(): boolean {
-  return !!API_KEY
+  return !!getGoogleApiKey()
+}
+
+export type TtsQualityTier = 'browser' | 'standard' | 'neural2' | 'chirp3hd'
+
+/** Map tier-level TTS quality to the VoiceQuality used by the API.
+ *  'browser' and 'standard' both use Neural2 voices but standard uses Standard-A voices. */
+export function mapTierTtsQuality(tierQuality: TtsQualityTier): VoiceQuality {
+  if (tierQuality === 'chirp3hd') return 'chirp3hd'
+  return 'neural2' // standard and neural2 both map to the neural2 voice map
 }
 
 function getVoiceConfig(speechCode: string, quality: VoiceQuality = 'neural2') {
@@ -118,6 +126,27 @@ function getVoiceConfig(speechCode: string, quality: VoiceQuality = 'neural2') {
   return { config: { languageCode: speechCode, name: '' }, useBeta: false }
 }
 
+// Prefetch audio into cache without playing — returns silently on error
+const prefetchInFlight = new Set<string>()
+
+export function prefetchCloudTTS(
+  text: string,
+  speechCode: string,
+  quality: VoiceQuality = 'neural2',
+): void {
+  const key = `${text}|${speechCode}|${quality}`
+  if (prefetchInFlight.has(key)) return
+  prefetchInFlight.add(key)
+
+  speakWithCloudTTS(text, speechCode, quality)
+    .then(audio => {
+      // Audio is now cached in IndexedDB — dispose the element
+      URL.revokeObjectURL(audio.src)
+    })
+    .catch(() => {})
+    .finally(() => prefetchInFlight.delete(key))
+}
+
 export async function speakWithCloudTTS(
   text: string,
   speechCode: string,
@@ -138,11 +167,21 @@ export async function speakWithCloudTTS(
     // Cache read failed — continue to API
   }
 
-  if (!API_KEY) {
+  const { config: voiceConfig, useBeta } = getVoiceConfig(speechCode, quality)
+
+  // 2. Try server-side proxy first (hides API key, bypasses CSP/ad-blockers)
+  try {
+    const audioContent = await fetchTTSFromProxy(text, voiceConfig, useBeta)
+    return buildAudioFromBase64(audioContent, text, speechCode, quality)
+  } catch (proxyErr) {
+    console.warn('[TTS] Proxy failed, falling back to direct API:', proxyErr)
+  }
+
+  // 3. Direct Google Cloud TTS API (client-side fallback)
+  if (!getGoogleApiKey()) {
     throw new Error('Google Cloud TTS API key not configured')
   }
 
-  const { config: voiceConfig, useBeta } = getVoiceConfig(speechCode, quality)
   const apiUrl = useBeta ? API_URL_BETA : API_URL
 
   const body: Record<string, unknown> = {
@@ -158,30 +197,71 @@ export async function speakWithCloudTTS(
     },
   }
 
-  const response = await fetch(`${apiUrl}?key=${API_KEY}`, {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 8000)
+  const response = await fetch(`${apiUrl}?key=${getGoogleApiKey()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    signal: controller.signal,
   })
+  clearTimeout(timeout)
 
   if (!response.ok) {
+    const error = await response.text()
+    console.error(`[TTS] Google Cloud TTS error ${response.status}:`, error)
     // If Chirp fails, auto-fallback to Neural2
     if (quality === 'chirp3hd') {
       console.warn('[TTS] Chirp 3 HD failed, falling back to Neural2')
       return speakWithCloudTTS(text, speechCode, 'neural2')
     }
-    const error = await response.text()
-    throw new Error(`Cloud TTS failed: ${error}`)
+    throw new Error(`Cloud TTS failed (${response.status}): ${error}`)
   }
 
   const data = await response.json()
   const audioContent = data.audioContent as string
 
   // Convert base64 to audio
+  return buildAudioFromBase64(audioContent, text, speechCode, quality)
+}
+
+/** Fetch TTS audio via server-side proxy */
+async function fetchTTSFromProxy(
+  text: string,
+  voiceConfig: { languageCode: string; name: string },
+  useBeta: boolean,
+): Promise<string> {
+  const res = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text,
+      languageCode: voiceConfig.languageCode,
+      voiceName: voiceConfig.name || undefined,
+      useBeta,
+    }),
+  })
+
+  if (!res.ok) {
+    throw new Error(`Proxy TTS failed (${res.status})`)
+  }
+
+  const data = await res.json()
+  if (!data.audioContent) throw new Error('Proxy returned no audio')
+  return data.audioContent as string
+}
+
+/** Convert base64 audio content to HTMLAudioElement and cache it */
+function buildAudioFromBase64(
+  audioContent: string,
+  text: string,
+  speechCode: string,
+  quality: VoiceQuality,
+): HTMLAudioElement {
   const audioBytes = Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))
   const blob = new Blob([audioBytes], { type: 'audio/mp3' })
 
-  // 2. Cache the audio blob for offline use
+  // Cache the audio blob for offline use
   cacheTTSAudio(text, speechCode, quality, blob).catch(() => {})
 
   const url = URL.createObjectURL(blob)

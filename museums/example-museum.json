@@ -1,0 +1,19 @@
+{
+  "slug": "example-museum",
+  "name": "Beispiel Museum",
+  "appId": "com.example.museum.guide",
+  "appName": "Beispiel Museum Guide",
+  "primaryColor": "#1e3a5f",
+  "secondaryColor": "#2c5282",
+  "accentColor": "#d69e2e",
+  "backgroundColor": "#ffffff",
+  "textColor": "#1a202c",
+  "logoUrl": "https://example.com/logo.png",
+  "splashColor": "#1e3a5f",
+  "splashLogoUrl": "https://example.com/splash-logo.png",
+  "iconUrl": "https://example.com/icon-1024.png",
+  "statusBarStyle": "LIGHT",
+  "iosScheme": "beispielmuseum",
+  "poweredByVisible": true,
+  "museumId": "00000000-0000-0000-0000-000000000000"
+}

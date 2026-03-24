@@ -1,6 +1,7 @@
 import { Clock, Trash2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { useI18n } from '@/context/I18nContext'
 import type { HistoryEntry } from '@/hooks/useTranslationHistory'
 import { getLanguageByCode } from '@/lib/languages'
 
@@ -12,6 +13,7 @@ interface TranslationHistoryProps {
 }
 
 export default function TranslationHistory({ history, clearHistory, removeEntry, onSelect }: TranslationHistoryProps) {
+  const { t } = useI18n()
 
   if (history.length === 0) return null
 
@@ -20,12 +22,12 @@ export default function TranslationHistory({ history, clearHistory, removeEntry,
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            Letzte Übersetzungen
+            <Clock className="h-4 w-4" aria-hidden="true" />
+            {t('history.title')}
           </CardTitle>
           <Button variant="ghost" size="sm" onClick={clearHistory} className="text-xs text-muted-foreground">
-            <Trash2 className="h-3 w-3 mr-1" />
-            Verlauf löschen
+            <Trash2 className="h-3 w-3 mr-1" aria-hidden="true" />
+            {t('history.clear')}
           </Button>
         </div>
       </CardHeader>
@@ -43,10 +45,10 @@ export default function TranslationHistory({ history, clearHistory, removeEntry,
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
                     <span>{srcLang?.flag}</span>
-                    <span>{srcLang?.name}</span>
-                    <ArrowRight className="h-3 w-3" />
+                    <span>{t('lang.' + entry.sourceLang)}</span>
+                    <ArrowRight className="h-3 w-3" aria-hidden="true" />
                     <span>{tgtLang?.flag}</span>
-                    <span>{tgtLang?.name}</span>
+                    <span>{t('lang.' + entry.targetLang)}</span>
                   </div>
                   <p className="text-sm truncate">{entry.sourceText}</p>
                   <p className="text-sm text-muted-foreground truncate">{entry.translatedText}</p>
@@ -60,7 +62,7 @@ export default function TranslationHistory({ history, clearHistory, removeEntry,
                     removeEntry(entry.id)
                   }}
                 >
-                  <Trash2 className="h-3 w-3" />
+                  <Trash2 className="h-3 w-3" aria-hidden="true" />
                 </Button>
               </div>
             )
