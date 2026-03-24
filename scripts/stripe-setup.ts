@@ -45,6 +45,15 @@ const PAID_TIERS = [
   { id: 'cruise_starter', name: 'Cruise Starter', monthly: 199000, yearly: 1990000 },
   { id: 'cruise_fleet', name: 'Cruise Fleet', monthly: 699000, yearly: 6990000 },
   { id: 'cruise_armada', name: 'Cruise Armada', monthly: 1999000, yearly: 19990000 },
+  // Market segment tiers
+  { id: 'education_single', name: 'Education Einzellizenz', monthly: 990, yearly: 9900 },
+  { id: 'education_school', name: 'Education Schullizenz', monthly: 4990, yearly: 49900 },
+  { id: 'authority_single', name: 'Authority Einzelplatz', monthly: 1490, yearly: 14900 },
+  { id: 'authority_office', name: 'Authority Behördenlizenz', monthly: 9900, yearly: 99000 },
+  { id: 'hospitality_single', name: 'Hospitality Einzelplatz', monthly: 2990, yearly: 29900 },
+  { id: 'hospitality_business', name: 'Hospitality Business', monthly: 9900, yearly: 99000 },
+  { id: 'medical_practice', name: 'Medical Praxis', monthly: 2990, yearly: 29900 },
+  { id: 'medical_clinic', name: 'Medical Klinik', monthly: 19900, yearly: 199000 },
 ]
 
 interface TierResult {

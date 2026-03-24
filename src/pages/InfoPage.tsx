@@ -82,11 +82,6 @@ export default function InfoPage() {
 
       <Card>
         <CardHeader>
- claude/analyze-chat-history-D5axK
-          <CardTitle>Teil des Fintutto Ökosystems</CardTitle>
-          <CardDescription>
-            guidetranslator (by fintutto) ist Teil der Fintutto Plattform für Finanzen, Immobilien und Verwaltung in Deutschland.
-=======
           <CardTitle>{t('info.transportTitle')}</CardTitle>
           <CardDescription>
             {t('info.transportDesc')}
@@ -109,17 +104,12 @@ export default function InfoPage() {
           <CardTitle>{t('info.ecosystemTitle')}</CardTitle>
           <CardDescription>
             {t('info.ecosystemDesc')}
- main
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className="p-3 rounded-lg bg-secondary">
- claude/analyze-chat-history-D5axK
-              <strong>Fintutto Portal</strong> - Rechner, Checker & Formulare
-=======
               <strong>ai tour Portal</strong>
- main
             </div>
             <div className="p-3 rounded-lg bg-secondary">
               <strong>Vermietify</strong>
