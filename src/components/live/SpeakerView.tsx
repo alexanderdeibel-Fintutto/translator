@@ -73,6 +73,32 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     return { now, durationMin, sourceLangData, connectionLabel }
   }, [session.sourceLanguage, session.connectionMode])
 
+ claude/analyze-chat-history-D5axK
+    let protocol = `========================================\n`
+    protocol += `GUIDETRANSLATOR (BY FINTUTTO) - SESSION-PROTOKOLL\n`
+    protocol += `========================================\n\n`
+    protocol += `Session-Code: ${session.sessionCode}\n`
+    protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
+    protocol += `Dauer: ${durationMin} Minuten\n`
+    protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
+    protocol += `Zuhörer: ${session.listenerCount}\n`
+    protocol += `Verbindung: ${session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
+    protocol += `\n----------------------------------------\n`
+    protocol += `ÜBERSETZUNGEN\n`
+    protocol += `----------------------------------------\n\n`
+
+    for (const chunk of session.translationHistory) {
+      const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
+      const targetLangData = getLanguageByCode(chunk.targetLanguage)
+      protocol += `[${time}]\n`
+      protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
+      protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+    }
+
+    protocol += `----------------------------------------\n`
+    protocol += `Ende des Protokolls\n`
+    protocol += `Erstellt mit guidetranslator.com (by fintutto)\n`
+=======
   const downloadProtocol = useCallback((format: 'txt' | 'md') => {
     const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
     setExportMenuOpen(false)
@@ -104,6 +130,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
         parts.push(`> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`)
         parts.push(`> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`)
       }
+ main
 
       parts.push(`---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`)
     } else {

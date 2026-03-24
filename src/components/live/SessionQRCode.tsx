@@ -27,8 +27,13 @@ export default function SessionQRCode({ code, sessionUrl }: SessionQRCodeProps) 
   const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({
+ claude/analyze-chat-history-D5axK
+        title: 'guidetranslator (by fintutto) Live-Übersetzung',
+        text: `Tritt meiner Live-Übersetzung bei: ${code}`,
+=======
         title: t('live.shareTitle'),
         text: `${t('live.shareText')}: ${code}`,
+ main
         url,
       })
     } else {
