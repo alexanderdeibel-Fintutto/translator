@@ -64,70 +64,71 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
     const dateStr = now.toLocaleDateString(undefined) + ' ' + now.toLocaleTimeString(undefined)
 
-    let protocol: string
+    // Use array + join instead of += to avoid O(n²) string concatenation (crashes Android Chrome)
+    const parts: string[] = []
     let mimeType: string
     let ext: string
 
     if (format === 'md') {
-      // Markdown format
       mimeType = 'text/markdown;charset=utf-8'
       ext = 'md'
-      protocol = `# guidetranslator — ${t('protocol.title')}\n\n`
-      protocol += `| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`
-      protocol += `| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`
-      protocol += `| ${t('protocol.date')} | ${dateStr} |\n`
-      protocol += `| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`
-      protocol += `| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
-      protocol += `| ${t('protocol.listeners')} | ${session.listenerCount} |\n`
-      protocol += `| ${t('protocol.connection')} | ${connectionLabel} |\n\n`
-      protocol += `---\n\n## ${t('protocol.translations')}\n\n`
+      parts.push(`# guidetranslator — ${t('protocol.title')}\n\n`)
+      parts.push(`| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`)
+      parts.push(`| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`)
+      parts.push(`| ${t('protocol.date')} | ${dateStr} |\n`)
+      parts.push(`| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`)
+      parts.push(`| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`)
+      parts.push(`| ${t('protocol.listeners')} | ${session.listenerCount} |\n`)
+      parts.push(`| ${t('protocol.connection')} | ${connectionLabel} |\n\n`)
+      parts.push(`---\n\n## ${t('protocol.translations')}\n\n`)
 
       for (const chunk of session.translationHistory) {
         const time = new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
-        protocol += `**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`
-        protocol += `> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`
-        protocol += `> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`
+        parts.push(`**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`)
+        parts.push(`> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`)
+        parts.push(`> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`)
       }
 
-      protocol += `---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`
+      parts.push(`---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`)
     } else {
-      // Plain text format
       mimeType = 'text/plain;charset=utf-8'
       ext = 'txt'
-      protocol = `========================================\n`
-      protocol += `GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`
-      protocol += `========================================\n\n`
-      protocol += `${t('protocol.session')}: ${session.sessionCode}\n`
-      protocol += `${t('protocol.date')}: ${dateStr}\n`
-      protocol += `${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`
-      protocol += `${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`
-      protocol += `${t('protocol.listeners')}: ${session.listenerCount}\n`
-      protocol += `${t('protocol.connection')}: ${connectionLabel}\n`
-      protocol += `\n----------------------------------------\n`
-      protocol += `${t('protocol.translations').toUpperCase()}\n`
-      protocol += `----------------------------------------\n\n`
+      parts.push(`========================================\n`)
+      parts.push(`GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`)
+      parts.push(`========================================\n\n`)
+      parts.push(`${t('protocol.session')}: ${session.sessionCode}\n`)
+      parts.push(`${t('protocol.date')}: ${dateStr}\n`)
+      parts.push(`${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`)
+      parts.push(`${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`)
+      parts.push(`${t('protocol.listeners')}: ${session.listenerCount}\n`)
+      parts.push(`${t('protocol.connection')}: ${connectionLabel}\n`)
+      parts.push(`\n----------------------------------------\n`)
+      parts.push(`${t('protocol.translations').toUpperCase()}\n`)
+      parts.push(`----------------------------------------\n\n`)
 
       for (const chunk of session.translationHistory) {
         const time = new Date(chunk.timestamp).toLocaleTimeString(undefined)
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
-        protocol += `[${time}]\n`
-        protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
-        protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+        parts.push(`[${time}]\n`)
+        parts.push(`  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`)
+        parts.push(`  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`)
       }
 
-      protocol += `----------------------------------------\n`
-      protocol += `${t('protocol.endOfProtocol')}\n`
-      protocol += `${t('protocol.createdWith')} guidetranslator.com\n`
+      parts.push(`----------------------------------------\n`)
+      parts.push(`${t('protocol.endOfProtocol')}\n`)
+      parts.push(`${t('protocol.createdWith')} guidetranslator.com\n`)
     }
 
+    const protocol = parts.join('')
     const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = `${t('protocol.filename')}-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
-    URL.revokeObjectURL(url)
+    // Delay revokeObjectURL to avoid race condition on slow Android devices
+    setTimeout(() => URL.revokeObjectURL(url), 3000)
   }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
 
   return (

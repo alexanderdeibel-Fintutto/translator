@@ -180,11 +180,16 @@ export function createWebSpeechEngine(): STTEngine {
             // Interim result: check for sentence boundaries to emit early finals
             const boundary = detectSentenceBoundary(text)
             if (boundary) {
-              // Emit completed sentence(s) as synthetic final (with dedup)
-              if (!isDuplicateFinal(boundary.final)) {
-                trackFinal(boundary.final)
-                onResult({ text: boundary.final, isFinal: true, confidence })
+              // Only emit NEW sentences — subtract already-emitted synthetic final prefix
+              let newFinal = boundary.final
+              if (lastSyntheticFinal && newFinal.startsWith(lastSyntheticFinal)) {
+                newFinal = newFinal.slice(lastSyntheticFinal.length).trim()
               }
+              if (newFinal && !isDuplicateFinal(newFinal)) {
+                trackFinal(newFinal)
+                onResult({ text: newFinal, isFinal: true, confidence })
+              }
+              // Track full cumulative text for future delta calculations
               lastSyntheticFinal = boundary.final
               // Emit remainder as interim
               if (boundary.remainder) {

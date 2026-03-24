@@ -134,7 +134,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
     return () => clearInterval(interval)
   }, [role, sessionCode])
 
-  // Broadcast session info periodically when listener count changes
+  // Broadcast session info when listener count changes + periodic heartbeat
+  // The heartbeat allows listeners to detect a dead broadcast channel and reconnect.
+  const heartbeatTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return
 
@@ -156,8 +159,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
       broadcastTimerRef.current = setTimeout(send, 1000 - elapsed)
     }
 
+    // Periodic heartbeat every 8 seconds so listeners can detect dead channels
+    if (heartbeatTimerRef.current) clearInterval(heartbeatTimerRef.current)
+    heartbeatTimerRef.current = setInterval(send, 8000)
+
     return () => {
       if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
+      if (heartbeatTimerRef.current) { clearInterval(heartbeatTimerRef.current); heartbeatTimerRef.current = null }
     }
   }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
 
@@ -333,6 +341,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
   // --- LISTENER ---
 
+  // Track last broadcast message received on listener side for stale connection detection
+  const lastBroadcastReceivedRef = useRef(0)
+  const listenerReconnectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const joinArgsRef = useRef<{ code: string; targetLang: string; connectionConfig?: ConnectionConfig } | null>(null)
+
   const joinSession = useCallback(async (
     code: string,
     targetLang: string,
@@ -346,6 +359,8 @@ export function useLiveSession(userTierId: TierId = 'free') {
     setReceivedChunks([])
     setCurrentTranslation('')
     setError(null)
+    lastBroadcastReceivedRef.current = Date.now()
+    joinArgsRef.current = { code, targetLang, connectionConfig }
 
     // Initialize connection mode
     if (connectionConfig) {
@@ -357,6 +372,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
       code,
       // onTranslation
       (chunk: TranslationChunk) => {
+        lastBroadcastReceivedRef.current = Date.now()
         if (chunk.targetLanguage === selectedLanguageRef.current) {
           setCurrentTranslation(chunk.translatedText)
           setReceivedChunks(prev => {
@@ -374,10 +390,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
           }
         }
       },
-      // onSessionInfo
-      undefined,
+      // onSessionInfo — track heartbeat from speaker to detect dead broadcast channel
+      () => {
+        lastBroadcastReceivedRef.current = Date.now()
+      },
       // onStatus
       (status: StatusMessage) => {
+        lastBroadcastReceivedRef.current = Date.now()
         if (status.ended) {
           setSessionEnded(true)
         }
@@ -392,6 +411,61 @@ export function useLiveSession(userTierId: TierId = 'free') {
     })
   }, [broadcast, presence, connection])
 
+  // Listener-side stale connection detector: if no broadcast message for 20s,
+  // the broadcast channel is likely dead (iOS Safari silent disconnect).
+  // Re-subscribe to force a fresh WebSocket connection.
+  useEffect(() => {
+    if (role !== 'listener' || sessionEnded) {
+      if (listenerReconnectTimerRef.current) {
+        clearInterval(listenerReconnectTimerRef.current)
+        listenerReconnectTimerRef.current = null
+      }
+      return
+    }
+
+    listenerReconnectTimerRef.current = setInterval(() => {
+      const sinceLastMsg = Date.now() - lastBroadcastReceivedRef.current
+      if (sinceLastMsg > 20_000 && joinArgsRef.current && broadcast.isConnected) {
+        console.warn(`[LiveSession] No broadcast received for ${Math.round(sinceLastMsg / 1000)}s, re-subscribing...`)
+        // Re-subscribe to force a new channel connection
+        const { code } = joinArgsRef.current
+        broadcast.subscribe(
+          code,
+          (chunk: TranslationChunk) => {
+            lastBroadcastReceivedRef.current = Date.now()
+            if (chunk.targetLanguage === selectedLanguageRef.current) {
+              setCurrentTranslation(chunk.translatedText)
+              setReceivedChunks(prev => {
+                const next = [...prev, chunk]
+                return next.length > 100 ? next.slice(-100) : next
+              })
+              if (autoTTSRef.current && chunk.translatedText) {
+                const ttsLangCode = selectedLanguageRef.current === '_live'
+                  ? chunk.sourceLang
+                  : selectedLanguageRef.current
+                const lang = getLanguageByCode(ttsLangCode)
+                ttsRef.current(chunk.translatedText, lang?.speechCode || ttsLangCode)
+              }
+            }
+          },
+          () => { lastBroadcastReceivedRef.current = Date.now() },
+          (status: StatusMessage) => {
+            lastBroadcastReceivedRef.current = Date.now()
+            if (status.ended) setSessionEnded(true)
+          },
+        )
+        lastBroadcastReceivedRef.current = Date.now()
+      }
+    }, 10_000)
+
+    return () => {
+      if (listenerReconnectTimerRef.current) {
+        clearInterval(listenerReconnectTimerRef.current)
+        listenerReconnectTimerRef.current = null
+      }
+    }
+  }, [role, sessionEnded, broadcast])
+
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
     selectedLanguageRef.current = lang // Sync ref immediately for incoming broadcasts
@@ -404,6 +478,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
     tts.stop()
     broadcast.unsubscribe()
     presence.leave()
+    joinArgsRef.current = null
+    if (listenerReconnectTimerRef.current) {
+      clearInterval(listenerReconnectTimerRef.current)
+      listenerReconnectTimerRef.current = null
+    }
     setRole(null)
     setSessionCode('')
   }, [broadcast, presence, tts])
