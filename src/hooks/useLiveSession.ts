@@ -81,6 +81,15 @@ export function useLiveSession(userTierId: TierId = 'free') {
   ttsRef.current = tts.speak
   const processTranslationRef = useRef<(text: string) => Promise<void>>(async () => {})
 
+  // Stable refs for broadcast and presence to avoid infinite re-render loops.
+  // broadcast and presence return new object references on every render, which
+  // causes useCallback/useEffect to re-run infinitely when used as dependencies.
+  // By reading through refs, we always get the latest value without triggering re-renders.
+  const broadcastRef = useRef(broadcast)
+  broadcastRef.current = broadcast
+  const presenceRef = useRef(presence)
+  presenceRef.current = presence
+
   // --- SPEAKER ---
 
   const createSession = useCallback(async (
@@ -105,7 +114,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
 
     // Subscribe to broadcast channel (speaker receives backchannel + listener_announce)
-    broadcast.subscribe(
+    broadcastRef.current.subscribe(
       code,
       undefined, // onTranslation (speaker doesn't receive translations)
       undefined, // onSessionInfo
@@ -121,14 +130,15 @@ export function useLiveSession(userTierId: TierId = 'free') {
     )
 
     // Join presence as speaker
-    presence.join(code, {
+    presenceRef.current.join(code, {
       deviceName: `Speaker (${getDeviceName()})`,
       targetLanguage: '_speaker',
       joinedAt: new Date().toISOString(),
     })
 
     return code
-  }, [broadcast, presence, connection])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection])
 
   // Broadcast session info when listener count changes (throttled to 1s)
   const lastBroadcastRef = useRef(0)
@@ -165,10 +175,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
   useEffect(() => {
     if (role !== 'speaker' || !sessionCode) return
     const interval = setInterval(() => {
-      broadcast.broadcast('heartbeat', { t: Date.now() })
+      broadcastRef.current.broadcast('heartbeat', { t: Date.now() })
     }, 10_000) // every 10 seconds
     return () => clearInterval(interval)
-  }, [role, sessionCode, broadcast])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, sessionCode])
 
   // Broadcast session info periodically when listener count changes
   useEffect(() => {
@@ -176,11 +187,11 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     const send = () => {
       lastBroadcastRef.current = Date.now()
-      broadcast.broadcast('session_info', {
+      broadcastRef.current.broadcast('session_info', {
         sessionCode,
         speakerName: getDeviceName(),
         sourceLanguage,
-        listenerCount: presence.listenerCount,
+        listenerCount: presenceRef.current.listenerCount,
       } satisfies SessionInfo)
     }
 
@@ -195,12 +206,14 @@ export function useLiveSession(userTierId: TierId = 'free') {
     return () => {
       if (broadcastTimerRef.current) clearTimeout(broadcastTimerRef.current)
     }
-  }, [role, sessionCode, sourceLanguage, presence.listenerCount, broadcast])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, sessionCode, sourceLanguage, presence.listenerCount])
 
   // Process a single text through translation fan-out
   const processTranslation = useCallback(async (text: string) => {
     // Get unique target languages from connected listeners (presence)
-    const presenceLangs = Object.keys(presence.listenersByLanguage)
+    // Use ref to avoid stale closure — presence object changes on every render
+    const presenceLangs = Object.keys(presenceRef.current.listenersByLanguage)
       .filter(lang => lang !== '_speaker')
 
     // Merge with broadcast-announced languages (fallback for broken presence on iOS)
@@ -220,7 +233,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
       .filter(lang => lang !== '_speaker')
 
     // Diagnostic: log what we see (console.error survives production builds)
-    console.error(`[LiveSession] processTranslation: text="${text.slice(0, 30)}", presenceLangs=[${presenceLangs}], announcedLangs=[${[...announcedLangs]}], allTargetLangs=[${allTargetLangs}], broadcast.connected=${broadcast.isConnected}`)
+    console.error(`[LiveSession] processTranslation: text="${text.slice(0, 30)}", presenceLangs=[${presenceLangs}], announcedLangs=[${[...announcedLangs]}], allTargetLangs=[${allTargetLangs}], broadcast.connected=${broadcastRef.current.isConnected}`)
 
     // Separate _live listeners (passthrough, no translation needed) from regular
     const hasLiveListeners = allTargetLangs.includes('_live')
@@ -242,10 +255,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
       }
       // Broadcast as _live — listeners with _live selected will receive it,
       // and listeners with other languages at least see the speaker is active
-      broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
+      broadcastRef.current.broadcast('translation', chunk as unknown as Record<string, unknown>)
       // Write to presence fallback so iOS listeners can pick it up
       try {
-        presence.updatePresence({
+        presenceRef.current.updatePresence({
           lastChunks: JSON.stringify([{
             id: chunk.id,
             sourceText: chunk.sourceText,
@@ -277,7 +290,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
         isFinal: true,
         timestamp: Date.now(),
       }
-      broadcast.broadcast('translation', liveChunk as unknown as Record<string, unknown>)
+      broadcastRef.current.broadcast('translation', liveChunk as unknown as Record<string, unknown>)
     }
 
     // Enforce language limit per tier (0 = unlimited) — _live doesn't count
@@ -315,7 +328,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
 
     // Broadcast each successful translation
     for (const chunk of results) {
-      broadcast.broadcast('translation', chunk as unknown as Record<string, unknown>)
+      broadcastRef.current.broadcast('translation', chunk as unknown as Record<string, unknown>)
     }
 
     // Fallback: also write translations to speaker's presence state.
@@ -336,7 +349,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     ]
     if (allChunks.length > 0) {
       try {
-        presence.updatePresence({
+        presenceRef.current.updatePresence({
           lastChunks: JSON.stringify(allChunks.map(c => ({
             id: c.id,
             sourceText: c.sourceText,
@@ -378,7 +391,12 @@ export function useLiveSession(userTierId: TierId = 'free') {
     if (failed.length > 0) {
       console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
-  }, [sourceLanguage, presence.listenersByLanguage, broadcast])
+  // IMPORTANT: Do NOT add presence or broadcast as dependencies here.
+  // Both return new object references on every render, causing an infinite re-render loop
+  // when a listener joins (presence changes → processTranslation recreated → re-render → repeat).
+  // Instead, we read them via stable refs (presenceRef, broadcastRef) defined above.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceLanguage])
 
   // Keep ref in sync so drainQueue always calls the latest version
   processTranslationRef.current = processTranslation
@@ -453,7 +471,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
   }, [recognition])
 
   const endSession = useCallback(() => {
-    broadcast.broadcast('status', { speaking: false, ended: true } satisfies StatusMessage)
+    broadcastRef.current.broadcast('status', { speaking: false, ended: true } satisfies StatusMessage)
     recognition.stopListening()
     announcedListenersRef.current.clear()
     if (announceIntervalRef.current) {
@@ -461,13 +479,13 @@ export function useLiveSession(userTierId: TierId = 'free') {
       announceIntervalRef.current = null
     }
     setTimeout(() => {
-      broadcast.unsubscribe()
-      presence.leave()
+      broadcastRef.current.unsubscribe()
+      presenceRef.current.leave()
       setRole(null)
       setSessionCode('')
       setSessionEnded(true)
     }, 500) // Brief delay so listeners receive the end message
-  }, [broadcast, presence, recognition])
+  }, [recognition])
 
   // Detect disconnect during active session and show feedback
   const disconnectMsg = t('error.connectionLost')
@@ -512,7 +530,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
 
     // Subscribe to broadcast
-    broadcast.subscribe(
+    broadcastRef.current.subscribe(
       code,
       // onTranslation
       (chunk: TranslationChunk) => {
@@ -551,7 +569,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     )
 
     // Join presence as listener
-    presence.join(code, {
+    presenceRef.current.join(code, {
       deviceName: getDeviceName(),
       targetLanguage: targetLang,
       joinedAt: new Date().toISOString(),
@@ -561,13 +579,14 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // The 15s interval keeps the speaker's announce map fresh.
     if (announceIntervalRef.current) clearInterval(announceIntervalRef.current)
     announceIntervalRef.current = setInterval(() => {
-      broadcast.broadcast('listener_announce', {
+      broadcastRef.current.broadcast('listener_announce', {
         targetLanguage: selectedLanguageRef.current,
         deviceName: getDeviceName(),
         ts: Date.now(),
       })
     }, 15_000)
-  }, [broadcast, presence, connection])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection])
 
   // --- Reactive listener announce: fires on EVERY connect/reconnect ---
   // The old approach used a fixed 1s setTimeout which was too early for iOS
@@ -576,26 +595,29 @@ export function useLiveSession(userTierId: TierId = 'free') {
   useEffect(() => {
     if (role !== 'listener' || !broadcast.isConnected || !sessionCode) return
     console.error(`[Listener] Connected! Sending listener_announce for lang=${selectedLanguageRef.current}`)
-    broadcast.broadcast('listener_announce', {
+    broadcastRef.current.broadcast('listener_announce', {
       targetLanguage: selectedLanguageRef.current,
       deviceName: getDeviceName(),
       ts: Date.now(),
     })
-  }, [role, broadcast.isConnected, sessionCode, broadcast])
+  // broadcast.isConnected is a primitive (boolean) — safe to use as dependency
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role, broadcast.isConnected, sessionCode])
 
   const selectLanguage = useCallback((lang: string) => {
     setSelectedLanguage(lang)
     selectedLanguageRef.current = lang // Sync ref immediately for incoming broadcasts
     setReceivedChunks([]) // Clear old translations from previous language
     setCurrentTranslation('')
-    presence.updatePresence({ targetLanguage: lang })
+    presenceRef.current.updatePresence({ targetLanguage: lang })
     // Re-announce immediately so speaker picks up the new language
-    broadcast.broadcast('listener_announce', {
+    broadcastRef.current.broadcast('listener_announce', {
       targetLanguage: lang,
       deviceName: getDeviceName(),
       ts: Date.now(),
     })
-  }, [presence, broadcast])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // --- Presence-based translation fallback (listener side) ---
   // Supabase broadcast can silently fail on iOS Safari/WebKit.
@@ -655,8 +677,8 @@ export function useLiveSession(userTierId: TierId = 'free') {
       clearInterval(announceIntervalRef.current)
       announceIntervalRef.current = null
     }
-    broadcast.unsubscribe()
-    presence.leave()
+    broadcastRef.current.unsubscribe()
+    presenceRef.current.leave()
     joinArgsRef.current = null
     if (listenerReconnectTimerRef.current) {
       clearInterval(listenerReconnectTimerRef.current)
@@ -664,7 +686,7 @@ export function useLiveSession(userTierId: TierId = 'free') {
     }
     setRole(null)
     setSessionCode('')
-  }, [broadcast, presence, tts])
+  }, [tts])
 
   // --- Session URL for QR code ---
   const sessionUrl = sessionCode
