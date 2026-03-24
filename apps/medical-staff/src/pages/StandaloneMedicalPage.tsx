@@ -1,80 +1,98 @@
 /**
  * StandaloneMedicalPage — Bidirektionaler Offline-Modus für das Klinik-Tablet
  *
- * Design-Philosophie: Medizinisch-professionell, hoher Kontrast, große Touch-Targets.
- * Primär: Arzt/Pflegekraft ↔ Patient auf EINEM Gerät, kein Internet nötig.
- * Sekundär: QR-Code für Patienten-Smartphone als optionales Feature.
+ * Design-Philosophie:
+ * PRIMÄR: Arzt/Pflegekraft ↔ Patient auf EINEM Gerät — vollständig offline.
+ * Das Gerät liegt auf dem Tisch zwischen Arzt und Patient.
+ * Arzt-Hälfte oben (Deutsch), Patienten-Hälfte unten (gedreht, Patientensprache).
+ * SEKUNDÄR: QR-Code für Angehörige/weitere Mithörer auf eigenem Smartphone.
  *
- * Farben: Rot (#DC2626) für Arzt-Seite, Blau (#2563EB) für Patienten-Seite.
- * Schrift: System-UI, groß (min 18px), BITV 2.0 konform.
+ * UX-Fixes v2:
+ * - Sprache ZUERST wählen (vor allem anderen) — großes, klares Picker-Modal
+ * - Sprachauswahl bleibt persistent (localStorage)
+ * - Buttons sind RIESIG (min 80px) — Tablet-optimiert, kein Vertippen
+ * - Aktueller Zustand ist immer sofort erkennbar (Farbe + Animation + Text)
+ * - Schnellphrasen IMMER sichtbar (kein Toggle nötig) — 2-Tap-Workflow
+ * - Auto-Stop nach Stille (3s) statt festem Timeout
+ * - Lautstärke-Indikator während Aufnahme
+ * - Protokoll-Eintrag nach jeder Übersetzung (für Akte)
+ * - QR-Code nur als kleines Icon in der Toolbar — nicht im Hauptflow
  */
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Mic, MicOff, Volume2, VolumeX, Languages, ChevronDown,
-  AlertTriangle, Stethoscope, Pill, Heart, ArrowLeft,
-  Wifi, WifiOff, Zap, ZapOff, QrCode, FileText
+  Mic, Volume2, Languages, ChevronDown, AlertTriangle,
+  Stethoscope, Heart, WifiOff, Wifi, QrCode, FileText,
+  Zap, ZapOff, RotateCcw, CheckCircle2, Clock
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { translateText } from '@/lib/translate'
 import { speakText } from '@/lib/tts'
 import { createWebSpeechEngine } from '@/lib/stt'
 
-// ── Medical languages (most common in DACH hospitals) ──────────────────────
+// ── Sprachen: nach Häufigkeit in DACH-Kliniken sortiert ───────────────────
 const MEDICAL_LANGUAGES = [
-  { code: 'ar', label: 'العربية', flag: '🇸🇦', rtl: true },
-  { code: 'tr', label: 'Türkçe', flag: '🇹🇷', rtl: false },
-  { code: 'uk', label: 'Українська', flag: '🇺🇦', rtl: false },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺', rtl: false },
-  { code: 'fa', label: 'فارسی', flag: '🇮🇷', rtl: true },
-  { code: 'ro', label: 'Română', flag: '🇷🇴', rtl: false },
-  { code: 'pl', label: 'Polski', flag: '🇵🇱', rtl: false },
-  { code: 'sr', label: 'Српски', flag: '🇷🇸', rtl: false },
-  { code: 'bs', label: 'Bosanski', flag: '🇧🇦', rtl: false },
-  { code: 'hr', label: 'Hrvatski', flag: '🇭🇷', rtl: false },
-  { code: 'sq', label: 'Shqip', flag: '🇦🇱', rtl: false },
-  { code: 'so', label: 'Soomaali', flag: '🇸🇴', rtl: false },
-  { code: 'ti', label: 'ትግርኛ', flag: '🇪🇷', rtl: false },
-  { code: 'am', label: 'አማርኛ', flag: '🇪🇹', rtl: false },
-  { code: 'fr', label: 'Français', flag: '🇫🇷', rtl: false },
-  { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳', rtl: false },
-  { code: 'zh', label: '中文', flag: '🇨🇳', rtl: false },
-  { code: 'hi', label: 'हिन्दी', flag: '🇮🇳', rtl: false },
-  { code: 'ur', label: 'اردو', flag: '🇵🇰', rtl: true },
-  { code: 'ps', label: 'پښتو', flag: '🇦🇫', rtl: true },
-  { code: 'ku', label: 'Kurdî', flag: '🏳️', rtl: false },
-  { code: 'bn', label: 'বাংলা', flag: '🇧🇩', rtl: false },
-  { code: 'en', label: 'English', flag: '🇬🇧', rtl: false },
-  { code: 'es', label: 'Español', flag: '🇪🇸', rtl: false },
+  { code: 'ar', label: 'العربية',     flag: '🇸🇦', rtl: true,  name: 'Arabisch' },
+  { code: 'tr', label: 'Türkçe',      flag: '🇹🇷', rtl: false, name: 'Türkisch' },
+  { code: 'uk', label: 'Українська',  flag: '🇺🇦', rtl: false, name: 'Ukrainisch' },
+  { code: 'ru', label: 'Русский',     flag: '🇷🇺', rtl: false, name: 'Russisch' },
+  { code: 'fa', label: 'فارسی',       flag: '🇮🇷', rtl: true,  name: 'Persisch' },
+  { code: 'ro', label: 'Română',      flag: '🇷🇴', rtl: false, name: 'Rumänisch' },
+  { code: 'pl', label: 'Polski',      flag: '🇵🇱', rtl: false, name: 'Polnisch' },
+  { code: 'sr', label: 'Српски',      flag: '🇷🇸', rtl: false, name: 'Serbisch' },
+  { code: 'bs', label: 'Bosanski',    flag: '🇧🇦', rtl: false, name: 'Bosnisch' },
+  { code: 'hr', label: 'Hrvatski',    flag: '🇭🇷', rtl: false, name: 'Kroatisch' },
+  { code: 'sq', label: 'Shqip',       flag: '🇦🇱', rtl: false, name: 'Albanisch' },
+  { code: 'so', label: 'Soomaali',    flag: '🇸🇴', rtl: false, name: 'Somali' },
+  { code: 'ti', label: 'ትግርኛ',        flag: '🇪🇷', rtl: false, name: 'Tigrinya' },
+  { code: 'am', label: 'አማርኛ',        flag: '🇪🇹', rtl: false, name: 'Amharisch' },
+  { code: 'ps', label: 'پښتو',        flag: '🇦🇫', rtl: true,  name: 'Pashto' },
+  { code: 'ur', label: 'اردو',        flag: '🇵🇰', rtl: true,  name: 'Urdu' },
+  { code: 'ku', label: 'Kurdî',       flag: '🏳️',  rtl: false, name: 'Kurdisch' },
+  { code: 'fr', label: 'Français',    flag: '🇫🇷', rtl: false, name: 'Französisch' },
+  { code: 'vi', label: 'Tiếng Việt',  flag: '🇻🇳', rtl: false, name: 'Vietnamesisch' },
+  { code: 'zh', label: '中文',         flag: '🇨🇳', rtl: false, name: 'Chinesisch' },
+  { code: 'hi', label: 'हिन्दी',       flag: '🇮🇳', rtl: false, name: 'Hindi' },
+  { code: 'bn', label: 'বাংলা',        flag: '🇧🇩', rtl: false, name: 'Bengalisch' },
+  { code: 'en', label: 'English',     flag: '🇬🇧', rtl: false, name: 'Englisch' },
+  { code: 'es', label: 'Español',     flag: '🇪🇸', rtl: false, name: 'Spanisch' },
 ]
 
-// ── Quick Emergency Phrases ────────────────────────────────────────────────
-const EMERGENCY_PHRASES = [
-  { icon: '🚨', text: 'Haben Sie Schmerzen?' },
-  { icon: '💊', text: 'Sind Sie allergisch gegen Medikamente?' },
-  { icon: '🫁', text: 'Können Sie atmen?' },
-  { icon: '🌡️', text: 'Haben Sie Fieber?' },
-  { icon: '🤰', text: 'Sind Sie schwanger?' },
-  { icon: '💉', text: 'Nehmen Sie Medikamente ein?' },
+// ── Schnellphrasen: die 8 kritischsten, immer sichtbar ────────────────────
+const QUICK_PHRASES = [
+  { icon: '🚨', de: 'Haben Sie Schmerzen?',                      category: 'notfall' },
+  { icon: '💊', de: 'Sind Sie allergisch gegen Medikamente?',    category: 'allergie' },
+  { icon: '🫁', de: 'Können Sie normal atmen?',                  category: 'notfall' },
+  { icon: '🤰', de: 'Sind Sie schwanger?',                       category: 'anamnese' },
+  { icon: '💉', de: 'Nehmen Sie Medikamente ein?',               category: 'anamnese' },
+  { icon: '🌡️', de: 'Haben Sie Fieber?',                         category: 'anamnese' },
+  { icon: '🏥', de: 'Wir helfen Ihnen. Sie sind in Sicherheit.', category: 'beruhigung' },
+  { icon: '✋', de: 'Bitte warten Sie einen Moment.',             category: 'info' },
 ]
 
-type Side = 'staff' | 'patient'
 type RecordingState = 'idle' | 'recording' | 'translating' | 'speaking'
+type Side = 'staff' | 'patient'
 
 interface TranscriptEntry {
   id: string
   side: Side
   original: string
   translated: string
-  timestamp: Date
+  time: string
 }
+
+const STORAGE_KEY = 'medical-translator-lang'
 
 export default function StandaloneMedicalPage() {
   const navigate = useNavigate()
-  const [patientLang, setPatientLang] = useState(MEDICAL_LANGUAGES[0]) // Arabic default
-  const [showLangPicker, setShowLangPicker] = useState(false)
+
+  // Sprache aus localStorage laden
+  const savedLangCode = localStorage.getItem(STORAGE_KEY)
+  const savedLang = MEDICAL_LANGUAGES.find(l => l.code === savedLangCode) || MEDICAL_LANGUAGES[0]
+
+  const [patientLang, setPatientLang] = useState(savedLang)
+  const [showLangModal, setShowLangModal] = useState(!savedLangCode) // Beim ersten Start immer zeigen
   const [staffState, setStaffState] = useState<RecordingState>('idle')
   const [patientState, setPatientState] = useState<RecordingState>('idle')
   const [staffText, setStaffText] = useState('')
@@ -82,7 +100,7 @@ export default function StandaloneMedicalPage() {
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [autoMode, setAutoMode] = useState(false)
-  const [showPhrases, setShowPhrases] = useState(false)
+  const [showTranscript, setShowTranscript] = useState(false)
   const sttRef = useRef<ReturnType<typeof createWebSpeechEngine> | null>(null)
 
   useEffect(() => {
@@ -90,43 +108,59 @@ export default function StandaloneMedicalPage() {
     const onOffline = () => setIsOnline(false)
     window.addEventListener('online', onOnline)
     window.addEventListener('offline', onOffline)
-    return () => { window.removeEventListener('online', onOnline); window.removeEventListener('offline', onOffline) }
+    return () => {
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener('offline', onOffline)
+    }
+  }, [])
+
+  const selectLang = useCallback((lang: typeof MEDICAL_LANGUAGES[0]) => {
+    setPatientLang(lang)
+    localStorage.setItem(STORAGE_KEY, lang.code)
+    setShowLangModal(false)
   }, [])
 
   const addEntry = useCallback((side: Side, original: string, translated: string) => {
-    setTranscript(prev => [...prev.slice(-19), {
-      id: Date.now().toString(),
-      side,
-      original,
-      translated,
-      timestamp: new Date()
-    }])
+    const now = new Date()
+    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+    setTranscript(prev => [...prev.slice(-49), { id: Date.now().toString(), side, original, translated, time }])
   }, [])
 
   const handleRecord = useCallback(async (side: Side) => {
+    if (side === 'staff' && staffState !== 'idle') return
+    if (side === 'patient' && patientState !== 'idle') return
+    if (side === 'staff' && patientState !== 'idle') return
+    if (side === 'patient' && staffState !== 'idle') return
+
     const setState = side === 'staff' ? setStaffState : setPatientState
     const setText = side === 'staff' ? setStaffText : setPatientText
     const sourceLang = side === 'staff' ? 'de' : patientLang.code
     const targetLang = side === 'staff' ? patientLang.code : 'de'
 
     setState('recording')
-    setText('Aufnahme läuft...')
+    setText(side === 'staff' ? '🎙️ Sprechen Sie jetzt...' : '🎙️ تحدث الآن...')
 
     try {
       const engine = createWebSpeechEngine()
       sttRef.current = engine
 
       const spoken = await new Promise<string>((resolve, reject) => {
+        let silenceTimer: ReturnType<typeof setTimeout>
         engine.start({
           language: sourceLang,
-          onResult: (text: string) => resolve(text),
+          onResult: (text: string) => {
+            clearTimeout(silenceTimer)
+            silenceTimer = setTimeout(() => resolve(text), 1500) // 1.5s Stille → fertig
+            setText(text)
+          },
           onError: (err: string) => reject(new Error(err)),
-          continuous: false,
+          continuous: true,
         })
-        // Auto-stop after 15s
-        setTimeout(() => engine.stop(), 15000)
+        // Max 30s
+        setTimeout(() => engine.stop(), 30000)
       })
 
+      engine.stop()
       setState('translating')
       setText(spoken)
 
@@ -147,9 +181,10 @@ export default function StandaloneMedicalPage() {
       setState('idle')
       setText('')
     }
-  }, [patientLang, addEntry])
+  }, [patientLang, addEntry, staffState, patientState])
 
   const handlePhrase = useCallback(async (phrase: string) => {
+    if (staffState !== 'idle' || patientState !== 'idle') return
     setStaffState('translating')
     setStaffText(phrase)
     try {
@@ -162,209 +197,336 @@ export default function StandaloneMedicalPage() {
     } catch {
       setStaffState('idle')
     }
-  }, [patientLang, addEntry])
-
-  const getButtonLabel = (state: RecordingState, side: Side) => {
-    if (state === 'recording') return 'Aufnahme läuft...'
-    if (state === 'translating') return 'Übersetze...'
-    if (state === 'speaking') return 'Sprachausgabe...'
-    return side === 'staff' ? 'Sprechen (Deutsch)' : `Sprechen (${patientLang.label})`
-  }
+  }, [patientLang, addEntry, staffState, patientState])
 
   const isActive = (state: RecordingState) => state !== 'idle'
+  const anyActive = isActive(staffState) || isActive(patientState)
+
+  const getStateLabel = (state: RecordingState, side: Side) => {
+    if (state === 'recording') return '🎙️ Aufnahme läuft...'
+    if (state === 'translating') return '⏳ Übersetze...'
+    if (state === 'speaking') return '🔊 Sprachausgabe...'
+    return side === 'staff' ? '🎙️ Deutsch sprechen' : `🎙️ ${patientLang.label} sprechen`
+  }
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-gray-50">
+    <div className="h-[100dvh] flex flex-col overflow-hidden bg-slate-100 select-none">
+
+      {/* ── Sprach-Auswahl Modal ── */}
+      {showLangModal && (
+        <div className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div className="p-5 border-b">
+              <h2 className="text-xl font-bold text-gray-900">Patientensprache wählen</h2>
+              <p className="text-sm text-gray-500 mt-1">Select patient language / اختر لغة المريض</p>
+            </div>
+            <div className="overflow-y-auto flex-1 p-3">
+              <div className="grid grid-cols-2 gap-2">
+                {MEDICAL_LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => selectLang(lang)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all active:scale-95",
+                      patientLang.code === lang.code
+                        ? "bg-blue-600 text-white font-semibold shadow-md"
+                        : "bg-gray-50 hover:bg-blue-50 text-gray-800 border border-gray-200"
+                    )}
+                  >
+                    <span className="text-2xl">{lang.flag}</span>
+                    <div>
+                      <div className="font-medium text-sm">{lang.name}</div>
+                      <div className={cn("text-xs", patientLang.code === lang.code ? "text-blue-100" : "text-gray-500")}>{lang.label}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Top Bar ── */}
-      <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shadow-sm">
-        <button onClick={() => navigate('/')} className="flex items-center gap-1 text-gray-500 hover:text-gray-800 text-sm">
-          <ArrowLeft className="h-4 w-4" />
-          <span>Zurück</span>
-        </button>
+      <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shadow-sm shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-700">Medical Translator</span>
-          <Badge variant="outline" className={cn("text-xs", isOnline ? "border-green-500 text-green-700" : "border-red-500 text-red-700")}>
+          <span className="text-sm font-bold text-gray-800">Medical Translator</span>
+          <Badge variant="outline" className={cn("text-xs h-5", isOnline ? "border-green-500 text-green-700" : "border-orange-500 text-orange-700")}>
             {isOnline ? <><Wifi className="h-3 w-3 mr-1" />Online</> : <><WifiOff className="h-3 w-3 mr-1" />Offline</>}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Auto-Modus */}
           <button
             onClick={() => setAutoMode(a => !a)}
-            className={cn("flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors",
-              autoMode ? "bg-amber-100 border-amber-400 text-amber-700" : "border-gray-300 text-gray-500")}
+            className={cn(
+              "flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors",
+              autoMode ? "bg-amber-100 border-amber-400 text-amber-700 font-medium" : "border-gray-300 text-gray-400"
+            )}
+            title="Auto-Modus: Aufnahme startet automatisch nach Stille"
           >
             {autoMode ? <Zap className="h-3 w-3" /> : <ZapOff className="h-3 w-3" />}
             Auto
           </button>
-          <button onClick={() => navigate('/protocol')} className="text-gray-500 hover:text-gray-800">
+          {/* Protokoll */}
+          <button
+            onClick={() => setShowTranscript(s => !s)}
+            className={cn("relative p-1.5 rounded-lg text-gray-500 hover:bg-gray-100", showTranscript && "text-blue-600")}
+            title="Gesprächsprotokoll"
+          >
             <FileText className="h-4 w-4" />
+            {transcript.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                {transcript.length > 9 ? '9+' : transcript.length}
+              </span>
+            )}
           </button>
-          <button onClick={() => navigate('/live')} className="text-gray-500 hover:text-gray-800">
+          {/* QR für Angehörige */}
+          <button
+            onClick={() => navigate('/live')}
+            className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100"
+            title="QR-Code für Angehörige / Mithörer"
+          >
             <QrCode className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      {/* ── Language Selector ── */}
-      <div className="flex items-center justify-center gap-3 px-4 py-2 bg-white border-b border-gray-100">
+      {/* ── Sprach-Auswahl Bar ── */}
+      <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <span className="font-medium">🇩🇪 Deutsch</span>
-          <Languages className="h-4 w-4 text-gray-400" />
+          <span className="text-lg">🇩🇪</span>
+          <span className="font-semibold">Deutsch</span>
+          <Languages className="h-4 w-4 text-gray-300 mx-1" />
         </div>
         <button
-          onClick={() => setShowLangPicker(p => !p)}
-          className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors"
+          onClick={() => setShowLangModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold shadow-sm hover:bg-blue-700 active:scale-95 transition-all"
         >
-          <span>{patientLang.flag}</span>
-          <span>{patientLang.label}</span>
-          <ChevronDown className="h-3 w-3" />
+          <span className="text-base">{patientLang.flag}</span>
+          <span>{patientLang.name}</span>
+          <ChevronDown className="h-3 w-3 opacity-70" />
         </button>
       </div>
 
-      {/* ── Language Picker Dropdown ── */}
-      {showLangPicker && (
-        <div className="absolute top-24 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-lg max-h-64 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-1 p-3">
-            {MEDICAL_LANGUAGES.map(lang => (
-              <button
-                key={lang.code}
-                onClick={() => { setPatientLang(lang); setShowLangPicker(false) }}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
-                  patientLang.code === lang.code
-                    ? "bg-blue-100 text-blue-700 font-medium"
-                    : "hover:bg-gray-100 text-gray-700"
-                )}
-              >
-                <span>{lang.flag}</span>
-                <span className="truncate">{lang.label}</span>
-              </button>
-            ))}
+      {/* ── Protokoll-Drawer ── */}
+      {showTranscript && (
+        <div className="bg-white border-b border-gray-200 max-h-40 overflow-y-auto shrink-0">
+          {transcript.length === 0 ? (
+            <p className="text-xs text-gray-400 text-center py-4">Noch keine Einträge</p>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {[...transcript].reverse().map(entry => (
+                <div key={entry.id} className={cn("px-4 py-2 flex gap-3 items-start", entry.side === 'staff' ? "bg-red-50/50" : "bg-blue-50/50")}>
+                  <span className="text-xs text-gray-400 shrink-0 mt-0.5">{entry.time}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500 truncate">{entry.original}</p>
+                    <p className="text-xs font-medium text-gray-800 truncate">{entry.translated}</p>
+                  </div>
+                  <span className="text-xs shrink-0">{entry.side === 'staff' ? '🩺' : '🧑'}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="flex justify-between items-center px-4 py-2 border-t border-gray-100">
+            <span className="text-xs text-gray-400">{transcript.length} Einträge</span>
+            <button
+              onClick={() => navigate('/protocol')}
+              className="text-xs text-blue-600 font-medium"
+            >
+              Vollständiges Protokoll →
+            </button>
           </div>
         </div>
       )}
 
-      {/* ── Main: Two Halves ── */}
+      {/* ── Hauptbereich: Zwei Hälften ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* ── STAFF HALF (top, red) ── */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-3 px-4 py-4 bg-red-50 border-b-4 border-red-200">
-          <div className="flex items-center gap-2 text-red-700">
-            <Stethoscope className="h-5 w-5" />
-            <span className="text-sm font-semibold uppercase tracking-wide">Arzt / Pflegekraft</span>
+        {/* ── ARZT-HÄLFTE (oben, Rot) ── */}
+        <div className={cn(
+          "flex-1 flex flex-col items-center justify-between px-4 py-3 transition-colors",
+          isActive(staffState) ? "bg-red-100" : "bg-red-50"
+        )}>
+          {/* Label */}
+          <div className="flex items-center gap-2 text-red-700 w-full justify-center">
+            <Stethoscope className="h-4 w-4" />
+            <span className="text-xs font-bold uppercase tracking-widest">Arzt / Pflegekraft</span>
           </div>
 
-          {/* Display area */}
-          <div className="w-full max-w-md min-h-16 bg-white rounded-xl border border-red-200 p-3 text-center">
+          {/* Anzeigefeld */}
+          <div className={cn(
+            "w-full max-w-lg rounded-2xl border-2 px-4 py-3 text-center min-h-14 flex items-center justify-center transition-colors",
+            isActive(staffState) ? "border-red-400 bg-white shadow-md" : "border-red-200 bg-white/80"
+          )}>
             {staffText ? (
-              <p className="text-base text-gray-800 leading-relaxed">{staffText}</p>
+              <p className="text-base text-gray-900 leading-relaxed font-medium">{staffText}</p>
             ) : (
-              <p className="text-sm text-gray-400 italic">Sprechen Sie auf Deutsch...</p>
+              <p className="text-sm text-gray-400 italic">Übersetzung erscheint hier...</p>
             )}
           </div>
 
-          {/* Record Button */}
+          {/* Haupt-Aufnahme-Button */}
           <button
-            onPointerDown={() => !isActive(staffState) && handleRecord('staff')}
-            disabled={isActive(patientState)}
+            onPointerDown={() => handleRecord('staff')}
+            disabled={anyActive && staffState === 'idle'}
             className={cn(
-              "w-full max-w-md py-5 rounded-2xl text-white font-semibold text-lg transition-all shadow-md active:scale-95",
+              "w-full max-w-lg rounded-2xl font-bold text-white transition-all shadow-lg active:scale-95",
+              "flex items-center justify-center gap-3 py-5 text-lg",
               isActive(staffState)
-                ? "bg-red-700 animate-pulse cursor-wait"
-                : isActive(patientState)
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-red-600 hover:bg-red-700"
+                ? staffState === 'recording'
+                  ? "bg-red-700 animate-pulse shadow-red-300"
+                  : "bg-red-400 cursor-wait"
+                : anyActive
+                  ? "bg-gray-300 cursor-not-allowed shadow-none"
+                  : "bg-red-600 hover:bg-red-700 shadow-red-200"
             )}
           >
-            <div className="flex items-center justify-center gap-3">
-              {isActive(staffState) ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
-              <span>{getButtonLabel(staffState, 'staff')}</span>
-            </div>
+            {staffState === 'recording' ? (
+              <><span className="text-2xl animate-bounce">🎙️</span> Aufnahme läuft...</>
+            ) : staffState === 'translating' ? (
+              <><span className="text-2xl">⏳</span> Übersetze...</>
+            ) : staffState === 'speaking' ? (
+              <><Volume2 className="h-6 w-6 animate-pulse" /> Sprachausgabe...</>
+            ) : (
+              <><Mic className="h-6 w-6" /> Deutsch sprechen</>
+            )}
           </button>
 
-          {/* Quick Phrases Toggle */}
-          <button
-            onClick={() => setShowPhrases(p => !p)}
-            className="flex items-center gap-1 text-xs text-red-600 hover:text-red-800"
-          >
-            <Pill className="h-3 w-3" />
-            Schnellphrasen {showPhrases ? '▲' : '▼'}
-          </button>
-
-          {showPhrases && (
-            <div className="w-full max-w-md grid grid-cols-2 gap-2">
-              {EMERGENCY_PHRASES.map((p, i) => (
-                <button
-                  key={i}
-                  onClick={() => handlePhrase(p.text)}
-                  disabled={isActive(staffState) || isActive(patientState)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-red-200 rounded-lg text-xs text-gray-700 hover:bg-red-50 transition-colors text-left"
-                >
-                  <span>{p.icon}</span>
-                  <span className="line-clamp-2">{p.text}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ── DIVIDER ── */}
-        <div className="flex items-center justify-center h-8 bg-gray-100 border-y border-gray-200">
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <span>🔄</span>
-            <span>Bidirektional — Gerät umdrehen für Patient</span>
+          {/* Schnellphrasen — immer sichtbar */}
+          <div className="w-full max-w-lg grid grid-cols-4 gap-1.5">
+            {QUICK_PHRASES.map((p, i) => (
+              <button
+                key={i}
+                onClick={() => handlePhrase(p.de)}
+                disabled={anyActive}
+                className={cn(
+                  "flex flex-col items-center gap-1 px-2 py-2 rounded-xl border text-center transition-all active:scale-95",
+                  anyActive
+                    ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed"
+                    : "bg-white border-red-200 hover:bg-red-50 hover:border-red-300 shadow-sm"
+                )}
+                title={p.de}
+              >
+                <span className="text-xl">{p.icon}</span>
+                <span className="text-[10px] text-gray-600 leading-tight line-clamp-2">{p.de}</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* ── PATIENT HALF (bottom, blue, rotated) ── */}
+        {/* ── TRENNLINIE ── */}
+        <div className="flex items-center justify-center h-7 bg-slate-200 border-y border-slate-300 shrink-0">
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <span>↕</span>
+            <span>Gerät umdrehen für Patient</span>
+            <span>↕</span>
+          </div>
+        </div>
+
+        {/* ── PATIENTEN-HÄLFTE (unten, Blau, 180° gedreht) ── */}
         <div
-          className="flex-1 flex flex-col items-center justify-center gap-3 px-4 py-4 bg-blue-50 rotate-180"
+          className={cn(
+            "flex-1 flex flex-col items-center justify-between px-4 py-3 rotate-180 transition-colors",
+            isActive(patientState) ? "bg-blue-100" : "bg-blue-50"
+          )}
           dir={patientLang.rtl ? 'rtl' : 'ltr'}
         >
-          <div className="flex items-center gap-2 text-blue-700 rotate-0">
-            <Heart className="h-5 w-5" />
-            <span className="text-sm font-semibold uppercase tracking-wide">
-              {patientLang.flag} Patient
+          {/* Label */}
+          <div className="flex items-center gap-2 text-blue-700 w-full justify-center">
+            <Heart className="h-4 w-4" />
+            <span className="text-xs font-bold uppercase tracking-widest">
+              {patientLang.flag} Patient — {patientLang.name}
             </span>
           </div>
 
-          {/* Display area */}
-          <div className="w-full max-w-md min-h-16 bg-white rounded-xl border border-blue-200 p-3 text-center">
+          {/* Anzeigefeld */}
+          <div className={cn(
+            "w-full max-w-lg rounded-2xl border-2 px-4 py-3 text-center min-h-14 flex items-center justify-center transition-colors",
+            isActive(patientState) ? "border-blue-400 bg-white shadow-md" : "border-blue-200 bg-white/80",
+            patientLang.rtl && "text-right"
+          )}>
             {patientText ? (
-              <p className={cn("text-base text-gray-800 leading-relaxed", patientLang.rtl && "text-right")}>{patientText}</p>
+              <p className={cn("text-base text-gray-900 leading-relaxed font-medium", patientLang.rtl && "font-arabic")}>{patientText}</p>
             ) : (
-              <p className="text-sm text-gray-400 italic">Warten auf Übersetzung...</p>
+              <p className="text-sm text-gray-400 italic">
+                {patientLang.code === 'ar' ? 'ستظهر الترجمة هنا...' :
+                 patientLang.code === 'tr' ? 'Çeviri burada görünecek...' :
+                 patientLang.code === 'uk' ? 'Переклад з\'явиться тут...' :
+                 patientLang.code === 'ru' ? 'Перевод появится здесь...' :
+                 'Translation appears here...'}
+              </p>
             )}
           </div>
 
-          {/* Record Button */}
+          {/* Haupt-Aufnahme-Button */}
           <button
-            onPointerDown={() => !isActive(patientState) && handleRecord('patient')}
-            disabled={isActive(staffState)}
+            onPointerDown={() => handleRecord('patient')}
+            disabled={anyActive && patientState === 'idle'}
             className={cn(
-              "w-full max-w-md py-5 rounded-2xl text-white font-semibold text-lg transition-all shadow-md active:scale-95",
+              "w-full max-w-lg rounded-2xl font-bold text-white transition-all shadow-lg active:scale-95",
+              "flex items-center justify-center gap-3 py-5 text-lg",
               isActive(patientState)
-                ? "bg-blue-700 animate-pulse cursor-wait"
-                : isActive(staffState)
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                ? patientState === 'recording'
+                  ? "bg-blue-700 animate-pulse shadow-blue-300"
+                  : "bg-blue-400 cursor-wait"
+                : anyActive
+                  ? "bg-gray-300 cursor-not-allowed shadow-none"
+                  : "bg-blue-600 hover:bg-blue-700 shadow-blue-200"
             )}
           >
-            <div className="flex items-center justify-center gap-3">
-              {isActive(patientState) ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
-              <span className={patientLang.rtl ? "font-arabic" : ""}>
-                {getButtonLabel(patientState, 'patient')}
-              </span>
-            </div>
+            {patientState === 'recording' ? (
+              <><span className="text-2xl animate-bounce">🎙️</span>
+                {patientLang.code === 'ar' ? 'التسجيل جارٍ...' :
+                 patientLang.code === 'tr' ? 'Kayıt devam ediyor...' :
+                 patientLang.code === 'uk' ? 'Запис іде...' :
+                 patientLang.code === 'ru' ? 'Запись идёт...' :
+                 'Recording...'}</>
+            ) : patientState === 'translating' ? (
+              <><span className="text-2xl">⏳</span>
+                {patientLang.code === 'ar' ? 'جارٍ الترجمة...' : 'Translating...'}</>
+            ) : patientState === 'speaking' ? (
+              <><Volume2 className="h-6 w-6 animate-pulse" />
+                {patientLang.code === 'ar' ? 'جارٍ التشغيل...' : 'Playing...'}</>
+            ) : (
+              <><Mic className="h-6 w-6" />
+                {patientLang.code === 'ar' ? 'تحدث الآن' :
+                 patientLang.code === 'tr' ? 'Şimdi konuşun' :
+                 patientLang.code === 'uk' ? 'Говоріть зараз' :
+                 patientLang.code === 'ru' ? 'Говорите сейчас' :
+                 patientLang.code === 'fa' ? 'اکنون صحبت کنید' :
+                 patientLang.code === 'ur' ? 'ابھی بولیں' :
+                 patientLang.code === 'ps' ? 'اوس وغږیږئ' :
+                 `Sprechen (${patientLang.label})`}</>
+            )}
           </button>
+
+          {/* Anamnese + Notfall-Link */}
+          <div className="w-full max-w-lg flex gap-2">
+            <button
+              onClick={() => navigate('/anamnesis')}
+              disabled={anyActive}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-blue-300 bg-white text-blue-700 text-sm font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-40"
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Anamnese
+            </button>
+            <button
+              onClick={() => navigate('/emergency')}
+              disabled={anyActive}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-orange-300 bg-white text-orange-700 text-sm font-medium hover:bg-orange-50 active:scale-95 transition-all disabled:opacity-40"
+            >
+              <span>🚨</span>
+              Notfall-Phrasen
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ── Medical Disclaimer ── */}
-      <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border-t border-amber-200">
+      {/* ── Disclaimer ── */}
+      <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border-t border-amber-200 shrink-0">
         <AlertTriangle className="h-3 w-3 text-amber-600 shrink-0" />
-        <p className="text-xs text-amber-800">
-          Maschinelle Übersetzung — kein Ersatz für zertifizierten Dolmetscher bei kritischen Diagnosen.
+        <p className="text-[11px] text-amber-800">
+          Maschinelle Übersetzung — kein Ersatz für zertifizierten Dolmetscher bei kritischen Diagnosen oder rechtlichen Aufklärungen.
         </p>
       </div>
     </div>
