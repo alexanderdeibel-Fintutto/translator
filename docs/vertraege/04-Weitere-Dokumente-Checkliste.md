@@ -8,6 +8,8 @@
 - [x] **01 -- Partnerschaftsvorschlag** (1-Seiter für Ulrich)
 - [x] **02 -- Lizenzvertrag** (Fintutto UG ↔ AI Tour Guide UG)
 - [x] **03 -- Vertriebsvereinbarung** (AI Tour Guide UG ↔ Ulrich Berger)
+- [x] **05 -- Ausscheidungsvereinbarung** (Einvernehmliche Trennung von Ulrich Berger)
+- [x] **06 -- Anteilsabtretungsvertrag** (Übertragung 50% Geschäftsanteile, notariell beurkundungspflichtig)
 
 ---
 
