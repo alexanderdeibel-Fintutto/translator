@@ -109,12 +109,21 @@ export default function SettingsPage() {
 
     setSaving(true)
     try {
+      // Always create a fresh client to ensure auth session is current
+      const freshClient = createClient()
+      const { data: { user }, error: authErr } = await freshClient.auth.getUser()
+      if (authErr || !user) {
+        showMsg('error', 'Du bist nicht eingeloggt. Bitte lade die Seite neu und logge dich erneut ein.')
+        setSaving(false)
+        return
+      }
+
       const address = { street, city, zip, country }
       const branding = { primaryColor, accentColor }
 
       if (!museum) {
         // CREATE new museum via RPC function
-        const { data, error } = await supabase.rpc('create_museum_for_user', {
+        const { data, error } = await freshClient.rpc('create_museum_for_user', {
           p_name: name.trim(),
           p_slug: slug.trim(),
           p_description: description.trim(),
@@ -131,7 +140,7 @@ export default function SettingsPage() {
         await reload()
       } else {
         // UPDATE existing museum via RPC function
-        const { error } = await supabase.rpc('update_museum_settings', {
+        const { error } = await freshClient.rpc('update_museum_settings', {
           p_museum_id: museum.id,
           p_name: name.trim(),
           p_description: description.trim(),
@@ -162,7 +171,8 @@ export default function SettingsPage() {
     }
     setSaving(true)
     try {
-      const { error } = await supabase.rpc('update_museum_settings', {
+      const freshClient = createClient()
+      const { error } = await freshClient.rpc('update_museum_settings', {
         p_museum_id: museum.id,
         p_branding: { primaryColor, accentColor },
       })
@@ -187,7 +197,8 @@ export default function SettingsPage() {
     }
     setSaving(true)
     try {
-      const { error } = await supabase.rpc('update_museum_settings', {
+      const freshClient = createClient()
+      const { error } = await freshClient.rpc('update_museum_settings', {
         p_museum_id: museum.id,
         p_default_language: defaultLang,
         p_supported_languages: supportedLangs,
