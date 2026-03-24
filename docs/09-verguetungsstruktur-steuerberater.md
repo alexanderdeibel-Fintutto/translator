@@ -1,6 +1,6 @@
 # Verguetungsstruktur Fintutto UG — Vorlage fuer Steuerberater
 
-**Stand:** 07.03.2026 | **Vertraulich**
+**Stand:** 16.03.2026 | **Vertraulich**
 **Zweck:** Abstimmung mit Steuerberater zur legalen Verguetungsoptimierung
 **Gesellschafter/GF:** Alexander Deibel (100% Anteile)
 
@@ -12,8 +12,10 @@
 Fintutto UG (MV) — 100% Alexander Deibel
 │
 ├── Haupttaetigkeit: Entwicklung + Betrieb Fintutto Translator
+│   (16 App-Varianten fuer 7 Marktsegmente: General, Schools,
+│    Authorities, NGO, Hospitality, Medical, Events)
 ├── Foerdermittelempfaenger (EFRE/ZIM, Gruenderstipendium, etc.)
-├── B2B-Vertrieb (Enterprise, Events, Cruise) → verbleibt bei Fintutto UG
+├── B2B-Vertrieb (Enterprise, Events, Cruise, Medical, Hospitality) → verbleibt bei Fintutto UG
 │
 ├── Lizenzvertrag → AI Tour Guide UG (Rostock)
 │   ├── Consumer-Markt (B2C) laeuft ueber AI Tour Guide UG
@@ -53,7 +55,7 @@ Fintutto UG (MV) — 100% Alexander Deibel
   - GF einer Tech-UG in MV: 4.000-6.000 EUR (Quelle: Stepstone, Glassdoor)
   - CTO/Tech-Lead Startup: 6.500-10.000 EUR (Quelle: Stepstone, Glassdoor)
   - Kombinierte Rolle GF+CTO: 7.000 EUR ist konservativ und marktkonform
-  - Vergleich: Solo-Gruender mit MVP, 13.000+ Zeilen Code, 87 Tests
+  - Vergleich: Solo-Gruender mit MVP, 41.000+ Zeilen Code, 295 Dateien, 16 App-Varianten, 87+ Tests
 - **FuE-Anteil:** 70% (= 4.900 EUR/Mon → foerderfaehig bei EFRE/ZIM)
   - Taetigkeiten FuE: KI-Modellentwicklung, BLE-Protokoll, Offline-ML-Pipeline, Architektur
   - Taetigkeiten Nicht-FuE (30%): Geschaeftsfuehrung, Vertrieb, Finanzen, Strategie
@@ -394,4 +396,4 @@ Fintutto UG (MV) — 100% Alexander Deibel
 
 ---
 
-*Erstellt am 07.03.2026 | Vertraulich — nur fuer Steuerberater-Abstimmung*
+*Aktualisiert am 16.03.2026 | Fintutto Translator v5.2 | Vertraulich — nur fuer Steuerberater-Abstimmung*

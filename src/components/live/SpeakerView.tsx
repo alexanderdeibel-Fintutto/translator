@@ -1,5 +1,5 @@
 import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
-import { useRef, useCallback, useState, useEffect } from 'react'
+import { useRef, useCallback, useState, useEffect, useMemo, type MouseEvent as ReactMouseEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
 import WifiQRCode from './WifiQRCode'
@@ -7,6 +7,7 @@ import ListenerStatus from './ListenerStatus'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
 import EndSessionConfirmDialog from './EndSessionConfirmDialog'
+import BackChannelInbox, { type IncomingResponse } from './BackChannelInbox'
 import { getLanguageByCode } from '@/lib/languages'
 import { useI18n } from '@/context/I18nContext'
 import { useBleAdvertiser } from '@/hooks/useBleDiscovery'
@@ -36,6 +37,20 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
   const [showEndConfirm, setShowEndConfirm] = useState(false)
   const [latency, setLatency] = useState<{ last: LatencyReport | null; avg: LatencyReport | null }>({ last: null, avg: null })
+  const [showDebug, setShowDebug] = useState(false)
+  const debugTapRef = useRef(0)
+  const debugTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Map backchannel messages to IncomingResponse format
+  const inboxResponses: IncomingResponse[] = useMemo(
+    () =>
+      (session.backChannelMessages || []).map((msg) => ({
+        response: { id: msg.responseId, emoji: msg.emoji, label: msg.label },
+        senderLang: msg.senderLang,
+        timestamp: msg.timestamp,
+      })),
+    [session.backChannelMessages]
+  )
 
   // Poll latency stats while recording
   useEffect(() => {
@@ -58,76 +73,104 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     return { now, durationMin, sourceLangData, connectionLabel }
   }, [session.sourceLanguage, session.connectionMode])
 
+ claude/analyze-chat-history-D5axK
+    let protocol = `========================================\n`
+    protocol += `GUIDETRANSLATOR (BY FINTUTTO) - SESSION-PROTOKOLL\n`
+    protocol += `========================================\n\n`
+    protocol += `Session-Code: ${session.sessionCode}\n`
+    protocol += `Datum: ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE')}\n`
+    protocol += `Dauer: ${durationMin} Minuten\n`
+    protocol += `Ausgangssprache: ${sourceLangData?.name || session.sourceLanguage}\n`
+    protocol += `Zuhörer: ${session.listenerCount}\n`
+    protocol += `Verbindung: ${session.connectionMode === 'ble' ? 'BLE Direkt' : session.connectionMode === 'local' ? 'Lokales Netzwerk' : 'Cloud'}\n`
+    protocol += `\n----------------------------------------\n`
+    protocol += `ÜBERSETZUNGEN\n`
+    protocol += `----------------------------------------\n\n`
+
+    for (const chunk of session.translationHistory) {
+      const time = new Date(chunk.timestamp).toLocaleTimeString('de-DE')
+      const targetLangData = getLanguageByCode(chunk.targetLanguage)
+      protocol += `[${time}]\n`
+      protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
+      protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+    }
+
+    protocol += `----------------------------------------\n`
+    protocol += `Ende des Protokolls\n`
+    protocol += `Erstellt mit guidetranslator.com (by fintutto)\n`
+=======
   const downloadProtocol = useCallback((format: 'txt' | 'md') => {
     const { now, durationMin, sourceLangData, connectionLabel } = getProtocolMeta()
     setExportMenuOpen(false)
 
     const dateStr = now.toLocaleDateString(undefined) + ' ' + now.toLocaleTimeString(undefined)
 
-    let protocol: string
+    // Use array + join instead of += to avoid O(n²) string concatenation (crashes Android Chrome)
+    const parts: string[] = []
     let mimeType: string
     let ext: string
 
     if (format === 'md') {
-      // Markdown format
       mimeType = 'text/markdown;charset=utf-8'
       ext = 'md'
-      protocol = `# guidetranslator — ${t('protocol.title')}\n\n`
-      protocol += `| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`
-      protocol += `| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`
-      protocol += `| ${t('protocol.date')} | ${dateStr} |\n`
-      protocol += `| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`
-      protocol += `| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`
-      protocol += `| ${t('protocol.listeners')} | ${session.listenerCount} |\n`
-      protocol += `| ${t('protocol.connection')} | ${connectionLabel} |\n\n`
-      protocol += `---\n\n## ${t('protocol.translations')}\n\n`
+      parts.push(`# guidetranslator — ${t('protocol.title')}\n\n`)
+      parts.push(`| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`)
+      parts.push(`| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`)
+      parts.push(`| ${t('protocol.date')} | ${dateStr} |\n`)
+      parts.push(`| ${t('protocol.duration')} | ${durationMin} ${t('protocol.minutes')} |\n`)
+      parts.push(`| ${t('protocol.sourceLangShort')} | ${sourceLangData?.flag || ''} ${sourceLangData?.name || session.sourceLanguage} |\n`)
+      parts.push(`| ${t('protocol.listeners')} | ${session.listenerCount} |\n`)
+      parts.push(`| ${t('protocol.connection')} | ${connectionLabel} |\n\n`)
+      parts.push(`---\n\n## ${t('protocol.translations')}\n\n`)
 
       for (const chunk of session.translationHistory) {
         const time = new Date(chunk.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
-        protocol += `**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`
-        protocol += `> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`
-        protocol += `> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`
+        parts.push(`**${time}** — ${targetLangData?.flag || ''} ${targetLangData?.name || chunk.targetLanguage}\n\n`)
+        parts.push(`> ${sourceLangData?.flag || ''} ${chunk.sourceText}\n\n`)
+        parts.push(`> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`)
       }
+ main
 
-      protocol += `---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`
+      parts.push(`---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`)
     } else {
-      // Plain text format
       mimeType = 'text/plain;charset=utf-8'
       ext = 'txt'
-      protocol = `========================================\n`
-      protocol += `GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`
-      protocol += `========================================\n\n`
-      protocol += `${t('protocol.session')}: ${session.sessionCode}\n`
-      protocol += `${t('protocol.date')}: ${dateStr}\n`
-      protocol += `${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`
-      protocol += `${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`
-      protocol += `${t('protocol.listeners')}: ${session.listenerCount}\n`
-      protocol += `${t('protocol.connection')}: ${connectionLabel}\n`
-      protocol += `\n----------------------------------------\n`
-      protocol += `${t('protocol.translations').toUpperCase()}\n`
-      protocol += `----------------------------------------\n\n`
+      parts.push(`========================================\n`)
+      parts.push(`GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`)
+      parts.push(`========================================\n\n`)
+      parts.push(`${t('protocol.session')}: ${session.sessionCode}\n`)
+      parts.push(`${t('protocol.date')}: ${dateStr}\n`)
+      parts.push(`${t('protocol.duration')}: ${durationMin} ${t('protocol.minutesFull')}\n`)
+      parts.push(`${t('protocol.sourceLanguage')}: ${sourceLangData?.name || session.sourceLanguage}\n`)
+      parts.push(`${t('protocol.listeners')}: ${session.listenerCount}\n`)
+      parts.push(`${t('protocol.connection')}: ${connectionLabel}\n`)
+      parts.push(`\n----------------------------------------\n`)
+      parts.push(`${t('protocol.translations').toUpperCase()}\n`)
+      parts.push(`----------------------------------------\n\n`)
 
       for (const chunk of session.translationHistory) {
         const time = new Date(chunk.timestamp).toLocaleTimeString(undefined)
         const targetLangData = getLanguageByCode(chunk.targetLanguage)
-        protocol += `[${time}]\n`
-        protocol += `  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`
-        protocol += `  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`
+        parts.push(`[${time}]\n`)
+        parts.push(`  ${sourceLangData?.flag || ''} ${chunk.sourceText}\n`)
+        parts.push(`  ${targetLangData?.flag || ''} ${chunk.translatedText} (${targetLangData?.name || chunk.targetLanguage})\n\n`)
       }
 
-      protocol += `----------------------------------------\n`
-      protocol += `${t('protocol.endOfProtocol')}\n`
-      protocol += `${t('protocol.createdWith')} guidetranslator.com\n`
+      parts.push(`----------------------------------------\n`)
+      parts.push(`${t('protocol.endOfProtocol')}\n`)
+      parts.push(`${t('protocol.createdWith')} guidetranslator.com\n`)
     }
 
+    const protocol = parts.join('')
     const blob = new Blob([protocol], { type: mimeType })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = `${t('protocol.filename')}-${session.sessionCode}-${now.toISOString().slice(0, 10)}.${ext}`
     a.click()
-    URL.revokeObjectURL(url)
+    // Delay revokeObjectURL to avoid race condition on slow Android devices
+    setTimeout(() => URL.revokeObjectURL(url), 3000)
   }, [session.sessionCode, session.sourceLanguage, session.translationHistory, session.listenerCount, getProtocolMeta])
 
   return (
@@ -149,6 +192,12 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
             </span>
           )}
         </div>
+
+        {/* BackChannel Inbox */}
+        <BackChannelInbox
+          responses={inboxResponses}
+          onClear={() => session.clearBackChannel?.()}
+        />
       </div>
 
       {/* iOS manual hotspot instruction */}
@@ -195,7 +244,12 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           {isBleMode ? (
             <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 text-center space-y-2">
               <Bluetooth className="h-8 w-8 mx-auto text-blue-600 dark:text-blue-400" />
-              <p className="font-mono font-bold text-lg tracking-widest">{session.sessionCode}</p>
+              <p className="font-mono font-bold text-lg tracking-widest" onClick={() => {
+                debugTapRef.current++
+                if (debugTimerRef.current) clearTimeout(debugTimerRef.current)
+                if (debugTapRef.current >= 3) { debugTapRef.current = 0; setShowDebug(p => !p) }
+                else { debugTimerRef.current = setTimeout(() => { debugTapRef.current = 0 }, 600) }
+              }}>{session.sessionCode}</p>
               <p className="text-xs text-muted-foreground">
                 {t('live.bleAutoDiscovery')}
               </p>
@@ -335,6 +389,20 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
       {session.error && (
         <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg" role="alert">
           {session.error}
+        </div>
+      )}
+
+      {/* Debug panel — triple-tap session code to toggle (not shown by default) */}
+      {showDebug && (
+        <div className="text-xs font-mono space-y-1 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 p-3 rounded-lg">
+          <p className="font-bold text-yellow-700 dark:text-yellow-400">SPEAKER DEBUG</p>
+          <p>Connected: {session.isConnected ? 'YES' : 'NO'}</p>
+          <p>Mode: {session.connectionMode}</p>
+          <p>Recording: {session.isRecording ? 'YES' : 'NO'}</p>
+          <p>Listeners (presence): {session.listenerCount}</p>
+          <p>Langs: {Object.entries(session.listenersByLanguage).filter(([k]) => k !== '_speaker').map(([k, v]) => `${k}(${v})`).join(', ') || '(none)'}</p>
+          <p>History chunks: {session.translationHistory.length}</p>
+          <p>Error: {session.error || '(none)'}</p>
         </div>
       )}
     </div>

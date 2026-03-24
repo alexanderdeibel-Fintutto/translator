@@ -131,6 +131,9 @@ export function createWebSpeechEngine(): STTEngine {
       // Only dedup within a short window after a restart — legitimate repeated
       // sentences (user genuinely says the same thing twice) should pass through.
       let lastRestartTime = 0 // Set when onend restarts recognition
+      // Post-restart suppression: ignore interim results for a brief window after restart
+      // to prevent echo/duplicate fragments that Chrome often emits right after start()
+      const POST_RESTART_SUPPRESSION_MS = 400
 
       const isDuplicateFinal = (text: string): boolean => {
         const now = Date.now()
@@ -138,10 +141,11 @@ export function createWebSpeechEngine(): STTEngine {
         while (recentFinals.length > 0 && now - recentFinals[0].time > 2500) {
           recentFinals.shift()
         }
-        // Only dedup if we recently restarted recognition (within 3s)
-        // This avoids dropping legitimate repeated sentences during normal speech
-        if (now - lastRestartTime > 3000) return false
         const normalized = text.trim().toLowerCase()
+        // Always check for exact duplicates within the 2.5s window.
+        // Previously we only checked after restarts, but the Web Speech API
+        // can emit the same final result multiple times even without a restart
+        // (especially on Android Chrome with continuous mode).
         return recentFinals.some(f => f.text === normalized)
       }
 
@@ -159,6 +163,16 @@ export function createWebSpeechEngine(): STTEngine {
           const result = event.results[i]
           const text = result[0].transcript
           const confidence = result[0].confidence
+
+          // After a restart, Chrome often re-emits the tail of the previous utterance
+          // as interim results. Suppress interims during the post-restart window to
+          // avoid duplicate/echo fragments appearing in the UI and translation pipeline.
+          if (!result.isFinal && lastRestartTime > 0) {
+            const sinceRestart = Date.now() - lastRestartTime
+            if (sinceRestart < POST_RESTART_SUPPRESSION_MS) {
+              continue // Skip this interim — too soon after restart
+            }
+          }
 
           if (result.isFinal) {
             // Dedup: if we already synthetically finalized part of this text, emit only the delta
@@ -180,11 +194,16 @@ export function createWebSpeechEngine(): STTEngine {
             // Interim result: check for sentence boundaries to emit early finals
             const boundary = detectSentenceBoundary(text)
             if (boundary) {
-              // Emit completed sentence(s) as synthetic final (with dedup)
-              if (!isDuplicateFinal(boundary.final)) {
-                trackFinal(boundary.final)
-                onResult({ text: boundary.final, isFinal: true, confidence })
+              // Only emit NEW sentences — subtract already-emitted synthetic final prefix
+              let newFinal = boundary.final
+              if (lastSyntheticFinal && newFinal.startsWith(lastSyntheticFinal)) {
+                newFinal = newFinal.slice(lastSyntheticFinal.length).trim()
               }
+              if (newFinal && !isDuplicateFinal(newFinal)) {
+                trackFinal(newFinal)
+                onResult({ text: newFinal, isFinal: true, confidence })
+              }
+              // Track full cumulative text for future delta calculations
               lastSyntheticFinal = boundary.final
               // Emit remainder as interim
               if (boundary.remainder) {
@@ -221,7 +240,10 @@ export function createWebSpeechEngine(): STTEngine {
         if (shouldBeListening && recognition) {
           // Reset synthetic final tracking — new recognition session starts fresh
           lastSyntheticFinal = ''
-          // Debounce restart to prevent rapid audio artifacts on Android Chrome
+          // Debounce restart to prevent rapid audio artifacts on Android Chrome.
+          // 900ms gives the OS enough time to fully release the audio session
+          // before starting a new one, reducing system notification sounds
+          // (blips) that some Android devices play on mic activation.
           if (restartTimer) clearTimeout(restartTimer)
           restartTimer = setTimeout(() => {
             restartTimer = null
@@ -230,7 +252,7 @@ export function createWebSpeechEngine(): STTEngine {
               try { recognition.start(); return } catch { /* fall through */ }
             }
             shouldBeListening = false
-          }, 300)
+          }, 900)
           return
         }
         shouldBeListening = false
@@ -261,7 +283,10 @@ export function createWebSpeechEngine(): STTEngine {
       if (serviceCheckTimer) { clearTimeout(serviceCheckTimer); serviceCheckTimer = null }
       if (restartTimer) { clearTimeout(restartTimer); restartTimer = null }
       if (recognition) {
-        try { recognition.abort() } catch { /* ignore */ }
+        // Use stop() instead of abort() — stop() lets Chrome finalize the current
+        // audio session cleanly, which avoids transient sounds on Android devices.
+        // abort() terminates immediately and can cause audio artifacts.
+        try { recognition.stop() } catch { /* ignore */ }
         recognition = null
       }
       // No stream to stop — getUserMedia stream was released immediately after permission check
@@ -518,8 +543,8 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             // No text recognized — if we had pending interim text, check stability timeout
             if (lastInterimText) {
               interimStableCount++
-              // After 3 empty polls (~6s silence) with pending interim text, emit as final
-              if (interimStableCount >= 3) {
+              // After 2 empty polls (~4s silence) with pending interim text, emit as final
+              if (interimStableCount >= 2) {
                 console.log('[STT] Silence timeout — emitting pending interim as final')
                 emitFinal(lastInterimText)
               }
@@ -528,9 +553,46 @@ export function createGoogleCloudSTTEngine(): STTEngine {
           }
 
           // Extract only the NEW text (beyond what we already finalized)
-          const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
-            ? fullText.slice(emittedFinalText.length).trim()
-            : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
+          // Use fuzzy word-level prefix matching to handle Google's punctuation revisions
+          // (e.g., "Hello world" → "Hello, world! How are you?" — word match still works)
+          let newText = ''
+          if (!emittedFinalText) {
+            newText = fullText
+          } else if (fullText.startsWith(emittedFinalText)) {
+            newText = fullText.slice(emittedFinalText.length).trim()
+          } else {
+            // Exact prefix failed — try word-level match ignoring punctuation
+            const stripPunct = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim()
+            const emittedNorm = stripPunct(emittedFinalText)
+            const fullNorm = stripPunct(fullText)
+
+            if (fullNorm.startsWith(emittedNorm)) {
+              // Word content matches — skip the matched word count in original text
+              const emittedWordCount = emittedNorm.split(' ').filter(Boolean).length
+              const fullWords = fullText.trim().split(/\s+/)
+              newText = fullWords.slice(emittedWordCount).join(' ')
+            } else {
+              // Try partial word-level overlap from the end of emitted text
+              const emittedWords = emittedNorm.split(' ').filter(Boolean)
+              const fullWords = fullNorm.split(' ').filter(Boolean)
+              let matchLen = 0
+              for (let i = 0; i < Math.min(emittedWords.length, fullWords.length); i++) {
+                if (emittedWords[i] === fullWords[i]) matchLen = i + 1
+                else break
+              }
+              if (matchLen > 0 && matchLen >= emittedWords.length * 0.5) {
+                // Substantial overlap — extract only new words
+                const origWords = fullText.trim().split(/\s+/)
+                newText = origWords.slice(matchLen).join(' ')
+              } else {
+                // Complete mismatch — Google revised significantly.
+                // Reset tracking and start fresh to avoid re-emitting old content.
+                console.log(`[STT] Prefix mismatch, resetting. emitted="${emittedFinalText.slice(0, 30)}", full="${fullText.slice(0, 30)}"`)
+                emittedFinalText = ''
+                newText = fullText
+              }
+            }
+          }
 
           if (!newText) {
             // Same text as before — increment stability counter
@@ -569,12 +631,14 @@ export function createGoogleCloudSTTEngine(): STTEngine {
             }
 
             // Force emit as isFinal if:
-            // 1. Text has been stable for 2+ intervals (~4s of no change), OR
-            // 2. More than 8 seconds since last isFinal and we have substantial text (5+ words), OR
+            // 1a. Short text (< 5 words) stable for 1+ interval (~2s) — fast single-word capture, OR
+            // 1b. Longer text stable for 2+ intervals (~4s of no change), OR
+            // 2. More than 6 seconds since last isFinal and we have substantial text (3+ words), OR
             // 3. Word count exceeds 20 (long utterance without punctuation)
             if (
+              (isStable && wordCount < 5 && interimStableCount >= 1) ||
               (isStable && interimStableCount >= 2) ||
-              (timeSinceLastFinal > 8000 && wordCount >= 5) ||
+              (timeSinceLastFinal > 6000 && wordCount >= 3) ||
               wordCount >= 20
             ) {
               console.log(`[STT] Force-finalizing: stable=${interimStableCount}, elapsed=${timeSinceLastFinal}ms, words=${wordCount}`)
@@ -627,27 +691,13 @@ export function createGoogleCloudSTTEngine(): STTEngine {
         sendInterval = null
       }
 
-      // Flush any pending interim text as final before stopping
+      // Flush any pending interim text as final before stopping.
+      // Skip the async final recognition — it frequently re-recognizes text that was
+      // already emitted via the 2s polling, causing duplicate sentences. The interim
+      // flush above captures any remaining text that hasn't been finalized yet.
       if (lastInterimText && onResultCallback) {
         onResultCallback({ text: lastInterimText, isFinal: true })
-        emittedFinalText += (emittedFinalText ? ' ' : '') + lastInterimText
         lastInterimText = ''
-      }
-
-      if (audioChunks.length > 0 && onResultCallback) {
-        const finalChunks = [...audioChunks]
-        const callback = onResultCallback
-        const lang = activeLang
-        const alreadyEmitted = emittedFinalText
-
-        recognizeChunks(finalChunks, lang).then(text => {
-          if (!text) return
-          // Only emit the portion not yet finalized via synthetic finals
-          const remainder = alreadyEmitted && text.startsWith(alreadyEmitted)
-            ? text.slice(alreadyEmitted.length).trim()
-            : text
-          if (remainder) callback({ text: remainder, isFinal: true })
-        }).catch(() => {})
       }
 
       if (processor) { processor.disconnect(); processor = null }
@@ -664,6 +714,18 @@ export function createGoogleCloudSTTEngine(): STTEngine {
   }
 }
 
+// --- Android detection ---
+// Chrome on Android plays an unavoidable system beep/ding every time
+// SpeechRecognition.start() is called. With continuous mode, the recognition
+// periodically stops and restarts, causing repeated beeps. The beep also
+// interferes with mic input, degrading recognition quality.
+// Solution: use Google Cloud STT on Android (no system sounds, direct mic access).
+
+function isAndroid(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /Android/i.test(navigator.userAgent)
+}
+
 // --- Engine selection ---
 
 export function getBestSTTEngine(): STTEngine {
@@ -677,11 +739,20 @@ export function getBestSTTEngine(): STTEngine {
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. Web Speech API (streaming, real-time — Chrome/Edge/Android)
+  // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
+  //    Chrome Android plays a "ding" on every recognition.start(), which repeats
+  //    in continuous mode and interferes with mic capture. Google Cloud STT uses
+  //    getUserMedia directly — no system sounds, no restart issues.
+  if (isAndroid()) {
+    const googleSTT = createGoogleCloudSTTEngine()
+    if (googleSTT.isSupported) return googleSTT
+  }
+
+  // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
   const webSpeech = createWebSpeechEngine()
   if (webSpeech.isSupported) return webSpeech
 
-  // 4. Google Cloud STT (fallback for any browser with mic access)
+  // 5. Google Cloud STT (fallback for any browser with mic access)
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 

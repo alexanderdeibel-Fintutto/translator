@@ -4,15 +4,25 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 export default defineConfig({
+  define: {
+    // Inject build timestamp so we can verify which version is running in production
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
+ claude/analyze-chat-history-D5axK
+        name: 'guidetranslator (by fintutto)',
+        short_name: 'guidetranslator',
+        description: 'Kostenloser Übersetzer mit Spracheingabe, Sprachausgabe und Live-Übersetzung',
+=======
         name: 'Fintutto Translator',
         short_name: 'Fintutto',
         description: 'Kostenloser Übersetzer mit Spracheingabe, HD-Sprachausgabe, Live-Sessions, Kamera-OCR und Offline-Modus. 32+ Sprachen.',
+ main
         theme_color: '#0369a1',
         background_color: '#ffffff',
         display: 'standalone',
@@ -104,36 +114,6 @@ export default defineConfig({
             },
           },
           {
-            // Cache HuggingFace model files (Opus-MT, Whisper)
-            urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
-            // Also cache CDN-served model files
-            urlPattern: /^https:\/\/cdn-lfs(-us-1)?\.huggingface\.co/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'offline-models-cdn',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
             // Cache local WASM files (ONNX Runtime) on first use
             urlPattern: /\.wasm$/,
             handler: 'CacheFirst',
@@ -158,6 +138,47 @@ export default defineConfig({
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
               },
+            },
+          },
+          {
+            // Cache Supabase API responses for admin dashboard (content items, stats)
+            urlPattern: /\/rest\/v1\/(fw_content_items|fw_workflow_rules|fw_content_timeline|ag_museums)/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'admin-api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 5, // 5 minutes
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+          {
+            // Cache Supabase Storage (cover images, audio files)
+            urlPattern: /\/storage\/v1\/object\/public\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'supabase-storage',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Cache Supabase Edge Functions responses (content-enrich, artguide-tts)
+            urlPattern: /\/functions\/v1\//,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'edge-functions-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 10, // 10 minutes
+              },
+              networkTimeoutSeconds: 30,
             },
           },
         ],
@@ -188,5 +209,8 @@ export default defineConfig({
   },
   server: {
     port: 5180,
+  },
+  test: {
+    exclude: ['e2e/**', 'node_modules/**'],
   },
 })

@@ -26,7 +26,7 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.svg'],
+        includeAssets: ['favicon.svg', `icons/${config.iconDir}/*`],
         manifest: {
           name: config.appName,
           short_name: config.shortName,
@@ -42,10 +42,34 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
           dir: 'ltr',
           icons: [
             {
-              src: '/favicon.svg',
+              src: `/icons/${config.iconDir}/icon.svg`,
               sizes: 'any',
               type: 'image/svg+xml',
-              purpose: 'any maskable',
+              purpose: 'any',
+            },
+            {
+              src: `/icons/${config.iconDir}/icon-192.png`,
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: `/icons/${config.iconDir}/icon-512.png`,
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: `/icons/${config.iconDir}/icon-maskable-192.png`,
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+            {
+              src: `/icons/${config.iconDir}/icon-maskable-512.png`,
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
             },
           ],
         },
@@ -79,24 +103,11 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
                 expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
               },
             },
-            {
-              urlPattern: /^https:\/\/huggingface\.co\/.*\.(onnx|json|wasm|bin)$/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'offline-models',
-                expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 90 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/cdn-lfs(-us-1)?\.huggingface\.co/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'offline-models-cdn',
-                expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 90 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
-            },
+            // HuggingFace model files: NO runtimeCaching entry.
+            // Transformers.js manages its own cache ('transformers-cache').
+            // Any SW interception (even NetworkOnly) can cause "Failed to fetch"
+            // on mobile browsers with large 35MB+ model files.
+            // By omitting these URLs, the SW ignores them entirely.
             {
               urlPattern: /\.wasm$/,
               handler: 'CacheFirst',
@@ -119,7 +130,7 @@ export function createAppViteConfig(variant: AppVariant, appDir: string): UserCo
       }),
     ],
     build: {
-      outDir: path.resolve(rootDir, 'dist'),
+      outDir: path.resolve(appDir, 'dist'),
       chunkSizeWarningLimit: 550,
       rollupOptions: {
         output: {

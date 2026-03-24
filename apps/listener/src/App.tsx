@@ -18,7 +18,7 @@ import { I18nProvider } from '@/context/I18nContext'
 import { UserProvider } from '@/context/UserContext'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ListenerJoinPage from './pages/ListenerJoinPage'
-import ListenerSessionPage from './pages/ListenerSessionPage'
+import ListenerSessionPage from '@/pages/ListenerSessionPage'
 
 function App() {
   return (

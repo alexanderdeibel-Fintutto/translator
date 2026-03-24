@@ -53,11 +53,31 @@ export interface Lead {
   tags: string[]
   invite_token: string | null
   assigned_to: string | null
+  created_by: string | null
   converted_user_id: string | null
   converted_at: string | null
   source: string | null
   created_at: string
   updated_at: string
+}
+
+// ---------------------------------------------------------------------------
+// User Activity (admin RPC)
+// ---------------------------------------------------------------------------
+
+export interface UserActivity {
+  user_id: string
+  email: string
+  display_name: string | null
+  role: string
+  total_sessions: number
+  total_duration_minutes: number
+  total_translations: number
+  last_session_at: string | null
+  current_month_minutes: number
+  current_month_translations: number
+  lead_count: number
+  created_at: string
 }
 
 export interface LeadNote {
@@ -98,10 +118,9 @@ export interface ContactRequest {
 // Tag presets per segment
 // ---------------------------------------------------------------------------
 
-export const SEGMENT_TAG_PRESETS: Record<Segment | 'all', string[]> = {
-  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Priorität-Hoch'],
-  personal: [],
-  guide: ['Stadtführer', 'Freelancer', 'Tourismus-Verband'],
+export const SEGMENT_TAG_PRESETS: Partial<Record<Segment | 'all', string[]>> & { all: string[] } = {
+  all: ['VIP', 'Tester', 'Pilot-Kandidat', 'Bestandskunde', 'Prioritaet-Hoch'],
+  guide: ['Stadtfuehrer', 'Freelancer', 'Tourismus-Verband'],
   agency: ['Reiseagentur', 'Tour-Operator', 'DMC'],
   event: ['Konferenz', 'Messe', 'Workshop', 'Verband'],
   cruise: ['AIDA', 'MSC', 'TUI Cruises', 'Hapag-Lloyd', 'Costa', 'Norwegian', 'Royal Caribbean', 'Celebrity'],
@@ -148,6 +167,55 @@ export interface AdminStatsData {
 }
 
 export type UserRole = 'user' | 'admin' | 'sales_agent' | 'session_manager' | 'tester'
+
+// ---------------------------------------------------------------------------
+// Commission Tracking
+// ---------------------------------------------------------------------------
+
+export type CommissionStatus = 'earned' | 'approved' | 'paid' | 'clawed_back'
+
+export interface Commission {
+  id: string
+  lead_id: string | null
+  sales_agent_id: string
+  customer_user_id: string | null
+  tier_id: string
+  segment: string
+  commission_pct: number
+  monthly_revenue_eur: number
+  commission_eur: number
+  period_month: string
+  status: CommissionStatus
+  paid_at: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CommissionRate {
+  id: string
+  segment: string
+  tier_id: string | null
+  commission_pct: number
+  recurring_months: number
+  clawback_days: number
+  created_at: string
+  updated_at: string
+}
+
+export interface SalesPerformance {
+  sales_agent_id: string
+  agent_email: string
+  agent_name: string | null
+  leads_created: number
+  leads_converted: number
+  conversion_rate: number
+  active_customers: number
+  total_mrr_eur: number
+  total_commissions_earned_eur: number
+  total_commissions_paid_eur: number
+  current_month_commission_eur: number
+}
 
 // ---------------------------------------------------------------------------
 // Event Session Management

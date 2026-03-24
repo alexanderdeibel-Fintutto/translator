@@ -23,15 +23,34 @@ async function getPipeline(modelId: string, onProgress?: (progress: number) => v
 
   const { pipeline } = await getTransformersModule()
 
+  // Track overall progress across all files (weighted by bytes, not per-file %)
+  const fileProgress = new Map<string, { loaded: number; total: number }>()
+  let totalRecordedBytes = 0
+
   const pipe = await pipeline('translation', modelId, {
     progress_callback: (data: { status: string; progress?: number; loaded?: number; total?: number; file?: string }) => {
-      if (data.status === 'progress' && data.progress !== undefined && onProgress) {
-        onProgress(data.progress)
+      if (data.status === 'progress' && onProgress && data.file) {
+        fileProgress.set(data.file, {
+          loaded: data.loaded || 0,
+          total: data.total || 0,
+        })
+        // Calculate overall progress across all files
+        let totalLoaded = 0
+        let totalSize = 0
+        for (const fp of fileProgress.values()) {
+          totalLoaded += fp.loaded
+          totalSize += fp.total
+        }
+        if (totalSize > 0) {
+          onProgress((totalLoaded / totalSize) * 100)
+        }
+      } else if (data.status === 'progress' && onProgress && !data.file) {
+        // Fallback: no file info, use raw progress
+        onProgress(data.progress ?? 0)
       }
       if (data.status === 'done') {
-        // Record the download in our metadata DB
-        // Note: data.loaded may be 0 or undefined when loaded from cache
-        recordModelDownload(modelId, 'translation', data.loaded || 0).catch(() => {})
+        totalRecordedBytes += data.loaded || 0
+        recordModelDownload(modelId, 'translation', totalRecordedBytes).catch(() => {})
       }
     },
   })

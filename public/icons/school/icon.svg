@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#2563eb"/>
+  <g transform="translate(256,256)" fill="none" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- BookOpen icon -->
+    <path d="M-100,-40 L-100,60 Q-50,40 0,60 Q50,40 100,60 L100,-40"/>
+    <line x1="0" y1="-40" x2="0" y2="60"/>
+    <path d="M-100,-40 Q-50,-60 0,-40"/>
+    <path d="M0,-40 Q50,-60 100,-40"/>
+  </g>
+</svg>

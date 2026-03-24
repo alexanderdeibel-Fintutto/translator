@@ -39,6 +39,10 @@ const AboutPage = lazy(() => import('@/pages/AboutPage'))
 const ContactPage = lazy(() => import('@/pages/ContactPage'))
 const PricingOverviewPage = lazy(() => import('@/pages/PricingOverviewPage'))
 const CrmLoginPage = lazy(() => import('@/pages/CrmLoginPage'))
+const MuseumLandingPage = lazy(() => import('@/pages/MuseumLandingPage'))
+const MuseumVisitorPage = lazy(() => import('@/pages/MuseumVisitorPage'))
+const CityGuidePage = lazy(() => import('@/pages/CityGuidePage'))
+const RegionGuidePage = lazy(() => import('@/pages/RegionGuidePage'))
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -91,6 +95,11 @@ function App() {
                   <Route path="kontakt" element={<Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
                   <Route path="preise" element={<Suspense fallback={<PageLoader />}><PricingOverviewPage /></Suspense>} />
                   <Route path="crm" element={<Suspense fallback={<PageLoader />}><CrmLoginPage /></Suspense>} />
+                  <Route path="museum/:slug" element={<Suspense fallback={<PageLoader />}><MuseumVisitorPage /></Suspense>} />
+                  <Route path="museum/:slug/artwork/:artworkId" element={<Suspense fallback={<PageLoader />}><MuseumVisitorPage /></Suspense>} />
+                  <Route path="city/:slug" element={<Suspense fallback={<PageLoader />}><CityGuidePage /></Suspense>} />
+                  <Route path="region/:slug" element={<Suspense fallback={<PageLoader />}><RegionGuidePage /></Suspense>} />
+                  <Route path="invite/:segment" element={<Suspense fallback={<PageLoader />}><MuseumLandingPage /></Suspense>} />
                   <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="account/admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />
                   <Route path="impressum" element={<Suspense fallback={<PageLoader />}><ImpressumPage /></Suspense>} />

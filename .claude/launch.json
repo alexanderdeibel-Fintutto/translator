@@ -1,0 +1,47 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "main-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5180
+    },
+    {
+      "name": "consumer",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:consumer"],
+      "port": 5180
+    },
+    {
+      "name": "listener",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:listener"],
+      "port": 5181
+    },
+    {
+      "name": "enterprise",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:enterprise"],
+      "port": 5182
+    },
+    {
+      "name": "landing",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:landing"],
+      "port": 5183
+    },
+    {
+      "name": "admin-dashboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "relay-server",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js", "--port", "8765", "--verbose"],
+      "port": 8765
+    }
+  ]
+}

@@ -14,7 +14,7 @@ export default function ImpressumPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground leading-relaxed">
           <p>
-            ai tour ug (haftungsbeschränkt)<br />
+            AI Tour Guide UG (haftungsbeschränkt)<br />
             Kolonie 2<br />
             18317 Saal<br />
             Deutschland
@@ -51,7 +51,7 @@ export default function ImpressumPage() {
           <p>
             Eintragung im Handelsregister<br />
             Registergericht: Amtsgericht Stralsund<br />
-            Registernummer: 22827
+            Registernummer: HRB 22827
           </p>
         </CardContent>
       </Card>

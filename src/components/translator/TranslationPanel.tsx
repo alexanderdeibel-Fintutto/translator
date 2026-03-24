@@ -133,15 +133,17 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   const useInformalRef = useRef(useInformal)
   const streamModeRef = useRef(streamMode)
   const prevIsListeningRef = useRef(false)
+  const isListeningRef = useRef(false)
 
-  // Keep refs in sync
+  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
+
+  // Keep refs in sync (must be after hook calls to avoid TDZ errors)
   autoSpeakRef.current = autoSpeak
+  isListeningRef.current = isListening
   targetLangRef.current = targetLang
   sourceLangRef.current = sourceLang
   useInformalRef.current = useInformal
   streamModeRef.current = streamMode
-
-  const { isListening, interimTranscript, isSupported: micSupported, error: micError, startListening, stopListening } = useSpeechRecognition()
   const sourceSpeech = useSpeechSynthesis()
   const targetSpeech = useSpeechSynthesis()
   const targetSpeakRef = useRef(targetSpeech.speak)
@@ -211,7 +213,9 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setProvider(result.provider)
 
       // Auto-speak just this segment's translation
-      if (autoSpeakRef.current && finalText) {
+      // Skip auto-speak while recording — TTS output feeds back into the mic
+      // and causes words to be swallowed / audio artifacts
+      if (autoSpeakRef.current && finalText && !isListeningRef.current) {
         const lang = getLanguageByCode(targetLangRef.current)
         targetSpeakRef.current(finalText, lang?.speechCode || targetLangRef.current)
       }
@@ -273,7 +277,8 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
       setProvider(result.provider)
       setFeedback(null)
 
-      if (autoSpeakRef.current && finalText) {
+      // Skip auto-speak while recording to prevent mic interference
+      if (autoSpeakRef.current && finalText && !isListeningRef.current) {
         const lang = getLanguageByCode(targetLang)
         targetSpeakRef.current(finalText, lang?.speechCode || targetLang)
       }
@@ -518,8 +523,6 @@ export default function TranslationPanel({ initialText, initialSourceLang, initi
   handleMicToggleRef.current = handleMicToggle
   const handleSendRef = useRef(handleSend)
   handleSendRef.current = handleSend
-  const isListeningRef = useRef(isListening)
-  isListeningRef.current = isListening
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

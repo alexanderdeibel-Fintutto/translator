@@ -32,7 +32,7 @@
 
 ### Abstract
 
-FinTranslate AI aims to develop and deploy a generative AI-powered translation system that operates across four transport tiers — including fully offline on-device inference. The project will leverage large language models (LLMs) and neural machine translation (NMT) to create a real-time, privacy-preserving translation platform for 45+ languages, with a focus on underserved migration languages (Dari, Tigrinya, Pashto, Kurdish, Somali).
+FinTranslate AI aims to develop and deploy a generative AI-powered translation system that operates across four transport tiers — including fully offline on-device inference. The platform currently encompasses 16 app variants across 7 market segments including medical, hospitality, and education. The project will leverage large language models (LLMs) and neural machine translation (NMT) to create a real-time, privacy-preserving translation platform for 45+ languages, with a focus on underserved migration languages (Dari, Tigrinya, Pashto, Kurdish, Somali).
 
 Unlike existing cloud-dependent solutions, FinTranslate AI uses on-device ML models (Opus-MT via WebAssembly, Whisper for STT) combined with a novel 4-Tier transport architecture that ensures translation availability even without any network connectivity. The system broadcasts translations from one speaker to unlimited listeners via Cloud, WiFi-Hotspot, BLE, or local ML — automatically selecting the optimal transport.
 
@@ -57,7 +57,7 @@ Generative AI, Neural Machine Translation, NLP, On-Device ML, Offline AI, WebAss
 | O2 | Develop LLM-based context-aware translation for ambiguous terms | 90%+ accuracy on domain-specific test sets |
 | O3 | Optimize on-device ML inference for mobile deployment | <500ms inference time on mid-range Android devices |
 | O4 | Extend language coverage to 60+ languages including 15 migration languages | 60 language pairs with >85% BLEU score |
-| O5 | Achieve production deployment with 5.000+ active users | 5.000 MAU, 100 B2B customers |
+| O5 | Achieve production deployment across 16 app variants in 7 market segments | 5.000 MAU, 100 B2B customers across 16 app variants in 7 market segments |
 
 ### 2.2 Relation to the Call
 
@@ -124,6 +124,7 @@ This project directly addresses the FFplus call for **Generative AI applications
 | **Languages improved** | Offline language pairs | 60+ (from current 54) |
 | **Migration languages** | New underserved languages | 15 (from current 10) |
 | **Translation quality** | BLEU score improvement | +15% over baseline |
+| **Market segments** | Vertical markets served | 7 (General, Schools, Authorities, NGO, Hospitality, Medical, Events) |
 | **B2B customers** | Paying organizations | 100 |
 | **Revenue** | Monthly Recurring Revenue | 23.000 EUR/month |
 | **Jobs created** | New positions in MV | 5 |
@@ -278,7 +279,7 @@ Revenue projections ensure financial sustainability beyond the funding period:
 ### 6.2 Key Personnel
 
 **Alexander Deibel — CEO + CTO / Project Coordinator & Technical Lead**
-- Solo-built production-ready translation platform (13.296 lines, 87 tests)
+- Solo-built production-ready translation platform (41.436 lines, 295 TypeScript files, 87 tests)
 - Co-founder AI Tour Guide UG (tourism tech, since 2024)
 - Deep domain knowledge in translation technology, AI/ML, and tourism
 - Technical expertise: React/TypeScript, ML/AI (NMT, Whisper), BLE protocols, WASM
@@ -296,7 +297,7 @@ Revenue projections ensure financial sustainability beyond the funding period:
 
 | Component | TRL | Evidence |
 |----------|-----|---------|
-| Translation Platform (PWA) | **TRL 7** | Production-deployed, 87 passing tests |
+| Translation Platform (PWA) | **TRL 8** | Production-deployed, 16 variants, 41.436 lines, 87 passing tests |
 | Offline ML Pipeline | **TRL 6** | Functional prototype, needs optimization |
 | BLE Transport | **TRL 6** | Working on Android, iOS in progress |
 | Fine-tuned NMT Models | **TRL 3-4** | Baseline models working, fine-tuning planned |
@@ -342,5 +343,5 @@ Revenue projections ensure financial sustainability beyond the funding period:
 
 ---
 
-*Stand: 06.03.2026 | Fintutto UG (i.G.) | Vertraulich*
+*Stand: 16.03.2026 | Fintutto UG (i.G.) | Fintutto Translator v5.2 | Vertraulich*
 *Dieses Dokument dient als Vorlage fuer die offizielle Einreichung im EU Funding & Tenders Portal*

@@ -51,13 +51,13 @@ async function syncUsageToServer(userId: string): Promise<void> {
   try {
     const { error } = await supabase.rpc('upsert_usage', {
       p_user_id: userId,
-      p_period_start: usage.periodStart,
-      p_period_end: usage.periodEnd,
       p_session_minutes: usage.sessionMinutesUsed,
       p_translation_chars: usage.translationCharsUsed,
-      p_translations_count: usage.translationsCount,
+      p_translations: usage.translationsCount,
+      p_tts_chars: 0,
+      p_stt_minutes: 0,
       p_peak_listeners: usage.peakListeners,
-      p_languages_used: usage.languagesUsed,
+      p_languages: usage.languagesUsed,
     })
 
     if (error) {

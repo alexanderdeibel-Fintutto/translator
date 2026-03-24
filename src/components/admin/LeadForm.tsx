@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { createLead, updateLead } from '@/lib/admin-api'
 import { SEGMENTS, type Segment } from '@/lib/tiers'
 import type { Lead } from '@/lib/admin-types'
+import { useUser } from '@/context/UserContext'
 
 interface LeadFormProps {
   lead?: Lead
@@ -14,6 +15,7 @@ interface LeadFormProps {
 }
 
 export default function LeadForm({ lead, onSaved, onCancel }: LeadFormProps) {
+  const { user } = useUser()
   const [name, setName] = useState(lead?.name ?? '')
   const [email, setEmail] = useState(lead?.email ?? '')
   const [company, setCompany] = useState(lead?.company ?? '')
@@ -40,7 +42,11 @@ export default function LeadForm({ lead, onSaved, onCancel }: LeadFormProps) {
         await updateLead(lead.id, payload)
         onSaved({ ...lead, ...payload } as Lead)
       } else {
-        const created = await createLead(payload)
+        const created = await createLead({
+          ...payload,
+          created_by: user?.id ?? null,
+          assigned_to: user?.id ?? null,
+        })
         onSaved(created)
       }
     } catch (err) {

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#7c3aed"/>
+  <g transform="translate(256,260)" fill="none" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Handshake icon -->
+    <path d="M-90,-20 L-50,-60 L0,-30 L50,-60 L90,-20"/>
+    <path d="M-90,-20 L-90,40"/>
+    <path d="M90,-20 L90,40"/>
+    <path d="M-50,40 L50,40"/>
+  </g>
+</svg>
