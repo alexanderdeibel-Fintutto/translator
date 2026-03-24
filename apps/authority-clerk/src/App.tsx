@@ -28,10 +28,15 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import AuthorityClerkHomePage from './pages/AuthorityClerkHomePage'
+import StandaloneTranslatePage from './pages/StandaloneTranslatePage'
 
 const FormTemplatesPage = lazy(() => import('./pages/FormTemplatesPage'))
 const AsylumWorkflowPage = lazy(() => import('./pages/AsylumWorkflowPage'))
 const JobcenterWorkflowPage = lazy(() => import('./pages/JobcenterWorkflowPage'))
+const QRPosterPage = lazy(() => import('./pages/QRPosterPage'))
+const BroadcastingPage = lazy(() => import('./pages/BroadcastingPage'))
+const AccessibilityStatementPage = lazy(() => import('./pages/AccessibilityStatementPage'))
+const ImpressumPage = lazy(() => import('./pages/ImpressumPage'))
 
 // Lazy-loaded shared routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -71,8 +76,10 @@ function App() {
               <RouteTracker />
               <Routes>
                 <Route path="/" element={<Layout />}>
-                  {/* Main: Mode selector + desk/counter session activation */}
-                  <Route index element={<AuthorityClerkHomePage />} />
+                  {/* Main: Bidirektionale Standalone-Übersetzung (primäre Haupt-UI) */}
+                  <Route index element={<StandaloneTranslatePage />} />
+                  {/* Menü / Modus-Auswahl */}
+                  <Route path="menu" element={<AuthorityClerkHomePage />} />
 
                   {/* Authority-specific workflows */}
                   <Route
@@ -88,6 +95,22 @@ function App() {
                     element={
                       <Suspense fallback={<PageLoader />}>
                         <JobcenterWorkflowPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="qr-poster"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <QRPosterPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="broadcasting"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <BroadcastingPage />
                       </Suspense>
                     }
                   />
@@ -184,6 +207,24 @@ function App() {
                     element={
                       <Suspense fallback={<PageLoader />}>
                         <SettingsPage />
+                      </Suspense>
+                    }
+                  />
+
+                  {/* Legal */}
+                  <Route
+                    path="impressum"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <ImpressumPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="barrierefreiheit"
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <AccessibilityStatementPage />
                       </Suspense>
                     }
                   />
