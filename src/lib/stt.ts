@@ -548,9 +548,46 @@ export function createGoogleCloudSTTEngine(): STTEngine {
           }
 
           // Extract only the NEW text (beyond what we already finalized)
-          const newText = emittedFinalText && fullText.startsWith(emittedFinalText)
-            ? fullText.slice(emittedFinalText.length).trim()
-            : (emittedFinalText ? fullText : fullText) // fallback: use full text if no prefix match
+          // Use fuzzy word-level prefix matching to handle Google's punctuation revisions
+          // (e.g., "Hello world" → "Hello, world! How are you?" — word match still works)
+          let newText = ''
+          if (!emittedFinalText) {
+            newText = fullText
+          } else if (fullText.startsWith(emittedFinalText)) {
+            newText = fullText.slice(emittedFinalText.length).trim()
+          } else {
+            // Exact prefix failed — try word-level match ignoring punctuation
+            const stripPunct = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim()
+            const emittedNorm = stripPunct(emittedFinalText)
+            const fullNorm = stripPunct(fullText)
+
+            if (fullNorm.startsWith(emittedNorm)) {
+              // Word content matches — skip the matched word count in original text
+              const emittedWordCount = emittedNorm.split(' ').filter(Boolean).length
+              const fullWords = fullText.trim().split(/\s+/)
+              newText = fullWords.slice(emittedWordCount).join(' ')
+            } else {
+              // Try partial word-level overlap from the end of emitted text
+              const emittedWords = emittedNorm.split(' ').filter(Boolean)
+              const fullWords = fullNorm.split(' ').filter(Boolean)
+              let matchLen = 0
+              for (let i = 0; i < Math.min(emittedWords.length, fullWords.length); i++) {
+                if (emittedWords[i] === fullWords[i]) matchLen = i + 1
+                else break
+              }
+              if (matchLen > 0 && matchLen >= emittedWords.length * 0.5) {
+                // Substantial overlap — extract only new words
+                const origWords = fullText.trim().split(/\s+/)
+                newText = origWords.slice(matchLen).join(' ')
+              } else {
+                // Complete mismatch — Google revised significantly.
+                // Reset tracking and start fresh to avoid re-emitting old content.
+                console.log(`[STT] Prefix mismatch, resetting. emitted="${emittedFinalText.slice(0, 30)}", full="${fullText.slice(0, 30)}"`)
+                emittedFinalText = ''
+                newText = fullText
+              }
+            }
+          }
 
           if (!newText) {
             // Same text as before — increment stability counter
