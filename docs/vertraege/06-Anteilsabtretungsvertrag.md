@@ -12,13 +12,13 @@
 
 **Zwischen**
 
-**Ulrich Berger**
+**Alexander Deibel**
 [Adresse]
 *(nachfolgend "Veräußerer")*
 
 **und**
 
-**Alexander Deibel**
+**Ulrich Berger**
 [Adresse]
 *(nachfolgend "Erwerber")*
 
@@ -28,11 +28,11 @@
 
 (1) Die **AI Tour Guide UG (haftungsbeschränkt)**, eingetragen im Handelsregister des Amtsgerichts [___] unter HRB [___], hat ein Stammkapital von [___] EUR.
 
-(2) Der Veräußerer hält einen Geschäftsanteil in Höhe von **50% des Stammkapitals** (Geschäftsanteil Nr. [___], Nennbetrag: [___] EUR).
+(2) Der Veräußerer hält einen Geschäftsanteil in Höhe von **50% des Stammkapitals** (Geschäftsanteil Nr. [___], Nennbetrag: [___] EUR) und ist derzeit alleiniger Geschäftsführer der Gesellschaft.
 
-(3) Der Erwerber hält bereits einen Geschäftsanteil in Höhe von **50% des Stammkapitals** und ist alleiniger Geschäftsführer der Gesellschaft.
+(3) Der Erwerber hält bereits einen Geschäftsanteil in Höhe von **50% des Stammkapitals**.
 
-(4) Die Parteien sind sich einig, dass der Veräußerer im Rahmen einer einvernehmlichen Trennung (vgl. Ausscheidungsvereinbarung vom [Datum]) seinen gesamten Geschäftsanteil an den Erwerber überträgt.
+(4) Die Parteien sind sich einig, dass der Veräußerer im Rahmen einer einvernehmlichen Trennung (vgl. Ausscheidungsvereinbarung vom [Datum]) seinen gesamten Geschäftsanteil an den Erwerber überträgt und aus der Gesellschaft ausscheidet.
 
 ---
 
@@ -44,13 +44,15 @@
 
 (3) Die Abtretung erfolgt mit Wirkung zum **1. April 2026**.
 
+(4) Nach Wirksamwerden der Abtretung hält der Erwerber **100% des Stammkapitals** der Gesellschaft und ist deren alleiniger Gesellschafter.
+
 ---
 
 ## § 2 -- Kaufpreis
 
 (1) Der Kaufpreis für den Geschäftsanteil beträgt **1,00 EUR** (ein Euro).
 
-(2) Die Parteien sind sich einig, dass der niedrige Kaufpreis im Zusammenhang mit der **Ausscheidungsvereinbarung vom [Datum]** steht, in der eine gesonderte Ausgleichszahlung (Abfindung) geregelt ist.
+(2) Die Parteien sind sich einig, dass der niedrige Kaufpreis im Zusammenhang mit der **Ausscheidungsvereinbarung vom [Datum]** steht, in der eine gesonderte Gehaltsfortzahlung/Ausgleichszahlung geregelt ist.
 
 (3) Der Kaufpreis ist bei Beurkundung fällig und wird bar oder per Überweisung entrichtet.
 
@@ -68,19 +70,17 @@ Der Veräußerer erklärt und garantiert:
 
 (4) Es bestehen **keine Verfügungsbeschränkungen** (vertragliche oder gesetzliche), die der Abtretung entgegenstehen.
 
-(5) Er hat **keine Kenntnis** von verborgenen Verbindlichkeiten der Gesellschaft, die über die ordnungsgemäße Buchführung hinausgehen.
-
 ---
 
 ## § 4 -- Freistellung
 
-(1) Der Veräußerer stellt den Erwerber und die Gesellschaft von allen Ansprüchen Dritter frei, die im Zusammenhang mit dem abgetretenen Geschäftsanteil geltend gemacht werden.
+(1) Der Erwerber stellt den Veräußerer von allen Ansprüchen frei, die nach dem Wirksamkeitsdatum im Zusammenhang mit der Gesellschaft entstehen.
 
-(2) Der Veräußerer stellt die Gesellschaft von allen Verbindlichkeiten frei, die er im Namen der Gesellschaft oder in seiner Eigenschaft als Gesellschafter begründet hat und die der Gesellschaft oder dem Erwerber zum Zeitpunkt der Abtretung nicht bekannt sind.
+(2) Der Veräußerer stellt den Erwerber und die Gesellschaft von allen Verbindlichkeiten frei, die er im Namen der Gesellschaft oder in seiner Eigenschaft als Geschäftsführer oder Gesellschafter begründet hat und die dem Erwerber zum Zeitpunkt der Abtretung nicht bekannt sind.
 
 ---
 
-## § 5 -- Gesellschafterrechte
+## § 5 -- Gesellschafterrechte und Entlastung
 
 (1) Ab dem Wirksamkeitsdatum (1. April 2026) gehen alle Rechte und Pflichten aus dem abgetretenen Geschäftsanteil auf den Erwerber über, insbesondere:
 
@@ -89,15 +89,21 @@ Der Veräußerer erklärt und garantiert:
    - Informations- und Kontrollrechte
    - Liquidationserlösanspruch
 
-(2) Gewinnansprüche aus der Zeit **vor dem 1. April 2026**, die noch nicht beschlossen oder ausgeschüttet wurden, verbleiben beim Erwerber. Der Veräußerer verzichtet auf etwaige Gewinnansprüche aus vergangenen Geschäftsjahren.
+(2) Der Veräußerer verzichtet auf etwaige Gewinnansprüche aus vergangenen Geschäftsjahren, die noch nicht beschlossen oder ausgeschüttet wurden.
+
+(3) Der Veräußerer wird für seine Tätigkeit als Geschäftsführer für das vergangene Geschäftsjahr **entlastet** (vgl. § 2 der Ausscheidungsvereinbarung).
 
 ---
 
-## § 6 -- Gesellschafterliste
+## § 6 -- Gesellschafterliste und Geschäftsführung
 
-(1) Der Geschäftsführer der Gesellschaft wird unverzüglich nach Beurkundung eine **aktualisierte Gesellschafterliste** zum Handelsregister einreichen, die den Erwerber als alleinigen Gesellschafter ausweist.
+(1) Der neue Geschäftsführer der Gesellschaft wird unverzüglich nach Beurkundung eine **aktualisierte Gesellschafterliste** zum Handelsregister einreichen, die den Erwerber als alleinigen Gesellschafter ausweist.
 
-(2) Die Kosten der Handelsregisteranmeldung und -eintragung trägt die Gesellschaft.
+(2) Die Niederlegung der Geschäftsführung durch den Veräußerer wird ebenfalls unverzüglich zum Handelsregister angemeldet.
+
+(3) Die Bestellung eines neuen Geschäftsführers obliegt dem Erwerber als alleinigem Gesellschafter.
+
+(4) Die Kosten der Handelsregisteranmeldung und -eintragung trägt die Gesellschaft.
 
 ---
 
@@ -105,7 +111,7 @@ Der Veräußerer erklärt und garantiert:
 
 (1) Sofern die Satzung der AI Tour Guide UG eine Zustimmung der Gesellschafterversammlung zur Anteilsabtretung vorsieht (Vinkulierung), wird diese Zustimmung hiermit erteilt.
 
-(2) Alexander Deibel handelt bei der Erteilung der Zustimmung in seiner Eigenschaft als Geschäftsführer und -- soweit erforderlich -- als Mitgesellschafter.
+(2) Beide Gesellschafter stimmen der Abtretung zu.
 
 ---
 
@@ -119,7 +125,7 @@ Der Veräußerer erklärt und garantiert:
 
 (1) Dieser Anteilsabtretungsvertrag ist **wesentlicher Bestandteil** der Ausscheidungsvereinbarung vom [Datum] zwischen den Parteien.
 
-(2) Die Verpflichtungen aus der Ausscheidungsvereinbarung (insbesondere Ausgleichszahlung, Übergabepflichten, Geheimhaltung, Wettbewerbsverbot) bleiben von dieser Abtretung unberührt und gelten unabhängig fort.
+(2) Die Verpflichtungen aus der Ausscheidungsvereinbarung (insbesondere Gehaltsfortzahlung, Entlastung, Geheimhaltung, Verzicht auf GuideTranslator-Ansprüche) bleiben von dieser Abtretung unberührt und gelten unabhängig fort.
 
 ---
 
@@ -146,14 +152,14 @@ Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden, bleibt die W
 **Veräußerer**
 
 ________________________
-Ulrich Berger
+Alexander Deibel
 
 ---
 
 **Erwerber**
 
 ________________________
-Alexander Deibel
+Ulrich Berger
 
 ---
 
