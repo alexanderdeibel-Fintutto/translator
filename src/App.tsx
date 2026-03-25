@@ -44,6 +44,10 @@ const MuseumVisitorPage = lazy(() => import('@/pages/MuseumVisitorPage'))
 const CityGuidePage = lazy(() => import('@/pages/CityGuidePage'))
 const RegionGuidePage = lazy(() => import('@/pages/RegionGuidePage'))
 const ConferenceLandingPage = lazy(() => import('@/pages/ConferenceLandingPage'))
+const StadtfuehrerPage = lazy(() => import('@/pages/StadtfuehrerPage'))
+const AgenturenPage = lazy(() => import('@/pages/AgenturenPage'))
+const KreuzfahrtPage = lazy(() => import('@/pages/KreuzfahrtPage'))
+const EnterpriseSolutionPage = lazy(() => import('@/pages/EnterpriseSolutionPage'))
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -87,6 +91,10 @@ function App() {
                   <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
                   <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />
                   <Route path="sales/conference" element={<Suspense fallback={<PageLoader />}><ConferenceLandingPage /></Suspense>} />
+                  <Route path="loesungen/stadtfuehrer" element={<Suspense fallback={<PageLoader />}><StadtfuehrerPage /></Suspense>} />
+                  <Route path="loesungen/agenturen" element={<Suspense fallback={<PageLoader />}><AgenturenPage /></Suspense>} />
+                  <Route path="loesungen/kreuzfahrt" element={<Suspense fallback={<PageLoader />}><KreuzfahrtPage /></Suspense>} />
+                  <Route path="loesungen/enterprise" element={<Suspense fallback={<PageLoader />}><EnterpriseSolutionPage /></Suspense>} />
                   <Route path="sales/:segment" element={<Suspense fallback={<PageLoader />}><SalesLandingPage /></Suspense>} />
                   <Route path="technology" element={<Suspense fallback={<PageLoader />}><TechnologyPage /></Suspense>} />
                   <Route path="features" element={<Suspense fallback={<PageLoader />}><FeaturesPage /></Suspense>} />

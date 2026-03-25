@@ -23,11 +23,11 @@ export default function Footer() {
             <h4 className="text-xs font-semibold mb-2">Loesungen</h4>
             <ul className="space-y-1 text-xs text-muted-foreground">
               <li><Link to="/solutions" className="hover:text-foreground transition-colors">Uebersicht</Link></li>
-              <li><a href="https://sales.guidetranslator.com/stadtfuehrer" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Stadtfuehrer</a></li>
-              <li><a href="https://sales.guidetranslator.com/agentur" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Agenturen</a></li>
-              <li><a href="https://sales.guidetranslator.com/veranstalter" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Events</a></li>
-              <li><a href="https://sales.guidetranslator.com/kreuzfahrt" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Kreuzfahrt</a></li>
-              <li><a href="https://sales.guidetranslator.com/enterprise" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Enterprise</a></li>
+              <li><Link to="/loesungen/stadtfuehrer" className="hover:text-foreground transition-colors">Stadtfuehrer</Link></li>
+              <li><Link to="/loesungen/agenturen" className="hover:text-foreground transition-colors">Agenturen</Link></li>
+              <li><Link to="/loesungen/kreuzfahrt" className="hover:text-foreground transition-colors">Kreuzfahrt</Link></li>
+              <li><Link to="/sales/conference" className="hover:text-foreground transition-colors">Kongresszentren</Link></li>
+              <li><Link to="/loesungen/enterprise" className="hover:text-foreground transition-colors">Enterprise</Link></li>
             </ul>
           </div>
           {/* Unternehmen */}

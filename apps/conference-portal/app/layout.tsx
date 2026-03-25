@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Fintutto Art Guide — Museum CMS',
-  description: 'Verwalte dein Museum, erstelle Fuehrungen, und begeistere Besucher mit KI-gestuetzten Audio-Guides.',
+  title: 'Fintutto Conference Portal — Congress CMS',
+  description: 'Verwalte Ihre Konferenzen, importieren Sie Programme und starten Sie Live-Übersetzungen.',
 }
 
 export default function RootLayout({
