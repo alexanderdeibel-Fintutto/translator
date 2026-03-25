@@ -1,208 +1,256 @@
 'use client'
+import { useState, useEffect, useCallback } from 'react'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useMuseum, useArtworks } from '@/lib/hooks'
-import type { Artwork } from '@/lib/types'
-
-const statusColors: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
-  review: 'bg-yellow-100 text-yellow-700',
-  published: 'bg-green-100 text-green-700',
-  archived: 'bg-red-100 text-red-600',
+type Artwork = {
+  id: string
+  inventory_number: string
+  title: string
+  artist_name: string
+  year_created: string
+  medium: string
+  status: 'draft' | 'review' | 'published' | 'archived'
+  is_highlight: boolean
+  category: string
+  tags: string[]
+  image_url: string | null
+  audio_url: string | null
+  created_at: string
 }
 
-const statusLabels: Record<string, string> = {
-  draft: 'Entwurf',
-  review: 'In Review',
-  published: 'Veröffentlicht',
-  archived: 'Archiviert',
+const STATUS_CONFIG = {
+  draft:     { label: 'Entwurf',        color: 'bg-gray-100 text-gray-600',    dot: 'bg-gray-400' },
+  review:    { label: 'In Review',      color: 'bg-yellow-100 text-yellow-700', dot: 'bg-yellow-400' },
+  published: { label: 'Veroeffentlicht', color: 'bg-green-100 text-green-700',  dot: 'bg-green-500' },
+  archived:  { label: 'Archiviert',     color: 'bg-red-100 text-red-600',      dot: 'bg-red-400' },
 }
 
-// Helper: extract localized text from MultiLang object
-function t(value: unknown, lang = 'de'): string {
-  if (!value) return ''
-  if (typeof value === 'string') return value
-  if (typeof value === 'object') {
-    const obj = value as Record<string, string>
-    return obj[lang] || obj['de'] || obj['en'] || Object.values(obj)[0] || ''
-  }
-  return String(value)
+const CAT_ICONS: Record<string, string> = {
+  painting: '🖼', sculpture: '🗿', installation: '💡', photography: '📷',
+  drawing: '✏️', print: '🖨', textile: '🧵', ceramic: '🏺', other: '🎨',
 }
 
 export default function ArtworksPage() {
-  const { museum } = useMuseum()
-  const [view, setView] = useState<'list' | 'grid'>('list')
+  const [artworks, setArtworks] = useState<Artwork[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'draft' | 'review' | 'published' | 'archived' | 'all' | undefined>(undefined)
-  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [qrModal, setQrModal] = useState<{ artwork: Artwork; svgContent: string } | null>(null)
+  const [generatingQr, setGeneratingQr] = useState<string | null>(null)
+  const [exportingPdf, setExportingPdf] = useState(false)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 300)
-    return () => clearTimeout(timer)
-  }, [search])
+  const fetchArtworks = useCallback(async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (search) params.set('search', search)
+      if (statusFilter) params.set('status', statusFilter)
+      const res = await fetch('/api/artworks?' + params.toString())
+      const data = await res.json()
+      setArtworks(data.artworks || [])
+    } catch { setArtworks([]) }
+    finally { setLoading(false) }
+  }, [search, statusFilter])
 
-  const { artworks, loading, total, reload } = useArtworks(museum?.id, {
-    search: debouncedSearch || undefined,
-    status: statusFilter,
-  })
+  useEffect(() => { fetchArtworks() }, [fetchArtworks])
+
+  const generateQr = async (artwork: Artwork) => {
+    setGeneratingQr(artwork.id)
+    try {
+      const res = await fetch('/api/qr?artwork_id=' + artwork.id + '&museum_id=demo-museum&format=svg')
+      const svg = await res.text()
+      setQrModal({ artwork, svgContent: svg })
+    } catch (err) { alert('QR-Fehler: ' + err) }
+    finally { setGeneratingQr(null) }
+  }
+
+  const exportQrPdf = async () => {
+    if (selectedIds.size === 0) { alert('Bitte zuerst Exponate auswaehlen'); return }
+    setExportingPdf(true)
+    try {
+      const selected = artworks.filter(a => selectedIds.has(a.id))
+      const res = await fetch('/api/qr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ artworks: selected, museumId: 'demo-museum' }),
+      })
+      const data = await res.json()
+      if (!data.success) { alert('Fehler'); return }
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+      doc.setFontSize(14); doc.setFont('helvetica', 'bold')
+      doc.text('Fintutto Art Guide — QR-Code Schilder', 105, 10, { align: 'center' })
+      data.qr_codes.forEach((qr: { title: string; artist: string; qr_data_url: string }, idx: number) => {
+        const col = idx % 2; const row = Math.floor(idx / 2) % 3
+        if (idx > 0 && idx % 6 === 0) doc.addPage()
+        const x = 10 + col * 95; const y = 15 + row * 90
+        doc.setDrawColor(200, 200, 200); doc.setFillColor(255, 255, 255)
+        doc.roundedRect(x, y, 90, 85, 3, 3, 'FD')
+        doc.addImage(qr.qr_data_url, 'PNG', x + 25, y + 5, 40, 40)
+        doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 27, 75)
+        doc.text((qr.title || '').slice(0, 30), x + 45, y + 52, { align: 'center' })
+        doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 100, 100)
+        doc.text((qr.artist || '').slice(0, 35), x + 45, y + 58, { align: 'center' })
+        doc.setFontSize(7); doc.setTextColor(150, 150, 150)
+        doc.text('Scannen fuer mehr Informationen', x + 45, y + 68, { align: 'center' })
+      })
+      doc.save('fintutto-qr-codes.pdf')
+    } catch (err) { alert('PDF-Fehler: ' + err) }
+    finally { setExportingPdf(false) }
+  }
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }
+  const toggleAll = () => {
+    setSelectedIds(selectedIds.size === artworks.length ? new Set() : new Set(artworks.map(a => a.id)))
+  }
+
+  const counts = {
+    all: artworks.length,
+    published: artworks.filter(a => a.status === 'published').length,
+    review: artworks.filter(a => a.status === 'review').length,
+    draft: artworks.filter(a => a.status === 'draft').length,
+  }
 
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Kunstwerke</h1>
-          <p className="text-gray-500 mt-1">
-            {loading ? 'Wird geladen...' : `${total} Werke in der Sammlung`}
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Kunstwerke & Exponate</h1>
+          <p className="text-gray-500 mt-1">{counts.all} Exponate · {counts.published} veroeffentlicht · {counts.review} in Review</p>
         </div>
         <div className="flex gap-3">
-          <Link href="/dashboard/import/museum" className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">
-            📂 Import
-          </Link>
-          <Link href="/dashboard/artworks/new" className="px-4 py-2 rounded-lg bg-indigo-900 text-white text-sm font-medium hover:bg-indigo-800 transition">
-            + Neues Kunstwerk
-          </Link>
+          {selectedIds.size > 0 && (
+            <button onClick={exportQrPdf} disabled={exportingPdf}
+              className="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 text-sm font-medium hover:bg-purple-200 transition disabled:opacity-50">
+              {exportingPdf ? '⏳ PDF...' : `📄 QR-PDF (${selectedIds.size})`}
+            </button>
+          )}
+          <a href="/dashboard/import/museum" className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">📥 Import</a>
+          <button className="px-4 py-2 rounded-lg bg-indigo-900 text-white text-sm font-medium hover:bg-indigo-800 transition">+ Neues Exponat</button>
         </div>
       </div>
-
-      {/* Filter Bar */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex-1 min-w-[200px] relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
-            <input
-              type="search"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Titel, Künstler, Inventarnummer..."
-              className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 outline-none text-sm"
-            />
-          </div>
-          <select
-            value={statusFilter || ''}
-            onChange={e => setStatusFilter((e.target.value || undefined) as typeof statusFilter)}
-            className="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none"
-          >
-            <option value="">Alle Status</option>
-            <option value="draft">Entwurf</option>
-            <option value="review">In Review</option>
-            <option value="published">Veröffentlicht</option>
-            <option value="archived">Archiviert</option>
-          </select>
-          <div className="flex border border-gray-300 rounded-lg overflow-hidden">
-            <button onClick={() => setView('list')} className={`px-3 py-2 text-sm ${view === 'list' ? 'bg-indigo-100 text-indigo-700' : 'bg-white text-gray-500'}`}>☰ Liste</button>
-            <button onClick={() => setView('grid')} className={`px-3 py-2 text-sm ${view === 'grid' ? 'bg-indigo-100 text-indigo-700' : 'bg-white text-gray-500'}`}>⊞ Grid</button>
-          </div>
+      <div className="flex gap-3 mb-6">
+        <div className="flex-1 relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          <input type="text" placeholder="Titel, Kuenstler, Inventarnummer..." value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" />
         </div>
-      </div>
-
-      {/* Content */}
-      {loading ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <div className="text-4xl mb-4 animate-spin">⏳</div>
-          <p className="text-gray-400">Kunstwerke werden geladen...</p>
-        </div>
-      ) : artworks.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <div className="text-5xl mb-4">🖼</div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Noch keine Kunstwerke</h3>
-          <p className="text-gray-400 mb-4">Importiere deine Sammlung oder lege ein Werk manuell an.</p>
-          <Link href="/dashboard/import/museum" className="inline-block px-5 py-2.5 bg-indigo-900 text-white rounded-lg font-medium hover:bg-indigo-800 transition">
-            Jetzt importieren →
-          </Link>
-        </div>
-      ) : view === 'list' ? (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
-                <th className="p-4 font-medium">Bild</th>
-                <th className="p-4 font-medium">Titel</th>
-                <th className="p-4 font-medium">Künstler</th>
-                <th className="p-4 font-medium">Raum</th>
-                <th className="p-4 font-medium">Status</th>
-                <th className="p-4 font-medium">Aktionen</th>
-              </tr>
-            </thead>
-            <tbody>
-              {artworks.map(artwork => (
-                <ArtworkRow key={artwork.id} artwork={artwork} onReload={reload} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {artworks.map(artwork => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
+        <div className="flex gap-2">
+          {[
+            { val: '', label: `Alle (${counts.all})` },
+            { val: 'published', label: `✅ (${counts.published})` },
+            { val: 'review', label: `👀 (${counts.review})` },
+            { val: 'draft', label: `📝 (${counts.draft})` },
+          ].map(f => (
+            <button key={f.val} onClick={() => setStatusFilter(f.val)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                statusFilter === f.val ? 'bg-indigo-100 text-indigo-700' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200'
+              }`}>{f.label}</button>
           ))}
+        </div>
+      </div>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 bg-gray-50">
+              <th className="py-3 px-4 text-left">
+                <input type="checkbox" checked={selectedIds.size === artworks.length && artworks.length > 0} onChange={toggleAll} className="rounded" />
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Exponat</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Kuenstler</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Jahr</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Kategorie</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-500 uppercase">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="border-b border-gray-100">
+                  {Array.from({ length: 7 }).map((_, j) => (
+                    <td key={j} className="py-4 px-4"><div className="h-4 bg-gray-200 rounded animate-pulse" /></td>
+                  ))}
+                </tr>
+              ))
+            ) : artworks.length === 0 ? (
+              <tr><td colSpan={7} className="py-16 text-center text-gray-400">
+                <div className="text-4xl mb-3">🖼</div>
+                <p className="font-medium text-gray-600">Noch keine Exponate</p>
+                <a href="/dashboard/import/museum" className="inline-block mt-4 px-4 py-2 rounded-lg bg-indigo-900 text-white text-sm font-medium">📥 Import starten</a>
+              </td></tr>
+            ) : artworks.map(artwork => {
+              const st = STATUS_CONFIG[artwork.status] || STATUS_CONFIG.draft
+              const catIcon = CAT_ICONS[artwork.category] || '🎨'
+              return (
+                <tr key={artwork.id} className={`border-b border-gray-100 hover:bg-gray-50 transition ${selectedIds.has(artwork.id) ? 'bg-indigo-50' : ''}`}>
+                  <td className="py-3 px-4"><input type="checkbox" checked={selectedIds.has(artwork.id)} onChange={() => toggleSelect(artwork.id)} className="rounded" /></td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-xl flex-shrink-0">{catIcon}</div>
+                      <div className="min-w-0">
+                        <div className="font-medium text-gray-900 truncate max-w-48">
+                          {artwork.is_highlight && <span className="text-amber-500 mr-1">⭐</span>}
+                          {artwork.title}
+                        </div>
+                        <div className="text-xs text-gray-400">{artwork.inventory_number}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-700">{artwork.artist_name || '—'}</td>
+                  <td className="py-3 px-4 text-sm text-gray-500">{artwork.year_created || '—'}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{catIcon} {artwork.category}</td>
+                  <td className="py-3 px-4">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${st.color}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
+                      {st.label}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-1">
+                      <a href={`/dashboard/artworks/${artwork.id}`} className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition" title="Bearbeiten">✏️</a>
+                      <button onClick={() => generateQr(artwork)} disabled={generatingQr === artwork.id}
+                        className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-purple-600 transition disabled:opacity-50" title="QR-Code">
+                        {generatingQr === artwork.id ? '⏳' : '📱'}
+                      </button>
+                      <button className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-green-600 transition" title="Audio">🎙</button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      {qrModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setQrModal(null)}>
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-gray-900">QR-Code</h3>
+              <button onClick={() => setQrModal(null)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-center mb-4"
+              dangerouslySetInnerHTML={{ __html: qrModal.svgContent }} />
+            <div className="text-center mb-4">
+              <div className="font-medium text-gray-900">{qrModal.artwork.title}</div>
+              <div className="text-sm text-gray-500">{qrModal.artwork.artist_name}</div>
+              <div className="text-xs text-gray-400 mt-1 font-mono">app.fintutto.com/art/demo/poi/{qrModal.artwork.id.slice(0, 8)}...</div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => {
+                const blob = new Blob([qrModal.svgContent], { type: 'image/svg+xml' })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement('a'); a.href = url
+                a.download = `qr-${qrModal.artwork.inventory_number}.svg`; a.click()
+              }} className="flex-1 px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">⬇ SVG</button>
+              <button onClick={() => { toggleSelect(qrModal.artwork.id); setQrModal(null) }}
+                className="flex-1 px-3 py-2 rounded-lg bg-indigo-100 text-indigo-700 text-sm font-medium hover:bg-indigo-200 transition">📄 Zum PDF</button>
+            </div>
+          </div>
         </div>
       )}
     </>
-  )
-}
-
-function ArtworkRow({ artwork, onReload }: { artwork: Artwork; onReload: () => void }) {
-  const imageUrl = (artwork as any).image_url as string | null
-  const roomName = artwork.room ? t(artwork.room.name) : null
-
-  return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50 transition">
-      <td className="p-4">
-        {imageUrl ? (
-          <img src={imageUrl} alt={t(artwork.title)} className="w-12 h-12 object-cover rounded-lg border border-gray-200" />
-        ) : (
-          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-300 text-xl">🖼</div>
-        )}
-      </td>
-      <td className="p-4">
-        <Link href={`/dashboard/artworks/${artwork.id}`} className="font-medium text-gray-900 hover:text-indigo-700 transition">
-          {t(artwork.title)}
-        </Link>
-        {artwork.inventory_number && (
-          <p className="text-xs text-gray-400 font-mono mt-0.5">{artwork.inventory_number}</p>
-        )}
-      </td>
-      <td className="p-4 text-gray-600 text-sm">{artwork.artist_name || '—'}</td>
-      <td className="p-4 text-gray-500 text-sm">{roomName || '—'}</td>
-      <td className="p-4">
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[artwork.status] || 'bg-gray-100 text-gray-600'}`}>
-          {statusLabels[artwork.status] || artwork.status}
-        </span>
-      </td>
-      <td className="p-4">
-        <div className="flex items-center gap-2">
-          <Link href={`/dashboard/artworks/${artwork.id}`} className="p-1.5 rounded-lg hover:bg-indigo-50 text-indigo-600 transition" title="Bearbeiten">✏️</Link>
-          <Link href={`/dashboard/artworks/${artwork.id}?tab=qr`} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition" title="QR-Code">📱</Link>
-        </div>
-      </td>
-    </tr>
-  )
-}
-
-function ArtworkCard({ artwork }: { artwork: Artwork }) {
-  const imageUrl = (artwork as any).image_url as string | null
-
-  return (
-    <Link href={`/dashboard/artworks/${artwork.id}`} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-indigo-300 hover:shadow-sm transition group">
-      {imageUrl ? (
-        <img src={imageUrl} alt={t(artwork.title)} className="w-full h-40 object-cover" />
-      ) : (
-        <div className="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-300 text-4xl">🖼</div>
-      )}
-      <div className="p-3">
-        <p className="font-medium text-gray-900 text-sm truncate group-hover:text-indigo-700 transition">{t(artwork.title)}</p>
-        <p className="text-xs text-gray-500 mt-0.5 truncate">{artwork.artist_name || '—'}</p>
-        <div className="flex items-center justify-between mt-2">
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[artwork.status] || 'bg-gray-100 text-gray-600'}`}>
-            {statusLabels[artwork.status] || artwork.status}
-          </span>
-          {artwork.inventory_number && (
-            <span className="text-xs font-mono text-gray-400">{artwork.inventory_number}</span>
-          )}
-        </div>
-      </div>
-    </Link>
   )
 }

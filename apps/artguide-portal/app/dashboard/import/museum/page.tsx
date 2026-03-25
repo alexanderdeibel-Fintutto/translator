@@ -1,382 +1,334 @@
 'use client'
+import { useState, useRef, useCallback } from 'react'
+import Papa from 'papaparse'
 
-import { useState, useRef, useEffect } from 'react'
-import Link from 'next/link'
-import { useMuseum, useImportJob, importActions } from '@/lib/hooks'
-import type { Lang } from '@/lib/types'
+type MappedData = Record<string, string>
+type ImportItem = {
+  id: string
+  row_index: number
+  source_data: MappedData
+  mapped_data: MappedData
+  status: 'pending' | 'enriching' | 'enriched' | 'error'
+  enriched?: Record<string, unknown>
+  error?: string
+}
+type ImportJob = {
+  id: string
+  filename: string
+  total_rows: number
+  column_mapping: Record<string, string | null>
+  items: ImportItem[]
+}
 
-type WizardStep = 'upload' | 'analyze' | 'mapping' | 'enrich' | 'review'
+const DEMO_CSV = `Inventarnummer,Titel,Kuenstler,Jahr,Technik,Masse,Beschreibung,Raum
+INV-001,Sonnenuntergang ueber dem Meer,Caspar David Friedrich,1823,Oel auf Leinwand,72 x 102 cm,Romantische Meereslandschaft mit dramatischem Abendhimmel,Saal 3
+INV-002,Portraet einer Lesenden,Marie Ellenrieder,1831,Oel auf Holz,45 x 38 cm,Intimes Portraet einer jungen Frau beim Lesen,Saal 1
+INV-003,Stillleben mit Blumen,Jan van Huysum,1720,Oel auf Holz,80 x 60 cm,Praechtiges Blumenstillleben im hollaendischen Stil,Saal 2
+INV-004,Abstrakte Komposition,Wassily Kandinsky,1912,Aquarell auf Papier,50 x 65 cm,Fruehes abstraktes Werk mit leuchtenden Farben,Saal 4
+INV-005,Bronzefigur Athena,Unbekannt,200 v. Chr.,Bronze,H: 45 cm,Kleine Votivfigur der Goettin Athena,Saal 5`
 
-const steps: { key: WizardStep; label: string; icon: string }[] = [
-  { key: 'upload', label: 'Hochladen', icon: '📁' },
-  { key: 'analyze', label: 'KI-Analyse', icon: '🔍' },
-  { key: 'mapping', label: 'Feld-Zuordnung', icon: '🔗' },
-  { key: 'enrich', label: 'KI-Anreicherung', icon: '🤖' },
-  { key: 'review', label: 'Prüfen & Import', icon: '✅' },
-]
-
-const targetFields = [
-  { key: 'inventory_number', label: 'Inventarnummer', required: true },
-  { key: 'title', label: 'Titel', required: true },
-  { key: 'artist_name', label: 'Künstler', required: false },
-  { key: 'year_created', label: 'Entstehungsjahr', required: false },
-  { key: 'medium', label: 'Technik/Material', required: false },
-  { key: 'dimensions', label: 'Maße', required: false },
-  { key: 'style', label: 'Stil', required: false },
-  { key: 'epoch', label: 'Epoche', required: false },
-  { key: 'room', label: 'Raum/Standort', required: false },
-  { key: 'origin', label: 'Herkunft', required: false },
-  { key: 'description', label: 'Beschreibung', required: false },
-  { key: 'image_url', label: 'Bild-URL', required: false },
-]
-
-const enrichmentOptions = [
-  { key: 'description_brief', label: 'Kurzbeschreibung', desc: '1-2 Sätze', default: true },
-  { key: 'description_standard', label: 'Standardbeschreibung', desc: '4-6 Sätze', default: true },
-  { key: 'description_detailed', label: 'Detailbeschreibung', desc: '8-15 Sätze', default: true },
-  { key: 'description_children', label: 'Kinderbeschreibung', desc: 'Für 6-12 Jahre', default: true },
-  { key: 'description_youth', label: 'Jugendbeschreibung', desc: 'Für 13-17 Jahre', default: true },
-  { key: 'fun_facts', label: 'Fun Facts', desc: 'Überraschende Fakten', default: true },
-  { key: 'historical_context', label: 'Historischer Kontext', desc: 'Zeitgeschichte', default: true },
-  { key: 'technique_details', label: 'Technik-Details', desc: 'Materialien & Arbeitsweise', default: false },
-]
-
-const availableLanguages = [
-  { code: 'de' as Lang, label: 'Deutsch', flag: '🇩🇪', default: true },
-  { code: 'en' as Lang, label: 'English', flag: '🇬🇧', default: true },
-  { code: 'fr' as Lang, label: 'Français', flag: '🇫🇷', default: false },
-  { code: 'it' as Lang, label: 'Italiano', flag: '🇮🇹', default: false },
-  { code: 'es' as Lang, label: 'Español', flag: '🇪🇸', default: false },
-  { code: 'nl' as Lang, label: 'Nederlands', flag: '🇳🇱', default: false },
-  { code: 'pl' as Lang, label: 'Polski', flag: '🇵🇱', default: false },
-  { code: 'zh' as Lang, label: '中文', flag: '🇨🇳', default: false },
-  { code: 'ja' as Lang, label: '日本語', flag: '🇯🇵', default: false },
-]
-
-export default function MuseumImportPage() {
-  const { museum, loading: museumLoading } = useMuseum()
-  const [currentStep, setCurrentStep] = useState<WizardStep>('upload')
-  const [isDragging, setIsDragging] = useState(false)
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
-  const [jobId, setJobId] = useState<string | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const [fieldMapping, setFieldMapping] = useState<Record<string, string>>({})
-  const [selectedEnrichments, setSelectedEnrichments] = useState<string[]>(
-    enrichmentOptions.filter(o => o.default).map(o => o.key)
-  )
-  const [selectedLanguages, setSelectedLanguages] = useState<Lang[]>(
-    availableLanguages.filter(l => l.default).map(l => l.code)
-  )
-  const [generateAudio, setGenerateAudio] = useState(false)
-  const [isEnriching, setIsEnriching] = useState(false)
-  const [isImporting, setIsImporting] = useState(false)
-  const [importResult, setImportResult] = useState<{ imported: number; errors: number } | null>(null)
-  const [error, setError] = useState<string | null>(null)
+export default function ImportMuseumPage() {
+  const [step, setStep] = useState<'upload' | 'mapping' | 'enriching' | 'review'>('upload')
+  const [job, setJob] = useState<ImportJob | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [enrichProgress, setEnrichProgress] = useState(0)
+  const [dragOver, setDragOver] = useState(false)
+  const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { job, items, reload: reloadJob } = useImportJob(jobId)
-  const stepIndex = steps.findIndex(s => s.key === currentStep)
-
-  // Auto-advance based on job status
-  useEffect(() => {
-    if (!job) return
-    if (job.status === 'analyzing') setCurrentStep('analyze')
-    else if (job.status === 'mapping') {
-      setCurrentStep('mapping')
-      const suggestions = (job.ai_analysis as any)?.suggestions
-      if (suggestions && Object.keys(fieldMapping).length === 0) setFieldMapping(suggestions)
-    }
-    else if (job.status === 'enriching') { setCurrentStep('enrich'); setIsEnriching(true) }
-    else if (job.status === 'review') { setCurrentStep('review'); setIsEnriching(false) }
-    else if (job.status === 'completed') setImportResult({ imported: job.items_imported, errors: job.items_rejected })
-  }, [job?.status])
-
-  function handleFileSelect(file: File) { setUploadedFile(file) }
-
-  async function handleUploadAndAnalyze() {
-    if (!uploadedFile || !museum) return
-    setIsUploading(true); setError(null)
+  const processFile = useCallback(async (file: File | null, useDemoData = false) => {
+    setIsLoading(true)
     try {
-      const newJob = await importActions.uploadAndCreateJob({
-        museumId: museum.id, file: uploadedFile, importMode: 'museum', targetType: 'artworks',
+      let csvText = ''
+      let filename = 'demo-import.csv'
+      if (useDemoData) { csvText = DEMO_CSV }
+      else if (file) { csvText = await file.text(); filename = file.name }
+      else return
+
+      const parsed = Papa.parse<Record<string, string>>(csvText, { header: true, skipEmptyLines: true })
+      if (parsed.errors.length > 0 && parsed.data.length === 0) { alert('CSV konnte nicht gelesen werden'); return }
+
+      const response = await fetch('/api/import/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rows: parsed.data, filename, museumId: 'demo-museum' }),
       })
-      setJobId(newJob.id)
-      setCurrentStep('analyze')
-      await importActions.triggerAnalysis(newJob.id)
-    } catch (e: any) { setError(e.message) }
-    finally { setIsUploading(false) }
+      const result = await response.json()
+      if (!result.success) { alert('Fehler: ' + result.error); return }
+      setJob(result.job)
+      setStep('mapping')
+    } catch (err) { alert('Fehler: ' + String(err)) }
+    finally { setIsLoading(false) }
+  }, [])
+
+  const startEnrichment = async () => {
+    if (!job) return
+    setStep('enriching')
+    setEnrichProgress(0)
+    const updatedItems = [...job.items]
+    for (let i = 0; i < Math.min(updatedItems.length, 10); i++) {
+      updatedItems[i] = { ...updatedItems[i], status: 'enriching' }
+      setJob(prev => prev ? { ...prev, items: [...updatedItems] } : prev)
+      try {
+        const response = await fetch('/api/import/enrich', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mappedData: updatedItems[i].mapped_data, tier: 'artguide_starter' }),
+        })
+        const result = await response.json()
+        updatedItems[i] = result.success
+          ? { ...updatedItems[i], status: 'enriched', enriched: result.enriched }
+          : { ...updatedItems[i], status: 'error', error: result.error }
+      } catch (err) { updatedItems[i] = { ...updatedItems[i], status: 'error', error: String(err) } }
+      setEnrichProgress(Math.round(((i + 1) / Math.min(updatedItems.length, 10)) * 100))
+      setJob(prev => prev ? { ...prev, items: [...updatedItems] } : prev)
+    }
+    setStep('review')
   }
 
-  async function handleSaveMapping() {
-    if (!jobId) return
-    try { await importActions.saveMapping(jobId, fieldMapping); setCurrentStep('enrich') }
-    catch (e: any) { setError(e.message) }
+  const statusIcon = (status: ImportItem['status']) => {
+    if (status === 'pending') return <span className="text-gray-400 text-lg">⏳</span>
+    if (status === 'enriching') return <span className="text-blue-500 text-lg animate-spin inline-block">⚙️</span>
+    if (status === 'enriched') return <span className="text-green-500 text-lg">✅</span>
+    return <span className="text-red-500 text-lg">❌</span>
   }
 
-  async function handleStartEnrichment() {
-    if (!jobId) return
-    setIsEnriching(true); setError(null)
-    try {
-      await importActions.triggerEnrichment(jobId, { languages: selectedLanguages, enrichments: selectedEnrichments, generateAudio })
-    } catch (e: any) { setError(e.message); setIsEnriching(false) }
-  }
-
-  async function handleFinalImport() {
-    if (!jobId) return
-    setIsImporting(true); setError(null)
-    try { const result = await importActions.finalizeImport(jobId); setImportResult(result) }
-    catch (e: any) { setError(e.message) }
-    finally { setIsImporting(false) }
-  }
-
-  if (museumLoading) return <div className="flex items-center justify-center h-64 text-gray-400">Wird geladen...</div>
-
-  if (!museum) return (
-    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-      <h2 className="font-bold text-yellow-800 mb-2">Kein Museum gefunden</h2>
-      <Link href="/dashboard/settings" className="mt-3 inline-block px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium">Museum einrichten →</Link>
-    </div>
-  )
+  const stepLabels = [
+    { id: 'upload', label: '1. Datei hochladen' },
+    { id: 'mapping', label: '2. Felder pruefen' },
+    { id: 'enriching', label: '3. KI-Anreicherung' },
+    { id: 'review', label: '4. Review & Import' },
+  ]
+  const stepOrder = ['upload', 'mapping', 'enriching', 'review']
+  const currentIdx = stepOrder.indexOf(step)
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-6">
-        <Link href="/dashboard/import" className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">←</Link>
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">🏛 Museum / Galerie Import</h1>
-          <p className="text-gray-500 text-sm mt-1">Kunstwerke aus CSV, Excel oder PDF importieren — KI generiert Beschreibungen</p>
+          <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+            <a href="/dashboard/import" className="hover:text-indigo-600">Import-Zentrale</a>
+            <span>›</span>
+            <span className="text-gray-900 font-medium">Museum Import</span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Museum Import</h1>
+          <p className="text-gray-500 mt-1">CSV hochladen → KI reichert automatisch an → Fertige Exponate</p>
         </div>
       </div>
 
-      {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-          <span className="text-red-500">⚠️</span>
-          <p className="text-red-700 text-sm flex-1">{error}</p>
-          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">✕</button>
+      {/* Steps */}
+      <div className="flex items-center gap-2 mb-8 flex-wrap">
+        {stepLabels.map((s, i) => (
+          <div key={s.id} className="flex items-center gap-2">
+            <div className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+              step === s.id ? 'bg-indigo-900 text-white' :
+              currentIdx > i ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'
+            }`}>
+              {currentIdx > i ? '✓ ' : ''}{s.label}
+            </div>
+            {i < stepLabels.length - 1 && <span className="text-gray-300">→</span>}
+          </div>
+        ))}
+      </div>
+
+      {/* STEP 1: Upload */}
+      {step === 'upload' && (
+        <div className="max-w-2xl">
+          <div
+            className={`border-2 border-dashed rounded-2xl p-12 text-center transition cursor-pointer ${
+              dragOver ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-gray-50'
+            }`}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) processFile(f) }}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <div className="text-5xl mb-4">📂</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">CSV oder Excel-Datei hier ablegen</h3>
+            <p className="text-gray-500 text-sm mb-6">Beliebige Spaltenbezeichnungen – KI erkennt automatisch was was ist</p>
+            <input ref={fileInputRef} type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={(e) => processFile(e.target.files?.[0] || null)} />
+            <button className="px-6 py-3 rounded-xl bg-indigo-900 text-white font-medium hover:bg-indigo-800 transition" onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}>
+              Datei auswaehlen
+            </button>
+          </div>
+          <div className="mt-6 bg-amber-50 rounded-xl border border-amber-200 p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🧪</span>
+              <div className="flex-1">
+                <h4 className="font-semibold text-amber-900 mb-1">Demo-Daten ausprobieren</h4>
+                <p className="text-sm text-amber-700 mb-3">5 Beispiel-Kunstwerke – erlebe den kompletten Import-Prozess mit echter KI-Anreicherung.</p>
+                <button onClick={() => processFile(null, true)} disabled={isLoading}
+                  className="px-4 py-2 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-400 transition disabled:opacity-50">
+                  {isLoading ? '⏳ Wird verarbeitet...' : '▶ Demo starten'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {importResult ? (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-          <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-green-800 mb-2">Import abgeschlossen!</h2>
-          <p className="text-green-700 mb-6"><strong>{importResult.imported}</strong> Kunstwerke importiert{importResult.errors > 0 ? `, ${importResult.errors} Fehler` : ''}</p>
-          <div className="flex gap-3 justify-center">
-            <Link href="/dashboard/artworks" className="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition">Kunstwerke anzeigen →</Link>
-            <button onClick={() => { setImportResult(null); setJobId(null); setUploadedFile(null); setCurrentStep('upload') }} className="px-6 py-2 bg-white border border-green-300 text-green-700 rounded-lg font-medium hover:bg-green-50 transition">Neuer Import</button>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          {/* Stepper */}
-          <div className="border-b border-gray-200 p-5">
-            <div className="flex items-center gap-1">
-              {steps.map((step, idx) => (
-                <div key={step.key} className="flex items-center gap-1">
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${idx === stepIndex ? 'bg-indigo-100 text-indigo-700' : idx < stepIndex ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-                    <span>{idx < stepIndex ? '✓' : step.icon}</span>
-                    <span className="hidden sm:inline">{step.label}</span>
+      {/* STEP 2: Mapping */}
+      {step === 'mapping' && job && (
+        <div>
+          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🤖</span>
+              <div>
+                <h3 className="font-semibold text-gray-900">KI-Feldmapping abgeschlossen</h3>
+                <p className="text-sm text-gray-500">{job.filename} — {job.total_rows} Zeilen erkannt</p>
+              </div>
+              <span className="ml-auto px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">✓ Automatisch gemappt</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {Object.entries(job.column_mapping).map(([field, col]) => (
+                <div key={field} className={`flex items-center gap-3 p-3 rounded-lg border ${col ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${col ? 'bg-green-500' : 'bg-gray-300'}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-gray-500">{field}</div>
+                    <div className={`text-sm font-medium truncate ${col ? 'text-gray-900' : 'text-gray-400'}`}>{col || '— nicht gefunden'}</div>
                   </div>
-                  {idx < steps.length - 1 && <div className={`w-6 h-0.5 ${idx < stepIndex ? 'bg-green-300' : 'bg-gray-200'}`} />}
+                  {col && job.items[0] && (
+                    <span className="text-xs text-green-600 flex-shrink-0 max-w-24 truncate">{job.items[0].source_data[col]?.slice(0, 20)}</span>
+                  )}
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="p-6">
-            {/* STEP 1: UPLOAD */}
-            {currentStep === 'upload' && (
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Datei hochladen</h2>
-                <div
-                  onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={e => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]) }}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition ${isDragging ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 hover:border-indigo-300 hover:bg-gray-50'}`}
-                >
-                  <input ref={fileInputRef} type="file" accept=".csv,.xlsx,.xls,.pdf,.json" className="hidden" onChange={e => { if (e.target.files?.[0]) handleFileSelect(e.target.files[0]) }} />
-                  <div className="text-4xl mb-3">📂</div>
-                  <p className="text-gray-700 font-medium">Datei hierher ziehen oder klicken</p>
-                  <p className="text-gray-400 text-sm mt-1">CSV, Excel, PDF oder JSON</p>
-                </div>
-                {uploadedFile && (
-                  <div className="mt-4 bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center gap-3">
-                    <span className="text-2xl">📄</span>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{uploadedFile.name}</p>
-                      <p className="text-sm text-gray-500">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
-                    </div>
-                    <button onClick={e => { e.stopPropagation(); setUploadedFile(null) }} className="text-gray-400 hover:text-gray-600">✕</button>
-                  </div>
-                )}
-                <div className="flex justify-end mt-6">
-                  <button onClick={handleUploadAndAnalyze} disabled={!uploadedFile || isUploading} className="px-6 py-2.5 rounded-lg bg-indigo-900 text-white font-medium hover:bg-indigo-800 transition disabled:opacity-50 flex items-center gap-2">
-                    {isUploading ? <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Wird hochgeladen...</> : 'Hochladen & Analysieren →'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 2: ANALYZE */}
-            {currentStep === 'analyze' && (
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-4">KI-Analyse</h2>
-                {job?.status === 'analyzing' || !job ? (
-                  <div className="text-center py-12">
-                    <div className="text-4xl mb-4">🔍</div>
-                    <p className="text-gray-700 font-medium mb-2">KI analysiert deine Datei...</p>
-                    <p className="text-gray-400 text-sm">Spalten werden erkannt, Datentypen geprüft</p>
-                    <div className="mt-6 flex justify-center"><div className="w-48 bg-gray-200 rounded-full h-2"><div className="bg-indigo-500 h-2 rounded-full animate-pulse" style={{ width: '60%' }} /></div></div>
-                    <button onClick={reloadJob} className="mt-4 text-sm text-indigo-600 hover:underline">Aktualisieren</button>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-                      <p className="font-medium text-green-800">✓ Analyse abgeschlossen</p>
-                      <p className="text-green-700 text-sm mt-1">{(job.ai_analysis as any)?.detected_items || 0} Einträge · {((job.ai_analysis as any)?.detected_columns || []).length} Spalten</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {((job.ai_analysis as any)?.detected_columns || []).map((col: string) => (
-                        <span key={col} className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs">{col}</span>
-                      ))}
-                    </div>
-                    <div className="flex justify-end">
-                      <button onClick={() => setCurrentStep('mapping')} className="px-6 py-2.5 rounded-lg bg-indigo-900 text-white font-medium hover:bg-indigo-800 transition">Feld-Zuordnung →</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* STEP 3: MAPPING */}
-            {currentStep === 'mapping' && (
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-1">Feld-Zuordnung</h2>
-                <p className="text-gray-500 text-sm mb-4">KI-Vorschlag — bitte prüfen und korrigieren.</p>
-                <div className="space-y-2 mb-6">
-                  {((job?.ai_analysis as any)?.detected_columns || Object.keys(fieldMapping)).map((col: string) => (
-                    <div key={col} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1"><span className="font-mono text-sm bg-white border border-gray-200 px-2 py-1 rounded">{col}</span></div>
-                      <div className="text-gray-400">→</div>
-                      <div className="flex-1">
-                        <select value={fieldMapping[col] || ''} onChange={e => setFieldMapping(prev => ({ ...prev, [col]: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-300 text-sm focus:border-indigo-500 outline-none">
-                          <option value="">— Ignorieren —</option>
-                          {targetFields.map(f => <option key={f.key} value={f.key}>{f.label}{f.required ? ' *' : ''}</option>)}
-                        </select>
-                      </div>
-                    </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h3 className="font-semibold text-gray-900 mb-4">Vorschau (erste 3 Zeilen)</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="border-b border-gray-200">
+                  {Object.values(job.column_mapping).filter(Boolean).map(col => (
+                    <th key={col} className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">{col}</th>
                   ))}
-                </div>
-                <div className="flex justify-between">
-                  <button onClick={() => setCurrentStep('analyze')} className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">← Zurück</button>
-                  <button onClick={handleSaveMapping} className="px-6 py-2.5 rounded-lg bg-indigo-900 text-white font-medium hover:bg-indigo-800 transition">Mapping speichern →</button>
-                </div>
-              </div>
-            )}
+                </tr></thead>
+                <tbody>
+                  {job.items.slice(0, 3).map(item => (
+                    <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      {Object.values(job.column_mapping).filter(Boolean).map(col => (
+                        <td key={col} className="py-2 px-3 text-gray-700 max-w-xs truncate">{item.source_data[col!] || '—'}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => setStep('upload')} className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">← Zurueck</button>
+            <button onClick={startEnrichment} className="px-6 py-3 rounded-xl bg-indigo-900 text-white font-bold hover:bg-indigo-800 transition flex items-center gap-2">
+              <span>🤖</span> KI-Anreicherung starten ({job.total_rows} Exponate)
+            </button>
+          </div>
+        </div>
+      )}
 
-            {/* STEP 4: ENRICH */}
-            {currentStep === 'enrich' && (
+      {/* STEP 3: Enriching */}
+      {step === 'enriching' && job && (
+        <div className="max-w-2xl">
+          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+            <div className="text-5xl mb-4 animate-pulse">🤖</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">KI reichert Exponate an...</h3>
+            <p className="text-gray-500 mb-6">GPT-4.1 generiert zielgruppengerechte Texte, Fun Facts und Kategorien</p>
+            <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+              <div className="bg-indigo-600 h-3 rounded-full transition-all duration-500" style={{ width: `${enrichProgress}%` }} />
+            </div>
+            <div className="text-sm text-gray-500 mb-8">{enrichProgress}% — {Math.round(enrichProgress / 100 * Math.min(job.items.length, 10))} von {Math.min(job.items.length, 10)} verarbeitet</div>
+            <div className="space-y-2 text-left">
+              {job.items.slice(0, Math.min(job.items.length, 10)).map(item => (
+                <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                  {statusIcon(item.status)}
+                  <span className="text-sm text-gray-700 flex-1">{item.mapped_data.title || `Exponat ${item.row_index + 1}`}</span>
+                  {item.status === 'enriched' && <span className="text-xs text-green-600">Texte generiert ✓</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 4: Review */}
+      {step === 'review' && job && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🎉</span>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-1">KI-Anreicherung</h2>
-                {isEnriching || job?.status === 'enriching' ? (
-                  <div className="text-center py-12">
-                    <div className="text-4xl mb-4">🤖</div>
-                    <p className="text-gray-700 font-medium mb-2">KI generiert Inhalte...</p>
-                    <p className="text-gray-400 text-sm">{job?.items_enriched || 0} / {job?.items_total || 0} Werke</p>
-                    <div className="mt-6 mx-auto max-w-xs">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{ width: `${job?.items_total ? Math.round(((job.items_enriched || 0) / job.items_total) * 100) : 0}%` }} />
+                <h3 className="font-semibold text-gray-900">Anreicherung abgeschlossen!</h3>
+                <p className="text-sm text-gray-500">{job.items.filter(i => i.status === 'enriched').length} von {Math.min(job.items.length, 10)} Exponaten erfolgreich angereichert</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="px-4 py-2 rounded-lg bg-green-100 text-green-700 text-sm font-medium hover:bg-green-200 transition">✓ Alle genehmigen</button>
+              <button className="px-6 py-3 rounded-xl bg-indigo-900 text-white font-bold hover:bg-indigo-800 transition">
+                📥 {job.items.filter(i => i.status === 'enriched').length} Exponate importieren
+              </button>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {job.items.slice(0, 10).map(item => (
+              <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition" onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}>
+                  {statusIcon(item.status)}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-900 truncate">
+                      {item.enriched ? String(item.enriched.title_de || item.mapped_data.title || 'Unbekannt') : (item.mapped_data.title || `Zeile ${item.row_index + 1}`)}
+                    </div>
+                    <div className="text-sm text-gray-500 truncate">{item.mapped_data.artist_name || '—'} · {item.mapped_data.year_created || '—'}</div>
+                  </div>
+                  {item.enriched && (
+                    <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium flex-shrink-0">{String(item.enriched.category || 'painting')}</span>
+                  )}
+                  <span className="text-gray-400 text-sm">{expandedItem === item.id ? '▲' : '▼'}</span>
+                </div>
+                {expandedItem === item.id && item.enriched && (
+                  <div className="border-t border-gray-100 p-4 bg-gray-50">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Generierte Texte</h4>
+                        <div className="space-y-3">
+                          {[
+                            { key: 'description_brief', label: 'Kurzbeschreibung', color: 'text-indigo-600' },
+                            { key: 'description_standard', label: 'Standard (Besucher)', color: 'text-indigo-600' },
+                            { key: 'description_children', label: 'Kinder (6-12)', color: 'text-green-600' },
+                          ].map(({ key, label, color }) => item.enriched?.[key] && (
+                            <div key={key}>
+                              <div className={`text-xs font-medium ${color} mb-1`}>{label}</div>
+                              <p className="text-sm text-gray-700 bg-white p-2 rounded border border-gray-200">{String(item.enriched[key])}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Fun Facts & Tags</h4>
+                        {Array.isArray(item.enriched.fun_facts) && (
+                          <div className="mb-3 space-y-2">
+                            {(item.enriched.fun_facts as string[]).map((fact, i) => (
+                              <div key={i} className="flex items-start gap-2">
+                                <span className="text-amber-500 flex-shrink-0">💡</span>
+                                <p className="text-sm text-gray-700">{fact}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {Array.isArray(item.enriched.suggested_tags) && (
+                          <div className="flex flex-wrap gap-1 mb-4">
+                            {(item.enriched.suggested_tags as string[]).map(tag => (
+                              <span key={tag} className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-700 text-xs">{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex gap-2 mt-4">
+                          <button className="flex-1 px-3 py-2 rounded-lg bg-green-100 text-green-700 text-sm font-medium hover:bg-green-200 transition">✓ Genehmigen</button>
+                          <button className="px-3 py-2 rounded-lg bg-purple-100 text-purple-700 text-sm font-medium hover:bg-purple-200 transition">🔄 Neu</button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <>
-                    <p className="text-gray-500 text-sm mb-4">Wähle welche Inhalte die KI generieren soll.</p>
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      {enrichmentOptions.map(opt => (
-                        <label key={opt.key} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-indigo-50 transition">
-                          <input type="checkbox" checked={selectedEnrichments.includes(opt.key)} onChange={e => setSelectedEnrichments(prev => e.target.checked ? [...prev, opt.key] : prev.filter(k => k !== opt.key))} className="mt-0.5 w-4 h-4 text-indigo-600 rounded" />
-                          <div><p className="font-medium text-gray-800 text-sm">{opt.label}</p><p className="text-gray-400 text-xs">{opt.desc}</p></div>
-                        </label>
-                      ))}
-                    </div>
-                    <div className="mb-4">
-                      <h3 className="font-medium text-gray-700 mb-2 text-sm">Sprachen</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {availableLanguages.map(lang => (
-                          <button key={lang.code} onClick={() => setSelectedLanguages(prev => prev.includes(lang.code) ? (prev.length > 1 ? prev.filter(l => l !== lang.code) : prev) : [...prev, lang.code])} className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${selectedLanguages.includes(lang.code) ? 'bg-indigo-100 text-indigo-700 border border-indigo-300' : 'bg-gray-100 text-gray-500 hover:border-gray-300 border border-transparent'}`}>
-                            {lang.flag} {lang.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-indigo-50 transition mb-6">
-                      <input type="checkbox" checked={generateAudio} onChange={e => setGenerateAudio(e.target.checked)} className="w-4 h-4 text-indigo-600 rounded" />
-                      <div><p className="font-medium text-gray-800 text-sm">🎧 Audio-Guides generieren</p><p className="text-gray-400 text-xs">TTS-Audiodateien für alle Sprachen</p></div>
-                    </label>
-                    <div className="flex justify-between">
-                      <button onClick={() => setCurrentStep('mapping')} className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">← Zurück</button>
-                      <button onClick={handleStartEnrichment} className="px-6 py-2.5 rounded-lg bg-indigo-900 text-white font-medium hover:bg-indigo-800 transition">KI-Anreicherung starten →</button>
-                    </div>
-                  </>
                 )}
               </div>
-            )}
-
-            {/* STEP 5: REVIEW */}
-            {currentStep === 'review' && (
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 mb-1">Prüfen & Importieren</h2>
-                <div className="grid grid-cols-4 gap-3 mb-6">
-                  {[
-                    { label: 'Gesamt', value: job?.items_total || 0, color: 'bg-gray-100 text-gray-700' },
-                    { label: 'Angereichert', value: job?.items_enriched || 0, color: 'bg-blue-100 text-blue-700' },
-                    { label: 'Genehmigt', value: job?.items_approved || 0, color: 'bg-green-100 text-green-700' },
-                    { label: 'Zur Prüfung', value: items.filter(i => i.status === 'enriched').length, color: 'bg-orange-100 text-orange-700' },
-                  ].map(card => (
-                    <div key={card.label} className={`rounded-xl p-4 text-center ${card.color}`}>
-                      <div className="text-2xl font-bold">{card.value}</div>
-                      <div className="text-xs mt-1">{card.label}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="overflow-x-auto border border-gray-200 rounded-lg mb-6">
-                  <table className="w-full text-sm">
-                    <thead><tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="p-3 text-left font-medium text-gray-600">Inv.Nr.</th>
-                      <th className="p-3 text-left font-medium text-gray-600">Titel</th>
-                      <th className="p-3 text-left font-medium text-gray-600">Künstler</th>
-                      <th className="p-3 text-left font-medium text-gray-600">Status</th>
-                    </tr></thead>
-                    <tbody>
-                      {items.slice(0, 20).map(item => {
-                        const mapped = item.mapped_data as any
-                        return (
-                          <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="p-3 font-mono text-xs text-gray-500">{mapped?.inventory_number || '—'}</td>
-                            <td className="p-3 font-medium text-gray-900">{mapped?.title || '—'}</td>
-                            <td className="p-3 text-gray-600">{mapped?.artist_name || '—'}</td>
-                            <td className="p-3">
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.status === 'approved' ? 'bg-green-100 text-green-700' : item.status === 'enriched' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                                {item.status === 'approved' ? '✓ Genehmigt' : item.status === 'enriched' ? '🤖 Angereichert' : item.status}
-                              </span>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                      {items.length > 20 && <tr><td colSpan={4} className="p-3 text-center text-gray-400 text-sm">... und {items.length - 20} weitere</td></tr>}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="flex justify-between">
-                  <button onClick={() => setCurrentStep('enrich')} className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">← Zurück</button>
-                  <button onClick={handleFinalImport} disabled={isImporting} className="px-8 py-3 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition disabled:opacity-50 flex items-center gap-2">
-                    {isImporting ? <><svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Wird importiert...</> : `✅ ${job?.items_approved || items.length} Werke importieren`}
-                  </button>
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       )}

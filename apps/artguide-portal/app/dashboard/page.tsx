@@ -1,198 +1,198 @@
 'use client'
+import { useState, useEffect } from 'react'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useMuseum } from '../../lib/hooks'
-import { createClient } from '@/lib/supabase-client'
-
-interface DashboardStats {
-  artworksTotal: number
-  artworksPublished: number
-  artworksDraft: number
-  artworksReview: number
-  audioGenerated: number
-  importJobsRunning: number
-}
-
-interface RecentArtwork {
-  id: string
-  title: string
-  artist_name: string | null
-  status: string
-  updated_at: string
+type DashboardStats = {
+  artworks_total: number
+  artworks_published: number
+  artworks_draft: number
+  artworks_review: number
+  tours_total: number
+  audio_generated: number
+  languages_active: number
 }
 
 export default function DashboardPage() {
-  const { museum, loading: museumLoading } = useMuseum()
-  const supabase = createClient()
   const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [recentArtworks, setRecentArtworks] = useState<RecentArtwork[]>([])
-  const [pendingReviews, setPendingReviews] = useState<RecentArtwork[]>([])
   const [loading, setLoading] = useState(true)
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false)
 
   useEffect(() => {
-    if (!museum?.id) return
-    async function loadStats() {
-      setLoading(true)
-      const museumId = museum!.id
-      const [
-        { count: total },
-        { count: published },
-        { count: draft },
-        { count: review },
-        { count: audio },
-        { count: jobs },
-        { data: recent },
-        { data: pending },
-      ] = await Promise.all([
-        supabase.from('ag_artworks').select('*', { count: 'exact', head: true }).eq('museum_id', museumId),
-        supabase.from('ag_artworks').select('*', { count: 'exact', head: true }).eq('museum_id', museumId).eq('status', 'published'),
-        supabase.from('ag_artworks').select('*', { count: 'exact', head: true }).eq('museum_id', museumId).eq('status', 'draft'),
-        supabase.from('ag_artworks').select('*', { count: 'exact', head: true }).eq('museum_id', museumId).eq('status', 'review'),
-        supabase.from('ag_audio_files').select('*', { count: 'exact', head: true }).eq('museum_id', museumId),
-        supabase.from('ag_import_jobs').select('*', { count: 'exact', head: true }).eq('museum_id', museumId).in('status', ['pending', 'processing']),
-        supabase.from('ag_artworks').select('id, title, artist_name, status, updated_at').eq('museum_id', museumId).order('updated_at', { ascending: false }).limit(5),
-        supabase.from('ag_artworks').select('id, title, artist_name, status, updated_at').eq('museum_id', museumId).eq('status', 'review').order('updated_at', { ascending: false }).limit(5),
-      ])
-      setStats({ artworksTotal: total || 0, artworksPublished: published || 0, artworksDraft: draft || 0, artworksReview: review || 0, audioGenerated: audio || 0, importJobsRunning: jobs || 0 })
-      setRecentArtworks(recent || [])
-      setPendingReviews(pending || [])
-      setLoading(false)
-    }
-    loadStats()
-  }, [museum?.id])
+    fetch('/api/artworks')
+      .then(r => r.json())
+      .then(d => {
+        const artworks = d.artworks || []
+        setStats({
+          artworks_total: artworks.length,
+          artworks_published: artworks.filter((a: { status: string }) => a.status === 'published').length,
+          artworks_draft: artworks.filter((a: { status: string }) => a.status === 'draft').length,
+          artworks_review: artworks.filter((a: { status: string }) => a.status === 'review').length,
+          tours_total: 0,
+          audio_generated: artworks.filter((a: { audio_url: string | null }) => a.audio_url).length,
+          languages_active: 2,
+        })
+      })
+      .catch(() => setStats({ artworks_total: 0, artworks_published: 0, artworks_draft: 0, artworks_review: 0, tours_total: 0, audio_generated: 0, languages_active: 0 }))
+      .finally(() => setLoading(false))
+  }, [])
 
-  const statusColors: Record<string, string> = { draft: 'bg-gray-100 text-gray-600', review: 'bg-yellow-100 text-yellow-700', published: 'bg-green-100 text-green-700', archived: 'bg-red-100 text-red-600' }
-  const statusLabels: Record<string, string> = { draft: 'Entwurf', review: 'Review', published: 'Live', archived: 'Archiviert' }
+  const onboardingSteps = [
+    { id: 'import', label: 'Exponate importieren', icon: '📥', done: (stats?.artworks_total || 0) > 0, href: '/dashboard/import/museum', action: 'Import starten' },
+    { id: 'enrich', label: 'KI-Anreicherung', icon: '✨', done: (stats?.artworks_published || 0) > 0, href: '/dashboard/artworks', action: 'Anreichern' },
+    { id: 'audio', label: 'Audio generieren', icon: '🎙', done: (stats?.audio_generated || 0) > 0, href: '/dashboard/audio', action: 'Audio erstellen' },
+    { id: 'tour', label: 'Erste Fuehrung', icon: '🗺', done: (stats?.tours_total || 0) > 0, href: '/dashboard/tours', action: 'Fuehrung erstellen' },
+    { id: 'publish', label: 'Veroeffentlichen', icon: '🚀', done: false, href: '/dashboard/artworks', action: 'Jetzt live gehen' },
+  ]
+
+  const completedSteps = onboardingSteps.filter(s => s.done).length
+  const onboardingComplete = completedSteps === onboardingSteps.length
+
+  const statCards = [
+    { label: 'Exponate gesamt', value: loading ? '...' : String(stats?.artworks_total || 0), icon: '🖼', color: 'text-indigo-600', bg: 'bg-indigo-50', sub: `${stats?.artworks_published || 0} veroeffentlicht` },
+    { label: 'In Review', value: loading ? '...' : String(stats?.artworks_review || 0), icon: '👀', color: 'text-yellow-600', bg: 'bg-yellow-50', sub: 'Warten auf Freigabe' },
+    { label: 'Fuehrungen', value: loading ? '...' : String(stats?.tours_total || 0), icon: '🗺', color: 'text-green-600', bg: 'bg-green-50', sub: 'KI-generiert & kuratiert' },
+    { label: 'Audio-Tracks', value: loading ? '...' : String(stats?.audio_generated || 0), icon: '🎙', color: 'text-purple-600', bg: 'bg-purple-50', sub: `${stats?.languages_active || 0} Sprachen aktiv` },
+  ]
 
   return (
     <>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{museumLoading ? 'Dashboard' : museum ? museum.name : 'Dashboard'}</h1>
-          <p className="text-gray-500 mt-1">{museum?.address?.city ? `${museum.address.city} · ` : ''}Übersicht für dein Museum & City Guide</p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-500 mt-1">Willkommen im Fintutto Art Guide CMS</p>
         </div>
         <div className="flex gap-3">
-          <Link href="/dashboard/import/museum" className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition">📂 Importieren</Link>
-          <Link href="/dashboard/artworks/new" className="px-4 py-2 rounded-lg bg-indigo-900 text-white text-sm font-medium hover:bg-indigo-800 transition">+ Kunstwerk hinzufügen</Link>
+          <a href="/dashboard/import/museum" className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">📥 Import</a>
+          <a href="/dashboard/tours" className="px-4 py-2 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-400 transition">🤖 KI-Fuehrung erstellen</a>
+          <a href="/dashboard/artworks" className="px-4 py-2 rounded-lg bg-indigo-900 text-white text-sm font-medium hover:bg-indigo-800 transition">+ Exponat hinzufuegen</a>
         </div>
       </div>
 
-      {!museumLoading && !museum && (
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-8 text-center mb-8">
-          <div className="text-5xl mb-4">🏛</div>
-          <h2 className="text-xl font-bold text-indigo-900 mb-2">Willkommen im Art Guide CMS!</h2>
-          <p className="text-indigo-700 mb-4">Erstelle zuerst dein Museum, um loszulegen.</p>
-          <Link href="/dashboard/settings" className="inline-block px-6 py-3 bg-indigo-900 text-white rounded-lg font-medium hover:bg-indigo-800 transition">Museum einrichten →</Link>
-        </div>
-      )}
-
-      {stats && (
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          {[
-            { label: 'Kunstwerke gesamt', value: stats.artworksTotal, icon: '🖼', href: '/dashboard/artworks', color: 'text-indigo-700' },
-            { label: 'Veröffentlicht', value: stats.artworksPublished, icon: '✅', href: '/dashboard/artworks?status=published', color: 'text-green-700' },
-            { label: 'In Review', value: stats.artworksReview, icon: '🔍', href: '/dashboard/artworks?status=review', color: 'text-yellow-700' },
-            { label: 'Audio-Dateien', value: stats.audioGenerated, icon: '🎧', href: '/dashboard/audio', color: 'text-purple-700' },
-          ].map(stat => (
-            <Link key={stat.label} href={stat.href} className="bg-white rounded-xl p-5 border border-gray-200 hover:border-indigo-300 hover:shadow-sm transition group">
-              <div className="flex items-center justify-between mb-2"><span className="text-2xl">{stat.icon}</span><span className="text-xs text-gray-400 group-hover:text-indigo-500 transition">→</span></div>
-              <div className={`text-3xl font-bold ${stat.color}`}>{loading ? <span className="text-gray-300 animate-pulse">—</span> : stat.value}</div>
-              <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {stats && stats.importJobsRunning > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-          <span className="text-2xl animate-spin">⚙️</span>
-          <div>
-            <p className="font-medium text-amber-900">{stats.importJobsRunning} Import-Job{stats.importJobsRunning > 1 ? 's' : ''} läuft gerade</p>
-            <p className="text-sm text-amber-700">Die KI verarbeitet deine Daten. Das kann einige Minuten dauern.</p>
+      {!onboardingDismissed && !onboardingComplete && (
+        <div className="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-2xl p-6 mb-6 text-white">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="font-bold text-lg">🚀 Dein Museum in 5 Schritten live bringen</h3>
+              <p className="text-indigo-200 text-sm mt-1">{completedSteps} von {onboardingSteps.length} Schritten abgeschlossen</p>
+            </div>
+            <button onClick={() => setOnboardingDismissed(true)} className="text-indigo-300 hover:text-white transition text-sm">Spaeter</button>
           </div>
-          <Link href="/dashboard/import" className="ml-auto px-4 py-2 bg-amber-100 text-amber-800 rounded-lg text-sm font-medium hover:bg-amber-200 transition">Status ansehen →</Link>
+          <div className="w-full bg-indigo-800 rounded-full h-1.5 mb-5">
+            <div className="bg-amber-400 h-1.5 rounded-full transition-all duration-500" style={{ width: `${(completedSteps / onboardingSteps.length) * 100}%` }} />
+          </div>
+          <div className="grid grid-cols-5 gap-3">
+            {onboardingSteps.map((step, idx) => (
+              <a key={step.id} href={step.href}
+                className={`p-3 rounded-xl transition text-center ${step.done ? 'bg-green-500/20 border border-green-400/30' : 'bg-white/10 hover:bg-white/20 border border-white/10'}`}>
+                <div className="text-2xl mb-1">{step.done ? '✅' : step.icon}</div>
+                <div className="text-xs font-medium text-white">{step.label}</div>
+                <div className="text-xs text-indigo-300 mt-0.5">{step.done ? 'Erledigt' : step.action}</div>
+                <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold mx-auto mt-2">{idx + 1}</div>
+              </a>
+            ))}
+          </div>
         </div>
       )}
+
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {statCards.map(stat => (
+          <div key={stat.label} className="bg-white rounded-xl p-5 border border-gray-200 hover:border-gray-300 transition">
+            <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center text-xl mb-3`}>{stat.icon}</div>
+            <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+            <div className="text-sm font-medium text-gray-900 mt-1">{stat.label}</div>
+            <div className="text-xs text-gray-400 mt-0.5">{stat.sub}</div>
+          </div>
+        ))}
+      </div>
 
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-white rounded-xl p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">📋 Offene Reviews</h3>
-            {pendingReviews.length > 0 && <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">{pendingReviews.length}</span>}
+            <h3 className="font-semibold text-gray-900">📋 Workflow-Status</h3>
+            <a href="/dashboard/workflow" className="text-xs text-indigo-600 hover:underline">Alle anzeigen →</a>
           </div>
-          {pendingReviews.length === 0 ? (
-            <div className="text-center py-8 text-gray-400 text-sm">Keine offenen Reviews ✓</div>
-          ) : (
-            <div className="space-y-2">
-              {pendingReviews.map(a => (
-                <Link key={a.id} href={`/dashboard/artworks/${a.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition group">
-                  <div><p className="font-medium text-gray-900 text-sm group-hover:text-indigo-700 transition">{a.title}</p><p className="text-xs text-gray-400">{a.artist_name || '—'}</p></div>
-                  <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Review</span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">🕐 Zuletzt bearbeitet</h3>
-            <Link href="/dashboard/artworks" className="text-xs text-indigo-600 hover:underline">Alle →</Link>
+          <div className="space-y-2">
+            {[
+              { label: 'Entwurf', count: stats?.artworks_draft || 0, color: 'bg-gray-300', textColor: 'text-gray-600' },
+              { label: 'In Review', count: stats?.artworks_review || 0, color: 'bg-yellow-300', textColor: 'text-yellow-700' },
+              { label: 'Veroeffentlicht', count: stats?.artworks_published || 0, color: 'bg-green-400', textColor: 'text-green-700' },
+            ].map(col => (
+              <div key={col.label} className="flex items-center gap-3">
+                <span className={`text-xs font-medium ${col.textColor} w-28`}>{col.label}</span>
+                <div className="flex-1 bg-gray-100 rounded-full h-2">
+                  <div className={`${col.color} h-2 rounded-full transition-all`}
+                    style={{ width: stats?.artworks_total ? `${(col.count / stats.artworks_total) * 100}%` : '0%' }} />
+                </div>
+                <span className="text-sm font-bold text-gray-700 w-6 text-right">{col.count}</span>
+              </div>
+            ))}
           </div>
-          {recentArtworks.length === 0 ? (
-            <div className="text-center py-8 text-gray-400 text-sm">Noch keine Kunstwerke. <Link href="/dashboard/import/museum" className="text-indigo-600 hover:underline">Jetzt importieren →</Link></div>
-          ) : (
-            <div className="space-y-2">
-              {recentArtworks.map(a => (
-                <Link key={a.id} href={`/dashboard/artworks/${a.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition group">
-                  <div><p className="font-medium text-gray-900 text-sm group-hover:text-indigo-700 transition">{a.title}</p><p className="text-xs text-gray-400">{a.artist_name || '—'} · {new Date(a.updated_at).toLocaleDateString('de-DE')}</p></div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${statusColors[a.status] || 'bg-gray-100 text-gray-600'}`}>{statusLabels[a.status] || a.status}</span>
-                </Link>
-              ))}
+          {(stats?.artworks_total || 0) === 0 && (
+            <div className="text-center py-4 mt-2">
+              <p className="text-sm text-gray-400">Noch keine Exponate</p>
+              <a href="/dashboard/import/museum" className="text-xs text-indigo-600 hover:underline mt-1 block">Import starten →</a>
             </div>
           )}
         </div>
 
         <div className="bg-white rounded-xl p-6 border border-gray-200">
           <h3 className="font-semibold text-gray-900 mb-4">⚡ Schnellaktionen</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
             {[
-              { icon: '🏛', label: 'Museum Import', href: '/dashboard/import/museum' },
-              { icon: '🏙', label: 'Stadt Import', href: '/dashboard/import/city' },
-              { icon: '🎧', label: 'Audio generieren', href: '/dashboard/audio' },
-              { icon: '📱', label: 'QR-Codes drucken', href: '/dashboard/artworks' },
+              { icon: '📥', label: 'CSV importieren', desc: 'Exponate aus Tabelle laden', href: '/dashboard/import/museum', color: 'hover:bg-indigo-50 hover:border-indigo-200' },
+              { icon: '🤖', label: 'KI-Fuehrung generieren', desc: 'In 30 Sekunden fertig', href: '/dashboard/tours', color: 'hover:bg-amber-50 hover:border-amber-200' },
+              { icon: '🎙', label: 'Audio generieren', desc: 'Alle Werke auf Knopfdruck', href: '/dashboard/audio', color: 'hover:bg-purple-50 hover:border-purple-200' },
+              { icon: '📱', label: 'QR-Codes drucken', desc: 'PDF fuer alle Exponate', href: '/dashboard/artworks', color: 'hover:bg-green-50 hover:border-green-200' },
             ].map(action => (
-              <Link key={action.label} href={action.href} className="flex items-center gap-2 p-3 rounded-lg bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 transition text-sm font-medium text-gray-700">
-                <span>{action.icon}</span>{action.label}
-              </Link>
+              <a key={action.label} href={action.href}
+                className={`flex items-center gap-3 p-3 rounded-xl border border-gray-100 transition ${action.color}`}>
+                <span className="text-xl">{action.icon}</span>
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{action.label}</div>
+                  <div className="text-xs text-gray-400">{action.desc}</div>
+                </div>
+                <span className="ml-auto text-gray-300">→</span>
+              </a>
             ))}
           </div>
         </div>
 
-        {stats && (
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">📊 Sammlungs-Fortschritt</h3>
-            {stats.artworksTotal === 0 ? (
-              <div className="text-center py-4 text-gray-400 text-sm">Noch keine Kunstwerke importiert.</div>
-            ) : (
-              <div className="space-y-3">
-                {[
-                  { label: 'Veröffentlicht', count: stats.artworksPublished, color: 'bg-green-500' },
-                  { label: 'In Review', count: stats.artworksReview, color: 'bg-yellow-400' },
-                  { label: 'Entwurf', count: stats.artworksDraft, color: 'bg-gray-300' },
-                ].map(item => (
-                  <div key={item.label}>
-                    <div className="flex justify-between text-xs text-gray-500 mb-1"><span>{item.label}</span><span>{item.count} / {stats.artworksTotal}</span></div>
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className={`h-full ${item.color} rounded-full transition-all`} style={{ width: `${stats.artworksTotal > 0 ? (item.count / stats.artworksTotal) * 100 : 0}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-gray-900">🏆 Beliebteste Exponate</h3>
+            <a href="/dashboard/analytics" className="text-xs text-indigo-600 hover:underline">Analytics →</a>
           </div>
-        )}
+          <div className="text-center py-8 text-gray-400">
+            <div className="text-3xl mb-2">📊</div>
+            <p className="text-sm text-gray-500">Besucherdaten werden nach dem ersten Scan verfuegbar</p>
+            <p className="text-xs text-gray-400 mt-1">QR-Codes generieren und aushaengen um Daten zu sammeln</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <h3 className="font-semibold text-gray-900 mb-4">🕐 Letzte Aktivitaet</h3>
+          {(stats?.artworks_total || 0) > 0 ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm">
+                <span className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center text-xs">✅</span>
+                <div><span className="font-medium text-gray-900">{stats?.artworks_total} Exponate</span> <span className="text-gray-500">importiert</span></div>
+                <span className="ml-auto text-xs text-gray-400">Heute</span>
+              </div>
+              {(stats?.audio_generated || 0) > 0 && (
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs">🎙</span>
+                  <div><span className="font-medium text-gray-900">{stats?.audio_generated} Audio-Tracks</span> <span className="text-gray-500">generiert</span></div>
+                  <span className="ml-auto text-xs text-gray-400">Heute</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              <div className="text-3xl mb-2">🕐</div>
+              <p className="text-sm">Noch keine Aktivitaet</p>
+              <a href="/dashboard/import/museum" className="text-xs text-indigo-600 hover:underline mt-1 block">Jetzt starten →</a>
+            </div>
+          )}
+        </div>
       </div>
     </>
   )
