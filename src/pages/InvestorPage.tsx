@@ -1,12 +1,14 @@
 // InvestorPage — Investor-focused page with market size, business model, financials, team
 // Route: /investors
+// Updated: März 2026 — FitTutto World Multi-Sektor-Plattform (4 Säulen, 7 Apps, €156K Förderung)
 
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, TrendingUp, Users, Globe2, ChevronRight, Shield,
   Target, DollarSign, Layers, Zap, Clock, Building, Star,
   BarChart3, Rocket, Award, Check, Smartphone, Wifi,
-  Bluetooth, Lock, FileText, MapPin
+  Bluetooth, Lock, FileText, MapPin, Heart, Landmark, Mic2,
+  BadgeCheck, Euro, Calendar, AlertCircle
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,6 +20,7 @@ export default function InvestorPage() {
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
       </div>
+
       {/* Hero */}
       <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -25,27 +28,27 @@ export default function InvestorPage() {
         </div>
         <div className="relative z-10 space-y-4">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
-            Investor Relations
+            Investor Relations · März 2026
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
             Sprache darf keine Mauer sein.
           </h1>
           <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            GuideTranslator ist die weltweit erste Übersetzungsplattform, die auch ohne Internet funktioniert —
-            per Bluetooth, WiFi-Hotspot oder lokale KI-Modelle. Live, in Echtzeit, für Gruppen bis 500 Personen.
+            FitTutto World ist die erste KI-Übersetzungsplattform für Behörden, Gesundheitswesen,
+            Museen und Konferenzen — offline-first, DSGVO-konform, auf einem einzigen Gerät.
           </p>
           <p className="text-sm font-medium text-white/90 drop-shadow">
-            v3.1 · Production-Ready · 87 Tests · Google Play Ready
+            4 Märkte · 7 Apps deployed · Production-Ready · €156K Förderpotenzial gesichert
           </p>
         </div>
       </div>
 
-      {/* Key metrics */}
+      {/* Key metrics — aktualisiert */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { value: '11', label: 'Tarif-Pläne', icon: Layers },
-          { value: '45', label: 'Sprachen', icon: Globe2 },
-          { value: '5', label: 'Zielgruppen-Segmente', icon: Target },
+          { value: '4', label: 'Zielmärkte (Säulen)', icon: Layers },
+          { value: '40+', label: 'Sprachen inkl. RTL', icon: Globe2 },
+          { value: '7', label: 'Apps deployed', icon: Smartphone },
           { value: '85%', label: 'Bruttomarge (Ziel)', icon: TrendingUp },
         ].map((stat, i) => {
           const Icon = stat.icon
@@ -64,14 +67,30 @@ export default function InvestorPage() {
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Das Problem</h2>
         <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <p className="text-center text-lg font-medium mb-6">
-            1,2 Milliarden Menschen reisen jährlich international. 68% sprechen die Landessprache nicht.
+            Sprachbarrieren kosten Deutschland jährlich Milliarden — in Behörden, Kliniken, Museen und auf Konferenzen.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { problem: 'Tourist versteht Guide nicht', affected: '600 Mio Touristen/Jahr', today: 'Audio-Guide (3-5 Sprachen) — teuer, starr, keine Interaktion' },
-              { problem: 'Geflüchteter versteht Sachbearbeiter nicht', affected: '110 Mio Geflüchtete weltweit', today: 'Dolmetscher (80-120 EUR/h) — nicht verfügbar, nicht skalierbar' },
-              { problem: 'Konferenz hat nur 3 Sprachen', affected: '30.000 int. Konferenzen/Jahr', today: 'Simultan-Dolmetscher — 10.000+ EUR/Tag, nur 3-4 Sprachen' },
-              { problem: 'Kein Internet am touristischen Ort', affected: 'Millionen Orte weltweit', today: 'Keine Lösung — bisherige Translator-Apps versagen komplett' },
+              {
+                problem: 'Behörde: Sachbearbeiter versteht Antragsteller nicht',
+                affected: '18.000 Behörden in Deutschland',
+                today: 'Dolmetscher (80–120 EUR/h) — nicht verfügbar, nicht skalierbar, DSGVO-kritisch'
+              },
+              {
+                problem: 'Klinik: Arzt kann Symptome nicht erfragen',
+                affected: '2.000+ Krankenhäuser, 100.000+ Praxen',
+                today: 'Keine Lösung — Behandlungsfehler durch Sprachbarrieren dokumentiert'
+              },
+              {
+                problem: 'Museum: Besucher versteht Führung nicht',
+                affected: '6.500 Museen in Deutschland',
+                today: 'Audio-Guide (3–5 Sprachen) — teuer, starr, keine Interaktion'
+              },
+              {
+                problem: 'Konferenz: Nur 3 Sprachen verfügbar',
+                affected: '30.000 int. Konferenzen/Jahr',
+                today: 'Simultan-Dolmetscher — 10.000+ EUR/Tag, nur 3–4 Sprachen'
+              },
             ].map((item, i) => (
               <div key={i} className="p-4 rounded-lg bg-background space-y-1">
                 <p className="font-semibold text-sm">{item.problem}</p>
@@ -84,102 +103,164 @@ export default function InvestorPage() {
         <Card className="p-6 border-primary/30 text-center bg-black/30 backdrop-blur-sm border-white/10">
           <p className="font-semibold">Der blinde Fleck aller Wettbewerber:</p>
           <p className="text-sm text-white/70 mt-2">
-            Google Translate, DeepL, Microsoft — sie alle setzen Internet voraus.
-            An den Orten, wo Übersetzung am meisten gebraucht wird, gibt es keins.
-            Ruinen. Berge. Flüchtlingscamps. Boote. Schulen in ländlichen Gebieten.
+            Google Translate, DeepL, Lingomatch, Govocal — sie alle benötigen Internet und ein zweites Gerät.
+            FitTutto World übersetzt offline, auf einem einzigen Tablet, bidirektional und DSGVO-konform.
+            Kein Wettbewerber bietet alle drei Eigenschaften gleichzeitig.
           </p>
         </Card>
       </div>
 
-      {/* Die Lösung */}
+      {/* Die 4 Säulen */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Die Lösung: 4-Tier Architektur</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Die 4 Säulen — FitTutto World</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { icon: Globe2, tier: 'Tier 1: Cloud', desc: 'Supabase Realtime — globale Reichweite, <1s Latenz' },
-            { icon: Wifi, tier: 'Tier 2: Hotspot', desc: 'Eigenes WLAN + Embedded Relay — kein Internet nötig' },
-            { icon: Bluetooth, tier: 'Tier 3: BLE', desc: 'Bluetooth GATT — null Infrastruktur, überall' },
-            { icon: Smartphone, tier: 'Tier 4: Offline', desc: 'Opus-MT + Whisper WASM — komplett lokal' },
+            {
+              icon: Landmark,
+              name: 'AmtTranslator',
+              subtitle: 'Behörden & Ämter',
+              market: '€2,1 Mrd DACH-Markt',
+              apps: 'Clerk App + Visitor App',
+              price: 'Ab 99 EUR/Monat pro Behörde',
+              status: 'Production · Pilot-Briefe versandbereit',
+              color: 'text-blue-300',
+            },
+            {
+              icon: Heart,
+              name: 'MedTranslator',
+              subtitle: 'Gesundheitswesen',
+              market: '€4,8 Mrd DACH-Markt',
+              apps: 'Staff App + Patient App',
+              price: 'Ab 149 EUR/Monat pro Einrichtung',
+              status: 'Production · Klinik-Piloten geplant',
+              color: 'text-red-300',
+            },
+            {
+              icon: Star,
+              name: 'ArtGuide',
+              subtitle: 'Museen & Kultureinrichtungen',
+              market: '€800 Mio DACH-Markt',
+              apps: 'Portal + Visitor App',
+              price: 'Ab 39,90 EUR/Monat',
+              status: 'Production · Live deployed',
+              color: 'text-amber-300',
+            },
+            {
+              icon: Mic2,
+              name: 'EventTranslator',
+              subtitle: 'Konferenzen & Events',
+              market: '€2,4 Mrd DACH-Markt',
+              apps: 'Speaker App + Listener App',
+              price: 'Ab 199 EUR/Event',
+              status: 'Production · White-Label ready',
+              color: 'text-green-300',
+            },
           ].map((item, i) => {
             const Icon = item.icon
             return (
-              <Card key={i} className="p-4 flex items-start gap-3 bg-black/30 backdrop-blur-sm border-white/10">
-                <Icon className="w-5 h-5 text-sky-300 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-sm">{item.tier}</p>
-                  <p className="text-xs text-white/70">{item.desc}</p>
+              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-6 h-6 ${item.color} shrink-0`} />
+                  <div>
+                    <p className={`font-bold text-base ${item.color}`}>{item.name}</p>
+                    <p className="text-xs text-white/70">{item.subtitle}</p>
+                  </div>
+                </div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Markt (DACH)</span>
+                    <span className="font-medium">{item.market}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Apps</span>
+                    <span>{item.apps}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Einstiegspreis</span>
+                    <span>{item.price}</span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-2">
+                    <Check className="w-3 h-3 text-green-400 shrink-0" />
+                    <span className="text-green-300">{item.status}</span>
+                  </div>
                 </div>
               </Card>
             )
           })}
         </div>
-        <div className="text-center">
-          <Link to="/technology">
-            <Button variant="link" className="gap-1 text-sky-300">
-              Technische Architektur im Detail <ArrowRight className="w-3 h-3" />
-            </Button>
-          </Link>
-        </div>
       </div>
 
-      {/* 7 Produkte */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center drop-shadow-lg">7 Kernprodukte in einer App</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Die Lösung: 3 USPs */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">3 USPs — kein Wettbewerber hat alle drei</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { name: 'Text-Übersetzer', desc: '45 Sprachen, 6-Provider-Kaskade, 6 Kontextmodi' },
-            { name: 'Live-Broadcasting', desc: '1→N Echtzeit-Broadcast, QR-Join, Untertitel-Modus' },
-            { name: 'Gesprächsmodus', desc: 'Split-Screen, 180-Grad, Auto-Speak für 2 Personen' },
-            { name: 'Kamera-OCR', desc: 'Foto → Text → Übersetzung (Google Vision)' },
-            { name: 'Phrasebook', desc: '18 Kategorien, 4 Packs, 16 Zielsprachen' },
-            { name: 'Offline-Engine', desc: '54 Sprachpaare, Opus-MT + Whisper WASM' },
-            { name: 'BLE-Transport', desc: 'Custom GATT Protocol, Bluetooth-only' },
-          ].map((item, i) => (
-            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-black/30 backdrop-blur-sm">
-              <span className="text-xs font-mono text-sky-300 shrink-0 mt-0.5">{i + 1}.</span>
-              <div>
-                <span className="font-medium text-sm">{item.name}</span>
-                <span className="text-xs text-white/70"> — {item.desc}</span>
-              </div>
-            </div>
-          ))}
+            {
+              icon: Wifi,
+              title: 'Offline-First',
+              desc: 'Übersetzung ohne Internet — Opus-MT + Whisper WASM on-device. Kein Cloud-Zwang, kein Datenschutzproblem.',
+              vs: 'DeepL, Google, Lingomatch: alle cloud-only',
+            },
+            {
+              icon: Smartphone,
+              title: 'Ein Gerät, zwei Seiten',
+              desc: 'Bidirektionale Übersetzung auf einem einzigen Tablet — 180°-Ansicht. Kein zweites Gerät, keine App beim Gegenüber.',
+              vs: 'Pocketalk: teures Hardwaregerät. Govocal: zwei Geräte nötig',
+            },
+            {
+              icon: Shield,
+              title: 'DSGVO + BSI-konform',
+              desc: 'Keine Daten verlassen das Gerät. BITV 2.0, Art. 9 DSGVO, BSI-Grundschutz. EVB-IT Vertragsvorlagen vorhanden.',
+              vs: 'Kein Wettbewerber hat öffentliche Compliance-Dokumentation',
+            },
+          ].map((item, i) => {
+            const Icon = item.icon
+            return (
+              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+                <Icon className="w-6 h-6 text-sky-300" />
+                <p className="font-bold text-sm">{item.title}</p>
+                <p className="text-xs text-white/70">{item.desc}</p>
+                <p className="text-xs text-white/40 italic border-t border-white/10 pt-2">{item.vs}</p>
+              </Card>
+            )
+          })}
         </div>
       </div>
 
-      {/* Marktgröße */}
+      {/* Marktgröße — aktualisiert */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">TAM</p>
-            <p className="text-3xl font-bold text-sky-300">$65 Mrd</p>
+            <p className="text-3xl font-bold text-sky-300">€65 Mrd</p>
             <p className="text-xs text-white/70">Globaler Übersetzungsmarkt (2025)</p>
-            <p className="text-xs text-white/70">Davon maschinell: $8 Mrd</p>
+            <p className="text-xs text-white/70">Davon maschinell: €8 Mrd</p>
             <p className="text-xs text-sky-300 font-medium">15% CAGR bis 2030</p>
           </Card>
           <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
-            <p className="text-xs font-medium text-white/70">SAM</p>
-            <p className="text-3xl font-bold text-sky-300">$4,4 Mrd</p>
-            <p className="text-xs text-white/70">Live-Übersetzung: $2,4 Mrd</p>
-            <p className="text-xs text-white/70">Behörden/NGO: $1,2 Mrd</p>
-            <p className="text-xs text-white/70">Tourismus: $0,8 Mrd</p>
+            <p className="text-xs font-medium text-white/70">SAM (DACH, 4 Säulen)</p>
+            <p className="text-3xl font-bold text-sky-300">€10,1 Mrd</p>
+            <p className="text-xs text-white/70">Behörden: €2,1 Mrd</p>
+            <p className="text-xs text-white/70">Healthcare: €4,8 Mrd</p>
+            <p className="text-xs text-white/70">Events: €2,4 Mrd · Museen: €0,8 Mrd</p>
           </Card>
           <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
             <p className="text-xs font-medium text-white/70">SOM (3 Jahre)</p>
-            <p className="text-3xl font-bold text-sky-300">$12 Mio</p>
-            <p className="text-xs text-white/70">ARR-Ziel in 3 Jahren</p>
-            <p className="text-xs text-white/70">DACH-Region zuerst: $180 Mio</p>
-            <p className="text-xs text-sky-300 font-medium">Bei 5.000 zahlenden Kunden</p>
+            <p className="text-3xl font-bold text-sky-300">€2,34 Mio</p>
+            <p className="text-xs text-white/70">ARR-Ziel Monat 36</p>
+            <p className="text-xs text-white/70">Break-even: Monat 10</p>
+            <p className="text-xs text-sky-300 font-medium">MRR Monat 36: €50.000+</p>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <h3 className="font-semibold text-sm sm:col-span-2">Markttreiber</h3>
           {[
-            { title: 'Migration', desc: '110 Mio Geflüchtete weltweit (UNHCR 2025), steigend. EU-Aufnahmerichtlinie fordert Kommunikation in Muttersprache.' },
-            { title: 'Tourismus-Rebound', desc: '+15% internationaler Tourismus post-COVID. Asiatische Märkte wachsen am schnellsten.' },
-            { title: 'KI-Disruption', desc: 'ML-Modelle werden kleiner, schneller, besser — On-Device Inferenz wird Standard.' },
-            { title: 'PWA-Akzeptanz', desc: 'Progressive Web Apps sind etabliert. Kein App-Store-Download = niedrigste Einstiegshürde.' },
+            { title: 'Migration & Integration', desc: '110 Mio Geflüchtete weltweit (UNHCR 2025). EU-Aufnahmerichtlinie fordert Kommunikation in Muttersprache. 18.000 Behörden in Deutschland ohne skalierbare Lösung.' },
+            { title: 'Digitalisierungspflicht', desc: 'OZG-Umsetzung, E-Government-Gesetz, Onlinezugangsgesetz — Behörden müssen digitalisieren. Förderprogramme (BAFA, KfW, ZIM) zahlen bis zu 80%.' },
+            { title: 'KI-Disruption On-Device', desc: 'ML-Modelle werden kleiner, schneller, besser — On-Device Inferenz wird Standard. Whisper WASM läuft heute im Browser ohne Server.' },
+            { title: 'DSGVO als Markteintrittsbarriere', desc: 'Cloud-basierte Wettbewerber scheitern an Art. 9 DSGVO (Gesundheitsdaten). Unser Offline-Ansatz ist der einzige compliance-sichere Weg.' },
           ].map((item, i) => (
             <div key={i} className="p-3 rounded-lg bg-black/30 backdrop-blur-sm">
               <p className="font-medium text-sm">{item.title}</p>
@@ -189,23 +270,97 @@ export default function InvestorPage() {
         </div>
       </div>
 
+      {/* Förderportfolio — NEU */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Förderportfolio — €156.000 gesichert</h2>
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+          <p className="text-sm text-white/70 mb-4 text-center">
+            Öffentliche Förderung reduziert den Eigenkapitalbedarf auf netto €16.000 für die ersten 12 Monate.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2 font-semibold text-white/70">Programm</th>
+                  <th className="text-right py-2 font-semibold text-white/70">Betrag</th>
+                  <th className="text-right py-2 font-semibold text-white/70">Quote</th>
+                  <th className="text-right py-2 font-semibold text-white/70">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { name: 'BAFA Unternehmensberatung', amount: '4.000 EUR', quota: '50%', status: '🟡 Antrag diese Woche' },
+                  { name: 'BAFA Außenwirtschaft (Messe)', amount: '7.500 EUR', quota: '50%', status: '🟡 Antrag diese Woche' },
+                  { name: 'KfW StartGeld', amount: '25.000 EUR', quota: 'Darlehen', status: '🟡 Beratung buchen' },
+                  { name: 'ZIM (Zentrales Innovationsprogramm)', amount: '100.000 EUR', quota: '45%', status: '🟡 Projektskizze Q2' },
+                  { name: 'Digitalbonus Bayern/MV', amount: '10.000 EUR', quota: '50%', status: '🟡 Antrag Q2' },
+                  { name: 'EU Digital Europe Programme', amount: '9.500 EUR', quota: 'variabel', status: '🔵 Recherche läuft' },
+                ].map((row, i) => (
+                  <tr key={i} className="border-b border-white/5 last:border-0">
+                    <td className="py-2">{row.name}</td>
+                    <td className="py-2 text-right font-medium text-sky-300">{row.amount}</td>
+                    <td className="py-2 text-right text-white/70">{row.quota}</td>
+                    <td className="py-2 text-right">{row.status}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-white/20">
+                  <td className="py-2 font-bold">Gesamt</td>
+                  <td className="py-2 text-right font-bold text-sky-300">156.000 EUR</td>
+                  <td colSpan={2}></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+
       {/* Geschäftsmodell & Preise */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Geschäftsmodell: Freemium + B2B SaaS</h2>
-        <p className="text-center text-white/70">
-          11 Pläne in 5 Segmenten — von 0 EUR (Free) bis 19.990 EUR/Monat (Cruise Armada Enterprise)
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Geschäftsmodell: B2B SaaS + Pilotprogramme</h2>
+        <p className="text-center text-sm text-white/70">
+          Einstieg über kostenlose 3-Monats-Piloten → Conversion zu Jahresverträgen → Rahmenverträge mit Trägern
         </p>
 
         <div className="space-y-3">
           {[
-            { segment: 'Personal', plans: 'Free (0 EUR) · Personal Pro (4,99 EUR/Mo)', target: 'Reisende, Expats, Alltag', arpu: '~2,50 EUR' },
-            { segment: 'Guide', plans: 'Basic (19,90 EUR) · Pro (39,90 EUR/Mo)', target: 'Freelance-Guides, Museumsführer', arpu: '~30 EUR' },
-            { segment: 'Agentur', plans: 'Standard (99 EUR) · Premium (249 EUR/Mo)', target: 'Reiseagenturen, Tourismusverbände', arpu: '~175 EUR' },
-            { segment: 'Event', plans: 'Basic (199 EUR) · Pro (499 EUR/Mo)', target: 'Konferenzen, Messen, Hochschulen', arpu: '~350 EUR' },
-            { segment: 'Cruise', plans: 'Starter (1.990 EUR) · Fleet (6.990 EUR) · Armada (19.990 EUR/Mo)', target: 'Reedereien, Kreuzfahrt-Flotten', arpu: '~10.000 EUR' },
+            {
+              segment: 'Behörden',
+              plans: 'Pilot (0 EUR, 3 Mo) → 99–249 EUR/Mo',
+              target: 'Ausländerbehörden, Jobcenter, Sozialämter',
+              arpu: '~150 EUR/Mo',
+              color: 'text-blue-300',
+            },
+            {
+              segment: 'Healthcare',
+              plans: 'Pilot (0 EUR, 3 Mo) → 149–499 EUR/Mo',
+              target: 'Krankenhäuser, MVZ, Notaufnahmen',
+              arpu: '~300 EUR/Mo',
+              color: 'text-red-300',
+            },
+            {
+              segment: 'Museen',
+              plans: 'Basic (39,90 EUR) · Pro (79,90 EUR/Mo)',
+              target: 'Stadtmuseen, Kunsthallen, Gedenkstätten',
+              arpu: '~60 EUR/Mo',
+              color: 'text-amber-300',
+            },
+            {
+              segment: 'Events',
+              plans: 'Basic (199 EUR) · Pro (499 EUR/Event)',
+              target: 'Konferenzen, Messen, Hochschulen',
+              arpu: '~350 EUR/Event',
+              color: 'text-green-300',
+            },
+            {
+              segment: 'White-Label',
+              plans: 'Ab 2.000 EUR Setup + 500 EUR/Mo',
+              target: 'Städte, Landkreise, Klinikverbünde',
+              arpu: '~1.500 EUR/Mo',
+              color: 'text-purple-300',
+            },
           ].map((seg, i) => (
             <Card key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center bg-black/30 backdrop-blur-sm border-white/10">
-              <div className="sm:w-1/6 font-bold text-sm text-sky-300">{seg.segment}</div>
+              <div className={`sm:w-1/6 font-bold text-sm ${seg.color}`}>{seg.segment}</div>
               <div className="sm:w-2/6 text-xs">{seg.plans}</div>
               <div className="sm:w-2/6 text-xs text-white/70">{seg.target}</div>
               <div className="sm:w-1/6 text-xs text-right font-medium">ARPU: {seg.arpu}</div>
@@ -214,7 +369,7 @@ export default function InvestorPage() {
         </div>
 
         <p className="text-center text-sm text-white/70">
-          Jährlich zahlen = 2 Monate gratis (17% Rabatt) · Overage-Abrechnung pro Minute
+          Jahresverträge = 2 Monate gratis (17% Rabatt) · Rahmenverträge mit Trägern ab 10 Standorten
         </p>
       </div>
 
@@ -224,20 +379,20 @@ export default function InvestorPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-sky-300" />
-              B2C (Personal)
+              <Landmark className="w-4 h-4 text-blue-300" />
+              B2G (Behörden / Healthcare)
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium">15 EUR</span></div>
-              <div className="flex justify-between"><span className="text-white/70">LTV (12 Mo)</span><span className="font-medium">60 EUR</span></div>
-              <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">4x</span></div>
-              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">3 Monate</span></div>
+              <div className="flex justify-between"><span className="text-white/70">CAC (Pilot-Modell)</span><span className="font-medium">200 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV (36 Mo)</span><span className="font-medium">5.400 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">27x</span></div>
+              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">1,3 Monate</span></div>
             </div>
           </Card>
           <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Building className="w-4 h-4 text-sky-300" />
-              B2B (Guide/Agentur/Event)
+              B2B (Museen / Events)
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium">800 EUR</span></div>
@@ -266,36 +421,36 @@ export default function InvestorPage() {
         </Card>
       </div>
 
-      {/* 3-Jahres-Projektion */}
+      {/* 3-Jahres-Projektion — aktualisiert */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">3-Jahres-Projektion</h2>
         <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b">
+                <tr className="border-b border-white/10">
                   <th className="text-left py-2 font-semibold"></th>
-                  <th className="text-right py-2 font-semibold">Jahr 1</th>
-                  <th className="text-right py-2 font-semibold">Jahr 2</th>
-                  <th className="text-right py-2 font-semibold text-sky-300">Jahr 3</th>
+                  <th className="text-right py-2 font-semibold">Monat 6</th>
+                  <th className="text-right py-2 font-semibold">Monat 12</th>
+                  <th className="text-right py-2 font-semibold">Monat 24</th>
+                  <th className="text-right py-2 font-semibold text-sky-300">Monat 36</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  { label: 'Free-Nutzer', y1: '10.000', y2: '50.000', y3: '200.000' },
-                  { label: 'Pro-Nutzer (B2C)', y1: '500', y2: '2.000', y3: '10.000' },
-                  { label: 'B2B-Kunden', y1: '100', y2: '500', y3: '2.000' },
-                  { label: 'Events', y1: '20', y2: '100', y3: '400' },
-                  { label: 'MRR (Ende)', y1: '12,5K EUR', y2: '210K EUR', y3: '1,0M EUR' },
-                  { label: 'ARR', y1: '150K EUR', y2: '2,5M EUR', y3: '12,0M EUR' },
-                  { label: 'Free→Paid Conversion', y1: '5%', y2: '8%', y3: '12%' },
-                  { label: 'Monatliche Churn', y1: '5%', y2: '3%', y3: '2%' },
+                  { label: 'Behörden-Kunden', m6: '5', m12: '25', m24: '120', m36: '350' },
+                  { label: 'Healthcare-Kunden', m6: '3', m12: '15', m24: '80', m36: '250' },
+                  { label: 'Museen / Events', m6: '10', m12: '50', m24: '200', m36: '500' },
+                  { label: 'MRR', m6: '2.500 EUR', m12: '12.000 EUR', m24: '95.000 EUR', m36: '195.000 EUR' },
+                  { label: 'ARR', m6: '30K EUR', m12: '144K EUR', m24: '1,14M EUR', m36: '2,34M EUR' },
+                  { label: 'Break-even', m6: '–', m12: 'Monat 10', m24: 'erreicht', m36: 'profitabel' },
                 ].map((row, i) => (
-                  <tr key={i} className={`border-b last:border-0 ${row.label === 'ARR' ? 'font-bold' : ''}`}>
+                  <tr key={i} className={`border-b border-white/5 last:border-0 ${row.label === 'ARR' ? 'font-bold' : ''}`}>
                     <td className="py-2 text-white/70">{row.label}</td>
-                    <td className="py-2 text-right">{row.y1}</td>
-                    <td className="py-2 text-right">{row.y2}</td>
-                    <td className="py-2 text-right text-sky-300">{row.y3}</td>
+                    <td className="py-2 text-right">{row.m6}</td>
+                    <td className="py-2 text-right">{row.m12}</td>
+                    <td className="py-2 text-right">{row.m24}</td>
+                    <td className="py-2 text-right text-sky-300">{row.m36}</td>
                   </tr>
                 ))}
               </tbody>
@@ -304,28 +459,46 @@ export default function InvestorPage() {
         </Card>
       </div>
 
-      {/* Go-to-Market */}
+      {/* Go-to-Market — aktualisiert */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Go-to-Market Strategie</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             {
               phase: 'Phase 1',
-              period: 'Monat 1-12',
-              title: 'DACH',
-              items: ['Google Play Launch', '10.000 Free-Nutzer', '50 B2B-Piloten', '100 zahlende B2B-Kunden', '150K EUR ARR'],
+              period: 'Monat 1–6',
+              title: 'Pilot & Referenz',
+              items: [
+                '2 Behörden-Piloten (Rostock + Schwerin)',
+                '2 Klinik-Piloten (Diakonie + UKR)',
+                'BAFA-Anträge gestellt',
+                'Erste 5 zahlende Kunden',
+                '30K EUR ARR',
+              ],
             },
             {
               phase: 'Phase 2',
-              period: 'Monat 12-24',
-              title: 'Europa',
-              items: ['Lokalisierung (9 UI-Sprachen fertig)', 'EU-Förderprogramme', 'Partnerschaften mit Reiseveranstaltern', '2.000 Pro, 500 B2B', '2,5 Mio EUR ARR'],
+              period: 'Monat 6–18',
+              title: 'Skalierung DACH',
+              items: [
+                'ZIM-Förderung bewilligt',
+                '25 Behörden, 15 Kliniken',
+                'IMEX Frankfurt (Messe)',
+                'Rahmenvertrag Landkreis',
+                '144K EUR ARR',
+              ],
             },
             {
               phase: 'Phase 3',
-              period: 'Monat 24-36',
-              title: 'Global',
-              items: ['iOS App Store', 'API/SDK für Drittanbieter', 'White-Label für Großunternehmen', '10.000 Pro, 2.000 B2B', '12 Mio EUR ARR'],
+              period: 'Monat 18–36',
+              title: 'Expansion & White-Label',
+              items: [
+                'Österreich + Schweiz',
+                'White-Label für Klinikverbünde',
+                'API/SDK für Drittanbieter',
+                'Series A vorbereiten',
+                '2,34M EUR ARR',
+              ],
             },
           ].map((phase, i) => (
             <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
@@ -346,31 +519,34 @@ export default function InvestorPage() {
         </div>
       </div>
 
-      {/* Technologie-Status */}
+      {/* Technologie-Status — aktualisiert */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Technologie-Status (v3.1, März 2026)</h2>
+        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Technologie-Status (März 2026)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            'PWA Frontend (React 18 + TypeScript) — Production',
-            '45 Sprachen + RTL-Unterstützung — Production',
-            '6-Provider Translation Cascade — Production (87 Tests)',
-            'Live-Session mit Cloud-Transport — Production',
-            'Gesprächsmodus (180-Grad Split) — Production',
-            'Kamera-OCR (Google Vision) — Production',
-            'Phrasebook (18 Kategorien, 16 Sprachen) — Production',
-            'E2E-Verschlüsselung (AES-256-GCM) — Production',
-            'Offline Translation (54 Opus-MT Paare) — Production',
-            'HD-TTS (Neural2 + Chirp 3 HD) — Production',
-            '9 UI-Sprachen (DE, EN, FR, ES, RU, UK, AR, FA, TR) — Production',
-            'BLE GATT Transport (Android + iOS) — Production',
-            'Hotspot Relay Server — Production',
-            'Sales CRM + Admin Dashboard — Production',
-            'Stripe Billing + Tier Enforcement — Production',
-            'Android App — Beta (Google Play Ready)',
+            { label: 'AmtTranslator (Clerk + Visitor App)', status: 'Production · deployed', ok: true },
+            { label: 'MedTranslator (Staff + Patient App)', status: 'Production · deployed', ok: true },
+            { label: 'ArtGuide Portal + Visitor App', status: 'Production · deployed', ok: true },
+            { label: 'EventTranslator (Speaker + Listener)', status: 'Production · deployed', ok: true },
+            { label: 'Offline-Engine (Opus-MT + Whisper WASM)', status: 'Production · 54 Sprachpaare', ok: true },
+            { label: 'BLE GATT Transport (Android + iOS)', status: 'Production', ok: true },
+            { label: '40+ Sprachen inkl. RTL (AR, FA, UR)', status: 'Production', ok: true },
+            { label: 'E2E-Verschlüsselung (AES-256-GCM)', status: 'Production', ok: true },
+            { label: 'DSGVO Art. 9 / BSI-Grundschutz', status: 'Dokumentiert · DSFA-Template fertig', ok: true },
+            { label: 'BITV 2.0 / WCAG 2.1 AA', status: 'Audit-Template fertig', ok: true },
+            { label: 'EVB-IT Vertragsvorlagen', status: 'Fertig · 3 Varianten', ok: true },
+            { label: 'Ausschreibungs-Monitor (DTVP, evergabe)', status: 'Production · live', ok: true },
+            { label: 'HD-TTS (Neural2 + Chirp 3 HD)', status: 'Production', ok: true },
+            { label: 'Supabase Edge Functions (AI + TTS)', status: 'Production · 4 Functions', ok: true },
+            { label: 'Android App (Google Play)', status: 'Beta · Play Ready', ok: true },
+            { label: 'iOS App Store', status: 'Roadmap Q3 2026', ok: false },
           ].map((item, i) => (
             <div key={i} className="flex items-start gap-2 p-2 rounded text-xs">
-              <Check className="w-3 h-3 text-green-500 mt-0.5 shrink-0" />
-              <span>{item}</span>
+              <Check className={`w-3 h-3 mt-0.5 shrink-0 ${item.ok ? 'text-green-500' : 'text-white/30'}`} />
+              <div>
+                <span className="font-medium">{item.label}</span>
+                <span className="text-white/50"> — {item.status}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -383,20 +559,55 @@ export default function InvestorPage() {
           <h3 className="font-semibold mb-4">Patentfähige Innovationen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { name: '4-Tier Auto-Fallback Transport', time: '3-4 Monate' },
-              { name: 'BLE GATT Translation Protocol', time: '6-12 Monate' },
-              { name: 'Embedded Relay Server', time: '3-6 Monate' },
-              { name: 'Hybrid ML Pipeline', time: '2-3 Monate' },
+              { name: '4-Tier Auto-Fallback Transport', time: '3–4 Monate Nachahmung' },
+              { name: 'BLE GATT Translation Protocol', time: '6–12 Monate Nachahmung' },
+              { name: 'Bidirektional 180°-Single-Device', time: '2–3 Monate Nachahmung' },
+              { name: 'Hybrid ML Pipeline (On-Device + Cloud)', time: '4–6 Monate Nachahmung' },
             ].map((item, i) => (
               <div key={i} className="flex justify-between items-center p-3 rounded bg-black/30 backdrop-blur-sm">
                 <span className="text-sm font-medium">{item.name}</span>
-                <span className="text-xs text-white/70">{item.time} Nachahmung</span>
+                <span className="text-xs text-white/70">{item.time}</span>
               </div>
             ))}
           </div>
           <p className="text-sm text-sky-300 font-medium mt-4 text-center">
-            Gesamt-Nachahmungsaufwand: 12-18 Monate
+            Gesamt-Nachahmungsaufwand: 12–18 Monate
           </p>
+        </Card>
+
+        {/* Wettbewerbsvergleich kompakt */}
+        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+          <h3 className="font-semibold mb-4">Wettbewerbsvergleich (Behörden-Markt)</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2">Anbieter</th>
+                  <th className="text-center py-2">Offline</th>
+                  <th className="text-center py-2">1 Gerät</th>
+                  <th className="text-center py-2">DSGVO Art.9</th>
+                  <th className="text-center py-2">Behörden-Fokus</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { name: 'FitTutto World', offline: '✅', oneDevice: '✅', dsgvo: '✅', focus: '✅' },
+                  { name: 'Govocal', offline: '❌', oneDevice: '❌', dsgvo: '⚠️', focus: '✅' },
+                  { name: 'Lingomatch', offline: '❌', oneDevice: '❌', dsgvo: '⚠️', focus: '⚠️' },
+                  { name: 'Pocketalk', offline: '⚠️', oneDevice: '✅', dsgvo: '❌', focus: '❌' },
+                  { name: 'DeepL / Google', offline: '❌', oneDevice: '❌', dsgvo: '❌', focus: '❌' },
+                ].map((row, i) => (
+                  <tr key={i} className={`border-b border-white/5 last:border-0 ${i === 0 ? 'font-bold text-sky-300' : ''}`}>
+                    <td className="py-2">{row.name}</td>
+                    <td className="py-2 text-center">{row.offline}</td>
+                    <td className="py-2 text-center">{row.oneDevice}</td>
+                    <td className="py-2 text-center">{row.dsgvo}</td>
+                    <td className="py-2 text-center">{row.focus}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Card>
       </div>
 
@@ -408,14 +619,17 @@ export default function InvestorPage() {
             <h3 className="font-semibold">Gründer & CEO</h3>
             <p className="text-sm font-medium">Alexander Deibel</p>
             <p className="text-xs text-white/70">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
-            <p className="text-xs text-white/70">Komplette v3.1 Codebase in weniger als 6 Monaten gebaut</p>
+            <p className="text-xs text-white/70">7 Production-Apps in unter 6 Monaten gebaut und deployed</p>
+            <p className="text-xs text-white/70">Full-Stack: React, TypeScript, Supabase, Edge Functions, PWA, BLE</p>
           </Card>
           <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <h3 className="font-semibold">Fintutto Ecosystem</h3>
             <ul className="space-y-1 text-xs text-white/70">
-              <li>• ai tour Portal — Tourismusplattform</li>
+              <li>• AmtTranslator — Behörden-Übersetzung (Hauptprodukt)</li>
+              <li>• MedTranslator — Healthcare-Übersetzung</li>
+              <li>• ArtGuide — Museum & Kulturführer</li>
+              <li>• EventTranslator — Konferenzen & Messen</li>
               <li>• Vermietify — Vermietungssoftware</li>
-              <li>• Ablesung — Smart Metering</li>
               <li>• BescheidBoxer — Dokumentenmanagement</li>
             </ul>
           </Card>
@@ -424,11 +638,11 @@ export default function InvestorPage() {
           <h3 className="font-semibold mb-3">Einstellungsplan (mit Finanzierung)</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
-              { role: 'CTO', month: 'Mo 1', salary: '90-110K' },
-              { role: 'Sales Lead', month: 'Mo 2', salary: '70-90K' },
-              { role: 'Mobile Dev', month: 'Mo 3', salary: '70-85K' },
-              { role: 'Customer Success', month: 'Mo 6', salary: '50-60K' },
-              { role: 'Marketing', month: 'Mo 9', salary: '55-70K' },
+              { role: 'CTO', month: 'Mo 1', salary: '90–110K' },
+              { role: 'Sales Lead', month: 'Mo 2', salary: '70–90K' },
+              { role: 'Mobile Dev', month: 'Mo 3', salary: '70–85K' },
+              { role: 'Customer Success', month: 'Mo 6', salary: '50–60K' },
+              { role: 'Marketing', month: 'Mo 9', salary: '55–70K' },
             ].map((item, i) => (
               <div key={i} className="text-center p-2 rounded bg-black/30 backdrop-blur-sm">
                 <p className="font-medium text-xs">{item.role}</p>
@@ -440,20 +654,20 @@ export default function InvestorPage() {
         </Card>
       </div>
 
-      {/* Ask */}
+      {/* Ask — aktualisiert */}
       <Card className="p-8 border-primary text-center space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
         <h2 className="text-2xl font-bold drop-shadow-lg">Seed-Runde: 750.000 EUR</h2>
-        <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar)</p>
+        <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar) · Netto-Eigenkapitalbedarf: 16.000 EUR (nach Förderung)</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-lg mx-auto">
           <div>
             <h3 className="font-semibold text-sm mb-2">Was wir bieten:</h3>
             <ul className="space-y-1.5 text-xs text-white/70">
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Production-Ready v3.1</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />87 Tests, 100% Pass Rate</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Google Play Ready</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />4-Tier-Transport (patentfähig)</li>
-              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Sales CRM + Stripe integriert</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />7 Production-Apps, alle deployed</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />4 Märkte mit €10,1 Mrd SAM</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />€156K Förderpotenzial identifiziert</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />DSGVO + BSI + BITV 2.0 konform</li>
+              <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />Pilot-Briefe & EVB-IT Verträge fertig</li>
             </ul>
           </div>
           <div>
@@ -470,10 +684,10 @@ export default function InvestorPage() {
         <div className="pt-4 space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             {[
-              { milestone: 'Play Store Launch', time: 'Monat 1' },
-              { milestone: '1.000 Free-Nutzer', time: 'Monat 3' },
-              { milestone: '10K EUR MRR', time: 'Monat 9' },
-              { milestone: '150K EUR ARR', time: 'Monat 12' },
+              { milestone: 'Erster Pilot-Kunde', time: 'Monat 1' },
+              { milestone: '5 zahlende Kunden', time: 'Monat 3' },
+              { milestone: 'Break-even', time: 'Monat 10' },
+              { milestone: '2,34M EUR ARR', time: 'Monat 36' },
             ].map((m, i) => (
               <div key={i} className="p-2 rounded bg-black/30 backdrop-blur-sm">
                 <p className="text-xs font-medium">{m.milestone}</p>
@@ -482,7 +696,7 @@ export default function InvestorPage() {
             ))}
           </div>
           <p className="text-xs text-white/70">
-            Series A (~3M EUR) geplant bei 150K+ EUR ARR, 100+ B2B-Kunden, &lt;3% monatliche Churn
+            Series A (~3M EUR) geplant bei 150K+ EUR ARR, 25+ Behörden-Kunden, &lt;3% monatliche Churn
           </p>
         </div>
       </Card>
@@ -511,7 +725,7 @@ export default function InvestorPage() {
           </Link>
           <Link to="/pricing">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Alle 11 Pläne
+              Alle Pläne & Preise
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
@@ -519,7 +733,7 @@ export default function InvestorPage() {
       </div>
 
       <p className="text-center text-xs text-white/70 pb-4">
-        Stand: März 2026 · GuideTranslator v3.1.0 · Vertraulich
+        Stand: März 2026 · FitTutto World v4.0 · Vertraulich
       </p>
     </div>
   )
