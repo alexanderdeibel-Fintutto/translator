@@ -74,14 +74,14 @@ export async function POST(request: NextRequest) {
     const { event, artwork_id, museum_slug, duration_seconds, lang } = body
 
     // Try to log to analytics (fire and forget)
-    supabaseAdmin.from('ag_visitor_events').insert({
+    void supabaseAdmin.from('ag_visitor_events').insert({
       event_type: event,
       artwork_id,
       museum_slug,
       duration_seconds,
       language: lang,
       created_at: new Date().toISOString(),
-    }).then(() => {}).catch(() => {})
+    })
 
     return NextResponse.json({ success: true })
   } catch {

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         margin: 2,
         color: { dark: '#1e1b4b', light: '#ffffff' },
       })
-      return new NextResponse(buffer, {
+      return new NextResponse(new Uint8Array(buffer), {
         headers: { 'Content-Type': 'image/png' },
       })
     } else {

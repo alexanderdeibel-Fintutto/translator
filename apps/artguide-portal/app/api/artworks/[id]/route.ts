@@ -2,37 +2,39 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { openai, getTextModelForTier, buildEnrichmentPrompt } from '@/lib/openai'
 
+type RouteContext = { params: Promise<{ id: string }> }
+
 // GET /api/artworks/[id]
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
+  const { id } = await params
   try {
     const { data, error } = await supabaseAdmin
       .from('ag_artworks')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
     if (error) throw error
     return NextResponse.json({ artwork: data })
   } catch {
-    // Return demo data if DB not connected
-    return NextResponse.json({ artwork: getDemoArtwork(params.id) })
+    return NextResponse.json({ artwork: getDemoArtwork(id) })
   }
 }
 
 // PATCH /api/artworks/[id]
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
+  const { id } = await params
   try {
     const body = await request.json()
     const { enrich, ...fields } = body
 
-    // KI-Anreicherung angefordert
     if (enrich) {
-      const tier = 'artguide_starter' // TODO: aus Session lesen
+      const tier = 'artguide_starter'
       const model = getTextModelForTier(tier)
       const prompt = buildEnrichmentPrompt({
         title: fields.title || '',
@@ -51,7 +53,6 @@ export async function PATCH(
         temperature: 0.7,
       })
       const enriched = JSON.parse(completion.choices[0].message.content || '{}')
-      // Merge enriched fields into update
       Object.assign(fields, {
         description_brief: { de: enriched.description_brief, ...(fields.description_brief || {}) },
         description_standard: { de: enriched.description_standard, ...(fields.description_standard || {}) },
@@ -67,40 +68,37 @@ export async function PATCH(
         ai_enriched_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
-      // Try to save to DB, return enriched data regardless
       try {
-        await supabaseAdmin.from('ag_artworks').update(fields).eq('id', params.id)
-      } catch { /* DB not connected, return enriched data anyway */ }
-      return NextResponse.json({ success: true, artwork: { id: params.id, ...fields }, enriched: true })
+        await supabaseAdmin.from('ag_artworks').update(fields).eq('id', id)
+      } catch { /* DB not connected */ }
+      return NextResponse.json({ success: true, artwork: { id, ...fields }, enriched: true })
     }
 
-    // Normal update
     fields.updated_at = new Date().toISOString()
     const { data, error } = await supabaseAdmin
       .from('ag_artworks')
       .update(fields)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
     if (error) throw error
     return NextResponse.json({ success: true, artwork: data })
-  } catch (error) {
-    // Fallback: return success with submitted data (demo mode)
-    const body = await request.json().catch(() => ({}))
-    return NextResponse.json({ success: true, artwork: { id: params.id, ...body }, demo: true })
+  } catch {
+    return NextResponse.json({ success: true, artwork: { id }, demo: true })
   }
 }
 
 // DELETE /api/artworks/[id]
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
+  const { id } = await params
   try {
     const { error } = await supabaseAdmin
       .from('ag_artworks')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
     if (error) throw error
     return NextResponse.json({ success: true })
   } catch {
