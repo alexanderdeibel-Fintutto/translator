@@ -19,6 +19,8 @@ export interface Organization {
   phone: string | null
   address: { street?: string; city?: string; zip?: string; country?: string }
   tier_id: string
+  plan?: string
+  languages?: string[]
   created_at: string
   updated_at: string
 }
