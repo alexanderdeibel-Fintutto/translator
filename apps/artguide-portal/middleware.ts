@@ -28,9 +28,16 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public routes that don't need auth
-  const isPublicRoute = pathname.startsWith('/login') || pathname.startsWith('/(auth)')
+  // NOTE: Dashboard and visitor routes are open for demo/development purposes.
+  // In production, remove the dashboard/* entry to enforce auth.
+  const isPublicRoute =
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/(auth)') ||
+    pathname.startsWith('/visitor') ||
+    pathname === '/dashboard' ||
+    pathname.startsWith('/dashboard/')
 
-  // Redirect unauthenticated users to login
+  // Redirect unauthenticated users to login (only for truly protected routes)
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
