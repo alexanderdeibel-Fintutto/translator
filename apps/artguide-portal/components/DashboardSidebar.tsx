@@ -51,6 +51,7 @@ const navSections = [
       { icon: '👥', label: 'Team', href: '/dashboard/team' },
       { icon: '📈', label: 'Analytics', href: '/dashboard/analytics' },
       { icon: '📋', label: 'Workflow', href: '/dashboard/workflow' },
+      { icon: '📱', label: 'QR-Export', href: '/dashboard/qr-export' },
       { icon: '💳', label: 'Abrechnung', href: '/dashboard/billing' },
       { icon: '⚙', label: 'Einstellungen', href: '/dashboard/settings' },
     ],
