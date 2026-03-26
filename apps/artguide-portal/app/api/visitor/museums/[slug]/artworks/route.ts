@@ -6,11 +6,13 @@ export const dynamic = 'force-dynamic'
 // GET /api/visitor/museums/[slug]/artworks?lang=de
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> | { slug: string } }
 ) {
   const { searchParams } = new URL(request.url)
   const lang = searchParams.get('lang') || 'de'
-  const slug = params.slug
+  const rawParams = context.params
+  const resolvedParams = rawParams instanceof Promise ? await rawParams : rawParams
+  const slug = resolvedParams.slug
 
   try {
     // First find the museum by slug
