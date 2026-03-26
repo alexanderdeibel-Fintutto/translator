@@ -295,7 +295,7 @@ export default function SettingsPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 URL-Slug <span className="text-red-500">*</span>
-                <span className="text-xs text-gray-400 ml-2">artguide.fintutto.com/<strong>{slug || 'dein-museum'}</strong></span>
+                <span className="text-xs text-gray-400 ml-2">artguide.fintutto.world/<strong>{slug || 'dein-museum'}</strong></span>
               </label>
               <input
                 type="text"
@@ -598,11 +598,11 @@ export default function SettingsPage() {
                     <input
                       type="text"
                       readOnly
-                      value={`https://artguide.fintutto.com/${museum.slug}`}
+                      value={`https://artguide.fintutto.world/${museum.slug}`}
                       className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-sm bg-gray-50 font-mono text-gray-600"
                     />
                     <button
-                      onClick={() => navigator.clipboard.writeText(`https://artguide.fintutto.com/${museum.slug}`)}
+                      onClick={() => navigator.clipboard.writeText(`https://artguide.fintutto.world/${museum.slug}`)}
                       className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm transition"
                       title="Kopieren"
                     >

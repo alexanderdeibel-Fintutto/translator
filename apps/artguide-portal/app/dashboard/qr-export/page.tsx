@@ -35,7 +35,7 @@ export default function QRExportPage() {
   const [style, setStyle] = useState<QRStyle>('branded')
   const [size, setSize] = useState<QRSize>('medium')
   const [museumName, setMuseumName] = useState('Mein Museum')
-  const [baseUrl, setBaseUrl] = useState('https://app.fintutto.com/visitor')
+  const [baseUrl, setBaseUrl] = useState(process.env.NEXT_PUBLIC_VISITOR_BASE_URL || 'https://artguide.fintutto.world/visitor')
   const [generating, setGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [filter, setFilter] = useState<'all' | 'published' | 'highlights'>('published')

@@ -476,7 +476,7 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
             {museum && artwork.inventory_number ? (
               <>
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://artguide.fintutto.com/${museum.slug}/${artwork.inventory_number}`)}&format=png&margin=5&color=1e1b4b`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://artguide.fintutto.world/${museum.slug}/${artwork.inventory_number}`)}&format=png&margin=5&color=1e1b4b`}
                   alt="QR Code"
                   className="w-full rounded-lg border border-gray-200 mb-3"
                 />
