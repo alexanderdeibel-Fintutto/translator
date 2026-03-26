@@ -137,7 +137,8 @@ export default function AnalyticsPage() {
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip
                 labelFormatter={v => new Date(v).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })}
-                formatter={(v: number, name: string) => [v, name === 'visitors_total' ? 'Besucher' : 'Audio-Plays']}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formatter={(v: any, name: any) => [v, name === 'visitors_total' ? 'Besucher' : 'Audio-Plays']}
               />
               <Legend formatter={v => v === 'visitors_total' ? 'Besucher' : 'Audio-Plays'} />
               <Area type="monotone" dataKey="visitors_total" stroke="#6366f1" fill="url(#colorVisitors)" strokeWidth={2} dot={false} />

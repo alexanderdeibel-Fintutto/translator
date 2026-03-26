@@ -292,12 +292,12 @@ export default function ImportMuseumPage() {
                             { key: 'description_brief', label: 'Kurzbeschreibung', color: 'text-indigo-600' },
                             { key: 'description_standard', label: 'Standard (Besucher)', color: 'text-indigo-600' },
                             { key: 'description_children', label: 'Kinder (6-12)', color: 'text-green-600' },
-                          ].map(({ key, label, color }) => item.enriched?.[key] && (
+                          ].map(({ key, label, color }) => item.enriched?.[key] ? (
                             <div key={key}>
                               <div className={`text-xs font-medium ${color} mb-1`}>{label}</div>
                               <p className="text-sm text-gray-700 bg-white p-2 rounded border border-gray-200">{String(item.enriched[key])}</p>
                             </div>
-                          ))}
+                          ) : null)}
                         </div>
                       </div>
                       <div>
