@@ -189,7 +189,11 @@ export default function ArtworksPage() {
                   <td className="py-3 px-4"><input type="checkbox" checked={selectedIds.has(artwork.id)} onChange={() => toggleSelect(artwork.id)} className="rounded" /></td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-xl flex-shrink-0">{catIcon}</div>
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden">
+                          {artwork.image_url ? (
+                            <img src={artwork.image_url} alt={artwork.title} className="w-full h-full object-cover" />
+                          ) : catIcon}
+                        </div>
                       <div className="min-w-0">
                         <div className="font-medium text-gray-900 truncate max-w-48">
                           {artwork.is_highlight && <span className="text-amber-500 mr-1">⭐</span>}

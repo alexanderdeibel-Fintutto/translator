@@ -35,12 +35,12 @@ export default function VisitorMuseumPage() {
   const [lang, setLang] = useState('de')
 
   useEffect(() => {
-    fetch('/api/artworks?limit=50&status=published')
+    fetch(`/api/artworks?limit=50&status=published&lang=${lang}`)
       .then(r => r.json())
       .then(d => setArtworks(d.artworks || []))
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [])
+  }, [lang])
 
   const filtered = artworks.filter(a => {
     if (filter === 'highlights' && !a.is_highlight) return false

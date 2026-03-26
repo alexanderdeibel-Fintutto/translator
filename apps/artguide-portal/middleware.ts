@@ -28,15 +28,15 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public routes that don't need auth
-  // NOTE: Dashboard and visitor routes are open for demo/development purposes.
-  // In production, remove the dashboard/* entry to enforce auth.
+  // Visitor routes are always public (museum visitors don't need to log in)
+  // Dashboard routes require authentication
   const isPublicRoute =
     pathname.startsWith('/login') ||
     pathname.startsWith('/(auth)') ||
     pathname.startsWith('/visitor') ||
     pathname.startsWith('/onboarding') ||
-    pathname === '/dashboard' ||
-    pathname.startsWith('/dashboard/')
+    pathname === '/' ||
+    pathname.startsWith('/api/')
 
   // Redirect unauthenticated users to login (only for truly protected routes)
   if (!user && !isPublicRoute) {

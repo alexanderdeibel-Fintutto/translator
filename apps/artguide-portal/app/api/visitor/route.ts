@@ -29,17 +29,31 @@ export async function GET(request: NextRequest) {
       return field[lang] || field['de'] || field['en'] || Object.values(field)[0] || null
     }
 
+    // Extract image_url from ai_base_knowledge if not directly available
+    let imageUrl = artwork.image_url || null
+    if (!imageUrl && artwork.ai_base_knowledge) {
+      try {
+        const aiKnowledge = typeof artwork.ai_base_knowledge === 'string'
+          ? JSON.parse(artwork.ai_base_knowledge)
+          : artwork.ai_base_knowledge
+        imageUrl = aiKnowledge?.primary_image || aiKnowledge?.image_url || null
+      } catch {}
+    }
+
+    // Extract localized title
+    const titleText = getText(artwork.title as any)
+
     return NextResponse.json({
       artwork: {
         id: artwork.id,
         inventory_number: artwork.inventory_number,
-        title: artwork.title,
+        title: titleText,
         artist_name: artwork.artist_name,
         year_created: artwork.year_created,
         medium: artwork.medium,
         dimensions: artwork.dimensions,
-        location: artwork.location,
-        image_url: artwork.image_url,
+        location: artwork.position_description || artwork.location,
+        image_url: imageUrl,
         audio_url: artwork.audio_url,
         category: artwork.category,
         is_highlight: artwork.is_highlight,

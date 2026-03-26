@@ -28,7 +28,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ artworks: getDemoArtworks(), total: 6, demo: true })
     }
 
-    return NextResponse.json({ artworks: data || [], total: count || 0 })
+    // Enrich artworks with image_url from ai_base_knowledge and localized title
+    const lang = searchParams.get('lang') || 'de'
+    const enriched = (data || []).map((artwork: any) => {
+      let imageUrl = artwork.image_url || null
+      if (!imageUrl && artwork.ai_base_knowledge) {
+        try {
+          const aiK = typeof artwork.ai_base_knowledge === 'string'
+            ? JSON.parse(artwork.ai_base_knowledge)
+            : artwork.ai_base_knowledge
+          imageUrl = aiK?.primary_image || aiK?.image_url || null
+        } catch {}
+      }
+      // Localize title
+      let title = artwork.title
+      if (title && typeof title === 'object') {
+        title = title[lang] || title['de'] || title['en'] || Object.values(title)[0] || ''
+      }
+      return { ...artwork, image_url: imageUrl, title }
+    })
+
+    return NextResponse.json({ artworks: enriched, total: count || 0 })
   } catch {
     return NextResponse.json({ artworks: getDemoArtworks(), total: 6, demo: true })
   }
