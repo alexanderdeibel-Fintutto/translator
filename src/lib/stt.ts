@@ -728,7 +728,35 @@ function isAndroid(): boolean {
 
 // --- Engine selection ---
 
-export function getBestSTTEngine(): STTEngine {
+export function getBestSTTEngine(preferOffline = false): STTEngine {
+  // 0. Whisper offline — promoted to first position when preferOffline=true
+  // (e.g. Behörden/medical deployments without internet, or when network is offline)
+  // Caller should check isWhisperAvailable() before passing preferOffline=true
+  // to avoid triggering a model download on first use.
+  if (preferOffline && typeof WebAssembly !== 'undefined') {
+    return {
+      provider: 'whisper',
+      isSupported: true,
+      async start(lang, onResult, onError) {
+        try {
+          const { createWhisperSTTEngine } = await import('./offline/stt-engine')
+          const engine = createWhisperSTTEngine()
+          await engine.start(lang, onResult, onError)
+          ;(this as unknown as Record<string, STTEngine>)._activeEngine = engine
+        } catch {
+          onError(getTranslation((localStorage.getItem('ui-language') || 'de') as UILanguage, 'error.whisperNotAvailable'))
+        }
+      },
+      stop() {
+        const active = (this as unknown as Record<string, STTEngine>)._activeEngine
+        if (active) {
+          active.stop()
+          delete (this as unknown as Record<string, STTEngine>)._activeEngine
+        }
+      },
+    }
+  }
+
   // 1. Prefer Apple SpeechAnalyzer when in native iOS wrapper
   const apple = createAppleSpeechAnalyzerEngine()
   if (apple.isSupported) return apple
@@ -753,10 +781,17 @@ export function getBestSTTEngine(): STTEngine {
   if (webSpeech.isSupported) return webSpeech
 
   // 5. Google Cloud STT (fallback for any browser with mic access)
+  // TODO (STT-Proxy): Replace direct Google Cloud calls with /api/stt proxy
+  // so audio never leaves our infrastructure — required for DSGVO Art.9 compliance
+  // in medical/authority contexts. Proxy should accept: { audio: base64, lang: string }
+  // and internally call Whisper (self-hosted) or Google Cloud STT.
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 
-  // 5. Whisper offline (last resort — requires model download)
+  // 6. Whisper offline (last resort — requires model download)
+  // NOTE: For offline-first deployments (Behörden without internet), Whisper should be
+  // promoted to position 1 by calling preloadWhisper() on app start and checking
+  // isWhisperAvailable() before Web Speech. See offline/stt-engine.ts.
   return {
     provider: 'whisper',
     isSupported: typeof WebAssembly !== 'undefined',

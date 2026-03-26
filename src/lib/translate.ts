@@ -7,6 +7,7 @@ import { getNetworkStatus } from './offline/network-status'
 import { getGoogleApiKey } from './api-key'
 import { TIERS, type TierId } from './tiers'
 import { recordTranslation } from './usage-tracker'
+import { getContextHints, type TranslationContext } from './context-modes'
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 const MYMEMORY_API = 'https://api.mymemory.translated.net/get'
@@ -344,6 +345,7 @@ export async function translateText(
   sourceLang: string,
   targetLang: string,
   tierId?: TierId,
+  context?: TranslationContext,
 ): Promise<TranslationResult> {
   if (!text.trim()) {
     return { translatedText: '', match: 0 }
@@ -353,6 +355,16 @@ export async function translateText(
   const tier = tierId ? TIERS[tierId] : undefined
   const maxChars = tier?.limits.maxCharsPerRequest ?? 5_000
   const trimmedText = text.length > maxChars ? text.slice(0, maxChars) : text
+
+  // Prepend context-specific glossary hints to improve domain accuracy
+  // e.g. medical context: "Rezept: Prescription (medical)" prevents wrong translation
+  let textWithContext = trimmedText
+  if (context && context !== 'general') {
+    const hints = getContextHints(trimmedText, sourceLang, context)
+    if (hints.length > 0) {
+      textWithContext = `[Context hints: ${hints.join('; ')}]\n${trimmedText}`
+    }
+  }
 
   const cacheKey = getCacheKey(trimmedText, sourceLang, targetLang)
 
@@ -367,7 +379,7 @@ export async function translateText(
   if (existing) return existing
 
   const activeProviders = getProvidersForTier(tierId ?? 'free')
-  const promise = translateTextInner(trimmedText, sourceLang, targetLang, cacheKey, activeProviders)
+  const promise = translateTextInner(textWithContext, sourceLang, targetLang, cacheKey, activeProviders)
   inflight.set(cacheKey, promise)
   try {
     const result = await promise

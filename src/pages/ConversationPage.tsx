@@ -1,5 +1,19 @@
+// ConversationPage — bidirektionaler Gesprächsmodus (Schachuhr-Prinzip)
+// Design: zwei Panels gegenüberstehend (180° rotiert), Push-to-Talk, Kontext-Modus, Per-Seite-Audio
+//
+// CRITICAL RULES (do not remove):
+// - activeSide: nur eine Seite kann gleichzeitig sprechen — nie beide gleichzeitig aktiv
+// - Push-to-Talk: onPointerDown startet, onPointerUp stoppt — kein Toggle-Klick
+// - autoSpeakTop / autoSpeakBottom: unabhängige Audio-Toggles pro Seite
+// - contextMode: wird an translateText übergeben für domänenspezifische Übersetzung
+// - Visibility-Resume: wenn Tab zurückkommt, aktive STT-Session neu starten
+// - Refs statt Objekte in useEffect-Dependencies (AGENTS.md Regel 2.1)
+
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { Mic, MicOff, ArrowUpDown, Volume2, VolumeX, RotateCcw } from 'lucide-react'
+import {
+  Mic, MicOff, ArrowUpDown, Volume2, VolumeX, RotateCcw,
+  Stethoscope, Scale, Briefcase, Globe, Plane, MessageCircle
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LanguageSelector from '@/components/translator/LanguageSelector'
 import { translateText } from '@/lib/translate'
@@ -10,6 +24,7 @@ import { useI18n } from '@/context/I18nContext'
 import { useTierId } from '@/context/UserContext'
 import { hasFeature } from '@/lib/tiers'
 import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
+import { CONTEXT_MODES, type TranslationContext } from '@/lib/context-modes'
 
 const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -21,30 +36,58 @@ interface Message {
   timestamp: number
 }
 
+const CONTEXT_ICONS: Record<TranslationContext, React.ReactNode> = {
+  general:  <Globe className="h-3.5 w-3.5" />,
+  travel:   <Plane className="h-3.5 w-3.5" />,
+  medical:  <Stethoscope className="h-3.5 w-3.5" />,
+  legal:    <Scale className="h-3.5 w-3.5" />,
+  business: <Briefcase className="h-3.5 w-3.5" />,
+  casual:   <MessageCircle className="h-3.5 w-3.5" />,
+}
+
 export default function ConversationPage() {
   const { t } = useI18n()
   const tierId = useTierId()
   const canConversation = hasFeature(tierId, 'conversationMode')
+
   const [topLang, setTopLang] = useState('en')
   const [bottomLang, setBottomLang] = useState('de')
   const [activeSide, setActiveSide] = useState<'top' | 'bottom' | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [isTranslating, setIsTranslating] = useState(false)
   const [currentTranscript, setCurrentTranscript] = useState('')
-  const [autoSpeak, setAutoSpeak] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [contextMode, setContextMode] = useState<TranslationContext>('general')
+
+  // Per-side audio toggles — independent for each conversation partner
+  const [autoSpeakTop, setAutoSpeakTop] = useState(true)
+  const [autoSpeakBottom, setAutoSpeakBottom] = useState(true)
 
   const topRecognition = useSpeechRecognition()
   const bottomRecognition = useSpeechRecognition()
   const tts = useSpeechSynthesis()
 
+  // Refs for stable access in callbacks (AGENTS.md Rule 2.1 — no objects in useEffect deps)
   const isTranslatingRef = useRef(false)
-  const autoSpeakRef = useRef(autoSpeak)
-  autoSpeakRef.current = autoSpeak
+  const autoSpeakTopRef = useRef(autoSpeakTop)
+  autoSpeakTopRef.current = autoSpeakTop
+  const autoSpeakBottomRef = useRef(autoSpeakBottom)
+  autoSpeakBottomRef.current = autoSpeakBottom
   const ttsRef = useRef(tts.speak)
   ttsRef.current = tts.speak
   const isAnyListeningRef = useRef(false)
   isAnyListeningRef.current = topRecognition.isListening || bottomRecognition.isListening
+  const activeSideRef = useRef<'top' | 'bottom' | null>(null)
+  activeSideRef.current = activeSide
+  const topLangRef = useRef(topLang)
+  topLangRef.current = topLang
+  const bottomLangRef = useRef(bottomLang)
+  bottomLangRef.current = bottomLang
+  const contextModeRef = useRef(contextMode)
+  contextModeRef.current = contextMode
+
+  // Push-to-Talk state — tracks whether pointer is currently held down
+  const pttActiveRef = useRef<'top' | 'bottom' | null>(null)
 
   const handleResult = useCallback(async (text: string, side: 'top' | 'bottom') => {
     if (isTranslatingRef.current || !text.trim()) return
@@ -52,12 +95,12 @@ export default function ConversationPage() {
     setIsTranslating(true)
     setCurrentTranscript('')
 
-    const srcLang = side === 'top' ? topLang : bottomLang
-    const tgtLang = side === 'top' ? bottomLang : topLang
+    const srcLang = side === 'top' ? topLangRef.current : bottomLangRef.current
+    const tgtLang = side === 'top' ? bottomLangRef.current : topLangRef.current
 
     setError(null)
     try {
-      const result = await translateText(text, srcLang, tgtLang)
+      const result = await translateText(text, srcLang, tgtLang, undefined, contextModeRef.current)
       const msg: Message = {
         id: `msg_${Date.now()}`,
         speaker: side,
@@ -67,8 +110,9 @@ export default function ConversationPage() {
       }
       setMessages(prev => [...prev, msg])
 
-      // Skip auto-speak while recording to prevent mic interference
-      if (autoSpeakRef.current && result.translatedText && !isAnyListeningRef.current) {
+      // Per-side audio: only speak to the target side's partner
+      const targetSideAutoSpeak = side === 'top' ? autoSpeakBottomRef.current : autoSpeakTopRef.current
+      if (targetSideAutoSpeak && result.translatedText && !isAnyListeningRef.current) {
         const lang = getLanguageByCode(tgtLang)
         ttsRef.current(result.translatedText, lang?.speechCode || tgtLang)
       }
@@ -80,31 +124,39 @@ export default function ConversationPage() {
       setIsTranslating(false)
       setActiveSide(null)
     }
-  }, [topLang, bottomLang])
+  }, [t])
 
-  const startTop = useCallback(() => {
-    tts.warmup() // Unlock iOS audio during user gesture
-    setActiveSide('top')
-    setCurrentTranscript('')
-    const lang = getLanguageByCode(topLang)
-    topRecognition.startListening(lang?.speechCode || topLang, (text) => {
-      setCurrentTranscript(text)
-      handleResult(text, 'top')
-    })
-  }, [topLang, topRecognition, handleResult, tts])
+  // Push-to-Talk: start listening on pointer down
+  const handlePTTDown = useCallback((side: 'top' | 'bottom') => {
+    if (activeSideRef.current !== null && activeSideRef.current !== side) return
+    if (isTranslatingRef.current) return
 
-  const startBottom = useCallback(() => {
     tts.warmup() // Unlock iOS audio during user gesture
-    setActiveSide('bottom')
+    pttActiveRef.current = side
+    setActiveSide(side)
     setCurrentTranscript('')
-    const lang = getLanguageByCode(bottomLang)
-    bottomRecognition.startListening(lang?.speechCode || bottomLang, (text) => {
+
+    const lang = getLanguageByCode(side === 'top' ? topLangRef.current : bottomLangRef.current)
+    const langCode = lang?.speechCode || (side === 'top' ? topLangRef.current : bottomLangRef.current)
+    const recognition = side === 'top' ? topRecognition : bottomRecognition
+
+    recognition.startListening(langCode, (text) => {
       setCurrentTranscript(text)
-      handleResult(text, 'bottom')
+      handleResult(text, side)
     })
-  }, [bottomLang, bottomRecognition, handleResult, tts])
+  }, [topRecognition, bottomRecognition, handleResult, tts])
+
+  // Push-to-Talk: stop on pointer up / leave
+  const handlePTTUp = useCallback((side: 'top' | 'bottom') => {
+    if (pttActiveRef.current !== side) return
+    pttActiveRef.current = null
+    const recognition = side === 'top' ? topRecognition : bottomRecognition
+    recognition.stopListening()
+    // Translation will be triggered by the final STT result via handleResult
+  }, [topRecognition, bottomRecognition])
 
   const stopAll = useCallback(() => {
+    pttActiveRef.current = null
     topRecognition.stopListening()
     bottomRecognition.stopListening()
     setActiveSide(null)
@@ -119,6 +171,32 @@ export default function ConversationPage() {
   const clearMessages = () => {
     setMessages([])
   }
+
+  // Visibility-Resume: wenn Tab in den Hintergrund geht und zurückkommt,
+  // aktive STT-Session neu starten — verhindert stille Mikrofone nach Tab-Wechsel
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && activeSideRef.current !== null) {
+        const side = activeSideRef.current
+        const recognition = side === 'top' ? topRecognition : bottomRecognition
+        const lang = getLanguageByCode(side === 'top' ? topLangRef.current : bottomLangRef.current)
+        const langCode = lang?.speechCode || (side === 'top' ? topLangRef.current : bottomLangRef.current)
+
+        // Brief delay to let browser audio subsystem re-initialize
+        setTimeout(() => {
+          if (activeSideRef.current === side) {
+            recognition.startListening(langCode, (text) => {
+              setCurrentTranscript(text)
+              handleResult(text, side)
+            })
+          }
+        }, 300)
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [topRecognition, bottomRecognition, handleResult])
 
   const topLangData = getLanguageByCode(topLang)
   const bottomLangData = getLanguageByCode(bottomLang)
@@ -155,6 +233,25 @@ export default function ConversationPage() {
         </p>
       </div>
 
+      {/* Context mode selector */}
+      <div className="flex items-center justify-center gap-1.5 flex-wrap">
+        {CONTEXT_MODES.map(mode => (
+          <button
+            key={mode.id}
+            onClick={() => setContextMode(mode.id)}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors border ${
+              contextMode === mode.id
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground'
+            }`}
+            aria-pressed={contextMode === mode.id}
+          >
+            {CONTEXT_ICONS[mode.id]}
+            <span>{t(mode.i18nKey)}</span>
+          </button>
+        ))}
+      </div>
+
       {/* Language bar */}
       <div className="flex items-end justify-center gap-3">
         <LanguageSelector value={topLang} onChange={setTopLang} label={t('conversation.person1')} />
@@ -162,62 +259,66 @@ export default function ConversationPage() {
           <ArrowUpDown className="h-4 w-4" />
         </Button>
         <LanguageSelector value={bottomLang} onChange={setBottomLang} label={t('conversation.person2')} />
-        <Button
-          variant={autoSpeak ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setAutoSpeak(!autoSpeak)}
-          className="mb-0.5 shrink-0 gap-1.5"
-          aria-pressed={autoSpeak}
-          aria-label={autoSpeak ? t('translator.autoSpeakOn') : t('translator.autoSpeakOff')}
-        >
-          {autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
-          <span className="text-xs">{t('translator.auto')}</span>
-        </Button>
       </div>
 
       {/* Conversation area — split screen */}
       <div className="grid grid-rows-[1fr_auto_1fr] gap-2 min-h-[60vh]">
-        {/* Top person (rotated 180° for face-to-face) */}
+
+        {/* Top person (rotated 180° for face-to-face use) */}
         <div
-          className={`relative rounded-xl border-2 p-4 flex flex-col transition-colors ${
+          className={`relative rounded-xl border-2 p-4 flex flex-col transition-colors select-none ${
             activeSide === 'top'
               ? 'border-primary bg-primary/5'
               : 'border-border'
           }`}
           style={{ transform: 'rotate(180deg)' }}
         >
-          {/* Mic button (at visual top for rotated user) */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">
-              {topLangData?.flag} {topLangData?.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                {topLangData?.flag} {topLangData?.name}
+              </span>
+              {/* Per-side audio toggle for top person */}
+              <button
+                onClick={() => setAutoSpeakTop(v => !v)}
+                className={`p-1 rounded-full transition-colors ${autoSpeakTop ? 'text-primary' : 'text-muted-foreground/40'}`}
+                aria-label={autoSpeakTop ? 'Audio aus' : 'Audio an'}
+                title={autoSpeakTop ? 'Audio deaktivieren' : 'Audio aktivieren'}
+              >
+                {autoSpeakTop ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+
+            {/* Push-to-Talk button — gedrückt halten zum Sprechen */}
             <Button
               size="sm"
               variant={activeSide === 'top' ? 'destructive' : 'default'}
-              onClick={activeSide === 'top' ? stopAll : startTop}
+              onPointerDown={() => handlePTTDown('top')}
+              onPointerUp={() => handlePTTUp('top')}
+              onPointerLeave={() => handlePTTUp('top')}
+              onPointerCancel={() => handlePTTUp('top')}
               disabled={activeSide === 'bottom' || isTranslating}
-              className="gap-1.5 rounded-full"
+              className="gap-1.5 rounded-full touch-none"
+              aria-pressed={activeSide === 'top'}
             >
-              {activeSide === 'top' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
-              {activeSide === 'top' ? t('conversation.stop') : t('conversation.speak')}
+              {activeSide === 'top'
+                ? <><MicOff className="h-4 w-4" aria-hidden="true" />{t('conversation.stop')}</>
+                : <><Mic className="h-4 w-4" aria-hidden="true" />{t('conversation.speak')}</>
+              }
             </Button>
           </div>
 
-          {/* Chronological messages for top person's view */}
           <div className="flex-1 overflow-y-auto space-y-2">
             {messages.slice(-6).map(msg => {
               const isOwnMessage = msg.speaker === 'top'
               const originalDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
               const time = shortTimeFormat.format(new Date(msg.timestamp))
-
               return (
                 <div
                   key={msg.id}
                   className={`rounded-lg p-2.5 space-y-0.5 ${
-                    isOwnMessage
-                      ? 'bg-primary/10 ml-6'
-                      : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
+                    isOwnMessage ? 'bg-primary/10 ml-6' : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
                   }`}
                 >
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
@@ -262,43 +363,58 @@ export default function ConversationPage() {
 
         {/* Bottom person (normal orientation) */}
         <div
-          className={`relative rounded-xl border-2 p-4 flex flex-col transition-colors ${
+          className={`relative rounded-xl border-2 p-4 flex flex-col transition-colors select-none ${
             activeSide === 'bottom'
               ? 'border-primary bg-primary/5'
               : 'border-border'
           }`}
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">
-              {bottomLangData?.flag} {bottomLangData?.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                {bottomLangData?.flag} {bottomLangData?.name}
+              </span>
+              {/* Per-side audio toggle for bottom person */}
+              <button
+                onClick={() => setAutoSpeakBottom(v => !v)}
+                className={`p-1 rounded-full transition-colors ${autoSpeakBottom ? 'text-primary' : 'text-muted-foreground/40'}`}
+                aria-label={autoSpeakBottom ? 'Audio aus' : 'Audio an'}
+                title={autoSpeakBottom ? 'Audio deaktivieren' : 'Audio aktivieren'}
+              >
+                {autoSpeakBottom ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+
+            {/* Push-to-Talk button */}
             <Button
               size="sm"
               variant={activeSide === 'bottom' ? 'destructive' : 'default'}
-              onClick={activeSide === 'bottom' ? stopAll : startBottom}
+              onPointerDown={() => handlePTTDown('bottom')}
+              onPointerUp={() => handlePTTUp('bottom')}
+              onPointerLeave={() => handlePTTUp('bottom')}
+              onPointerCancel={() => handlePTTUp('bottom')}
               disabled={activeSide === 'top' || isTranslating}
-              className="gap-1.5 rounded-full"
+              className="gap-1.5 rounded-full touch-none"
+              aria-pressed={activeSide === 'bottom'}
             >
-              {activeSide === 'bottom' ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
-              {activeSide === 'bottom' ? t('conversation.stop') : t('conversation.speak')}
+              {activeSide === 'bottom'
+                ? <><MicOff className="h-4 w-4" aria-hidden="true" />{t('conversation.stop')}</>
+                : <><Mic className="h-4 w-4" aria-hidden="true" />{t('conversation.speak')}</>
+              }
             </Button>
           </div>
 
-          {/* Chronological messages for bottom person's view */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-2">
             {messages.slice(-6).map(msg => {
               const isOwnMessage = msg.speaker === 'bottom'
               const originalDir = isRTL(isOwnMessage ? bottomLang : topLang) ? 'rtl' : 'ltr'
               const translatedDir = isRTL(isOwnMessage ? topLang : bottomLang) ? 'rtl' : 'ltr'
               const time = shortTimeFormat.format(new Date(msg.timestamp))
-
               return (
                 <div
                   key={msg.id}
                   className={`rounded-lg p-2.5 space-y-0.5 ${
-                    isOwnMessage
-                      ? 'bg-primary/10 ml-6'
-                      : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
+                    isOwnMessage ? 'bg-primary/10 ml-6' : 'bg-muted/60 mr-6 border-l-2 border-primary/30'
                   }`}
                 >
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">

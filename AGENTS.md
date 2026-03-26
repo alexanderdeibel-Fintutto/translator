@@ -191,5 +191,48 @@ src/components/live/ListenerView.tsx ← Listener-UI
 
 ---
 
-*Zuletzt aktualisiert: 2026-03-26 — nach Regression-Fix (Commit `0f64f1a`)*
+---
+
+## 8. ConversationPage — Bidirektionaler Modus (Schachuhr)
+
+Die `ConversationPage` implementiert den Face-to-Face-Konversationsmodus. Folgende Regeln gelten:
+
+**Push-to-Talk:** Die Mikrofon-Buttons verwenden `onPointerDown`/`onPointerUp` (nicht `onClick`). Das ist Absicht — gedrückt halten = aufnehmen, loslassen = übersetzen. Nicht auf `onClick` umstellen.
+
+**Per-Seite Audio:** `autoSpeakTop` und `autoSpeakBottom` sind unabhängige States. Die Logik: wenn Person A spricht, wird die Übersetzung an Person B ausgegeben — aber nur wenn `autoSpeakBottom` (die Seite von B) aktiv ist. Nicht auf einen globalen `autoSpeak`-State vereinfachen.
+
+**Kontext-Modus:** `contextMode` wird an `translateText(..., context)` übergeben. `translate.ts` hängt Glossar-Hints an den Text. Für MedTranslator: `contextMode='medical'` als Default setzen.
+
+**Visibility-Resume:** Der `visibilitychange`-Handler in `ConversationPage` startet die STT neu wenn der Tab zurückkommt. Nicht entfernen.
+
+---
+
+## 9. STT-Engine-Auswahl
+
+`getBestSTTEngine(preferOffline?: boolean)` in `src/lib/stt.ts`:
+
+- `preferOffline=false` (Standard): Web Speech → Google Cloud → Whisper
+- `preferOffline=true`: Whisper zuerst (für Behörden/medical ohne Internet)
+
+`useSpeechRecognition(preferOffline?: boolean)` gibt den Parameter weiter.
+
+**Für Offline-Deployments:** Vor dem ersten Start `preloadWhisper()` aus `src/lib/offline/stt-engine.ts` aufrufen, damit das Modell (~40MB) heruntergeladen wird. Dann `useSpeechRecognition(true)` verwenden.
+
+**STT-Proxy (TODO):** In `stt.ts` Zeile 755 ist ein `TODO (STT-Proxy)` Kommentar. Dieser Proxy soll Audio an `/api/stt` senden statt direkt an Google — für DSGVO Art.9-Konformität in medizinischen/behördlichen Kontexten. Noch nicht implementiert.
+
+---
+
+## 10. PWA-Installation
+
+`usePWAInstall` in `src/hooks/usePWAInstall.ts`:
+
+- Dismiss wird in `localStorage` mit 7-Tage-TTL gespeichert (nicht sessionStorage)
+- `isIOSDevice=true` → `PWAInstallBanner` zeigt manuelle Safari-Anleitung
+- `isIOSDevice=false` → nativer `beforeinstallprompt`-Dialog
+
+**Nicht auf sessionStorage zurückstellen** — Behörden-Tablets brauchen die 7-Tage-Erinnerung.
+
+---
+
+*Zuletzt aktualisiert: 2026-03-26 — Stability-Improvements Commit (Push-to-Talk, Kontext-Modus, Per-Seite-Audio, Visibility-Resume, PWA-iOS, Whisper-Offline)*
 *Verantwortlich: Alexander Deibel / fintutto.world*

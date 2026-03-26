@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { getBestSTTEngine, createGoogleCloudSTTEngine, type STTEngine, type STTResult } from '@/lib/stt'
 import { useI18n } from '@/context/I18nContext'
 
-export function useSpeechRecognition() {
+export function useSpeechRecognition(preferOffline = false) {
   const { t } = useI18n()
   const [isListening, setIsListening] = useState(false)
   const [interimTranscript, setInterimTranscript] = useState('')
@@ -10,12 +10,13 @@ export function useSpeechRecognition() {
   const engineRef = useRef<STTEngine | null>(null)
 
   // Lazily create engine on first use
+  // preferOffline=true: Whisper is used as primary engine (for offline-first Behörden/medical deployments)
   const getEngine = useCallback(() => {
     if (!engineRef.current) {
-      engineRef.current = getBestSTTEngine()
+      engineRef.current = getBestSTTEngine(preferOffline)
     }
     return engineRef.current
-  }, [])
+  }, [preferOffline])
 
   // Delegate to the selected engine (covers Web Speech, Google Cloud STT, native bridge)
   const isSupported = getEngine().isSupported
