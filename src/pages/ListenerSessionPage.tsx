@@ -5,7 +5,7 @@
  * Receives the session code from the URL and language from navigation state.
  */
 
-import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
+import { useEffect, useState, useMemo, useRef, lazy, Suspense } from 'react'
 import { useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { Loader2, Wifi, Cloud, Bluetooth } from 'lucide-react'
 import { useLiveSession } from '@/hooks/useLiveSession'
@@ -39,13 +39,18 @@ export default function ListenerSessionPage() {
     return { mode: 'cloud' }
   }, [wsParam, bleParam])
 
-  // Auto-join if language was pre-selected
+  // Auto-join if language was pre-selected via navigation state
+  // Note: if no state is present (direct QR scan), user sees language picker below
+  const sessionRefL = useRef(session)
+  sessionRefL.current = session
+  const connectionConfigRef = useRef(connectionConfig)
+  connectionConfigRef.current = connectionConfig
   useEffect(() => {
-    if (code && state?.listenerLang && !session.role) {
-      session.joinSession(code, state.listenerLang, connectionConfig)
+    if (code && state?.listenerLang && !sessionRefL.current.role) {
+      sessionRefL.current.joinSession(code, state.listenerLang, connectionConfigRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code])
+  }, [code, state?.listenerLang])
 
   // Already listening — show listener view
   if (session.role === 'listener') {

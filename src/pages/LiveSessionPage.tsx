@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, lazy, Suspense } from 'react'
+import { useEffect, useState, useMemo, useRef, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useLiveSession } from '@/hooks/useLiveSession'
@@ -72,10 +72,15 @@ export default function LiveSessionPage() {
   }, [state, wsParam, bleParam])
 
   // Speaker: create session
+  // IMPORTANT: Do NOT put `session` in the dependency array — useLiveSession returns
+  // a new object reference on every render, causing an infinite re-render loop.
+  // We only need to react to `code` and `state` changes here.
+  const sessionRef = useRef(session)
+  sessionRef.current = session
   useEffect(() => {
-    if (code === 'new' && state?.role === 'speaker' && !session.role) {
+    if (code === 'new' && state?.role === 'speaker' && !sessionRef.current.role) {
       const doCreate = async () => {
-        const newCode = await session.createSession(
+        const newCode = await sessionRef.current.createSession(
           state.sourceLang || 'de',
           connectionConfig,
         )
@@ -85,7 +90,8 @@ export default function LiveSessionPage() {
       }
       doCreate()
     }
-  }, [code, state, session, navigate, connectionConfig])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, state?.role, state?.sourceLang, navigate, connectionConfig])
 
   // Already in a session — show the right view
   if (session.role === 'speaker') {

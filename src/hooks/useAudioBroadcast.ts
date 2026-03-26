@@ -85,6 +85,11 @@ export function useAudioBroadcast({
     }
     bufferRef.current = []
     samplesAccRef.current = 0
+    // CRITICAL: Reset seq to 0 on every stop so the next startAudioStream
+    // sends seq=0 again. useAudioReceiver uses seq===0 as a reset signal.
+    // Without this, after a session restart the listener's jitter buffer
+    // expects seq=0 but receives e.g. seq=47 → audio never plays.
+    seqRef.current = 0
     setIsStreaming(false)
   }, [])
 
