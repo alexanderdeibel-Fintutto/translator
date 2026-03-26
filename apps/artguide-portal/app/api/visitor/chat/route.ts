@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+export const dynamic = 'force-dynamic'
+
+function getOpenAI() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || 'placeholder',
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,7 +61,7 @@ Anweisungen:
       { role: 'user', content: message },
     ]
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
       model: 'gpt-4.1-mini',
       messages,
       max_tokens: 300,

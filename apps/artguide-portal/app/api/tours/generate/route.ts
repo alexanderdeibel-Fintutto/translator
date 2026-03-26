@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { openai, buildTourPrompt } from '@/lib/openai'
 
+export const dynamic = 'force-dynamic'
+
 // POST /api/tours/generate
 export async function POST(request: NextRequest) {
   try {

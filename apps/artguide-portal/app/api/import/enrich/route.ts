@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { openai, buildEnrichmentPrompt } from '@/lib/openai'
 
+export const dynamic = 'force-dynamic'
+
 // POST /api/import/enrich
 // Enriches a single artwork's raw data with AI-generated content
 export async function POST(request: NextRequest) {

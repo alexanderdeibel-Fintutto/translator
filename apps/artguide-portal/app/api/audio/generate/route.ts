@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { openai } from '@/lib/openai'
 
+export const dynamic = 'force-dynamic'
+
 const VOICE_MAP: Record<string, string> = {
   'nova':    'nova',    // Warm, female — "Museumsfuehrerin"
   'onyx':    'onyx',   // Deep, male — "Kunstprofessor"
