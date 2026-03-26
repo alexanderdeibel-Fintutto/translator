@@ -273,3 +273,16 @@ function buildAudioFromBase64(
 
   return audio
 }
+
+/**
+ * Convenience alias for speakWithCloudTTS.
+ * Plays the given text in the specified language using Cloud TTS.
+ */
+export async function speakText(
+  text: string,
+  speechCode: string,
+  quality: VoiceQuality = 'neural2',
+): Promise<void> {
+  const audio = await speakWithCloudTTS(text, speechCode, quality)
+  audio.play()
+}
