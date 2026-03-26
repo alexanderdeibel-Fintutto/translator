@@ -1,0 +1,44 @@
+{
+  "name": "Fintutto Art Guide",
+  "short_name": "Art Guide",
+  "description": "Dein persönlicher Museumsführer — KI-gestützt, mehrsprachig, immersiv.",
+  "start_url": "/visitor",
+  "display": "standalone",
+  "background_color": "#0f0e17",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "entertainment", "lifestyle"],
+  "lang": "de",
+  "dir": "ltr",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/screenshot-visitor.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Exponat-Ansicht mit Audio-Player"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Museum entdecken",
+      "url": "/visitor",
+      "description": "Alle Exponate und Führungen"
+    }
+  ]
+}

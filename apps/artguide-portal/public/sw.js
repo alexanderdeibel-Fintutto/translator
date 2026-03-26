@@ -1,0 +1,74 @@
+// Fintutto Art Guide — Service Worker
+// Caches visitor pages and assets for offline use
+
+const CACHE_NAME = 'artguide-v1'
+const STATIC_ASSETS = [
+  '/',
+  '/visitor',
+  '/manifest.json',
+]
+
+// Install: cache static assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_ASSETS).catch(() => {
+        // Ignore errors for assets that don't exist yet
+      })
+    })
+  )
+  self.skipWaiting()
+})
+
+// Activate: clean old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      )
+    )
+  )
+  self.clients.claim()
+})
+
+// Fetch: network-first for API, cache-first for static
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url)
+
+  // API calls: always network
+  if (url.pathname.startsWith('/api/')) {
+    return
+  }
+
+  // Visitor pages: network-first with cache fallback
+  if (url.pathname.startsWith('/visitor')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => caches.match(event.request))
+    )
+    return
+  }
+
+  // Static assets: cache-first
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      return cached || fetch(event.request).then((response) => {
+        if (response.ok && event.request.method === 'GET') {
+          const clone = response.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+        }
+        return response
+      })
+    })
+  )
+})
