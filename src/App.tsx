@@ -48,6 +48,7 @@ const StadtfuehrerPage = lazy(() => import('@/pages/StadtfuehrerPage'))
 const AgenturenPage = lazy(() => import('@/pages/AgenturenPage'))
 const KreuzfahrtPage = lazy(() => import('@/pages/KreuzfahrtPage'))
 const EnterpriseSolutionPage = lazy(() => import('@/pages/EnterpriseSolutionPage'))
+const OfflineSetupPage = lazy(() => import('@/pages/OfflineSetupPage'))
 
 if (import.meta.env.DEV) {
   console.log('[Translator] Cloud API Key:', hasGoogleApiKey() ? '\u2713 set' : '\u2717 missing')
@@ -87,6 +88,7 @@ function App() {
                   <Route path="conversation" element={<Suspense fallback={<PageLoader />}><ConversationPage /></Suspense>} />
                   <Route path="camera" element={<Suspense fallback={<PageLoader />}><CameraTranslatePage /></Suspense>} />
                   <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
+                  <Route path="offline-setup" element={<Suspense fallback={<PageLoader />}><OfflineSetupPage /></Suspense>} />
                   <Route path="pricing" element={<Suspense fallback={<PageLoader />}><PricingPageRoute /></Suspense>} />
                   <Route path="auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
                   <Route path="account" element={<Suspense fallback={<PageLoader />}><AccountPage /></Suspense>} />

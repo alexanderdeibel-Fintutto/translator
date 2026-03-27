@@ -12,7 +12,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import {
   Mic, MicOff, ArrowUpDown, Volume2, VolumeX, RotateCcw,
-  Stethoscope, Scale, Briefcase, Globe, Plane, MessageCircle
+  Stethoscope, Scale, Briefcase, Globe, Plane, MessageCircle,
+  WifiOff, Wifi
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LanguageSelector from '@/components/translator/LanguageSelector'
@@ -25,6 +26,8 @@ import { useTierId } from '@/context/UserContext'
 import { hasFeature } from '@/lib/tiers'
 import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import { CONTEXT_MODES, type TranslationContext } from '@/lib/context-modes'
+import { useOffline } from '@/context/OfflineContext'
+import { isWhisperAvailable } from '@/lib/offline/stt-engine'
 
 const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -49,6 +52,7 @@ export default function ConversationPage() {
   const { t } = useI18n()
   const tierId = useTierId()
   const canConversation = hasFeature(tierId, 'conversationMode')
+  const { isOffline, isLanguagePairOffline } = useOffline()
 
   const [topLang, setTopLang] = useState('en')
   const [bottomLang, setBottomLang] = useState('de')
@@ -63,8 +67,15 @@ export default function ConversationPage() {
   const [autoSpeakTop, setAutoSpeakTop] = useState(true)
   const [autoSpeakBottom, setAutoSpeakBottom] = useState(true)
 
-  const topRecognition = useSpeechRecognition()
-  const bottomRecognition = useSpeechRecognition()
+  // Offline-First STT: prefer Whisper when available (downloaded), fall back to Web Speech
+  const [whisperReady, setWhisperReady] = useState(false)
+  useEffect(() => {
+    isWhisperAvailable().then(setWhisperReady)
+  }, [])
+
+  // Use offline (Whisper) engine when available — no internet needed for STT
+  const topRecognition = useSpeechRecognition(whisperReady)
+  const bottomRecognition = useSpeechRecognition(whisperReady)
   const tts = useSpeechSynthesis()
 
   // Refs for stable access in callbacks (AGENTS.md Rule 2.1 — no objects in useEffect deps)
@@ -268,6 +279,36 @@ export default function ConversationPage() {
         <p className="text-sm text-muted-foreground">
           {t('conversation.subtitle')}
         </p>
+        {/* Offline / STT status indicator */}
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          {isOffline ? (
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+              <WifiOff className="h-3 w-3" />
+              Offline-Modus
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+              <Wifi className="h-3 w-3" />
+              Online
+            </span>
+          )}
+          {whisperReady ? (
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+              <Mic className="h-3 w-3" />
+              Offline-Mikrofon aktiv
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+              <Mic className="h-3 w-3" />
+              Cloud-Mikrofon
+            </span>
+          )}
+          {isLanguagePairOffline(topLang, bottomLang) && (
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+              Offline-Übersetzung bereit
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Context mode selector */}

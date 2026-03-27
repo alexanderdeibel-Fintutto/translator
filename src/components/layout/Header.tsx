@@ -135,6 +135,18 @@ export default function Header() {
                   {t('nav.settings')}
                 </Link>
                 <Link
+                  to="/offline-setup"
+                  className={cn(
+                    'px-4 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center gap-2',
+                    location.pathname === '/offline-setup'
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                  )}
+                >
+                  <WifiOff className="h-4 w-4" />
+                  Offline-Einrichtung
+                </Link>
+                <Link
                   to={isSalesAgent ? '/admin' : '/crm'}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
@@ -223,6 +235,20 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          {/* Offline Setup (desktop only) */}
+          <Link to="/offline-setup" className="hidden md:block">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Offline-Einrichtung"
+              className={cn(
+                location.pathname === '/offline-setup' && 'bg-accent'
+              )}
+            >
+              <WifiOff className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </Link>
 
           {/* Settings (desktop only) */}
           <Link to="/settings" className="hidden md:block">
