@@ -1,13 +1,13 @@
-// ConferenceLandingPage — Dedicated sales landing page for conference centers & event agencies
+// ConferenceLandingPage — Mobile-First Sales Page für Konferenzen & Events
 // Route: /sales/conference
-// Targets: Congress centers, event agencies, associations, scientific conferences
+
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Mic, Globe2, Users, Zap, Calendar, Building2, Shield, Headphones,
-  Volume2, Clock, Languages, Radio, Lock, ArrowRight, ChevronRight,
-  Check, Star, Loader2, Wifi, Monitor, FileText, QrCode, TrendingUp,
-  Cpu, Signal
+  Mic, Globe2, Users, Zap, Shield, Headphones,
+  Volume2, Clock, Languages, Radio, ArrowRight, ChevronRight,
+  Check, Loader2, Wifi, FileText, QrCode,
+  MessageCircleQuestion, Star
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -15,200 +15,109 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase-client'
 
-// ============================================================================
-// Content Definitions
-// ============================================================================
-
-const HERO = {
-  badge: '90% günstiger als Simultandolmetscher',
-  title: 'Ihre Konferenz spricht jede Sprache.',
-  subtitle:
-    'Echtzeit-Übersetzung für Kongresse, Tagungen und Workshops — ohne Dolmetscher, ohne teure Plattformen. Teilnehmer scannen einen QR-Code und lesen oder hören in ihrer Sprache. Ab 199 EUR/Monat.',
-}
+// ─── Content ──────────────────────────────────────────────────────────────────
 
 const STATS = [
   { value: '199 EUR', label: 'ab / Monat' },
-  { value: '500', label: 'Teilnehmer max.' },
-  { value: '130+', label: 'Sprachen (Pro)' },
-  { value: '<1s', label: 'Latenz' },
-]
-
-const PAIN_POINTS = [
-  {
-    icon: Mic,
-    title: 'Live-Broadcasting',
-    description:
-      'Der Speaker spricht — bis zu 500 Teilnehmer sehen die Übersetzung sofort auf ihrem eigenen Gerät. Latenz unter einer Sekunde.',
-  },
-  {
-    icon: Zap,
-    title: '90% günstiger',
-    description:
-      'Simultandolmetscher kosten 1.500–3.000 EUR pro Tag und Sprache. GuideTranslator: ab 199 EUR/Monat mit 2.000 Minuten für alle Sprachen inklusive.',
-  },
-  {
-    icon: Users,
-    title: 'Bis zu 500 Teilnehmer',
-    description:
-      'QR-Code auf den Beamer — 500 Teilnehmer joinen in 30 Sekunden. Jeder wählt seine Sprache. Keine App-Installation nötig.',
-  },
-  {
-    icon: Calendar,
-    title: 'Multi-Track-Konferenzen',
-    description:
-      'Bis zu 10 parallele Sessions (Pro-Plan). Hauptbühne, Workshops und Breakout-Sessions — alles mehrsprachig, gleichzeitig.',
-  },
+  { value: '500',     label: 'Teilnehmer max.' },
+  { value: '130+',    label: 'Sprachen (Pro)' },
+  { value: '<1s',     label: 'Latenz' },
 ]
 
 const FEATURES = [
   {
+    icon: Radio,
+    color: 'text-violet-400', bg: 'bg-violet-500/15',
+    title: 'Live-Broadcasting',
+    desc: '1 Speaker → bis zu 500 Teilnehmer · jeder liest/hört in seiner Sprache · QR-Code auf den Beamer.',
+  },
+  {
+    icon: MessageCircleQuestion,
+    color: 'text-sky-400', bg: 'bg-sky-500/15',
+    title: 'Q&A-Moderation',
+    desc: 'Teilnehmer stellen Fragen per Smartphone · Host moderiert die Inbox · freigegebene Fragen erscheinen bei allen in ihrer Sprache.',
+  },
+  {
     icon: Languages,
-    title: 'Unbegrenzte Sprachen (Pro)',
-    description:
-      'Basic: 20 Sprachen. Pro: Alle 130+ Sprachen inklusive — kein Teilnehmer wird ausgeschlossen.',
+    color: 'text-emerald-400', bg: 'bg-emerald-500/15',
+    title: 'Alle 130+ Sprachen (Pro)',
+    desc: 'Basic: 20 Sprachen. Pro: alle 130+ Sprachen inklusive — kein Teilnehmer wird ausgeschlossen.',
   },
   {
     icon: Volume2,
+    color: 'text-amber-400', bg: 'bg-amber-500/15',
     title: 'Chirp 3 HD Audio (Pro)',
-    description:
-      'Höchste Sprachqualität — Teilnehmer können zuhören statt lesen. Ideal für Keynotes und Podiumsdiskussionen.',
+    desc: 'Höchste Sprachqualität — Teilnehmer hören statt lesen. Ideal für Keynotes und Podiumsdiskussionen.',
   },
   {
-    icon: Clock,
+    icon: FileText,
+    color: 'text-blue-400', bg: 'bg-blue-500/15',
     title: 'Session-Protokoll',
-    description:
-      'Die gesamte Konferenz als Transkript exportierbar (TXT/MD). Mit Zeitstempeln und allen Übersetzungen.',
-  },
-  {
-    icon: Shield,
-    title: 'White-Label (Pro)',
-    description:
-      'Eigenes Konferenz-Branding. Kein GuideTranslator-Logo — Ihre Veranstaltung, Ihr Erscheinungsbild.',
+    desc: 'Die gesamte Konferenz als Transkript (TXT/MD) mit Zeitstempeln und allen Übersetzungen.',
   },
   {
     icon: Wifi,
+    color: 'text-orange-400', bg: 'bg-orange-500/15',
     title: 'Offline-Edge-Modus',
-    description:
-      'Lokaler Edge-Server im Kongresszentrum für vollständige Unabhängigkeit vom Messe-WLAN. Null Latenz, maximale Zuverlässigkeit.',
+    desc: 'Lokaler Edge-Server im Kongresszentrum — unabhängig vom Messe-WLAN. Null Latenz, maximale Zuverlässigkeit.',
   },
   {
-    icon: Monitor,
+    icon: Shield,
+    color: 'text-rose-400', bg: 'bg-rose-500/15',
+    title: 'White-Label (Pro)',
+    desc: 'Eigenes Konferenz-Branding · keine Fintutto-Logos · Ihre Domain, Ihre CI-Farben.',
+  },
+  {
+    icon: QrCode,
+    color: 'text-indigo-400', bg: 'bg-indigo-500/15',
     title: 'Kein App-Download',
-    description:
-      'Teilnehmer scannen den QR-Code und öffnen die Übersetzung direkt im Browser (PWA). Keine IT-Infrastruktur nötig.',
+    desc: 'QR-Code scannen → Browser öffnet sich → fertig. Keine IT-Infrastruktur, keine App-Installation.',
   },
 ]
 
-const HOW_IT_WORKS = [
-  {
-    step: '1',
-    title: 'Plan buchen',
-    description:
-      'Basic oder Pro wählen. In 5 Minuten einsatzbereit — kein IT-Projekt, keine Hardware-Beschaffung.',
-  },
-  {
-    step: '2',
-    title: 'QR-Code projizieren',
-    description:
-      'QR-Code auf die Leinwand oder in die Konferenz-App einbinden. Teilnehmer scannen und wählen ihre Sprache.',
-  },
-  {
-    step: '3',
-    title: 'Speaker spricht',
-    description:
-      'Echtzeit-Übersetzung auf allen Geräten. Unter 1 Sekunde Latenz. Das Protokoll wird automatisch erstellt.',
-  },
+const STEPS = [
+  { step: '1', title: 'Plan buchen',          desc: 'In 5 Minuten einsatzbereit — kein IT-Projekt, keine Hardware.' },
+  { step: '2', title: 'QR-Code projizieren',  desc: 'Auf die Leinwand oder in die Konferenz-App einbinden.' },
+  { step: '3', title: 'Speaker spricht',      desc: 'Echtzeit-Übersetzung auf allen Geräten. Protokoll wird automatisch erstellt.' },
 ]
 
 const PRICING = [
   {
     name: 'Conference Basic',
-    price: '199 EUR',
-    period: '/Monat',
-    highlights: [
-      '100 Teilnehmer (bis zu 3 Sessions)',
-      '20 Sprachen inklusive',
-      '2.000 Min/Monat (~33h)',
-      'Neural2-TTS Sprachausgabe',
-      'Session-Protokoll-Export',
-    ],
+    price: '199 EUR/Mo',
+    features: ['100 Teilnehmer · 3 Sessions', '20 Sprachen', '2.000 Min/Mo (~33h)', 'Neural2-TTS', 'Protokoll-Export'],
     cta: 'Basic starten',
-    highlighted: false,
+    href: '/pricing',
+    highlight: false,
   },
   {
     name: 'Conference Pro',
-    price: '499 EUR',
-    period: '/Monat',
-    highlights: [
-      '500 Teilnehmer (bis zu 10 Sessions)',
-      'Alle 130+ Sprachen',
-      '8.000 Min/Monat (~133h)',
-      'Chirp 3 HD + White-Label',
-      'API-Zugang + Transkript-Export',
-    ],
+    price: '499 EUR/Mo',
+    features: ['500 Teilnehmer · 10 Sessions', 'Alle 130+ Sprachen', '8.000 Min/Mo (~133h)', 'Chirp 3 HD + White-Label', 'Q&A-Moderation · API-Zugang'],
     cta: 'Pro starten',
-    highlighted: true,
+    href: '/pricing',
+    highlight: true,
   },
   {
     name: 'Congress White-Label',
-    price: '2.500 EUR',
-    period: '/Monat',
-    highlights: [
-      'Eigene Domain & CI-Farben',
-      'Lokaler Offline-Edge-Server',
-      'Unbegrenzte Teilnehmer',
-      'Audio-Anlage Integration (XLR/Dante)',
-      'Dedizierter Support & SLA',
-    ],
+    price: '2.500 EUR/Mo',
+    features: ['Eigene Domain & CI', 'Lokaler Offline-Edge-Server', 'Unbegrenzte Teilnehmer', 'Audio-Anlage (XLR/Dante)', 'Dedizierter Support & SLA'],
     cta: 'Angebot anfragen',
-    highlighted: false,
+    href: '/kontakt?type=demo',
+    highlight: false,
   },
 ]
 
 const USE_CASES = [
-  'Wissenschaftliche Konferenzen — Vorträge in 20+ Sprachen simultan',
-  'Firmenmeetings — Internationale Teams und Board Meetings',
+  'Wissenschaftliche Konferenzen — Vorträge in 20+ Sprachen',
+  'Firmenmeetings — Internationale Teams & Board Meetings',
   'NGO-Konferenzen — Delegierte aus aller Welt',
-  'Kirchentage & Synoden — Mehrsprachige Gottesdienste und Vorträge',
-  'Politische Veranstaltungen — Bürgerversammlungen mit Migrationssprachen',
+  'Kirchentage & Synoden — Mehrsprachige Gottesdienste',
+  'Politische Veranstaltungen — Bürgerversammlungen',
   'Webinare — Remote-Teilnehmer mit Live-Untertiteln',
 ]
 
-const TESTIMONIALS = [
-  {
-    quote:
-      'Wir haben GuideTranslator auf unserem internationalen Symposium eingesetzt. 300 Teilnehmer aus 18 Ländern — und kein einziger Dolmetscher. Die Lösung hat uns über 8.000 EUR gespart.',
-    author: 'Dr. Markus Hoffmann',
-    role: 'Kongressorganisator',
-    company: 'Medizinische Fachgesellschaft Berlin',
-  },
-  {
-    quote:
-      'Als Kongresszentrum bieten wir GuideTranslator nun als Standard-Service an. Unsere Kunden sind begeistert — und wir haben ein neues Alleinstellungsmerkmal.',
-    author: 'Sandra Krüger',
-    role: 'Veranstaltungsleiterin',
-    company: 'Congress Center Hamburg',
-  },
-  {
-    quote:
-      'Der White-Label-Plan war genau das, was wir gesucht haben. Unsere eigene Marke, unsere Domain — und die Technologie von Fintutto im Hintergrund.',
-    author: 'Thomas Bauer',
-    role: 'Head of Events',
-    company: 'Internationale Handelskammer',
-  },
-]
-
-const TRUST_SIGNALS = [
-  'E2E-verschlüsselt (AES-256-GCM)',
-  'DSGVO-konform — kein Cloud-Zwang',
-  '87 automatisierte Tests',
-  'Made in Germany — Fintutto UG',
-]
-
-// ============================================================================
-// Component
-// ============================================================================
-
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function ConferenceLandingPage() {
   const [regName, setRegName] = useState('')
   const [regEmail, setRegEmail] = useState('')
@@ -239,398 +148,200 @@ export default function ConferenceLandingPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-            {HERO.badge}
+    <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
+
+      {/* Hintergrund-Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
+      </div>
+
+      {/* Hero */}
+      <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[280px] h-[280px] opacity-90" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            90% günstiger als Simultandolmetscher
           </span>
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight">{HERO.title}</h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            {HERO.subtitle}
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight drop-shadow-lg">
+            Ihre Konferenz spricht jede Sprache.
+          </h1>
+          <p className="text-base text-white/80 max-w-md mx-auto drop-shadow">
+            Echtzeit-Übersetzung + Q&A-Moderation für Kongresse und Events. QR-Code scannen — fertig. Ab 199 EUR/Monat.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button size="lg" asChild>
-              <a href="#registrierung">
-                Kostenlos testen <ArrowRight className="h-4 w-4 ml-2" />
-              </a>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/features">
-                Alle Features <ChevronRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      <section className="py-8 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {STATS.map((stat, i) => (
-            <div key={i} className="text-center p-4 rounded-lg bg-black/20 shadow-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Pain Points ──────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">
-            Warum GuideTranslator für Ihre Konferenz?
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {PAIN_POINTS.map((pp, i) => {
-              const Icon = pp.icon
-              return (
-                <Card key={i} className="p-6 space-y-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg">{pp.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{pp.description}</p>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How it works ─────────────────────────────────────────────────── */}
-      <section id="so-funktionierts" className="py-16 px-4 bg-muted/30">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            In 3 Schritten zur mehrsprachigen Konferenz
-          </h2>
-          <div className="space-y-6">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0">
-                  {step.step}
-                </div>
-                <div>
-                  <h3 className="font-semibold">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Features ─────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Features im Detail</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map((feat, i) => {
-              const Icon = feat.icon
-              return (
-                <Card key={i} className="p-6 space-y-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h3 className="font-semibold">{feat.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feat.description}</p>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Use Cases ────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Anwendungsfälle</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {USE_CASES.map((uc, i) => (
-              <div key={i} className="flex items-start gap-2 p-4 rounded-lg bg-black/20">
-                <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm">{uc}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pricing ──────────────────────────────────────────────────────── */}
-      <section id="preise" className="py-16 px-4">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Pläne & Preise</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {PRICING.map((plan, i) => (
-              <Card
-                key={i}
-                className={`p-6 space-y-4 flex flex-col ${
-                  plan.highlighted ? 'border-primary ring-2 ring-primary' : ''
-                }`}
-              >
-                {plan.highlighted && (
-                  <span className="inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-primary text-primary-foreground self-start">
-                    Empfohlen
-                  </span>
-                )}
-                <div>
-                  <h3 className="font-bold text-lg">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-2xl font-bold">{plan.price}</span>
-                    <span className="text-sm text-muted-foreground">{plan.period}</span>
-                  </div>
-                </div>
-                <ul className="space-y-2 flex-1">
-                  {plan.highlights.map((h, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm">
-                      <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className="w-full"
-                  variant={plan.highlighted ? 'default' : 'outline'}
-                  asChild
-                >
-                  <a href="#registrierung">{plan.cta}</a>
-                </Button>
-              </Card>
-            ))}
-          </div>
-          <p className="text-xs text-muted-foreground text-center">
-            Alle Preise netto, zzgl. gesetzlicher MwSt. Jährliche Zahlung auf Anfrage mit Rabatt verfügbar.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Testimonials ─────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Das sagen unsere Partner</h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {TESTIMONIALS.map((t, i) => (
-              <Card key={i} className="p-6">
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
-                <div>
-                  <p className="font-semibold text-sm">{t.author}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {t.role}, {t.company}
-                  </p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Technical highlights ─────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Technische Highlights</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card className="p-5 space-y-2">
-              <div className="flex items-center gap-2">
-                <Signal className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">4-Tier Transport</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Cloud → Hotspot → Bluetooth → Offline. Automatischer Fallback — funktioniert immer,
-                auch bei schlechtem WLAN auf Großveranstaltungen.
-              </p>
-            </Card>
-            <Card className="p-5 space-y-2">
-              <div className="flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">E2E-Verschlüsselung</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                AES-256-GCM mit PBKDF2 Key Derivation (100.000 Iterationen). Vertrauliche
-                Konferenzinhalte bleiben geschützt.
-              </p>
-            </Card>
-            <Card className="p-5 space-y-2">
-              <div className="flex items-center gap-2">
-                <Cpu className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">On-Device KI (Offline)</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Opus-MT und Whisper laufen als WASM direkt im Browser. Im Edge-Modus verlassen keine
-                Daten das Kongresszentrum.
-              </p>
-            </Card>
-            <Card className="p-5 space-y-2">
-              <div className="flex items-center gap-2">
-                <Radio className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Live-Broadcasting-Protokoll</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Proprietäres WebSocket-Protokoll für unter 1 Sekunde Latenz bei 500 gleichzeitigen
-                Teilnehmern.
-              </p>
-            </Card>
-          </div>
-          <div className="text-center">
-            <Link to="/technology">
-              <Button variant="link" className="gap-1">
-                Technische Architektur im Detail
-                <ArrowRight className="h-4 w-4" />
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-1">
+            <a href="#registrierung">
+              <Button size="lg" className="w-full sm:w-auto gap-2">
+                Kostenlos testen <ArrowRight className="h-4 w-4" />
+              </Button>
+            </a>
+            <Link to="/live">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Live-Demo starten
               </Button>
             </Link>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── Trust signals ────────────────────────────────────────────────── */}
-      <section className="py-8 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-4">
-          {TRUST_SIGNALS.map((signal, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/20 text-xs font-medium shadow-sm"
-            >
-              <Shield className="w-3 h-3" />
-              {signal}
-            </span>
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {STATS.map((s, i) => (
+          <div key={i} className="text-center p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15">
+            <div className="text-xl font-bold text-sky-300">{s.value}</div>
+            <div className="text-[11px] text-white/65">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Features */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Was Fintutto kann</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon
+            return (
+              <Card key={i} className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className={`w-8 h-8 rounded-lg ${f.bg} flex items-center justify-center shrink-0`}>
+                    <Icon className={`w-4 h-4 ${f.color}`} />
+                  </div>
+                  <h3 className="font-semibold text-sm leading-tight">{f.title}</h3>
+                </div>
+                <p className="text-xs text-white/70 leading-snug">{f.desc}</p>
+              </Card>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* So funktioniert's */}
+      <div className="space-y-3" id="so-funktionierts">
+        <h2 className="text-xl font-bold drop-shadow-lg">In 3 Schritten</h2>
+        <Card className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-3">
+          {STEPS.map((s, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-sky-500/25 text-sky-300 text-sm font-bold flex items-center justify-center shrink-0">{s.step}</span>
+              <div>
+                <p className="font-semibold text-sm">{s.title}</p>
+                <p className="text-xs text-white/65">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </Card>
+      </div>
+
+      {/* Anwendungsfälle */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Für welche Events?</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {USE_CASES.map((uc, i) => (
+            <div key={i} className="flex items-start gap-2 p-3 rounded-xl bg-black/20 border border-white/12">
+              <Check className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />
+              <p className="text-xs text-white/80">{uc}</p>
+            </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* ── Registration ─────────────────────────────────────────────────── */}
-      <section id="registrierung" className="py-16 px-4">
-        <div className="max-w-md mx-auto">
-          <Card className="p-8">
-            {registered ? (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center mx-auto mb-4">
-                  <Check className="h-6 w-6 text-emerald-600" />
+      {/* Preise */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Preise</h2>
+        <div className="space-y-3">
+          {PRICING.map((p, i) => (
+            <Card key={i} className={`p-4 backdrop-blur-md border ${p.highlight ? 'bg-sky-500/20 border-sky-400/40' : 'bg-black/25 border-white/15'}`}>
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <div>
+                  <h3 className="font-bold text-sm">{p.name}</h3>
+                  <p className={`text-lg font-bold ${p.highlight ? 'text-sky-300' : 'text-white'}`}>{p.price}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-2">Willkommen!</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Wir haben Ihnen eine E-Mail mit Ihren Zugangsdaten gesendet. Bitte prüfen Sie auch
-                  Ihren Spam-Ordner.
-                </p>
-                <Button asChild>
-                  <Link to="/auth">
-                    Zum Login <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </Button>
+                {p.highlight && <span className="text-[10px] bg-sky-400/20 text-sky-300 px-2 py-0.5 rounded-full font-semibold shrink-0">Empfohlen</span>}
               </div>
-            ) : (
-              <>
-                <h3 className="text-xl font-bold text-center mb-2">30 Tage kostenlos testen</h3>
-                <p className="text-sm text-muted-foreground text-center mb-6">
-                  Keine Kreditkarte nötig. Sofort einsatzbereit.
-                </p>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Kongresszentrum / Organisation</Label>
-                    <Input
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder="Name Ihrer Organisation"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>E-Mail-Adresse</Label>
-                    <Input
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder="ihre@organisation.de"
-                    />
-                  </div>
-                  {regError && (
-                    <p className="text-xs text-destructive">{regError}</p>
-                  )}
-                  <Button
-                    className="w-full"
-                    onClick={handleRegister}
-                    disabled={registering || !regEmail}
-                  >
-                    {registering ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Registriere...
-                      </>
-                    ) : (
-                      'Kostenlos registrieren'
-                    )}
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Mit der Registrierung akzeptieren Sie unsere{' '}
-                    <Link to="/datenschutz" className="underline">
-                      Datenschutzerklärung
-                    </Link>
-                    .
-                  </p>
-                </div>
-              </>
-            )}
-          </Card>
-        </div>
-      </section>
-
-      {/* ── Cross-links ──────────────────────────────────────────────────── */}
-      <section className="py-12 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <h2 className="text-xl font-bold text-center">Mehr entdecken</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <Link to="/features" className="block">
-              <Card className="p-4 hover:bg-muted/50 transition-colors">
-                <h3 className="font-semibold text-sm">Alle Features</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  7 Produkte in einer App — von Live-Broadcasting bis Kamera-OCR
-                </p>
-              </Card>
-            </Link>
-            <Link to="/technology" className="block">
-              <Card className="p-4 hover:bg-muted/50 transition-colors">
-                <h3 className="font-semibold text-sm">Technische Architektur</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  4-Tier-Transport, On-Device KI, E2E-Verschlüsselung
-                </p>
-              </Card>
-            </Link>
-            <Link to="/compare" className="block">
-              <Card className="p-4 hover:bg-muted/50 transition-colors">
-                <h3 className="font-semibold text-sm">Wettbewerbervergleich</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  vs. Wordly, KUDO, Interprefy und klassische Dolmetscher
-                </p>
-              </Card>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center space-y-4">
-          <h2 className="text-2xl font-bold">Bereit für mehrsprachige Konferenzen?</h2>
-          <p className="text-muted-foreground">
-            Starten Sie noch heute — oder sprechen Sie mit uns über Ihre individuelle Anforderung.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" asChild>
-              <a href="#registrierung">
-                Kostenlos starten <ArrowRight className="h-4 w-4 ml-2" />
-              </a>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/kontakt">
-                Demo anfragen <ChevronRight className="h-4 w-4 ml-2" />
+              <ul className="space-y-1 mb-3">
+                {p.features.map((f, j) => (
+                  <li key={j} className="flex items-start gap-1.5 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link to={p.href}>
+                <Button size="sm" className={`w-full ${p.highlight ? '' : 'variant-outline border-white/30 bg-white/10 hover:bg-white/20'}`}>
+                  {p.cta} <ChevronRight className="h-3 w-3 ml-1" />
+                </Button>
               </Link>
-            </Button>
-          </div>
+            </Card>
+          ))}
         </div>
-      </section>
+      </div>
+
+      {/* Trust Signals */}
+      <div className="grid grid-cols-2 gap-2">
+        {['E2E-verschlüsselt (AES-256-GCM)', 'DSGVO-konform', '87 automatisierte Tests', 'Made in Germany'].map((t, i) => (
+          <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-black/20 border border-white/12">
+            <Star className="w-3 h-3 text-sky-300 shrink-0" />
+            <p className="text-[11px] text-white/75">{t}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Registrierung */}
+      <div id="registrierung" className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Kostenlos testen</h2>
+        <Card className="p-5 bg-black/25 backdrop-blur-md border-white/15">
+          {registered ? (
+            <div className="text-center space-y-2 py-4">
+              <Check className="w-8 h-8 text-green-400 mx-auto" />
+              <p className="font-semibold">Magic Link gesendet!</p>
+              <p className="text-sm text-white/70">Bitte prüfen Sie Ihr Postfach.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs text-white/70">Organisation (optional)</Label>
+                <Input
+                  value={regName}
+                  onChange={e => setRegName(e.target.value)}
+                  placeholder="Kongresszentrum / Agentur / Firma"
+                  className="bg-black/20 border-white/20 text-white placeholder:text-white/40 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-white/70">E-Mail-Adresse *</Label>
+                <Input
+                  type="email"
+                  value={regEmail}
+                  onChange={e => setRegEmail(e.target.value)}
+                  placeholder="ihre@email.de"
+                  className="bg-black/20 border-white/20 text-white placeholder:text-white/40 text-sm"
+                />
+              </div>
+              {regError && <p className="text-xs text-red-400">{regError}</p>}
+              <Button onClick={handleRegister} disabled={registering || !regEmail} className="w-full gap-2">
+                {registering ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                {registering ? 'Wird gesendet…' : 'Magic Link anfordern'}
+              </Button>
+              <p className="text-[11px] text-white/50 text-center">Kein Passwort · kein Abo · sofort loslegen</p>
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* CTA */}
+      <div className="grid grid-cols-2 gap-2 py-2">
+        <Link to="/features">
+          <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+            Alle Features <ChevronRight className="h-3 w-3" />
+          </Button>
+        </Link>
+        <Link to="/compare">
+          <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+            Vergleich <ChevronRight className="h-3 w-3" />
+          </Button>
+        </Link>
+      </div>
+
     </div>
   )
 }

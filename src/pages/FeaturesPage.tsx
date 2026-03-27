@@ -1,145 +1,184 @@
-// FeaturesPage — Complete feature showcase for all 7 products
+// FeaturesPage — Mobile-First Feature-Showcase
 // Route: /features
+// Prinzip: Kurz, prägnant, tiefe Links, große Touch-Targets
 
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, Mic, Globe2, Users, Wifi, Camera, MessageSquare,
-  QrCode, Volume2, Radio, Monitor, Headphones, BookOpen, Star,
+  QrCode, Volume2, Radio, Headphones, BookOpen, Star,
   Download, Shield, Lock, Bluetooth, ChevronRight, Check,
   Languages, Clock, Smartphone, Layers, Eye, Heart, History,
-  FileText, Settings, Zap
+  FileText, Settings, Zap, MessageCircleQuestion, ScanText
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
+// ─── Produkte ────────────────────────────────────────────────────────────────
 const PRODUCTS = [
   {
     name: 'Live-Broadcasting',
-    tagline: '1→N Echtzeit-Broadcast',
+    tagline: '1 Sprecher → 500 Zuhörer',
     icon: Radio,
-    description: 'Ein Sprecher, unbegrenzt viele Zuhörer. Jeder wählt seine Sprache und liest/hört die Übersetzung in Echtzeit auf dem eigenen Smartphone.',
+    color: 'text-violet-400',
+    bg: 'bg-violet-500/15',
+    description: 'QR-Code zeigen — Gäste scannen und hören in ihrer Sprache. Keine App, kein Account.',
     features: [
-      'QR-Code scannen — keine App-Installation',
       'Bis zu 500 gleichzeitige Hörer',
       '45 Sprachen parallel',
       'Untertitel-Modus (6xl Großschrift)',
+      'Q&A: Besucher stellen Fragen, Host moderiert',
       'Session-Protokoll-Export (TXT/MD)',
       'Latenz-Monitoring in Echtzeit',
-      '3 Verbindungsmodi: Cloud, Hotspot, BLE',
+      '4 Verbindungsmodi: Cloud, Hotspot, BLE, Router',
     ],
-    segment: 'guide',
+    link: '/live',
+    linkLabel: 'Session starten',
+  },
+  {
+    name: 'Q&A-Moderation',
+    tagline: 'Fragen aus dem Publikum',
+    icon: MessageCircleQuestion,
+    color: 'text-sky-400',
+    bg: 'bg-sky-500/15',
+    description: 'Besucher tippen Fragen — Host sieht die Inbox, moderiert und sendet genehmigte Fragen an alle Teilnehmer in deren Sprache.',
+    features: [
+      'Texteingabe für alle Listener',
+      'Moderations-Inbox beim Speaker',
+      'Freigeben oder verwerfen',
+      'Freigegebene Fragen erscheinen bei allen Hörern',
+      'Übersetzt in die jeweilige Listener-Sprache',
+      'Keine App nötig — funktioniert im Browser',
+    ],
+    link: '/live',
+    linkLabel: 'Live testen',
+  },
+  {
+    name: 'Gesprächsmodus',
+    tagline: 'Face-to-Face — 1:1',
+    icon: MessageSquare,
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-500/15',
+    description: '180°-Split-Screen: Zwei Personen sprechen abwechselnd — beide verstehen. Ideal beim Arzt, auf der Behörde, im Hotel.',
+    features: [
+      '180-Grad-Split-Screen',
+      'Zwei unabhängige Spracherkennungen',
+      'Auto-Speak: Übersetzung wird vorgelesen',
+      'RTL-Unterstützung (AR, FA, UR)',
+      'Offline-fähig',
+      'Kein zweites Gerät nötig',
+    ],
+    link: '/conversation',
+    linkLabel: 'Gespräch starten',
+  },
+  {
+    name: 'Kamera & Dokument-Scanner',
+    tagline: 'Foto → Text → Übersetzung',
+    icon: ScanText,
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/15',
+    description: 'Schilder, Speisekarten, Formulare, Dokumente fotografieren — die Übersetzung erscheint sofort. Powered by Google Cloud Vision OCR.',
+    features: [
+      'Google Cloud Vision OCR',
+      'Kamera-Aufnahme oder Galerie-Upload',
+      'Automatische Texterkennung',
+      'Sofortige Übersetzung in Zielsprache',
+      'Kopieren oder vorlesen lassen',
+      'Ideal für Behördengänge & Reisen',
+    ],
+    link: '/camera',
+    linkLabel: 'Scanner öffnen',
   },
   {
     name: 'Text-Übersetzer',
     tagline: '45 Sprachen, 6 Provider',
     icon: Languages,
-    description: 'Professionelle Übersetzung mit 6-Provider-Kaskade und automatischem Fallback. Von Cloud-APIs bis On-Device ML — immer die beste verfügbare Qualität.',
+    color: 'text-blue-400',
+    bg: 'bg-blue-500/15',
+    description: '6-Provider-Kaskade mit automatischem Fallback. Von Cloud-APIs bis On-Device ML — immer die beste Qualität.',
     features: [
-      '6 Kontextmodi (Reise, Medizin, Recht, Business...)',
+      '6 Kontextmodi (Reise, Medizin, Recht, Business…)',
       'Sie/Du-Formalität (9 Sprachen)',
       'Wort-Alternativen (Top 5 Matches)',
       'Romanisierung nicht-lateinischer Schriften',
       'Qualitäts-Score pro Übersetzung',
-      '3-Tier-Cache (Memory, IndexedDB, Offline)',
-      'RTL-Unterstützung (Arabisch, Farsi, Urdu, Hebräisch)',
+      'RTL-Unterstützung (AR, FA, UR, HE)',
     ],
-    segment: 'personal',
-  },
-  {
-    name: 'Gesprächsmodus',
-    tagline: 'Face-to-Face-Übersetzung',
-    icon: MessageSquare,
-    description: 'Split-Screen mit 180-Grad-Rotation. Zwei Personen sprechen abwechselnd — beide verstehen. Ideal beim Arzt, auf der Behörde oder im Hotel.',
-    features: [
-      '180-Grad-Split-Screen',
-      'Zwei unabhängige Spracherkennungen',
-      'Auto-Speak: Übersetzung wird vorgelesen',
-      '6 Nachrichten pro Person sichtbar',
-      'RTL-Text-Unterstützung',
-      'Offline-fähig',
-      'Perfekt für 1:1-Situationen',
-    ],
-    segment: 'personal',
-  },
-  {
-    name: 'Kamera-Übersetzer',
-    tagline: 'Foto → Text → Übersetzung',
-    icon: Camera,
-    description: 'Fotografieren Sie Schilder, Speisekarten, Dokumente oder Formulare — die Übersetzung erscheint sofort. Powered by Google Cloud Vision OCR.',
-    features: [
-      'Google Cloud Vision OCR',
-      'Kamera-Aufnahme oder Galerie-Upload',
-      'Sofortige Übersetzung des erkannten Texts',
-      'Kopieren oder vorlesen lassen',
-      'Ideal für Reisen und Behördengänge',
-    ],
-    segment: 'personal',
+    link: '/',
+    linkLabel: 'Übersetzer öffnen',
   },
   {
     name: 'Phrasebook',
-    tagline: '18 Kategorien, 16 Sprachen',
+    tagline: '18 Kategorien, offline',
     icon: BookOpen,
-    description: 'Vorgefertigte Sätze für typische Situationen — von der Behörde über den Arztbesuch bis zum Notfall. In 16 Zielsprachen sofort abrufbar.',
+    color: 'text-rose-400',
+    bg: 'bg-rose-500/15',
+    description: 'Vorgefertigte Sätze für Behörde, Arzt, Notfall, Unterkunft — in 16 Zielsprachen sofort abrufbar, auch ohne Internet.',
     features: [
-      '18 Kategorien (Behörde, Medizin, Unterkunft, Notfall...)',
+      '18 Kategorien (Behörde, Medizin, Notfall…)',
       '4 Phrase-Packs: Alltag, Mittelmeer, Nordland, Migration',
       '62 Migrations-Phrasen (7 Kategorien)',
-      'Batch-Übersetzung in Zielsprache',
       'Favoriten speichern',
-      'Offline verfügbar',
+      '100% offline verfügbar',
       'Ideal für Geflüchtete und Expats',
     ],
-    segment: 'personal',
+    link: '/phrasebook',
+    linkLabel: 'Phrasebook öffnen',
   },
   {
     name: 'Offline-Engine',
     tagline: '100% ohne Netzwerk',
     icon: Download,
-    description: '54 Offline-Sprachpaare via Opus-MT WASM-Modelle (~35 MB pro Paar). Whisper für Spracherkennung (~150 MB). Keine Daten verlassen das Gerät.',
+    color: 'text-orange-400',
+    bg: 'bg-orange-500/15',
+    description: '54 Offline-Sprachpaare via Opus-MT WASM (~35 MB/Paar). Whisper für Spracherkennung. Keine Daten verlassen das Gerät.',
     features: [
       '54 herunterladbare Sprachpaare',
       'Opus-MT via Transformers.js (WASM)',
       'Whisper STT (multilingual, ~150 MB)',
       'Browser-native TTS (alle Sprachen)',
       'English-Pivot für indirekte Paare',
-      'Service Worker + IndexedDB Caching',
       'Persistent Storage (Safari-safe)',
     ],
-    segment: 'personal',
+    link: '/offline-setup',
+    linkLabel: 'Offline einrichten',
   },
   {
     name: 'BLE-Transport',
-    tagline: 'Bluetooth-only Übersetzung',
+    tagline: 'Bluetooth — null Infrastruktur',
     icon: Bluetooth,
-    description: 'Proprietäres Bluetooth Low Energy GATT Protocol für Gruppen-Übersetzung. Null Infrastruktur — funktioniert an jedem Ort der Welt.',
+    color: 'text-indigo-400',
+    bg: 'bg-indigo-500/15',
+    description: 'Proprietäres Bluetooth Low Energy GATT Protocol. Gruppen-Übersetzung ohne Internet, ohne WLAN — funktioniert überall.',
     features: [
       'Custom GATT Server (Android + iOS)',
       '180-Byte Chunking (MTU-safe)',
       'Automatische Geräte-Discovery',
       'Session-Management + Presence',
-      '10-30m Reichweite',
-      'Max 5 gleichzeitige Verbindungen',
+      '10–30 m Reichweite',
       'E2E-Verschlüsselung auch über BLE',
     ],
-    segment: 'guide',
+    link: '/live',
+    linkLabel: 'BLE-Session starten',
   },
 ]
 
-const PLATFORM_FEATURES = [
-  { icon: Shield, title: 'E2E-Verschlüsselung', desc: 'AES-256-GCM mit PBKDF2 Key Derivation' },
-  { icon: Globe2, title: '9 UI-Sprachen', desc: 'DE, EN, FR, ES, RU, UK, AR, FA, TR' },
+// ─── Plattform-Features ───────────────────────────────────────────────────────
+const PLATFORM = [
+  { icon: Shield, title: 'E2E-Verschlüsselt', desc: 'AES-256-GCM' },
+  { icon: Globe2, title: '9 UI-Sprachen', desc: 'DE EN FR ES RU UK AR FA TR' },
   { icon: Eye, title: 'DSGVO-konform', desc: 'Offline-First, kein Cloud-Zwang' },
-  { icon: Heart, title: 'Favoriten', desc: 'Übersetzungen speichern und wiederverwenden' },
-  { icon: History, title: 'Verlauf', desc: 'Alle Übersetzungen mit Export (JSON/CSV)' },
-  { icon: FileText, title: 'Session-Protokoll', desc: 'Touren als Transkript exportieren' },
-  { icon: Settings, title: 'Einstellungen', desc: 'API-Key, Offline-Modelle, Cache, Storage' },
-  { icon: Smartphone, title: 'PWA + Native', desc: 'Browser, Android (Play Store), iOS' },
-  { icon: Zap, title: 'Echtzeit', desc: '<1s End-to-End-Latenz' },
-  { icon: Lock, title: 'Security Headers', desc: 'CSP, HSTS, X-Frame-Options' },
-  { icon: Star, title: 'RTL-Unterstützung', desc: 'Arabisch, Farsi, Urdu, Hebräisch' },
-  { icon: Layers, title: '4-Tier Transport', desc: 'Cloud → Hotspot → BLE → Offline' },
+  { icon: Heart, title: 'Favoriten', desc: 'Übersetzungen speichern' },
+  { icon: History, title: 'Verlauf', desc: 'Export JSON/CSV' },
+  { icon: FileText, title: 'Session-Protokoll', desc: 'TXT/MD Export' },
+  { icon: Settings, title: 'Einstellungen', desc: 'API-Key, Offline, Cache' },
+  { icon: Smartphone, title: 'PWA + Native', desc: 'Browser, Android, iOS' },
+  { icon: Zap, title: '<1s Latenz', desc: 'End-to-End Echtzeit' },
+  { icon: Lock, title: 'Security Headers', desc: 'CSP, HSTS, X-Frame' },
+  { icon: Star, title: 'RTL-Support', desc: 'AR FA UR HE' },
+  { icon: Layers, title: '4-Tier Transport', desc: 'Cloud→Hotspot→BLE→Offline' },
 ]
 
+// ─── Sprachen ─────────────────────────────────────────────────────────────────
 const LANGUAGE_CATEGORIES = [
   {
     name: 'Europäische Kernsprachen (22)',
@@ -155,57 +194,74 @@ const LANGUAGE_CATEGORIES = [
   },
 ]
 
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function FeaturesPage() {
   return (
-    <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
-      {/* Page Background Logo */}
+    <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
+
+      {/* Hintergrund-Logo */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
       </div>
-      {/* Hero */}
-      <div className="relative text-center space-y-4 py-12 sm:py-16 overflow-hidden rounded-2xl">
+
+      {/* Hero — kompakt, mobile-first */}
+      <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-95" />
+          <img src="/fintutto-logo.svg" alt="" className="w-[320px] h-[320px] opacity-90" />
         </div>
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-3">
           <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
-            7 Produkte in einer App
+            8 Module · 45 Sprachen · Offline-fähig
           </span>
-          <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
-            Alles, was Sie für mehrsprachige Kommunikation brauchen.
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight text-white drop-shadow-lg">
+            Alles für mehrsprachige Kommunikation.
           </h1>
-          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
-            Von Live-Broadcasting für 500 Personen bis zum persönlichen Gesprächsmodus beim Arzt.
-            45 Sprachen, Offline-fähig, E2E-verschlüsselt.
+          <p className="text-base text-white/80 max-w-md mx-auto drop-shadow">
+            Live-Broadcasting, Q&A, Gespräch, Scanner, Phrasebook — in einer App. Kostenlos starten.
           </p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-1">
+            <Link to="/">
+              <Button size="lg" className="w-full sm:w-auto gap-2">
+                Jetzt testen <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/pricing">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Preise & Pläne
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Products */}
-      <div className="space-y-8">
+      {/* Produkt-Karten — vertikal gestapelt, mobile-optimiert */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold drop-shadow-lg">8 Module im Überblick</h2>
         {PRODUCTS.map((product, i) => {
           const Icon = product.icon
           return (
-            <Card key={i} className="p-6 sm:p-8 bg-black/25 backdrop-blur-md border-white/10">
-              <div className="flex flex-col sm:flex-row gap-6">
-                <div className="sm:w-2/5 space-y-3">
-                  <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-sky-300" />
-                  </div>
-                  <h2 className="text-xl font-bold drop-shadow-lg">{product.name}</h2>
-                  <p className="text-sm font-medium text-sky-300">{product.tagline}</p>
-                  <p className="text-sm text-white/70 leading-relaxed">{product.description}</p>
-                  <Link to={`/sales/${product.segment}`}>
-                    <Button variant="link" className="px-0 gap-1 text-sm text-sky-300">
-                      Mehr erfahren <ChevronRight className="w-3 h-3" />
-                    </Button>
-                  </Link>
+            <Card key={i} className="p-5 bg-black/25 backdrop-blur-md border-white/15">
+              <div className="flex items-start gap-4">
+                <div className={`w-11 h-11 rounded-xl ${product.bg} flex items-center justify-center shrink-0`}>
+                  <Icon className={`w-5 h-5 ${product.color}`} />
                 </div>
-                <div className="sm:w-3/5">
-                  <ul className="space-y-2">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="font-bold text-base leading-tight">{product.name}</h3>
+                      <p className={`text-xs font-semibold ${product.color}`}>{product.tagline}</p>
+                    </div>
+                    <Link to={product.link} className="shrink-0">
+                      <Button size="sm" variant="outline" className="text-xs h-7 px-2 border-white/25 text-white hover:bg-white/10 whitespace-nowrap">
+                        {product.linkLabel} <ChevronRight className="h-3 w-3 ml-0.5" />
+                      </Button>
+                    </Link>
+                  </div>
+                  <p className="text-sm text-white/75 leading-snug">{product.description}</p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 pt-1">
                     {product.features.map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
+                      <li key={j} className="flex items-start gap-1.5 text-xs text-white/80">
+                        <Check className={`w-3 h-3 ${product.color} mt-0.5 shrink-0`} />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -217,71 +273,67 @@ export default function FeaturesPage() {
         })}
       </div>
 
-      {/* Platform features grid */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center drop-shadow-lg">Plattform-Features</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {PLATFORM_FEATURES.map((feat, i) => {
+      {/* Plattform-Features — kompaktes Grid */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold drop-shadow-lg">Plattform-Features</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {PLATFORM.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <div key={i} className="p-3 rounded-lg bg-black/25 backdrop-blur-md space-y-1">
+              <div key={i} className="p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15 space-y-1">
                 <Icon className="w-4 h-4 text-sky-300" />
-                <div className="font-medium text-sm">{feat.title}</div>
-                <div className="text-xs text-white/70">{feat.desc}</div>
+                <div className="font-semibold text-xs">{feat.title}</div>
+                <div className="text-[11px] text-white/65">{feat.desc}</div>
               </div>
             )
           })}
         </div>
       </div>
 
-      {/* Languages */}
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold drop-shadow-lg">45 Sprachen in 3 Kategorien</h2>
-          <p className="text-white/70">
-            Inkl. 10 Migrationssprachen und vollständige RTL-Unterstützung für Arabisch, Farsi, Paschtu, Kurdisch, Urdu und Hebräisch.
+      {/* Sprachen */}
+      <div className="space-y-4">
+        <div className="text-center space-y-1">
+          <h2 className="text-xl font-bold drop-shadow-lg">45 Sprachen in 3 Kategorien</h2>
+          <p className="text-sm text-white/70">
+            Inkl. 10 Migrationssprachen · vollständige RTL-Unterstützung
           </p>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-2">
           {LANGUAGE_CATEGORIES.map((cat, i) => (
-            <Card key={i} className="p-5 space-y-2 bg-black/25 backdrop-blur-md border-white/10">
-              <h3 className="font-semibold">{cat.name}</h3>
-              <p className="text-sm text-white/70">{cat.languages}</p>
+            <Card key={i} className="p-4 bg-black/25 backdrop-blur-md border-white/15">
+              <h3 className="font-semibold text-sm mb-1">{cat.name}</h3>
+              <p className="text-xs text-white/70 leading-relaxed">{cat.languages}</p>
             </Card>
           ))}
         </div>
-        <p className="text-center text-sm text-white/70">
-          + 54 Offline-Sprachpaare via Opus-MT WASM-Modelle + Romanisierung für nicht-lateinische Schriften
+        <p className="text-center text-xs text-white/60">
+          + 54 Offline-Sprachpaare via Opus-MT WASM · Romanisierung für nicht-lateinische Schriften
         </p>
       </div>
 
-      {/* CTA */}
-      <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold drop-shadow-lg">Jetzt testen</h2>
-        <p className="text-white/70">
-          Alle Features sind im Free-Plan verfügbar. Keine Registrierung nötig.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      {/* CTA — sticky-freundlich */}
+      <div className="space-y-3 py-2">
+        <div className="flex flex-col gap-2">
           <Link to="/">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Übersetzer öffnen
-              <ArrowRight className="h-4 w-4" />
+            <Button size="lg" className="w-full gap-2">
+              Übersetzer öffnen <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <Link to="/pricing">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
-              Preise & Pläne
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/technology">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
-              Technische Architektur
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="grid grid-cols-2 gap-2">
+            <Link to="/pricing">
+              <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+                Preise
+              </Button>
+            </Link>
+            <Link to="/technology">
+              <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+                Technologie
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
+
     </div>
   )
 }

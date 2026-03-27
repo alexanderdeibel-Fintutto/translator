@@ -1,234 +1,190 @@
-// KreuzfahrtPage — Lösungsseite für Kreuzfahrt-Reedereien & Shore Excursion Manager
+// KreuzfahrtPage — Mobile-First für Kreuzfahrt-Reedereien
 // Route: /loesungen/kreuzfahrt
+
 import { Link } from 'react-router-dom'
-import { Anchor, Globe2, TrendingDown, Users, Map, Shield, Zap, ArrowRight, ChevronRight, Check, BarChart3, Layers, Headphones } from 'lucide-react'
+import {
+  Globe2, TrendingDown, Shield, Zap, ArrowRight,
+  ChevronRight, Check, BarChart3, Layers, Headphones,
+  Radio, MessageCircleQuestion, Bluetooth, Wifi
+} from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-// ============================================================================
-// Content
-// ============================================================================
-const HERO = {
-  badge: 'Enterprise Solution für Kreuzfahrt-Reedereien',
-  title: 'Shore Excursions in jeder Sprache. Für jedes Schiff.',
-  subtitle:
-    '1 Guide + KI = 130+ Sprachen. Eliminieren Sie mehrsprachige Guides in 50+ Häfen weltweit — und sparen Sie bis zu 93 % der Übersetzungskosten. Individuelles Enterprise-Pricing.',
-}
 const STATS = [
-  { value: '93 %', label: 'Kostenersparnis' },
-  { value: '130+', label: 'Sprachen' },
-  { value: '50+', label: 'Häfen weltweit' },
-  { value: '< 1 s', label: 'Übersetzungslatenz' },
-]
-const PAIN_POINTS = [
-  {
-    icon: TrendingDown,
-    title: '480.000 EUR/Schiff/Jahr',
-    description: '8 mehrsprachige Guides × 300 EUR/Tag × 200 Exkursionstage = 480.000 EUR — nur für 6 Sprachen. Für 10 Schiffe: 4,8 Mio. EUR.',
-  },
-  {
-    icon: Globe2,
-    title: 'Exotische Häfen ohne Guides',
-    description: 'In Osaka, Mumbai oder Casablanca gibt es kaum deutschsprachige Guides. Japanisch, Hindi, Arabisch — unmöglich zu besetzen.',
-  },
-  {
-    icon: Map,
-    title: 'Logistik in 50+ Häfen',
-    description: 'Guide-Koordination, Buchungen, Ausfälle, Vertretungen — in jedem Hafen weltweit. Der operative Aufwand ist enorm.',
-  },
-  {
-    icon: Shield,
-    title: 'Qualitätsinkonsistenz',
-    description: 'Jeder lokale Guide erklärt anders. Standardisierte Inhalte und Markenbotschaften sind kaum durchsetzbar.',
-  },
-]
-const HOW_IT_WORKS = [
-  { step: '1', title: 'Inhalte zentralisieren', desc: 'Alle Exkursionsskripte, Routen und POI-Beschreibungen in einer Plattform — einmalig eingepflegt.' },
-  { step: '2', title: 'KI übersetzt', desc: 'Automatische Übersetzung in 130+ Sprachen. Fachbegriffe und Markennamen werden korrekt behandelt.' },
-  { step: '3', title: 'Guide führt', desc: '1 Guide spricht — alle Gäste lesen oder hören in ihrer Sprache. QR-Code auf dem Smartphone genügt.' },
-  { step: '4', title: 'Analytics auswerten', desc: 'Welche Sprachen werden genutzt? Welche Exkursionen sind beliebt? Daten für bessere Planung.' },
-]
-const SAVINGS = {
-  title: 'Ihre Ersparnis auf einen Blick',
-  rows: [
-    { label: 'Traditionell (10 Schiffe, 6 Sprachen)', value: '4.800.000 EUR/Jahr' },
-    { label: 'Mit GuideTranslator (Enterprise)', value: '~ 325.000 EUR/Jahr' },
-    { label: 'Ersparnis', value: '93 % — 4.475.000 EUR/Jahr', highlight: true },
-  ],
-  note: 'Kalkulationsbasis: 8 Guides/Schiff × 300 EUR/Tag × 200 Exkursionstage × 10 Schiffe. Enterprise-Pricing auf Anfrage.',
-}
-const TIERS = [
-  { name: 'Pilot', desc: '1 Schiff, 3 Monate Testphase', cta: 'Pilot starten', href: '/kontakt' },
-  { name: 'Fleet', desc: '2–5 Schiffe, Jahresvertrag', cta: 'Angebot anfragen', href: '/kontakt', highlight: true },
-  { name: 'Armada', desc: '6+ Schiffe, Custom SLA', cta: 'Enterprise-Gespräch', href: '/kontakt' },
-]
-const FEATURES = [
-  { icon: Headphones, title: 'Chirp 3 HD Audio', description: 'Gäste hören die Erklärungen in ihrer Sprache — natürliche Stimme, keine Robotersprache.' },
-  { icon: Zap, title: 'Offline-Modus', description: 'Kein stabiles Internet im Hafen? GuideTranslator funktioniert auch offline — einzigartiger USP.' },
-  { icon: Layers, title: 'White-Label', description: 'Ihre Reederei-Marke, Ihre Domain. Gäste sehen nur Ihr Branding.' },
-  { icon: BarChart3, title: 'Fleet Analytics', description: 'Aggregierte Auswertungen über alle Schiffe — Sprachen, Nutzung, Beliebtheit.' },
-  { icon: Shield, title: 'Enterprise Security', description: 'DSGVO-konform, E2E-verschlüsselt, SSO-Integration, dedizierter Support.' },
-  { icon: Globe2, title: '130+ Sprachen', description: 'Alle Weltsprachen inklusive — von Japanisch bis Swahili. Kein Hafen ist zu exotisch.' },
+  { value: '93 %',  label: 'Kostenersparnis' },
+  { value: '130+',  label: 'Sprachen' },
+  { value: '50+',   label: 'Häfen weltweit' },
+  { value: '< 1 s', label: 'Latenz' },
 ]
 
-// ============================================================================
-// Component
-// ============================================================================
+const SAVINGS = [
+  { label: 'Traditionell (10 Schiffe, 6 Sprachen)', value: '4.800.000 EUR/Jahr', highlight: false },
+  { label: 'Mit Fintutto (Enterprise)',              value: '~ 325.000 EUR/Jahr', highlight: false },
+  { label: 'Ersparnis',                              value: '93 % — 4.475.000 EUR/Jahr', highlight: true },
+]
+
+const FEATURES = [
+  { icon: Radio,                 color: 'text-violet-400', bg: 'bg-violet-500/15', title: '1→N Live-Broadcasting',  desc: '1 Guide, beliebig viele Gäste — alle hören in ihrer Sprache.' },
+  { icon: MessageCircleQuestion, color: 'text-sky-400',    bg: 'bg-sky-500/15',    title: 'Q&A-Moderation',         desc: 'Gäste stellen Fragen — Guide moderiert und sendet an alle.' },
+  { icon: Headphones,            color: 'text-emerald-400',bg: 'bg-emerald-500/15',title: 'Chirp 3 HD Audio',       desc: 'Natürliche Stimme — Gäste hören statt lesen.' },
+  { icon: Zap,                   color: 'text-amber-400',  bg: 'bg-amber-500/15',  title: 'Offline-Modus',          desc: 'Kein Internet auf hoher See? Funktioniert trotzdem.' },
+  { icon: Bluetooth,             color: 'text-indigo-400', bg: 'bg-indigo-500/15', title: 'BLE-Transport',          desc: 'Bluetooth — null Infrastruktur, überall einsetzbar.' },
+  { icon: Wifi,                  color: 'text-orange-400', bg: 'bg-orange-500/15', title: 'Hotspot-Modus',          desc: 'Guide-Gerät wird zum WLAN-Router — kein Internet nötig.' },
+  { icon: Layers,                color: 'text-rose-400',   bg: 'bg-rose-500/15',   title: 'White-Label',            desc: 'Reederei-Branding — kein Fintutto-Logo.' },
+  { icon: BarChart3,             color: 'text-blue-400',   bg: 'bg-blue-500/15',   title: 'Fleet Analytics',        desc: 'Aggregierte Auswertungen über alle Schiffe.' },
+  { icon: Shield,                color: 'text-green-400',  bg: 'bg-green-500/15',  title: 'Enterprise Security',    desc: 'DSGVO · E2E-verschlüsselt · SSO · SLA.' },
+  { icon: Globe2,                color: 'text-teal-400',   bg: 'bg-teal-500/15',   title: '130+ Sprachen',          desc: 'Von Japanisch bis Swahili — kein Hafen zu exotisch.' },
+]
+
+const STEPS = [
+  { step: '1', title: 'Inhalte zentralisieren', desc: 'Skripte, Routen, POI-Beschreibungen — einmalig eingepflegt.' },
+  { step: '2', title: 'KI übersetzt',           desc: 'Automatisch in 130+ Sprachen. Fachbegriffe korrekt.' },
+  { step: '3', title: 'Guide führt',            desc: '1 Guide spricht — Gäste hören in ihrer Sprache. QR-Code genügt.' },
+  { step: '4', title: 'Analytics auswerten',    desc: 'Welche Sprachen, welche Exkursionen? Daten für bessere Planung.' },
+]
+
+const TIERS = [
+  { name: 'Pilot',  desc: '1 Schiff · 3 Monate Testphase',  cta: 'Pilot starten',       href: '/kontakt',           highlight: false },
+  { name: 'Fleet',  desc: '2–5 Schiffe · Jahresvertrag',     cta: 'Angebot anfragen',    href: '/kontakt',           highlight: true  },
+  { name: 'Armada', desc: '6+ Schiffe · Custom SLA',         cta: 'Enterprise-Gespräch', href: '/kontakt',           highlight: false },
+]
+
 export default function KreuzfahrtPage() {
   return (
-    <div className="min-h-screen">
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-            {HERO.badge}
+    <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
+
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
+      </div>
+
+      {/* Hero */}
+      <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[280px] h-[280px] opacity-90" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Enterprise für Kreuzfahrt-Reedereien
           </span>
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight">{HERO.title}</h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            {HERO.subtitle}
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight drop-shadow-lg">
+            Shore Excursions in jeder Sprache. Für jedes Schiff.
+          </h1>
+          <p className="text-base text-white/80 max-w-md mx-auto drop-shadow">
+            1 Guide + KI = 130+ Sprachen. 93% günstiger als mehrsprachige Guides. Offline-fähig auf hoher See.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button size="lg" asChild>
-              <Link to="/kontakt">
-                Ersparnis berechnen <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/kontakt?type=demo">
-                Demo vereinbaren <ChevronRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-1">
+            <Link to="/kontakt">
+              <Button size="lg" className="w-full sm:w-auto gap-2">
+                Pilot anfragen <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/live">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Live-Demo
+              </Button>
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      <section className="py-8 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {STATS.map((stat, i) => (
-            <div key={i} className="text-center p-4 rounded-lg bg-black/20 shadow-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {STATS.map((s, i) => (
+          <div key={i} className="text-center p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15">
+            <div className="text-xl font-bold text-sky-300">{s.value}</div>
+            <div className="text-[11px] text-white/65">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Kostenersparnis */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <TrendingDown className="w-5 h-5 text-green-400" />
+          <h2 className="text-xl font-bold drop-shadow-lg">Ihre Ersparnis</h2>
+        </div>
+        <Card className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-2">
+          {SAVINGS.map((row, i) => (
+            <div key={i} className={`flex items-center justify-between gap-3 p-2 rounded-lg ${row.highlight ? 'bg-green-500/20 border border-green-400/30' : ''}`}>
+              <p className={`text-xs ${row.highlight ? 'font-bold text-green-300' : 'text-white/75'}`}>{row.label}</p>
+              <p className={`text-sm font-bold shrink-0 ${row.highlight ? 'text-green-300' : 'text-white'}`}>{row.value}</p>
             </div>
           ))}
-        </div>
-      </section>
+          <p className="text-[11px] text-white/50 pt-1">Basis: 8 Guides/Schiff × 300 EUR/Tag × 200 Exkursionstage × 10 Schiffe</p>
+        </Card>
+      </div>
 
-      {/* ── Pain Points ──────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">
-            Das kostet mehrsprachige Shore Excursions heute
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {PAIN_POINTS.map((pp, i) => (
-              <Card key={i} className="p-6 space-y-3">
-                <pp.icon className="h-8 w-8 text-primary" />
-                <h3 className="font-semibold text-lg">{pp.title}</h3>
-                <p className="text-muted-foreground text-sm">{pp.description}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How it works ─────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">1 Guide. 130+ Sprachen. So funktioniert's.</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={i} className="text-center space-y-3">
-                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto">
-                  {step.step}
+      {/* Features */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Features für Reedereien</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon
+            return (
+              <div key={i} className="p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15 space-y-1">
+                <div className={`w-7 h-7 rounded-lg ${f.bg} flex items-center justify-center`}>
+                  <Icon className={`w-3.5 h-3.5 ${f.color}`} />
                 </div>
-                <h3 className="font-semibold">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.desc}</p>
+                <p className="font-semibold text-xs leading-tight">{f.title}</p>
+                <p className="text-[11px] text-white/65 leading-snug">{f.desc}</p>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
-      </section>
+      </div>
 
-      {/* ── Savings ──────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">{SAVINGS.title}</h2>
-          <Card className="overflow-hidden">
-            <table className="w-full text-sm">
-              <tbody>
-                {SAVINGS.rows.map((row, i) => (
-                  <tr key={i} className={`border-b last:border-0 ${row.highlight ? 'bg-primary/5' : ''}`}>
-                    <td className="px-6 py-3 text-muted-foreground">{row.label}</td>
-                    <td className={`px-6 py-3 text-right font-semibold ${row.highlight ? 'text-primary text-lg' : ''}`}>{row.value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-          <p className="text-xs text-muted-foreground text-center mt-3">{SAVINGS.note}</p>
-        </div>
-      </section>
+      {/* So funktioniert's */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">In 4 Schritten</h2>
+        <Card className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-3">
+          {STEPS.map((s, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-sky-500/25 text-sky-300 text-xs font-bold flex items-center justify-center shrink-0">{s.step}</span>
+              <div>
+                <p className="font-semibold text-sm">{s.title}</p>
+                <p className="text-xs text-white/65">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </Card>
+      </div>
 
-      {/* ── Features ─────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Enterprise-Features für Reedereien</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {FEATURES.map((f, i) => (
-              <Card key={i} className="p-5 space-y-3">
-                <f.icon className="h-7 w-7 text-primary" />
-                <h3 className="font-semibold">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.description}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Tiers ────────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Einstiegsprogramme</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TIERS.map((tier, i) => (
-              <Card key={i} className={`p-6 flex flex-col gap-4 ${tier.highlight ? 'border-primary ring-2 ring-primary/20' : ''}`}>
-                {tier.highlight && (
-                  <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full self-start">Beliebt</span>
-                )}
+      {/* Enterprise-Tiers */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Einstiegsprogramme</h2>
+        <div className="space-y-3">
+          {TIERS.map((t, i) => (
+            <Card key={i} className={`p-4 backdrop-blur-md border ${t.highlight ? 'bg-sky-500/20 border-sky-400/40' : 'bg-black/25 border-white/15'}`}>
+              <div className="flex items-center justify-between gap-3 mb-2">
                 <div>
-                  <h3 className="font-bold text-xl">{tier.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{tier.desc}</p>
+                  <h3 className="font-bold text-sm">{t.name}</h3>
+                  <p className="text-xs text-white/65">{t.desc}</p>
                 </div>
-                <Button variant={tier.highlight ? 'default' : 'outline'} asChild className="mt-auto">
-                  <Link to={tier.href}>{tier.cta}</Link>
-                </Button>
-              </Card>
-            ))}
-          </div>
+                {t.highlight && <span className="text-[10px] bg-sky-400/20 text-sky-300 px-2 py-0.5 rounded-full font-semibold shrink-0">Beliebt</span>}
+              </div>
+              <Link to={t.href}>
+                <Button size="sm" className="w-full">{t.cta} <ChevronRight className="h-3 w-3 ml-1" /></Button>
+              </Link>
+            </Card>
+          ))}
         </div>
-      </section>
+        <p className="text-xs text-white/50 text-center">Enterprise-Pricing auf Anfrage · SLA · dedizierter Support</p>
+      </div>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-primary text-primary-foreground">
-        <div className="max-w-2xl mx-auto text-center space-y-6">
-          <h2 className="text-2xl md:text-3xl font-bold">Bereit für mehrsprachige Shore Excursions?</h2>
-          <p className="opacity-90">Unser Enterprise-Team erstellt Ihnen eine individuelle Kostenanalyse für Ihre Flotte.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/kontakt">Kontakt aufnehmen <ArrowRight className="h-4 w-4 ml-2" /></Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-primary-foreground/30 hover:bg-primary-foreground/10" asChild>
-              <a href="mailto:enterprise@guidetranslator.com">enterprise@guidetranslator.com</a>
-            </Button>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 pt-2 text-sm opacity-80">
-            {['Offline-Modus', 'DSGVO-konform', 'White-Label', 'Dedizierter Support'].map((t, i) => (
-              <span key={i} className="flex items-center gap-1"><Check className="h-3.5 w-3.5" />{t}</span>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* CTA */}
+      <div className="grid grid-cols-2 gap-2 py-2">
+        <Link to="/features">
+          <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+            Alle Features <ChevronRight className="h-3 w-3" />
+          </Button>
+        </Link>
+        <Link to="/technology">
+          <Button size="default" variant="outline" className="w-full text-sm border-white/30 text-white hover:bg-white/10">
+            Technologie <ChevronRight className="h-3 w-3" />
+          </Button>
+        </Link>
+      </div>
+
     </div>
   )
 }

@@ -825,59 +825,67 @@ export default function SalesLandingPage() {
   const content = CONTENT[seg]
 
   return (
-    <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
+    <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
+
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
+      </div>
+
       {/* Hero */}
-      <div className="text-center space-y-4">
-        {content.hero.badge && (
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-            {content.hero.badge}
-          </span>
-        )}
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          {content.hero.title}
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          {content.hero.subtitle}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-          <Link to="/pricing">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              {content.cta}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/features">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Alle Features entdecken
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
+      <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[280px] h-[280px] opacity-90" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          {content.hero.badge && (
+            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+              {content.hero.badge}
+            </span>
+          )}
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight drop-shadow-lg">
+            {content.hero.title}
+          </h1>
+          <p className="text-base text-white/80 max-w-md mx-auto drop-shadow">
+            {content.hero.subtitle}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-1">
+            <Link to="/pricing">
+              <Button size="lg" className="w-full sm:w-auto gap-2">
+                {content.cta} <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/features">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Alle Features <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {content.stats.map((stat, i) => (
-          <div key={i} className="text-center p-4 rounded-lg bg-muted/50">
-            <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
-            <div className="text-sm text-muted-foreground">{stat.label}</div>
+          <div key={i} className="text-center p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15">
+            <div className="text-xl font-bold text-sky-300">{stat.value}</div>
+            <div className="text-[11px] text-white/65">{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Pain points / value props */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Warum GuideTranslator?</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Warum Fintutto?</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {content.painPoints.map((pp, i) => {
             const Icon = pp.icon
             return (
-              <Card key={i} className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-primary" />
+              <Card key={i} className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/20 flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-sky-300" />
                 </div>
-                <h3 className="font-semibold text-lg">{pp.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{pp.description}</p>
+                <h3 className="font-semibold text-sm">{pp.title}</h3>
+                <p className="text-xs text-white/70 leading-relaxed">{pp.description}</p>
               </Card>
             )
           })}
@@ -885,34 +893,34 @@ export default function SalesLandingPage() {
       </div>
 
       {/* How it works */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">So funktioniert es</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">So funktioniert es</h2>
+        <Card className="p-4 bg-black/25 backdrop-blur-md border-white/15 space-y-3">
           {content.howItWorks.map((step, i) => (
-            <div key={i} className="text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto text-xl font-bold">
-                {step.step}
+            <div key={i} className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-sky-500/25 text-sky-300 text-xs font-bold flex items-center justify-center shrink-0">{step.step}</span>
+              <div>
+                <p className="font-semibold text-sm">{step.title}</p>
+                <p className="text-xs text-white/65">{step.description}</p>
               </div>
-              <h3 className="font-semibold text-lg">{step.title}</h3>
-              <p className="text-sm text-muted-foreground">{step.description}</p>
             </div>
           ))}
-        </div>
+        </Card>
       </div>
 
       {/* Features */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Features im Detail</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Features im Detail</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
           {content.features.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-primary" />
+              <Card key={i} className="p-3 bg-black/25 backdrop-blur-md border-white/15 space-y-1">
+                <div className="w-7 h-7 rounded-lg bg-sky-500/20 flex items-center justify-center">
+                  <Icon className="w-3.5 h-3.5 text-sky-300" />
                 </div>
-                <h3 className="font-semibold">{feat.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feat.description}</p>
+                <h3 className="font-semibold text-xs">{feat.title}</h3>
+                <p className="text-[11px] text-white/65 leading-snug">{feat.description}</p>
               </Card>
             )
           })}
@@ -921,8 +929,8 @@ export default function SalesLandingPage() {
 
       {/* ROI Calculator (not for personal) */}
       {content.hasCalculator && (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-center">ROI-Rechner: Was sparen Sie?</h2>
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold drop-shadow-lg">ROI-Rechner: Was sparen Sie?</h2>
           <ROICalculator segment={seg as CalcSegment} />
           {/* Demo CTA after calculator */}
           {(['authority', 'medical', 'hospitality', 'education', 'conference'] as SalesSegment[]).includes(seg) && (
@@ -943,31 +951,28 @@ export default function SalesLandingPage() {
       )}
 
       {/* Pricing */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Preise</h2>
-        <p className="text-center text-muted-foreground">Jährlich zahlen = 2 Monate gratis (17% Rabatt)</p>
-        <div className={`grid grid-cols-1 gap-4 ${content.pricing.length <= 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Preise</h2>
+        <p className="text-xs text-white/60">Jährlich zahlen = 2 Monate gratis (17% Rabatt)</p>
+        <div className="space-y-3">
           {content.pricing.map((plan, i) => (
-            <Card key={i} className={`p-6 space-y-4 ${i === content.pricing.length - 1 ? 'border-primary' : ''}`}>
-              <div>
-                <h3 className="font-bold text-lg">{plan.name}</h3>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
+            <Card key={i} className={`p-4 backdrop-blur-md border ${i === content.pricing.length - 1 ? 'bg-sky-500/20 border-sky-400/40' : 'bg-black/25 border-white/15'}`}>
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <div>
+                  <h3 className="font-bold text-sm">{plan.name}</h3>
+                  <p className={`text-lg font-bold ${i === content.pricing.length - 1 ? 'text-sky-300' : 'text-white'}`}>{plan.price}<span className="text-xs font-normal text-white/60 ml-1">{plan.period}</span></p>
                 </div>
+                {i === content.pricing.length - 1 && <span className="text-[10px] bg-sky-400/20 text-sky-300 px-2 py-0.5 rounded-full font-semibold shrink-0">Empfohlen</span>}
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-1 mb-3">
                 {plan.highlights.map((h, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm">
-                    <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                    <span>{h}</span>
+                  <li key={j} className="flex items-start gap-1.5 text-xs text-white/80">
+                    <Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />{h}
                   </li>
                 ))}
               </ul>
               <Link to="/pricing" className="block">
-                <Button className="w-full" variant={i === content.pricing.length - 1 ? 'default' : 'outline'}>
-                  Plan wählen
-                </Button>
+                <Button size="sm" className="w-full">Plan wählen <ChevronRight className="h-3 w-3 ml-1" /></Button>
               </Link>
             </Card>
           ))}
@@ -975,74 +980,49 @@ export default function SalesLandingPage() {
       </div>
 
       {/* Use Cases */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Einsatzszenarien</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Einsatzszenarien</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {content.useCases.map((uc, i) => (
-            <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
-              <Star className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-              <span className="text-sm">{uc}</span>
+            <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-black/25 backdrop-blur-md border border-white/15">
+              <Star className="w-3.5 h-3.5 text-sky-300 mt-0.5 shrink-0" />
+              <span className="text-xs text-white/80">{uc}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Technical highlights */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Technische Highlights</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <Signal className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">4-Tier Transport</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Cloud → Hotspot → Bluetooth → Offline. Automatischer Fallback — funktioniert immer, überall.
-            </p>
-          </Card>
-          <Card className="p-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <Lock className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">E2E-Verschlüsselung</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              AES-256-GCM mit PBKDF2 Key Derivation (100.000 Iterationen). Auch im Offline-Modus verschlüsselt.
-            </p>
-          </Card>
-          <Card className="p-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">On-Device KI</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Opus-MT und Whisper laufen als WASM direkt im Browser. Keine Daten verlassen das Gerät im Offline-Modus.
-            </p>
-          </Card>
-          <Card className="p-5 space-y-2">
-            <div className="flex items-center gap-2">
-              <Bluetooth className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">BLE GATT Protocol</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Proprietäres Bluetooth-Protokoll für Gruppen-Übersetzung. Null Infrastruktur — funktioniert überall.
-            </p>
-          </Card>
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">Technische Highlights</h2>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { Icon: Signal,    title: '4-Tier Transport',      desc: 'Cloud → Hotspot → Bluetooth → Offline. Automatischer Fallback.' },
+            { Icon: Lock,      title: 'E2E-Verschlüsselung',   desc: 'AES-256-GCM mit PBKDF2 (100.000 Iterationen). Auch offline.' },
+            { Icon: Cpu,       title: 'On-Device KI',          desc: 'Opus-MT & Whisper als WASM — keine Daten verlassen das Gerät.' },
+            { Icon: Bluetooth, title: 'BLE GATT Protocol',     desc: 'Bluetooth-Gruppen-Übersetzung. Null Infrastruktur.' },
+          ].map(({ Icon, title, desc }, i) => (
+            <Card key={i} className="p-3 bg-black/25 backdrop-blur-md border-white/15 space-y-1">
+              <div className="flex items-center gap-1.5">
+                <Icon className="w-3.5 h-3.5 text-sky-300" />
+                <h3 className="font-semibold text-xs">{title}</h3>
+              </div>
+              <p className="text-[11px] text-white/65">{desc}</p>
+            </Card>
+          ))}
         </div>
-        <div className="text-center">
-          <Link to="/technology">
-            <Button variant="link" className="gap-1">
-              Technische Architektur im Detail
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+        <Link to="/technology">
+          <Button variant="outline" size="sm" className="w-full border-white/25 text-white hover:bg-white/10">
+            Technische Architektur <ArrowRight className="h-3 w-3 ml-1" />
+          </Button>
+        </Link>
       </div>
 
       {/* Trust signals */}
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-2">
         {TRUST_SIGNALS.map((signal, i) => (
-          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-xs font-medium">
-            <Shield className="w-3 h-3" />
+          <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/15 text-xs font-medium text-white/80">
+            <Shield className="w-3 h-3 text-sky-300" />
             {signal}
           </span>
         ))}
@@ -1052,49 +1032,39 @@ export default function SalesLandingPage() {
       <LeadRegistrationForm segment={seg} inviteToken={inviteToken} source={source} />
 
       {/* Cross-links */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Mehr entdecken</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Link to="/features" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors">
-              <h3 className="font-semibold text-sm">Alle Features</h3>
-              <p className="text-xs text-muted-foreground mt-1">7 Produkte in einer App — von Live-Broadcasting bis Kamera-OCR</p>
-            </Card>
-          </Link>
-          <Link to="/technology" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors">
-              <h3 className="font-semibold text-sm">Technische Architektur</h3>
-              <p className="text-xs text-muted-foreground mt-1">4-Tier-Transport, On-Device KI, E2E-Verschlüsselung</p>
-            </Card>
-          </Link>
-          <Link to="/compare" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors">
-              <h3 className="font-semibold text-sm">Wettbewerbervergleich</h3>
-              <p className="text-xs text-muted-foreground mt-1">vs. Google Translate, DeepL, Wordly, KUDO und Vox</p>
-            </Card>
-          </Link>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <Link to="/features" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Alle Features</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">Live-Broadcasting, Q&A, Scanner, Offline & mehr</p>
+          </Card>
+        </Link>
+        <Link to="/technology" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Technologie</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">4-Tier-Transport, On-Device KI, E2E-Verschlüsselung</p>
+          </Card>
+        </Link>
+        <Link to="/compare" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Vergleich</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">vs. Google Translate, DeepL, Wordly, KUDO, Vox</p>
+          </Card>
+        </Link>
       </div>
 
       {/* Bottom CTA */}
-      <div className="text-center space-y-3 pb-4">
-        <p className="text-muted-foreground">
-          Bereit? Wählen Sie den passenden Plan.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/pricing">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Alle Pläne vergleichen
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/investors">
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
-              Für Investoren
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+      <div className="grid grid-cols-2 gap-2 pb-4">
+        <Link to="/pricing">
+          <Button size="default" className="w-full gap-2">
+            Alle Pläne <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+        <Link to="/investors">
+          <Button size="default" variant="outline" className="w-full border-white/30 text-white hover:bg-white/10">
+            Investoren <ChevronRight className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
     </div>
   )
