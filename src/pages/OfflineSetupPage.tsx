@@ -25,6 +25,7 @@ import { getLanguagePairStatus } from '@/lib/offline/model-manager'
 import { preloadModel } from '@/lib/offline/translation-engine'
 import { requestPersistentStorage } from '@/lib/offline/storage-manager'
 import { getLanguageByCode } from '@/lib/languages'
+import BrowserCompatBanner from '@/components/offline/BrowserCompatBanner'
 
 // Empfohlene Sprachen für den Behörden-Einsatz (Authority Clerk)
 const RECOMMENDED_LANGUAGE_PAIRS = [
@@ -223,6 +224,9 @@ export default function OfflineSetupPage() {
           </p>
         </div>
       </div>
+
+      {/* Browser-Kompatibilitäts-Warnung */}
+      <BrowserCompatBanner />
 
       {/* Offline-Warnung */}
       {isOffline && (

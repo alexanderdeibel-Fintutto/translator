@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
+import BrowserCompatBanner from '@/components/offline/BrowserCompatBanner'
 import { usePWAInstall } from '@/hooks/usePWAInstall'
 import { isWhisperAvailable, preloadWhisper } from '@/lib/offline/stt-engine'
 import { getLanguagePairStatus } from '@/lib/offline/model-manager'
@@ -200,6 +201,10 @@ export default function FirstRunWizard({ forcedByUrl = false, onDismiss }: Props
             <p className="text-center text-xs text-blue-200">
               Dauert ca. 5–10 Minuten (je nach Internetgeschwindigkeit)
             </p>
+            {/* Browser-Kompatibilitäts-Warnung */}
+            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 [&_p]:text-white/80 [&_a]:text-white [&_span]:text-white/80">
+              <BrowserCompatBanner compact />
+            </div>
           </div>
         )}
 
