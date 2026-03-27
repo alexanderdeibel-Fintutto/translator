@@ -88,6 +88,8 @@ export default function ConversationPage() {
 
   // Push-to-Talk state — tracks whether pointer is currently held down
   const pttActiveRef = useRef<'top' | 'bottom' | null>(null)
+  const accumulatedTranscriptRef = useRef('')
+  const interimTextRef = useRef('')
 
   const handleResult = useCallback(async (text: string, side: 'top' | 'bottom') => {
     if (isTranslatingRef.current || !text.trim()) return
@@ -135,16 +137,31 @@ export default function ConversationPage() {
     pttActiveRef.current = side
     setActiveSide(side)
     setCurrentTranscript('')
+    accumulatedTranscriptRef.current = ''
+    interimTextRef.current = ''
 
     const lang = getLanguageByCode(side === 'top' ? topLangRef.current : bottomLangRef.current)
     const langCode = lang?.speechCode || (side === 'top' ? topLangRef.current : bottomLangRef.current)
     const recognition = side === 'top' ? topRecognition : bottomRecognition
 
-    recognition.startListening(langCode, (text) => {
-      setCurrentTranscript(text)
-      handleResult(text, side)
-    })
-  }, [topRecognition, bottomRecognition, handleResult, tts])
+    recognition.startListening(
+      langCode, 
+      (text) => {
+        // onFinalResult: append to accumulated text with simple dedup
+        const currentAcc = accumulatedTranscriptRef.current
+        if (!currentAcc.endsWith(text)) {
+          accumulatedTranscriptRef.current += (currentAcc ? ' ' : '') + text
+        }
+        interimTextRef.current = ''
+        setCurrentTranscript(accumulatedTranscriptRef.current)
+      },
+      (text) => {
+        // onInterimResult: show accumulated + interim
+        interimTextRef.current = text
+        setCurrentTranscript(accumulatedTranscriptRef.current + (accumulatedTranscriptRef.current ? ' ' : '') + text)
+      }
+    )
+  }, [topRecognition, bottomRecognition, tts])
 
   // Push-to-Talk: stop on pointer up / leave
   const handlePTTUp = useCallback((side: 'top' | 'bottom') => {
@@ -152,8 +169,17 @@ export default function ConversationPage() {
     pttActiveRef.current = null
     const recognition = side === 'top' ? topRecognition : bottomRecognition
     recognition.stopListening()
-    // Translation will be triggered by the final STT result via handleResult
-  }, [topRecognition, bottomRecognition])
+    
+    // Translate the accumulated text + any pending interim text on release
+    const finalText = (accumulatedTranscriptRef.current + (accumulatedTranscriptRef.current && interimTextRef.current ? ' ' : '') + interimTextRef.current).trim()
+    
+    if (finalText) {
+      handleResult(finalText, side)
+    } else {
+      setActiveSide(null)
+      setCurrentTranscript('')
+    }
+  }, [topRecognition, bottomRecognition, handleResult])
 
   const stopAll = useCallback(() => {
     pttActiveRef.current = null
@@ -185,10 +211,21 @@ export default function ConversationPage() {
         // Brief delay to let browser audio subsystem re-initialize
         setTimeout(() => {
           if (activeSideRef.current === side) {
-            recognition.startListening(langCode, (text) => {
-              setCurrentTranscript(text)
-              handleResult(text, side)
-            })
+            recognition.startListening(
+              langCode, 
+              (text) => {
+                const currentAcc = accumulatedTranscriptRef.current
+                if (!currentAcc.endsWith(text)) {
+                  accumulatedTranscriptRef.current += (currentAcc ? ' ' : '') + text
+                }
+                interimTextRef.current = ''
+                setCurrentTranscript(accumulatedTranscriptRef.current)
+              },
+              (text) => {
+                interimTextRef.current = text
+                setCurrentTranscript(accumulatedTranscriptRef.current + (accumulatedTranscriptRef.current ? ' ' : '') + text)
+              }
+            )
           }
         }, 300)
       }
