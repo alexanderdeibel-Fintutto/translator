@@ -1,8 +1,44 @@
 // Vercel Edge Function — Translation Proxy
 // Keeps API keys server-side, bypasses ad-blockers/CSP issues.
 // Cascade: Azure (if configured) → Google → MyMemory
+//
+// Security:
+//   - IP-based in-memory rate limiting (60 req/min per IP)
+//   - Hard text length limit (5 000 chars) to prevent cost abuse
 
 export const config = { runtime: 'edge' }
+
+// ── Rate limiter (in-memory, resets on cold start) ──────────────────────────
+const RATE_WINDOW_MS  = 60_000  // 1 minute window
+const RATE_MAX_REQ    = 60      // max requests per IP per window
+const MAX_TEXT_LENGTH = 5_000   // hard server-side character limit
+
+interface RateBucket { count: number; resetAt: number }
+const rateBuckets = new Map<string, RateBucket>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  let bucket = rateBuckets.get(ip)
+  if (!bucket || now > bucket.resetAt) {
+    bucket = { count: 0, resetAt: now + RATE_WINDOW_MS }
+    rateBuckets.set(ip, bucket)
+  }
+  bucket.count++
+  if (rateBuckets.size > 10_000) {
+    for (const [key, b] of rateBuckets) {
+      if (now > b.resetAt) rateBuckets.delete(key)
+    }
+  }
+  return bucket.count > RATE_MAX_REQ
+}
+
+function getClientIP(req: Request): string {
+  return (
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+  )
+}
 
 const GOOGLE_TRANSLATE_URL = 'https://translation.googleapis.com/language/translate/v2'
 const AZURE_TRANSLATE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
@@ -36,9 +72,24 @@ export default async function handler(req: Request) {
     return json({ error: 'Invalid JSON body' }, 400)
   }
 
+  // Rate limiting
+  const ip = getClientIP(req)
+  if (isRateLimited(ip)) {
+    return json({ error: 'Too many requests. Please slow down.' }, 429)
+  }
+
   const { text, source, target } = body
   if (!text?.trim() || !source || !target) {
     return json({ error: 'Missing required fields: text, source, target' }, 400)
+  }
+  // Hard server-side text length limit — prevents cost abuse even if client is bypassed
+  if (text.length > MAX_TEXT_LENGTH) {
+    return json({ error: `Text too long. Maximum ${MAX_TEXT_LENGTH} characters allowed.` }, 413)
+  }
+  // Basic language code validation (BCP-47)
+  if (!/^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$/.test(source) ||
+      !/^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$/.test(target)) {
+    return json({ error: 'Invalid language code format' }, 400)
   }
 
   const errors: string[] = []

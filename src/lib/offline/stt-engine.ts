@@ -25,6 +25,14 @@ async function getWhisperPipeline(onProgress?: (pct: number) => void) {
   if (isLoading) throw new Error('Whisper model is still loading')
 
   isLoading = true
+  // Pre-flight RAM check: whisper-tiny needs ~150 MB in WASM heap.
+  // navigator.deviceMemory is available in Chrome/Edge (in GB, rounded).
+  // If the device reports < 2 GB we warn but still try — the model may fit.
+  const deviceMemoryGB = (navigator as unknown as { deviceMemory?: number }).deviceMemory
+  if (deviceMemoryGB !== undefined && deviceMemoryGB < 2) {
+    console.warn(`[STT] Low device memory reported: ${deviceMemoryGB} GB. Whisper-tiny may be unstable.`)
+  }
+
   try {
     const { pipeline: createPipeline } = await import('@huggingface/transformers')
 
@@ -58,6 +66,16 @@ async function getWhisperPipeline(onProgress?: (pct: number) => void) {
       },
     })
     return pipeline
+  } catch (err) {
+    // Detect Out-of-Memory and WASM allocation errors— clear the broken pipeline
+    // so the next call can retry instead of hanging forever.
+    const msg = err instanceof Error ? err.message : String(err)
+    const isOOM = /out.of.memory|allocation failed|wasm.*memory|memory.*wasm|OOM/i.test(msg)
+    if (isOOM) {
+      pipeline = null
+      throw new Error('OOM: Not enough device memory to run Whisper. Falling back to cloud STT.')
+    }
+    throw err
   } finally {
     isLoading = false
   }

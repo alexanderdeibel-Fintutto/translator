@@ -414,11 +414,69 @@ async function translateTextInner(
   }
 
   const networkStatus = getNetworkStatus()
+  const networkMode = networkStatus.getMode()
 
-  // 3-5. Online providers (try unless definitely offline)
+  // 3-5. Online providers (try unless definitely offline or degraded with offline available)
   const providerErrors: string[] = []
 
+  // DYNAMIC OFFLINE-FIRST: if network is degraded (slow/unreliable), prefer offline engine
+  // to avoid long waits for cloud providers that will likely time out anyway.
+  if (networkMode === 'degraded') {
+    try {
+      const offlineAvailable = await isLanguagePairAvailable(sourceLang, targetLang)
+      if (offlineAvailable) {
+        console.log('[Translate] Degraded network — using offline engine proactively')
+        const result = await translateOffline(text, sourceLang, targetLang)
+        cache.set(cacheKey, { result, timestamp: Date.now() })
+        cacheTranslation(text, sourceLang, targetLang, result).catch(() => {})
+        return result
+      }
+    } catch (err) {
+      console.warn('[Translate] Offline engine failed on degraded network, trying cloud:', err)
+    }
+    // Offline not available or failed — fall through to cloud with reduced timeout
+  }
+
   if (!networkStatus.isOffline) {
+    // Use shorter timeout on degraded networks to fail fast and reach offline fallback sooner
+    const effectiveTimeout = networkMode === 'degraded' ? 3000 : undefined
+    if (effectiveTimeout) {
+      // Temporarily patch PROVIDER_TIMEOUT_MS via a local override flag
+      // We achieve this by wrapping each provider call with a race against a shorter timer
+      const withFastTimeout = (fn: () => Promise<TranslationResult>): Promise<TranslationResult> => {
+        return Promise.race([
+          fn(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Fast-timeout on degraded network')), effectiveTimeout)
+          ),
+        ])
+      }
+      for (const provider of activeProviders) {
+        if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
+          providerErrors.push(`${provider.name}: circuit-open`)
+          continue
+        }
+        try {
+          const result = await withFastTimeout(() => provider.fn(text, sourceLang, targetLang))
+          if (provider.circuitKey) recordSuccess(provider.circuitKey)
+          cache.set(cacheKey, { result, timestamp: Date.now() })
+          cacheTranslation(text, sourceLang, targetLang, result).catch(() => {})
+          if (cache.size > 500) {
+            const now = Date.now()
+            for (const [key, entry] of cache) {
+              if (now - entry.timestamp > CACHE_TTL) cache.delete(key)
+            }
+          }
+          return result
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err)
+          providerErrors.push(`${provider.name}: ${msg.slice(0, 80)}`)
+          console.warn(`[Translate] ${provider.name} failed (degraded):`, err)
+          const retryMs = (err as { retryAfterMs?: number }).retryAfterMs
+          if (provider.circuitKey) recordFailure(provider.circuitKey, retryMs)
+        }
+      }
+    } else {
     for (const provider of activeProviders) {
       if (provider.circuitKey && !isHealthy(provider.circuitKey)) {
         providerErrors.push(`${provider.name}: circuit-open`)
@@ -455,6 +513,7 @@ async function translateTextInner(
     if (providerErrors.length > 0) {
       console.warn('[Translate] All online providers failed, trying offline engine...')
     }
+    } // end else (normal timeout branch)
   } else {
     providerErrors.push('Network: offline')
   }

@@ -27,7 +27,9 @@ async function getPipeline(modelId: string, onProgress?: (progress: number) => v
   const fileProgress = new Map<string, { loaded: number; total: number }>()
   let totalRecordedBytes = 0
 
-  const pipe = await pipeline('translation', modelId, {
+  let pipe: unknown
+  try {
+   pipe = await pipeline('translation', modelId, {
     progress_callback: (data: { status: string; progress?: number; loaded?: number; total?: number; file?: string }) => {
       if (data.status === 'progress' && onProgress && data.file) {
         fileProgress.set(data.file, {
@@ -55,6 +57,16 @@ async function getPipeline(modelId: string, onProgress?: (progress: number) => v
     },
   })
 
+  } catch (err) {
+    // Detect Out-of-Memory / WASM allocation errors — remove broken entry so next call can retry
+    const msg = err instanceof Error ? err.message : String(err)
+    const isOOM = /out.of.memory|allocation failed|wasm.*memory|memory.*wasm|OOM/i.test(msg)
+    if (isOOM) {
+      pipelines.delete(modelId)
+      throw new Error(`OOM: Not enough device memory to load ${modelId}. Try unloading other models first.`)
+    }
+    throw err
+  }
   pipelines.set(modelId, pipe)
   return pipe
 }

@@ -102,6 +102,37 @@ export default function ConversationPage() {
   const accumulatedTranscriptRef = useRef('')
   const interimTextRef = useRef('')
 
+  // DSGVO Auto-Reset: clear conversation after 5 minutes of inactivity
+  // Protects sensitive data (medical, legal, authority) between appointments
+  const [showAutoResetWarning, setShowAutoResetWarning] = useState(false)
+  const autoResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const autoResetWarnTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const AUTO_RESET_MS = 5 * 60 * 1000      // 5 minutes → clear
+  const AUTO_RESET_WARN_MS = 4 * 60 * 1000  // 4 minutes → show warning
+
+  const resetAutoResetTimer = useCallback(() => {
+    if (autoResetTimerRef.current) clearTimeout(autoResetTimerRef.current)
+    if (autoResetWarnTimerRef.current) clearTimeout(autoResetWarnTimerRef.current)
+    setShowAutoResetWarning(false)
+    autoResetWarnTimerRef.current = setTimeout(() => {
+      setShowAutoResetWarning(true)
+    }, AUTO_RESET_WARN_MS)
+    autoResetTimerRef.current = setTimeout(() => {
+      setMessages([])
+      setCurrentTranscript('')
+      setShowAutoResetWarning(false)
+    }, AUTO_RESET_MS)
+  }, [])
+
+  // Start timer on mount; restart whenever a message is added or PTT is used
+  useEffect(() => {
+    resetAutoResetTimer()
+    return () => {
+      if (autoResetTimerRef.current) clearTimeout(autoResetTimerRef.current)
+      if (autoResetWarnTimerRef.current) clearTimeout(autoResetWarnTimerRef.current)
+    }
+  }, [messages, resetAutoResetTimer])
+
   const handleResult = useCallback(async (text: string, side: 'top' | 'bottom') => {
     if (isTranslatingRef.current || !text.trim()) return
     isTranslatingRef.current = true
@@ -310,6 +341,22 @@ export default function ConversationPage() {
           )}
         </div>
       </div>
+
+      {/* DSGVO Auto-Reset Warning */}
+      {showAutoResetWarning && (
+        <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300 text-xs">
+          <span className="flex items-center gap-1.5">
+            <span className="text-base">&#9888;&#65039;</span>
+            <span>Gespräch wird in 1 Minute automatisch gelöscht (Datenschutz).</span>
+          </span>
+          <button
+            onClick={resetAutoResetTimer}
+            className="shrink-0 font-medium underline underline-offset-2 hover:no-underline"
+          >
+            Weiter
+          </button>
+        </div>
+      )}
 
       {/* Context mode selector */}
       <div className="flex items-center justify-center gap-1.5 flex-wrap">
