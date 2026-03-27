@@ -1,4 +1,5 @@
 import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+import OfflineReadinessBanner from '@/components/offline/OfflineReadinessBanner'
 import { useRef, useCallback, useState, useEffect, useMemo, type MouseEvent as ReactMouseEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import SessionQRCode from './SessionQRCode'
@@ -255,6 +256,11 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
               </Button>
             )}
           </div>
+
+          {/* Offline-Bereitschaft — kompakter Hinweis wenn Modelle fehlen */}
+          {!session.isRecording && (
+            <OfflineReadinessBanner sourceLang={session.sourceLanguage} compact />
+          )}
 
           {/* Download Protocol Button - appears after first translation */}
           {session.translationHistory.length > 0 && (

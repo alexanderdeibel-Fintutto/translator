@@ -13,6 +13,7 @@ import { useTierId, useTier } from '@/context/UserContext'
 import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import { hasFeature } from '@/lib/tiers'
 import type { ConnectionMode } from '@/lib/transport/types'
+import OfflineReadinessBanner from '@/components/offline/OfflineReadinessBanner'
 
 export default function LiveLandingPage() {
   const { t } = useI18n()
@@ -232,6 +233,8 @@ export default function LiveLandingPage() {
           ) : (
             <UpgradePrompt tierId={tierId} limitType="feature_locked" featureName="Live-Modus" />
           )}
+          {/* Offline-Bereitschaft — kompakter Hinweis wenn Modelle fehlen */}
+          <OfflineReadinessBanner sourceLang={sourceLang} compact />
         </Card>
 
         {/* Listener */}
