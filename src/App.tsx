@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { Suspense, lazy, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, useSearchParams } from 'react-router-dom'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Toaster } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { OfflineProvider } from '@/context/OfflineContext'
@@ -7,6 +7,7 @@ import { I18nProvider } from '@/context/I18nContext'
 import { UserProvider } from '@/context/UserContext'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import PWAInstallBanner from '@/components/PWAInstallBanner'
+import FirstRunWizard, { shouldShowFirstRunWizard } from '@/components/FirstRunWizard'
 import Layout from '@/components/layout/Layout'
 import TranslatorPage from '@/pages/TranslatorPage'
 import { hasGoogleApiKey } from '@/lib/api-key'
@@ -70,6 +71,34 @@ function RouteTracker() {
   return null
 }
 
+/** Zeigt den Erststart-Wizard wenn nötig — muss innerhalb von BrowserRouter sein */
+function WizardController() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const forcedByUrl = searchParams.get('setup') === 'authority'
+  const [showWizard, setShowWizard] = useState(() => shouldShowFirstRunWizard(forcedByUrl))
+
+  // Wenn ?setup=authority in der URL ist, Wizard immer zeigen (auch wenn schon gesehen)
+  useEffect(() => {
+    if (forcedByUrl) setShowWizard(true)
+  }, [forcedByUrl])
+
+  if (!showWizard) return null
+
+  return (
+    <FirstRunWizard
+      forcedByUrl={forcedByUrl}
+      onDismiss={() => {
+        setShowWizard(false)
+        // ?setup-Parameter aus URL entfernen
+        if (forcedByUrl) {
+          searchParams.delete('setup')
+          setSearchParams(searchParams, { replace: true })
+        }
+      }}
+    />
+  )
+}
+
 
 function App() {
   return (
@@ -124,6 +153,7 @@ function App() {
               </Routes>
               <Toaster position="top-right" richColors />
               <PWAInstallBanner />
+              <WizardController />
             </BrowserRouter>
           </UserProvider>
         </OfflineProvider>
