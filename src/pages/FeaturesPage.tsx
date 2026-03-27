@@ -186,7 +186,7 @@ export default function FeaturesPage() {
         {PRODUCTS.map((product, i) => {
           const Icon = product.icon
           return (
-            <Card key={i} className="p-6 sm:p-8 bg-black/30 backdrop-blur-sm border-white/10">
+            <Card key={i} className="p-6 sm:p-8 bg-black/25 backdrop-blur-md border-white/10">
               <div className="flex flex-col sm:flex-row gap-6">
                 <div className="sm:w-2/5 space-y-3">
                   <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
@@ -224,7 +224,7 @@ export default function FeaturesPage() {
           {PLATFORM_FEATURES.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <div key={i} className="p-3 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
+              <div key={i} className="p-3 rounded-lg bg-black/25 backdrop-blur-md space-y-1">
                 <Icon className="w-4 h-4 text-sky-300" />
                 <div className="font-medium text-sm">{feat.title}</div>
                 <div className="text-xs text-white/70">{feat.desc}</div>
@@ -244,7 +244,7 @@ export default function FeaturesPage() {
         </div>
         <div className="space-y-4">
           {LANGUAGE_CATEGORIES.map((cat, i) => (
-            <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
+            <Card key={i} className="p-5 space-y-2 bg-black/25 backdrop-blur-md border-white/10">
               <h3 className="font-semibold">{cat.name}</h3>
               <p className="text-sm text-white/70">{cat.languages}</p>
             </Card>

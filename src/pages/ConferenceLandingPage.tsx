@@ -269,7 +269,7 @@ export default function ConferenceLandingPage() {
       <section className="py-8 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
           {STATS.map((stat, i) => (
-            <div key={i} className="text-center p-4 rounded-lg bg-background shadow-sm">
+            <div key={i} className="text-center p-4 rounded-lg bg-black/20 shadow-sm">
               <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </div>
@@ -349,7 +349,7 @@ export default function ConferenceLandingPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-center">Anwendungsfälle</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {USE_CASES.map((uc, i) => (
-              <div key={i} className="flex items-start gap-2 p-4 rounded-lg bg-background">
+              <div key={i} className="flex items-start gap-2 p-4 rounded-lg bg-black/20">
                 <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                 <span className="text-sm">{uc}</span>
               </div>
@@ -494,7 +494,7 @@ export default function ConferenceLandingPage() {
           {TRUST_SIGNALS.map((signal, i) => (
             <span
               key={i}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background text-xs font-medium shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/20 text-xs font-medium shadow-sm"
             >
               <Shield className="w-3 h-3" />
               {signal}

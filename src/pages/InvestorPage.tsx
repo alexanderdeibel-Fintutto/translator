@@ -1,6 +1,7 @@
 // InvestorPage — Investor-focused page with market size, business model, financials, team
 // Route: /investors
 // Updated: März 2026 — FitTutto World Multi-Sektor-Plattform (4 Säulen, 7 Apps, €156K Förderung)
+// Design: Glassmorphism — Hintergrund voll sichtbar, Karten transparent mit Blur
 
 import { Link } from 'react-router-dom'
 import {
@@ -10,15 +11,26 @@ import {
   Bluetooth, Lock, FileText, MapPin, Heart, Landmark, Mic2,
   BadgeCheck, Euro, Calendar, AlertCircle
 } from 'lucide-react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+
+// ─── Glassmorphism-Karte ──────────────────────────────────────────────────────
+// bg-white/8 = nur 8% weißes Overlay → Hintergrund dominiert
+// backdrop-blur-md = weicher Blur für Tiefenwirkung
+// border-white/15 = feiner heller Rand
+function GlassCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl ${className}`}>
+      {children}
+    </div>
+  )
+}
 
 export default function InvestorPage() {
   return (
     <div className="relative max-w-4xl mx-auto space-y-16 py-8 px-4 text-white">
-      {/* Page Background Logo */}
+      {/* Page Background Logo — etwas stärker als vorher */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.30]" />
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
       </div>
 
       {/* Hero */}
@@ -27,23 +39,23 @@ export default function InvestorPage() {
           <img src="/fintutto-logo.svg" alt="" className="w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] opacity-95" />
         </div>
         <div className="relative z-10 space-y-4">
-          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white backdrop-blur-sm">
             Investor Relations · März 2026
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-white drop-shadow-lg">
             Sprache darf keine Mauer sein.
           </h1>
-          <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto drop-shadow">
+          <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto drop-shadow-md">
             FitTutto World ist die erste KI-Übersetzungsplattform für Behörden, Gesundheitswesen,
             Museen und Konferenzen — offline-first, DSGVO-konform, auf einem einzigen Gerät.
           </p>
-          <p className="text-sm font-medium text-white/90 drop-shadow">
+          <p className="text-sm font-medium text-white drop-shadow">
             4 Märkte · 7 Apps deployed · Production-Ready · €156K Förderpotenzial gesichert
           </p>
         </div>
       </div>
 
-      {/* Key metrics — aktualisiert */}
+      {/* Key metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { value: '4', label: 'Zielmärkte (Säulen)', icon: Layers },
@@ -53,11 +65,11 @@ export default function InvestorPage() {
         ].map((stat, i) => {
           const Icon = stat.icon
           return (
-            <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
-              <Icon className="w-5 h-5 text-sky-300 mx-auto" />
-              <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
-              <div className="text-xs text-white/70">{stat.label}</div>
-            </div>
+            <GlassCard key={i} className="text-center p-4 space-y-1">
+              <Icon className="w-5 h-5 text-sky-300 mx-auto drop-shadow" />
+              <div className="text-2xl font-bold text-sky-300 drop-shadow">{stat.value}</div>
+              <div className="text-xs text-white/80">{stat.label}</div>
+            </GlassCard>
           )
         })}
       </div>
@@ -65,8 +77,8 @@ export default function InvestorPage() {
       {/* Das Problem */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Das Problem</h2>
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
-          <p className="text-center text-lg font-medium mb-6">
+        <GlassCard className="p-6">
+          <p className="text-center text-lg font-semibold mb-6 drop-shadow">
             Sprachbarrieren kosten Deutschland jährlich Milliarden — in Behörden, Kliniken, Museen und auf Konferenzen.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -92,22 +104,22 @@ export default function InvestorPage() {
                 today: 'Simultan-Dolmetscher — 10.000+ EUR/Tag, nur 3–4 Sprachen'
               },
             ].map((item, i) => (
-              <div key={i} className="p-4 rounded-lg bg-background space-y-1">
-                <p className="font-semibold text-sm">{item.problem}</p>
+              <div key={i} className="p-4 rounded-xl bg-black/20 border border-white/15 space-y-1">
+                <p className="font-semibold text-sm text-white drop-shadow">{item.problem}</p>
                 <p className="text-xs text-sky-300">{item.affected}</p>
                 <p className="text-xs text-white/70">{item.today}</p>
               </div>
             ))}
           </div>
-        </Card>
-        <Card className="p-6 border-primary/30 text-center bg-black/30 backdrop-blur-sm border-white/10">
-          <p className="font-semibold">Der blinde Fleck aller Wettbewerber:</p>
-          <p className="text-sm text-white/70 mt-2">
+        </GlassCard>
+        <GlassCard className="p-6 text-center">
+          <p className="font-semibold text-white drop-shadow">Der blinde Fleck aller Wettbewerber:</p>
+          <p className="text-sm text-white/80 mt-2">
             Google Translate, DeepL, Lingomatch, Govocal — sie alle benötigen Internet und ein zweites Gerät.
             FitTutto World übersetzt offline, auf einem einzigen Tablet, bidirektional und DSGVO-konform.
             Kein Wettbewerber bietet alle drei Eigenschaften gleichzeitig.
           </p>
-        </Card>
+        </GlassCard>
       </div>
 
       {/* Die 4 Säulen */}
@@ -158,33 +170,33 @@ export default function InvestorPage() {
           ].map((item, i) => {
             const Icon = item.icon
             return (
-              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+              <GlassCard key={i} className="p-5 space-y-3">
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-6 h-6 ${item.color} shrink-0`} />
+                  <Icon className={`w-6 h-6 ${item.color} shrink-0 drop-shadow`} />
                   <div>
-                    <p className={`font-bold text-base ${item.color}`}>{item.name}</p>
+                    <p className={`font-bold text-base ${item.color} drop-shadow`}>{item.name}</p>
                     <p className="text-xs text-white/70">{item.subtitle}</p>
                   </div>
                 </div>
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
                     <span className="text-white/60">Markt (DACH)</span>
-                    <span className="font-medium">{item.market}</span>
+                    <span className="font-medium text-white">{item.market}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Apps</span>
-                    <span>{item.apps}</span>
+                    <span className="text-white">{item.apps}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Einstiegspreis</span>
-                    <span>{item.price}</span>
+                    <span className="text-white">{item.price}</span>
                   </div>
                   <div className="flex items-center gap-1 mt-2">
                     <Check className="w-3 h-3 text-green-400 shrink-0" />
                     <span className="text-green-300">{item.status}</span>
                   </div>
                 </div>
-              </Card>
+              </GlassCard>
             )
           })}
         </div>
@@ -216,75 +228,75 @@ export default function InvestorPage() {
           ].map((item, i) => {
             const Icon = item.icon
             return (
-              <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
-                <Icon className="w-6 h-6 text-sky-300" />
-                <p className="font-bold text-sm">{item.title}</p>
-                <p className="text-xs text-white/70">{item.desc}</p>
-                <p className="text-xs text-white/40 italic border-t border-white/10 pt-2">{item.vs}</p>
-              </Card>
+              <GlassCard key={i} className="p-5 space-y-3">
+                <Icon className="w-6 h-6 text-sky-300 drop-shadow" />
+                <p className="font-bold text-sm text-white drop-shadow">{item.title}</p>
+                <p className="text-xs text-white/80">{item.desc}</p>
+                <p className="text-xs text-white/50 italic border-t border-white/10 pt-2">{item.vs}</p>
+              </GlassCard>
             )
           })}
         </div>
       </div>
 
-      {/* Marktgröße — aktualisiert */}
+      {/* Marktgröße */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Marktgröße (TAM / SAM / SOM)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
+          <GlassCard className="p-5 space-y-2 text-center">
             <p className="text-xs font-medium text-white/70">TAM</p>
-            <p className="text-3xl font-bold text-sky-300">€65 Mrd</p>
-            <p className="text-xs text-white/70">Globaler Übersetzungsmarkt (2025)</p>
+            <p className="text-3xl font-bold text-sky-300 drop-shadow">€65 Mrd</p>
+            <p className="text-xs text-white/80">Globaler Übersetzungsmarkt (2025)</p>
             <p className="text-xs text-white/70">Davon maschinell: €8 Mrd</p>
             <p className="text-xs text-sky-300 font-medium">15% CAGR bis 2030</p>
-          </Card>
-          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
+          </GlassCard>
+          <GlassCard className="p-5 space-y-2 text-center">
             <p className="text-xs font-medium text-white/70">SAM (DACH, 4 Säulen)</p>
-            <p className="text-3xl font-bold text-sky-300">€10,1 Mrd</p>
-            <p className="text-xs text-white/70">Behörden: €2,1 Mrd</p>
+            <p className="text-3xl font-bold text-sky-300 drop-shadow">€10,1 Mrd</p>
+            <p className="text-xs text-white/80">Behörden: €2,1 Mrd</p>
             <p className="text-xs text-white/70">Healthcare: €4,8 Mrd</p>
             <p className="text-xs text-white/70">Events: €2,4 Mrd · Museen: €0,8 Mrd</p>
-          </Card>
-          <Card className="p-5 space-y-2 text-center bg-black/30 backdrop-blur-sm border-white/10">
+          </GlassCard>
+          <GlassCard className="p-5 space-y-2 text-center">
             <p className="text-xs font-medium text-white/70">SOM (3 Jahre)</p>
-            <p className="text-3xl font-bold text-sky-300">€2,34 Mio</p>
-            <p className="text-xs text-white/70">ARR-Ziel Monat 36</p>
+            <p className="text-3xl font-bold text-sky-300 drop-shadow">€2,34 Mio</p>
+            <p className="text-xs text-white/80">ARR-Ziel Monat 36</p>
             <p className="text-xs text-white/70">Break-even: Monat 10</p>
             <p className="text-xs text-sky-300 font-medium">MRR Monat 36: €50.000+</p>
-          </Card>
+          </GlassCard>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <h3 className="font-semibold text-sm sm:col-span-2">Markttreiber</h3>
+          <h3 className="font-semibold text-sm sm:col-span-2 drop-shadow">Markttreiber</h3>
           {[
             { title: 'Migration & Integration', desc: '110 Mio Geflüchtete weltweit (UNHCR 2025). EU-Aufnahmerichtlinie fordert Kommunikation in Muttersprache. 18.000 Behörden in Deutschland ohne skalierbare Lösung.' },
             { title: 'Digitalisierungspflicht', desc: 'OZG-Umsetzung, E-Government-Gesetz, Onlinezugangsgesetz — Behörden müssen digitalisieren. Förderprogramme (BAFA, KfW, ZIM) zahlen bis zu 80%.' },
             { title: 'KI-Disruption On-Device', desc: 'ML-Modelle werden kleiner, schneller, besser — On-Device Inferenz wird Standard. Whisper WASM läuft heute im Browser ohne Server.' },
             { title: 'DSGVO als Markteintrittsbarriere', desc: 'Cloud-basierte Wettbewerber scheitern an Art. 9 DSGVO (Gesundheitsdaten). Unser Offline-Ansatz ist der einzige compliance-sichere Weg.' },
           ].map((item, i) => (
-            <div key={i} className="p-3 rounded-lg bg-black/30 backdrop-blur-sm">
-              <p className="font-medium text-sm">{item.title}</p>
-              <p className="text-xs text-white/70 mt-1">{item.desc}</p>
-            </div>
+            <GlassCard key={i} className="p-3">
+              <p className="font-semibold text-sm text-white drop-shadow">{item.title}</p>
+              <p className="text-xs text-white/75 mt-1">{item.desc}</p>
+            </GlassCard>
           ))}
         </div>
       </div>
 
-      {/* Förderportfolio — NEU */}
+      {/* Förderportfolio */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Förderportfolio — €156.000 gesichert</h2>
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
-          <p className="text-sm text-white/70 mb-4 text-center">
+        <GlassCard className="p-6">
+          <p className="text-sm text-white/80 mb-4 text-center">
             Öffentliche Förderung reduziert den Eigenkapitalbedarf auf netto €16.000 für die ersten 12 Monate.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-2 font-semibold text-white/70">Programm</th>
-                  <th className="text-right py-2 font-semibold text-white/70">Betrag</th>
-                  <th className="text-right py-2 font-semibold text-white/70">Quote</th>
-                  <th className="text-right py-2 font-semibold text-white/70">Status</th>
+                <tr className="border-b border-white/15">
+                  <th className="text-left py-2 font-semibold text-white/80">Programm</th>
+                  <th className="text-right py-2 font-semibold text-white/80">Betrag</th>
+                  <th className="text-right py-2 font-semibold text-white/80">Quote</th>
+                  <th className="text-right py-2 font-semibold text-white/80">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -296,79 +308,49 @@ export default function InvestorPage() {
                   { name: 'Digitalbonus Bayern/MV', amount: '10.000 EUR', quota: '50%', status: '🟡 Antrag Q2' },
                   { name: 'EU Digital Europe Programme', amount: '9.500 EUR', quota: 'variabel', status: '🔵 Recherche läuft' },
                 ].map((row, i) => (
-                  <tr key={i} className="border-b border-white/5 last:border-0">
-                    <td className="py-2">{row.name}</td>
+                  <tr key={i} className="border-b border-white/8 last:border-0">
+                    <td className="py-2 text-white">{row.name}</td>
                     <td className="py-2 text-right font-medium text-sky-300">{row.amount}</td>
                     <td className="py-2 text-right text-white/70">{row.quota}</td>
-                    <td className="py-2 text-right">{row.status}</td>
+                    <td className="py-2 text-right text-white/80">{row.status}</td>
                   </tr>
                 ))}
                 <tr className="border-t border-white/20">
-                  <td className="py-2 font-bold">Gesamt</td>
+                  <td className="py-2 font-bold text-white">Gesamt</td>
                   <td className="py-2 text-right font-bold text-sky-300">156.000 EUR</td>
                   <td colSpan={2}></td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </Card>
+        </GlassCard>
       </div>
 
       {/* Geschäftsmodell & Preise */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Geschäftsmodell: B2B SaaS + Pilotprogramme</h2>
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-white/80">
           Einstieg über kostenlose 3-Monats-Piloten → Conversion zu Jahresverträgen → Rahmenverträge mit Trägern
         </p>
 
         <div className="space-y-3">
           {[
-            {
-              segment: 'Behörden',
-              plans: 'Pilot (0 EUR, 3 Mo) → 99–249 EUR/Mo',
-              target: 'Ausländerbehörden, Jobcenter, Sozialämter',
-              arpu: '~150 EUR/Mo',
-              color: 'text-blue-300',
-            },
-            {
-              segment: 'Healthcare',
-              plans: 'Pilot (0 EUR, 3 Mo) → 149–499 EUR/Mo',
-              target: 'Krankenhäuser, MVZ, Notaufnahmen',
-              arpu: '~300 EUR/Mo',
-              color: 'text-red-300',
-            },
-            {
-              segment: 'Museen',
-              plans: 'Basic (39,90 EUR) · Pro (79,90 EUR/Mo)',
-              target: 'Stadtmuseen, Kunsthallen, Gedenkstätten',
-              arpu: '~60 EUR/Mo',
-              color: 'text-amber-300',
-            },
-            {
-              segment: 'Events',
-              plans: 'Basic (199 EUR) · Pro (499 EUR/Event)',
-              target: 'Konferenzen, Messen, Hochschulen',
-              arpu: '~350 EUR/Event',
-              color: 'text-green-300',
-            },
-            {
-              segment: 'White-Label',
-              plans: 'Ab 2.000 EUR Setup + 500 EUR/Mo',
-              target: 'Städte, Landkreise, Klinikverbünde',
-              arpu: '~1.500 EUR/Mo',
-              color: 'text-purple-300',
-            },
+            { segment: 'Behörden', plans: 'Pilot (0 EUR, 3 Mo) → 99–249 EUR/Mo', target: 'Ausländerbehörden, Jobcenter, Sozialämter', arpu: '~150 EUR/Mo', color: 'text-blue-300' },
+            { segment: 'Healthcare', plans: 'Pilot (0 EUR, 3 Mo) → 149–499 EUR/Mo', target: 'Krankenhäuser, MVZ, Notaufnahmen', arpu: '~300 EUR/Mo', color: 'text-red-300' },
+            { segment: 'Museen', plans: 'Basic (39,90 EUR) · Pro (79,90 EUR/Mo)', target: 'Stadtmuseen, Kunsthallen, Gedenkstätten', arpu: '~60 EUR/Mo', color: 'text-amber-300' },
+            { segment: 'Events', plans: 'Basic (199 EUR) · Pro (499 EUR/Event)', target: 'Konferenzen, Messen, Hochschulen', arpu: '~350 EUR/Event', color: 'text-green-300' },
+            { segment: 'White-Label', plans: 'Ab 2.000 EUR Setup + 500 EUR/Mo', target: 'Städte, Landkreise, Klinikverbünde', arpu: '~1.500 EUR/Mo', color: 'text-purple-300' },
           ].map((seg, i) => (
-            <Card key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center bg-black/30 backdrop-blur-sm border-white/10">
-              <div className={`sm:w-1/6 font-bold text-sm ${seg.color}`}>{seg.segment}</div>
-              <div className="sm:w-2/6 text-xs">{seg.plans}</div>
+            <GlassCard key={i} className="p-4 flex flex-col sm:flex-row gap-2 sm:items-center">
+              <div className={`sm:w-1/6 font-bold text-sm ${seg.color} drop-shadow`}>{seg.segment}</div>
+              <div className="sm:w-2/6 text-xs text-white">{seg.plans}</div>
               <div className="sm:w-2/6 text-xs text-white/70">{seg.target}</div>
-              <div className="sm:w-1/6 text-xs text-right font-medium">ARPU: {seg.arpu}</div>
-            </Card>
+              <div className="sm:w-1/6 text-xs text-right font-medium text-white">ARPU: {seg.arpu}</div>
+            </GlassCard>
           ))}
         </div>
 
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-white/75">
           Jahresverträge = 2 Monate gratis (17% Rabatt) · Rahmenverträge mit Trägern ab 10 Standorten
         </p>
       </div>
@@ -377,40 +359,40 @@ export default function InvestorPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Unit Economics (Ziel Jahr 2)</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-semibold flex items-center gap-2">
+          <GlassCard className="p-5 space-y-3">
+            <h3 className="font-semibold flex items-center gap-2 text-white drop-shadow">
               <Landmark className="w-4 h-4 text-blue-300" />
               B2G (Behörden / Healthcare)
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-white/70">CAC (Pilot-Modell)</span><span className="font-medium">200 EUR</span></div>
-              <div className="flex justify-between"><span className="text-white/70">LTV (36 Mo)</span><span className="font-medium">5.400 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">CAC (Pilot-Modell)</span><span className="font-medium text-white">200 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV (36 Mo)</span><span className="font-medium text-white">5.400 EUR</span></div>
               <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">27x</span></div>
-              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">1,3 Monate</span></div>
+              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium text-white">1,3 Monate</span></div>
             </div>
-          </Card>
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-semibold flex items-center gap-2">
+          </GlassCard>
+          <GlassCard className="p-5 space-y-3">
+            <h3 className="font-semibold flex items-center gap-2 text-white drop-shadow">
               <Building className="w-4 h-4 text-sky-300" />
               B2B (Museen / Events)
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium">800 EUR</span></div>
-              <div className="flex justify-between"><span className="text-white/70">LTV (24 Mo)</span><span className="font-medium">3.576 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">CAC</span><span className="font-medium text-white">800 EUR</span></div>
+              <div className="flex justify-between"><span className="text-white/70">LTV (24 Mo)</span><span className="font-medium text-white">3.576 EUR</span></div>
               <div className="flex justify-between"><span className="text-white/70">LTV/CAC</span><span className="font-medium text-sky-300">4,5x</span></div>
-              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium">5,4 Monate</span></div>
+              <div className="flex justify-between"><span className="text-white/70">Payback</span><span className="font-medium text-white">5,4 Monate</span></div>
             </div>
-          </Card>
+          </GlassCard>
         </div>
-        <Card className="p-5 bg-black/30 backdrop-blur-sm border-white/10">
-          <h3 className="font-semibold mb-3">Gross Margin Breakdown</h3>
+        <GlassCard className="p-5">
+          <h3 className="font-semibold mb-3 text-white drop-shadow">Gross Margin Breakdown</h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Bruttomarge (SaaS-typisch)</span>
+              <span className="text-white">Bruttomarge (SaaS-typisch)</span>
               <span className="font-bold text-sky-300">85%</span>
             </div>
-            <div className="h-3 rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full bg-primary" style={{ width: '85%' }} />
+            <div className="h-3 rounded-full bg-white/15 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-400" style={{ width: '85%' }} />
             </div>
             <div className="grid grid-cols-3 gap-2 text-xs text-white/70">
               <div>API-Kosten: 8%</div>
@@ -418,21 +400,21 @@ export default function InvestorPage() {
               <div>Support: 3%</div>
             </div>
           </div>
-        </Card>
+        </GlassCard>
       </div>
 
-      {/* 3-Jahres-Projektion — aktualisiert */}
+      {/* 3-Jahres-Projektion */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">3-Jahres-Projektion</h2>
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+        <GlassCard className="p-6">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-2 font-semibold"></th>
-                  <th className="text-right py-2 font-semibold">Monat 6</th>
-                  <th className="text-right py-2 font-semibold">Monat 12</th>
-                  <th className="text-right py-2 font-semibold">Monat 24</th>
+                <tr className="border-b border-white/15">
+                  <th className="text-left py-2 font-semibold text-white/80"></th>
+                  <th className="text-right py-2 font-semibold text-white/80">Monat 6</th>
+                  <th className="text-right py-2 font-semibold text-white/80">Monat 12</th>
+                  <th className="text-right py-2 font-semibold text-white/80">Monat 24</th>
                   <th className="text-right py-2 font-semibold text-sky-300">Monat 36</th>
                 </tr>
               </thead>
@@ -445,118 +427,96 @@ export default function InvestorPage() {
                   { label: 'ARR', m6: '30K EUR', m12: '144K EUR', m24: '1,14M EUR', m36: '2,34M EUR' },
                   { label: 'Break-even', m6: '–', m12: 'Monat 10', m24: 'erreicht', m36: 'profitabel' },
                 ].map((row, i) => (
-                  <tr key={i} className={`border-b border-white/5 last:border-0 ${row.label === 'ARR' ? 'font-bold' : ''}`}>
-                    <td className="py-2 text-white/70">{row.label}</td>
-                    <td className="py-2 text-right">{row.m6}</td>
-                    <td className="py-2 text-right">{row.m12}</td>
-                    <td className="py-2 text-right">{row.m24}</td>
+                  <tr key={i} className={`border-b border-white/8 last:border-0 ${row.label === 'ARR' ? 'font-bold' : ''}`}>
+                    <td className="py-2 text-white/75">{row.label}</td>
+                    <td className="py-2 text-right text-white">{row.m6}</td>
+                    <td className="py-2 text-right text-white">{row.m12}</td>
+                    <td className="py-2 text-right text-white">{row.m24}</td>
                     <td className="py-2 text-right text-sky-300">{row.m36}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </Card>
+        </GlassCard>
       </div>
 
-      {/* Go-to-Market — aktualisiert */}
+      {/* Go-to-Market */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Go-to-Market Strategie</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             {
-              phase: 'Phase 1',
-              period: 'Monat 1–6',
-              title: 'Pilot & Referenz',
-              items: [
-                '2 Behörden-Piloten (Rostock + Schwerin)',
-                '2 Klinik-Piloten (Diakonie + UKR)',
-                'BAFA-Anträge gestellt',
-                'Erste 5 zahlende Kunden',
-                '30K EUR ARR',
-              ],
+              phase: 'Phase 1', period: 'Monat 1–6', title: 'Pilot & Referenz',
+              items: ['2 Behörden-Piloten (Rostock + Schwerin)', '2 Klinik-Piloten (Diakonie + UKR)', 'BAFA-Anträge gestellt', 'Erste 5 zahlende Kunden', '30K EUR ARR'],
             },
             {
-              phase: 'Phase 2',
-              period: 'Monat 6–18',
-              title: 'Skalierung DACH',
-              items: [
-                'ZIM-Förderung bewilligt',
-                '25 Behörden, 15 Kliniken',
-                'IMEX Frankfurt (Messe)',
-                'Rahmenvertrag Landkreis',
-                '144K EUR ARR',
-              ],
+              phase: 'Phase 2', period: 'Monat 6–18', title: 'Skalierung DACH',
+              items: ['ZIM-Förderung bewilligt', '25 Behörden, 15 Kliniken', 'IMEX Frankfurt (Messe)', 'Rahmenvertrag Landkreis', '144K EUR ARR'],
             },
             {
-              phase: 'Phase 3',
-              period: 'Monat 18–36',
-              title: 'Expansion & White-Label',
-              items: [
-                'Österreich + Schweiz',
-                'White-Label für Klinikverbünde',
-                'API/SDK für Drittanbieter',
-                'Series A vorbereiten',
-                '2,34M EUR ARR',
-              ],
+              phase: 'Phase 3', period: 'Monat 18–36', title: 'Expansion & White-Label',
+              items: ['Österreich + Schweiz', 'White-Label für Klinikverbünde', 'API/SDK für Drittanbieter', 'Series A vorbereiten', '2,34M EUR ARR'],
             },
           ].map((phase, i) => (
-            <Card key={i} className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+            <GlassCard key={i} className="p-5 space-y-3">
               <div>
                 <span className="text-xs font-mono text-sky-300">{phase.phase} · {phase.period}</span>
-                <h3 className="font-bold text-lg">{phase.title}</h3>
+                <h3 className="font-bold text-lg text-white drop-shadow">{phase.title}</h3>
               </div>
               <ul className="space-y-1.5">
                 {phase.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2 text-xs text-white/70">
+                  <li key={j} className="flex items-start gap-2 text-xs text-white/80">
                     <Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-            </Card>
+            </GlassCard>
           ))}
         </div>
       </div>
 
-      {/* Technologie-Status — aktualisiert */}
+      {/* Technologie-Status */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Technologie-Status (März 2026)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            { label: 'AmtTranslator (Clerk + Visitor App)', status: 'Production · deployed', ok: true },
-            { label: 'MedTranslator (Staff + Patient App)', status: 'Production · deployed', ok: true },
-            { label: 'ArtGuide Portal + Visitor App', status: 'Production · deployed', ok: true },
-            { label: 'EventTranslator (Speaker + Listener)', status: 'Production · deployed', ok: true },
-            { label: 'Offline-Engine (Opus-MT + Whisper WASM)', status: 'Production · 54 Sprachpaare', ok: true },
-            { label: 'BLE GATT Transport (Android + iOS)', status: 'Production', ok: true },
-            { label: '40+ Sprachen inkl. RTL (AR, FA, UR)', status: 'Production', ok: true },
-            { label: 'E2E-Verschlüsselung (AES-256-GCM)', status: 'Production', ok: true },
-            { label: 'DSGVO Art. 9 / BSI-Grundschutz', status: 'Dokumentiert · DSFA-Template fertig', ok: true },
-            { label: 'BITV 2.0 / WCAG 2.1 AA', status: 'Audit-Template fertig', ok: true },
-            { label: 'EVB-IT Vertragsvorlagen', status: 'Fertig · 3 Varianten', ok: true },
-            { label: 'Ausschreibungs-Monitor (DTVP, evergabe)', status: 'Production · live', ok: true },
-            { label: 'HD-TTS (Neural2 + Chirp 3 HD)', status: 'Production', ok: true },
-            { label: 'Supabase Edge Functions (AI + TTS)', status: 'Production · 4 Functions', ok: true },
-            { label: 'Android App (Google Play)', status: 'Beta · Play Ready', ok: true },
-            { label: 'iOS App Store', status: 'Roadmap Q3 2026', ok: false },
-          ].map((item, i) => (
-            <div key={i} className="flex items-start gap-2 p-2 rounded text-xs">
-              <Check className={`w-3 h-3 mt-0.5 shrink-0 ${item.ok ? 'text-green-500' : 'text-white/30'}`} />
-              <div>
-                <span className="font-medium">{item.label}</span>
-                <span className="text-white/50"> — {item.status}</span>
+        <GlassCard className="p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {[
+              { label: 'AmtTranslator (Clerk + Visitor App)', status: 'Production · deployed', ok: true },
+              { label: 'MedTranslator (Staff + Patient App)', status: 'Production · deployed', ok: true },
+              { label: 'ArtGuide Portal + Visitor App', status: 'Production · deployed', ok: true },
+              { label: 'EventTranslator (Speaker + Listener)', status: 'Production · deployed', ok: true },
+              { label: 'Offline-Engine (Opus-MT + Whisper WASM)', status: 'Production · 54 Sprachpaare', ok: true },
+              { label: 'BLE GATT Transport (Android + iOS)', status: 'Production', ok: true },
+              { label: '40+ Sprachen inkl. RTL (AR, FA, UR)', status: 'Production', ok: true },
+              { label: 'E2E-Verschlüsselung (AES-256-GCM)', status: 'Production', ok: true },
+              { label: 'DSGVO Art. 9 / BSI-Grundschutz', status: 'Dokumentiert · DSFA-Template fertig', ok: true },
+              { label: 'BITV 2.0 / WCAG 2.1 AA', status: 'Audit-Template fertig', ok: true },
+              { label: 'EVB-IT Vertragsvorlagen', status: 'Fertig · 3 Varianten', ok: true },
+              { label: 'Ausschreibungs-Monitor (DTVP, evergabe)', status: 'Production · live', ok: true },
+              { label: 'HD-TTS (Neural2 + Chirp 3 HD)', status: 'Production', ok: true },
+              { label: 'Supabase Edge Functions (AI + TTS)', status: 'Production · 4 Functions', ok: true },
+              { label: 'Android App (Google Play)', status: 'Beta · Play Ready', ok: true },
+              { label: 'iOS App Store', status: 'Roadmap Q3 2026', ok: false },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-2 p-2 rounded-lg text-xs">
+                <Check className={`w-3 h-3 mt-0.5 shrink-0 ${item.ok ? 'text-green-400' : 'text-white/30'}`} />
+                <div>
+                  <span className="font-medium text-white">{item.label}</span>
+                  <span className="text-white/55"> — {item.status}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </GlassCard>
       </div>
 
       {/* Wettbewerbsvorteile */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Wettbewerbsvorteile & IP</h2>
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
-          <h3 className="font-semibold mb-4">Patentfähige Innovationen</h3>
+        <GlassCard className="p-6">
+          <h3 className="font-semibold mb-4 text-white drop-shadow">Patentfähige Innovationen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { name: '4-Tier Auto-Fallback Transport', time: '3–4 Monate Nachahmung' },
@@ -564,29 +524,28 @@ export default function InvestorPage() {
               { name: 'Bidirektional 180°-Single-Device', time: '2–3 Monate Nachahmung' },
               { name: 'Hybrid ML Pipeline (On-Device + Cloud)', time: '4–6 Monate Nachahmung' },
             ].map((item, i) => (
-              <div key={i} className="flex justify-between items-center p-3 rounded bg-black/30 backdrop-blur-sm">
-                <span className="text-sm font-medium">{item.name}</span>
-                <span className="text-xs text-white/70">{item.time}</span>
+              <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-black/20 border border-white/15">
+                <span className="text-sm font-medium text-white">{item.name}</span>
+                <span className="text-xs text-white/65">{item.time}</span>
               </div>
             ))}
           </div>
-          <p className="text-sm text-sky-300 font-medium mt-4 text-center">
+          <p className="text-sm text-sky-300 font-medium mt-4 text-center drop-shadow">
             Gesamt-Nachahmungsaufwand: 12–18 Monate
           </p>
-        </Card>
+        </GlassCard>
 
-        {/* Wettbewerbsvergleich kompakt */}
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
-          <h3 className="font-semibold mb-4">Wettbewerbsvergleich (Behörden-Markt)</h3>
+        <GlassCard className="p-6">
+          <h3 className="font-semibold mb-4 text-white drop-shadow">Wettbewerbsvergleich (Behörden-Markt)</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-2">Anbieter</th>
-                  <th className="text-center py-2">Offline</th>
-                  <th className="text-center py-2">1 Gerät</th>
-                  <th className="text-center py-2">DSGVO Art.9</th>
-                  <th className="text-center py-2">Behörden-Fokus</th>
+                <tr className="border-b border-white/15">
+                  <th className="text-left py-2 text-white/80">Anbieter</th>
+                  <th className="text-center py-2 text-white/80">Offline</th>
+                  <th className="text-center py-2 text-white/80">1 Gerät</th>
+                  <th className="text-center py-2 text-white/80">DSGVO Art.9</th>
+                  <th className="text-center py-2 text-white/80">Behörden-Fokus</th>
                 </tr>
               </thead>
               <tbody>
@@ -597,7 +556,7 @@ export default function InvestorPage() {
                   { name: 'Pocketalk', offline: '⚠️', oneDevice: '✅', dsgvo: '❌', focus: '❌' },
                   { name: 'DeepL / Google', offline: '❌', oneDevice: '❌', dsgvo: '❌', focus: '❌' },
                 ].map((row, i) => (
-                  <tr key={i} className={`border-b border-white/5 last:border-0 ${i === 0 ? 'font-bold text-sky-300' : ''}`}>
+                  <tr key={i} className={`border-b border-white/8 last:border-0 ${i === 0 ? 'font-bold text-sky-300' : 'text-white'}`}>
                     <td className="py-2">{row.name}</td>
                     <td className="py-2 text-center">{row.offline}</td>
                     <td className="py-2 text-center">{row.oneDevice}</td>
@@ -608,23 +567,23 @@ export default function InvestorPage() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </GlassCard>
       </div>
 
       {/* Team */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Team</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-semibold">Gründer & CEO</h3>
-            <p className="text-sm font-medium">Alexander Deibel</p>
+          <GlassCard className="p-5 space-y-2">
+            <h3 className="font-semibold text-white drop-shadow">Gründer & CEO</h3>
+            <p className="text-sm font-medium text-white">Alexander Deibel</p>
             <p className="text-xs text-white/70">fintutto ug (haftungsbeschränkt) · Fintutto-Ecosystem</p>
             <p className="text-xs text-white/70">7 Production-Apps in unter 6 Monaten gebaut und deployed</p>
             <p className="text-xs text-white/70">Full-Stack: React, TypeScript, Supabase, Edge Functions, PWA, BLE</p>
-          </Card>
-          <Card className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
-            <h3 className="font-semibold">Fintutto Ecosystem</h3>
-            <ul className="space-y-1 text-xs text-white/70">
+          </GlassCard>
+          <GlassCard className="p-5 space-y-2">
+            <h3 className="font-semibold text-white drop-shadow">Fintutto Ecosystem</h3>
+            <ul className="space-y-1 text-xs text-white/75">
               <li>• AmtTranslator — Behörden-Übersetzung (Hauptprodukt)</li>
               <li>• MedTranslator — Healthcare-Übersetzung</li>
               <li>• ArtGuide — Museum & Kulturführer</li>
@@ -632,37 +591,37 @@ export default function InvestorPage() {
               <li>• Vermietify — Vermietungssoftware</li>
               <li>• BescheidBoxer — Dokumentenmanagement</li>
             </ul>
-          </Card>
+          </GlassCard>
         </div>
-        <Card className="p-5 bg-black/30 backdrop-blur-sm border-white/10">
-          <h3 className="font-semibold mb-3">Einstellungsplan (mit Finanzierung)</h3>
+        <GlassCard className="p-5">
+          <h3 className="font-semibold mb-3 text-white drop-shadow">Einstellungsplan (mit Finanzierung)</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
               { role: 'CTO', month: 'Mo 1', salary: '90–110K' },
               { role: 'Sales Lead', month: 'Mo 2', salary: '70–90K' },
               { role: 'Mobile Dev', month: 'Mo 3', salary: '70–85K' },
-              { role: 'Customer Success', month: 'Mo 6', salary: '50–60K' },
+              { role: 'Customer Success', month: 'Mo 6', salary: '50–65K' },
               { role: 'Marketing', month: 'Mo 9', salary: '55–70K' },
             ].map((item, i) => (
-              <div key={i} className="text-center p-2 rounded bg-black/30 backdrop-blur-sm">
-                <p className="font-medium text-xs">{item.role}</p>
+              <div key={i} className="text-center p-2 rounded-xl bg-white/8 border border-white/10">
+                <p className="font-medium text-xs text-white">{item.role}</p>
                 <p className="text-xs text-sky-300">{item.month}</p>
                 <p className="text-xs text-white/70">{item.salary} EUR</p>
               </div>
             ))}
           </div>
-        </Card>
+        </GlassCard>
       </div>
 
-      {/* Ask — aktualisiert */}
-      <Card className="p-8 border-primary text-center space-y-4 bg-black/30 backdrop-blur-sm border-white/10">
-        <h2 className="text-2xl font-bold drop-shadow-lg">Seed-Runde: 750.000 EUR</h2>
-        <p className="text-sm text-white/70">Pre-Money Bewertung: 3 Mio EUR (verhandelbar) · Netto-Eigenkapitalbedarf: 16.000 EUR (nach Förderung)</p>
+      {/* Ask / Seed-Runde */}
+      <GlassCard className="p-8 text-center space-y-4 border-sky-400/30">
+        <h2 className="text-2xl font-bold drop-shadow-lg text-white">Seed-Runde: 750.000 EUR</h2>
+        <p className="text-sm text-white/80">Pre-Money Bewertung: 3 Mio EUR (verhandelbar) · Netto-Eigenkapitalbedarf: 16.000 EUR (nach Förderung)</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-lg mx-auto">
           <div>
-            <h3 className="font-semibold text-sm mb-2">Was wir bieten:</h3>
-            <ul className="space-y-1.5 text-xs text-white/70">
+            <h3 className="font-semibold text-sm mb-2 text-white drop-shadow">Was wir bieten:</h3>
+            <ul className="space-y-1.5 text-xs text-white/80">
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />7 Production-Apps, alle deployed</li>
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />4 Märkte mit €10,1 Mrd SAM</li>
               <li className="flex items-start gap-1.5"><Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />€156K Förderpotenzial identifiziert</li>
@@ -671,8 +630,8 @@ export default function InvestorPage() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-sm mb-2">Use of Funds:</h3>
-            <ul className="space-y-1.5 text-xs text-white/70">
+            <h3 className="font-semibold text-sm mb-2 text-white drop-shadow">Use of Funds:</h3>
+            <ul className="space-y-1.5 text-xs text-white/80">
               <li>Team (65%): 487.500 EUR</li>
               <li>Produkt (15%): 112.500 EUR</li>
               <li>Go-to-Market (15%): 112.500 EUR</li>
@@ -689,8 +648,8 @@ export default function InvestorPage() {
               { milestone: 'Break-even', time: 'Monat 10' },
               { milestone: '2,34M EUR ARR', time: 'Monat 36' },
             ].map((m, i) => (
-              <div key={i} className="p-2 rounded bg-black/30 backdrop-blur-sm">
-                <p className="text-xs font-medium">{m.milestone}</p>
+              <div key={i} className="p-2 rounded-xl bg-black/20 border border-white/15">
+                <p className="text-xs font-medium text-white">{m.milestone}</p>
                 <p className="text-xs text-sky-300">{m.time}</p>
               </div>
             ))}
@@ -699,16 +658,16 @@ export default function InvestorPage() {
             Series A (~3M EUR) geplant bei 150K+ EUR ARR, 25+ Behörden-Kunden, &lt;3% monatliche Churn
           </p>
         </div>
-      </Card>
+      </GlassCard>
 
       {/* Kontakt */}
       <div className="text-center space-y-4 py-4">
-        <h2 className="text-2xl font-bold drop-shadow-lg">Kontakt</h2>
+        <h2 className="text-2xl font-bold drop-shadow-lg text-white">Kontakt</h2>
         <div className="space-y-1">
-          <p className="font-semibold">fintutto ug (haftungsbeschränkt)</p>
-          <p className="text-sm text-white/70">Alexander Deibel · Geschäftsführer</p>
-          <p className="text-sm text-white/70">info@guidetranslator.com</p>
-          <p className="text-sm text-white/70">Kolonie 2, 18317 Saal, Deutschland</p>
+          <p className="font-semibold text-white">fintutto ug (haftungsbeschränkt)</p>
+          <p className="text-sm text-white/80">Alexander Deibel · Geschäftsführer</p>
+          <p className="text-sm text-white/80">info@guidetranslator.com</p>
+          <p className="text-sm text-white/80">Kolonie 2, 18317 Saal, Deutschland</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
           <Link to="/compare">
@@ -732,7 +691,7 @@ export default function InvestorPage() {
         </div>
       </div>
 
-      <p className="text-center text-xs text-white/70 pb-4">
+      <p className="text-center text-xs text-white/60 pb-4">
         Stand: März 2026 · FitTutto World v4.0 · Vertraulich
       </p>
     </div>

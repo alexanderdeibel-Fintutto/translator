@@ -47,7 +47,7 @@ export default function TechnologyPage() {
         ].map((stat, i) => {
           const Icon = stat.icon
           return (
-            <div key={i} className="text-center p-4 rounded-lg bg-black/30 backdrop-blur-sm space-y-1">
+            <div key={i} className="text-center p-4 rounded-lg bg-black/25 backdrop-blur-md space-y-1">
               <Icon className="w-5 h-5 text-sky-300 mx-auto" />
               <div className="text-2xl font-bold text-sky-300">{stat.value}</div>
               <div className="text-xs text-white/70">{stat.label}</div>
@@ -110,7 +110,7 @@ export default function TechnologyPage() {
           ].map((tier, i) => {
             const Icon = tier.icon
             return (
-              <Card key={i} className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+              <Card key={i} className="p-6 bg-black/25 backdrop-blur-md border-white/10">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-lg ${tier.bg} flex items-center justify-center shrink-0`}>
                     <Icon className={`w-6 h-6 ${tier.color}`} />
@@ -146,7 +146,7 @@ export default function TechnologyPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Database className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">3-Tier-Cache</h3>
@@ -158,7 +158,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Layers className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Provider-Kaskade</h3>
@@ -172,7 +172,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Resilienz</h3>
@@ -185,7 +185,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Übersetzungs-Features</h3>
@@ -204,7 +204,7 @@ export default function TechnologyPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Sprach-Engines</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Radio className="w-5 h-5 text-sky-300" />
               Speech-to-Text (STT)
@@ -220,7 +220,7 @@ export default function TechnologyPage() {
             <p className="text-xs text-white/70">+ Satz-Boundary-Erkennung für Echtzeit-Übersetzung</p>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Zap className="w-5 h-5 text-sky-300" />
               Text-to-Speech (TTS)
@@ -254,7 +254,7 @@ export default function TechnologyPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Lock className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">E2E-Verschlüsselung</h3>
@@ -268,7 +268,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Security Headers</h3>
@@ -282,7 +282,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Eye className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">DSGVO-Compliance</h3>
@@ -296,7 +296,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <div className="flex items-center gap-2">
               <Smartphone className="w-5 h-5 text-sky-300" />
               <h3 className="font-semibold">Native Security</h3>
@@ -316,7 +316,7 @@ export default function TechnologyPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Performance-Metriken</h2>
 
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+        <Card className="p-6 bg-black/25 backdrop-blur-md border-white/10">
           <h3 className="font-semibold mb-4">Latenz-Pipeline (typische Werte)</h3>
           <div className="space-y-3">
             {[
@@ -343,7 +343,7 @@ export default function TechnologyPage() {
         </Card>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold">Bundle-Größen</h3>
             <div className="space-y-2">
               {[
@@ -361,7 +361,7 @@ export default function TechnologyPage() {
             </div>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold">Speicheranforderungen</h3>
             <div className="space-y-2">
               {[
@@ -385,7 +385,7 @@ export default function TechnologyPage() {
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Tech Stack</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Monitor className="w-4 h-4 text-sky-300" />
               Frontend
@@ -399,7 +399,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Cpu className="w-4 h-4 text-sky-300" />
               AI / ML
@@ -413,7 +413,7 @@ export default function TechnologyPage() {
             </ul>
           </Card>
 
-          <Card className="p-5 space-y-3 bg-black/30 backdrop-blur-sm border-white/10">
+          <Card className="p-5 space-y-3 bg-black/25 backdrop-blur-md border-white/10">
             <h3 className="font-semibold flex items-center gap-2">
               <Server className="w-4 h-4 text-sky-300" />
               Backend / Cloud
@@ -432,7 +432,7 @@ export default function TechnologyPage() {
       {/* Testing */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-center drop-shadow-lg">Qualitätssicherung</h2>
-        <Card className="p-6 bg-black/30 backdrop-blur-sm border-white/10">
+        <Card className="p-6 bg-black/25 backdrop-blur-md border-white/10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
@@ -496,7 +496,7 @@ export default function TechnologyPage() {
               time: '2-3 Monate Nachahmungsaufwand',
             },
           ].map((item, i) => (
-            <Card key={i} className="p-5 space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
+            <Card key={i} className="p-5 space-y-2 bg-black/25 backdrop-blur-md border-white/10">
               <h3 className="font-semibold">{item.title}</h3>
               <p className="text-sm text-white/70">{item.desc}</p>
               <p className="text-xs text-sky-300 font-medium">{item.time}</p>

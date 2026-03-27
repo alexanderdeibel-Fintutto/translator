@@ -216,7 +216,7 @@ export default function LiveLandingPage() {
                   type="text"
                   value={localServerUrl}
                   onChange={(e) => setLocalServerUrl(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-md border bg-background text-sm font-mono"
+                  className="w-full px-3 py-1.5 rounded-md border bg-black/20 text-sm font-mono"
                   placeholder="ws://192.168.8.1:8765"
                 />
                 <p className="text-[10px] text-muted-foreground/60">

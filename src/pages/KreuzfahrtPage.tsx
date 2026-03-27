@@ -106,7 +106,7 @@ export default function KreuzfahrtPage() {
       <section className="py-8 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
           {STATS.map((stat, i) => (
-            <div key={i} className="text-center p-4 rounded-lg bg-background shadow-sm">
+            <div key={i} className="text-center p-4 rounded-lg bg-black/20 shadow-sm">
               <div className="text-2xl sm:text-3xl font-bold text-primary">{stat.value}</div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </div>
