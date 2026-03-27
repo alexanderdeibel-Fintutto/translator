@@ -74,9 +74,6 @@ export default function EnterpriseSolutionPage() {
   return (
     <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
 
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
-      </div>
 
       {/* Hero */}
       <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">

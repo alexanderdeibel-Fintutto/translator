@@ -57,9 +57,23 @@
   * {
     @apply border-border;
   }
+
+  html {
+    /* Vollflächiger Fintutto-Hintergrund — auf ALLEN Seiten, immer vollständig */
+    background-color: #2d1b4e;
+    background-image: url('/fintutto-logo.svg');
+    background-size: cover;
+    background-position: center top;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
+    background: transparent;
+    min-height: 100vh;
   }
 
   /* Accessible focus indicators */
@@ -91,6 +105,16 @@
     50% {
       box-shadow: 0 0 0 12px rgba(14, 165, 233, 0);
     }
+  }
+
+  /* Glassmorphism-Karte — Standard-Klasse für alle Sales-Seiten */
+  .glass-card {
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 }
 

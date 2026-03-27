@@ -7,12 +7,7 @@ export default function NotFoundPage() {
   const { t } = useI18n()
   return (
     <div className="relative flex flex-col items-center justify-center py-20 px-4 text-center">
-      {/* Hintergrund-Logo */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
-      </div>
-
-      <div className="relative z-10 space-y-6">
+<div className="relative z-10 space-y-6">
         <div className="text-8xl font-bold text-white/20 drop-shadow-2xl">404</div>
 
         <div className="rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl p-8 space-y-3 max-w-sm mx-auto">

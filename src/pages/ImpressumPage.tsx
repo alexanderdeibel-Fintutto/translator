@@ -12,12 +12,7 @@ function GlassSection({ title, children }: { title: string; children: React.Reac
 export default function ImpressumPage() {
   return (
     <div className="relative max-w-3xl mx-auto space-y-6 py-8 px-4 text-white">
-      {/* Hintergrund-Logo */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
-      </div>
-
-      <div className="relative z-10 text-center space-y-2 pb-2">
+<div className="relative z-10 text-center space-y-2 pb-2">
         <h1 className="text-3xl font-bold tracking-tight drop-shadow-lg">Impressum</h1>
         <p className="text-white/70 text-sm">Angaben gemäß § 5 TMG</p>
       </div>

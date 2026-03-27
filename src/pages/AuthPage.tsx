@@ -119,12 +119,7 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex items-center justify-center min-h-[60vh] px-4">
-      {/* Hintergrund-Logo */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
-      </div>
-
-      <div className="relative z-10 w-full max-w-md">
+<div className="relative z-10 w-full max-w-md">
         {/* Glasskarte */}
         <div className="rounded-2xl bg-black/30 backdrop-blur-md border border-white/20 shadow-2xl p-6 sm:p-8">
           <div className="text-center mb-6">

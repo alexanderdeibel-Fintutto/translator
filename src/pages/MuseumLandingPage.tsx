@@ -189,12 +189,7 @@ export default function MuseumLandingPage() {
 
   return (
     <div className="relative min-h-screen text-white">
-      {/* Hintergrund-Logo */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
-      </div>
-
-      {/* Hero */}
+{/* Hero */}
       <section className="relative z-10 py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           {inviteCode && (

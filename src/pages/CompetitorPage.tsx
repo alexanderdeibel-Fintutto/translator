@@ -107,13 +107,7 @@ const MOATS = [
 export default function CompetitorPage() {
   return (
     <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
-
-      {/* Hintergrund-Logo */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
-      </div>
-
-      {/* Hero */}
+{/* Hero */}
       <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <img src="/fintutto-logo.svg" alt="" className="w-[280px] h-[280px] opacity-90" />

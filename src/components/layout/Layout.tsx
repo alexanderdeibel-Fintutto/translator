@@ -6,7 +6,7 @@ import { useI18n } from '@/context/I18nContext'
 export default function Layout() {
   const { t } = useI18n()
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       {/* Skip to content — accessible keyboard shortcut */}
       <a
         href="#main-content"
