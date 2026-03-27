@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2, Radio } from 'lucide-react'
+import { Volume2, VolumeX, LogOut, Loader2, WifiOff, Subtitles, Maximize2, Minimize2, Radio, MessageSquarePlus, Send, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
 import LanguageChips from './LanguageChips'
 import LiveTranscript from './LiveTranscript'
 import ConnectionModeIndicator from './ConnectionModeIndicator'
@@ -67,6 +68,19 @@ export default function ListenerView({ session }: ListenerViewProps) {
 
   // Automatically switch to RTL layout for Arabic, Farsi, etc.
   useRTL(session.selectedLanguage)
+
+  const [questionText, setQuestionText] = useState('')
+  const [showQA, setShowQA] = useState(false)
+  const [questionSent, setQuestionSent] = useState(false)
+
+  const handleSendQuestion = useCallback(() => {
+    const text = questionText.trim()
+    if (!text || !session.sendQuestion) return
+    session.sendQuestion(text)
+    setQuestionText('')
+    setQuestionSent(true)
+    setTimeout(() => setQuestionSent(false), 3000)
+  }, [questionText, session])
 
   const handleBackChannelSend = useCallback((response: BackChannelResponse) => {
     session.broadcast?.('backchannel', {
@@ -316,6 +330,73 @@ export default function ListenerView({ session }: ListenerViewProps) {
           exclude={session.sourceLanguage}
           showLive
         />
+      </Card>
+
+      {/* Q&A: Received broadcast questions from host */}
+      {session.broadcastedQuestions && session.broadcastedQuestions.length > 0 && (
+        <Card className="p-4 space-y-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+          <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+            <MessageSquarePlus className="h-4 w-4" />
+            {t('live.qa.broadcastedQuestions')}
+          </p>
+          <div className="space-y-2">
+            {session.broadcastedQuestions.slice(-5).map((q) => (
+              <div key={q.questionId} className="text-sm p-2 bg-white dark:bg-gray-900 rounded border border-blue-100 dark:border-blue-900">
+                <p className="font-medium text-foreground">{q.text}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{q.senderName}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Q&A: Ask a question */}
+      <Card className="p-4 space-y-3">
+        <button
+          className="w-full flex items-center justify-between text-sm font-medium"
+          onClick={() => setShowQA(prev => !prev)}
+          aria-expanded={showQA}
+        >
+          <span className="flex items-center gap-2">
+            <MessageSquarePlus className="h-4 w-4 text-muted-foreground" />
+            {t('live.qa.askQuestion')}
+          </span>
+          {showQA ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+        </button>
+
+        {showQA && (
+          <div className="space-y-2">
+            <Textarea
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
+              placeholder={t('live.qa.placeholder')}
+              rows={3}
+              maxLength={500}
+              className="resize-none text-sm"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSendQuestion()
+                }
+              }}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">{questionText.length}/500</span>
+              <Button
+                size="sm"
+                onClick={handleSendQuestion}
+                disabled={!questionText.trim() || questionSent}
+                className="gap-1.5"
+              >
+                {questionSent ? (
+                  <>{t('live.qa.sent')}</>
+                ) : (
+                  <><Send className="h-3.5 w-3.5" />{t('live.qa.send')}</>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Transcript history */}

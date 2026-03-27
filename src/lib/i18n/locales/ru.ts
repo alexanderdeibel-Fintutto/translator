@@ -296,6 +296,16 @@ const strings: Record<string, string> = {
   'live.btnBle': 'BLE',
   'live.btnRouter': 'Router',
 
+  // Q&A feature
+  'live.qa.askQuestion': 'Задать вопрос',
+  'live.qa.placeholder': 'Введите ваш вопрос...',
+  'live.qa.send': 'Отправить',
+  'live.qa.sent': 'Отправлено ✓',
+  'live.qa.inbox': 'Вопросы',
+  'live.qa.broadcastToAll': 'Отправить всем',
+  'live.qa.dismiss': 'Отклонить',
+  'live.qa.broadcastedQuestions': 'Вопросы от модератора',
+
   // Errors (hooks & lib)
   'error.speechNotSupported': 'Голосовой ввод не поддерживается этим браузером',
   'error.ttsFallback': 'Google Cloud TTS недоступен — используется голос браузера',

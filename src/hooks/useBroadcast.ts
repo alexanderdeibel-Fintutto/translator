@@ -1,13 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BroadcastTransport, BroadcastHandlers, ListenerAnnounce } from '@/lib/transport/types'
+import type { BroadcastTransport, BroadcastHandlers } from '@/lib/transport/types'
 import { SupabaseBroadcastTransport } from '@/lib/transport/supabase-transport'
-import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
-import type { BackChannelMessage } from '@/lib/transport/types'
 
-type TranslationHandler = (chunk: TranslationChunk) => void
-type SessionInfoHandler = (info: SessionInfo) => void
-type StatusHandler = (status: StatusMessage) => void
-type BackChannelHandler = (msg: BackChannelMessage) => void
 
 export function useBroadcast(externalTransport?: BroadcastTransport) {
   const [isConnected, setIsConnected] = useState(false)
@@ -32,11 +26,7 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
 
   const subscribe = useCallback((
     code: string,
-    onTranslation?: TranslationHandler,
-    onSessionInfo?: SessionInfoHandler,
-    onStatus?: StatusHandler,
-    onBackChannel?: BackChannelHandler,
-    onListenerAnnounce?: (data: ListenerAnnounce) => void,
+    handlers: BroadcastHandlers,
   ) => {
     // Clean up previous
     cleanupRef.current?.()
@@ -47,14 +37,6 @@ export function useBroadcast(externalTransport?: BroadcastTransport) {
     cleanupRef.current = transport.onConnectionChange((connected) => {
       setIsConnected(connected)
     })
-
-    const handlers: BroadcastHandlers = {
-      onTranslation,
-      onSessionInfo,
-      onStatus,
-      onBackChannel,
-      onListenerAnnounce,
-    }
 
     transport.subscribe(code, handlers)
   }, [getTransport])

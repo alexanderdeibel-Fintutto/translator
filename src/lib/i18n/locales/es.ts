@@ -296,6 +296,16 @@ const strings: Record<string, string> = {
   'live.btnBle': 'BLE',
   'live.btnRouter': 'Router',
 
+  // Q&A feature
+  'live.qa.askQuestion': 'Hacer una pregunta',
+  'live.qa.placeholder': 'Escribe tu pregunta...',
+  'live.qa.send': 'Enviar',
+  'live.qa.sent': 'Enviado ✓',
+  'live.qa.inbox': 'Preguntas',
+  'live.qa.broadcastToAll': 'Enviar a todos',
+  'live.qa.dismiss': 'Descartar',
+  'live.qa.broadcastedQuestions': 'Preguntas del moderador',
+
   // Errors (hooks & lib)
   'error.speechNotSupported': 'La entrada de voz no es compatible con este navegador',
   'error.ttsFallback': 'Google Cloud TTS no disponible — se usa la voz del navegador',

@@ -32,6 +32,30 @@ export interface HotspotInfo {
 
 // --- Broadcast transport ---
 
+// --- Q&A: Visitor questions to host ---
+
+export interface QuestionMessage {
+  /** Unique ID so host can reference it when broadcasting */
+  questionId: string
+  /** Original text in visitor's language */
+  text: string
+  /** BCP-47 language code of the sender (e.g. 'ar', 'tr') */
+  senderLang: string
+  /** Display name of the sender device (e.g. 'Patient 3') */
+  senderName: string
+  timestamp: number
+}
+
+/** Host broadcasts an approved question to all listeners */
+export interface BroadcastQuestionMessage {
+  questionId: string
+  /** Text translated into the broadcast language (host's source lang) */
+  text: string
+  senderLang: string
+  senderName: string
+  timestamp: number
+}
+
 export interface BackChannelMessage {
   responseId: string
   emoji: string
@@ -53,6 +77,10 @@ export interface BroadcastHandlers {
   onStatus?: (status: StatusMessage) => void
   onBackChannel?: (msg: BackChannelMessage) => void
   onListenerAnnounce?: (data: ListenerAnnounce) => void
+  /** Visitor → Host: incoming question (host-side only) */
+  onQuestion?: (msg: QuestionMessage) => void
+  /** Host → All: approved question broadcast (listener-side) */
+  onBroadcastQuestion?: (msg: BroadcastQuestionMessage) => void
 }
 
 export interface BroadcastTransport {

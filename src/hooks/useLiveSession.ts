@@ -16,7 +16,7 @@ import { getSessionUrlWithTransport } from '@/lib/transport/connection-manager'
 import { TIERS, type TierId } from '@/lib/tiers'
 import { recordSessionMinute, recordPeakListeners, isWithinSessionLimit } from '@/lib/usage-tracker'
 import type { TranslationChunk, SessionInfo, StatusMessage } from '@/lib/session'
-import type { ConnectionConfig, BackChannelMessage, ListenerAnnounce } from '@/lib/transport/types'
+import type { ConnectionConfig, BackChannelMessage, ListenerAnnounce, QuestionMessage, BroadcastQuestionMessage } from '@/lib/transport/types'
 
 function generateChunkId(): string {
   return `chunk_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -48,6 +48,10 @@ export function useLiveSession(userTierId: TierId = 'free') {
   const [sessionLimitReached, setSessionLimitReached] = useState(false)
   const [languageLimitReached, setLanguageLimitReached] = useState(false)
   const [backChannelMessages, setBackChannelMessages] = useState<BackChannelMessage[]>([])
+  // Q&A: incoming questions (speaker-side inbox)
+  const [questionInbox, setQuestionInbox] = useState<QuestionMessage[]>([])
+  // Q&A: received broadcast questions (listener-side)
+  const [broadcastedQuestions, setBroadcastedQuestions] = useState<BroadcastQuestionMessage[]>([])
   // Audio streaming state for _live mode
   const [isAudioStreaming, setIsAudioStreaming] = useState(false)
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
@@ -139,19 +143,26 @@ export function useLiveSession(userTierId: TierId = 'free') {
       await connection.initialize(config)
     }
 
-    // Subscribe to broadcast channel (speaker receives backchannel + listener_announce)
+    // Subscribe to broadcast channel (speaker receives backchannel + listener_announce + questions)
     broadcastRef.current.subscribe(
       code,
-      undefined, // onTranslation (speaker doesn't receive translations)
-      undefined, // onSessionInfo
-      undefined, // onStatus
-      (msg: BackChannelMessage) => {
-        setBackChannelMessages((prev) => [...prev, msg])
-      },
-      // onListenerAnnounce — track listener languages via broadcast (presence fallback)
-      (data: ListenerAnnounce) => {
-        const key = `${data.deviceName}:${data.targetLanguage}`
-        announcedListenersRef.current.set(key, data)
+      {
+        onBackChannel: (msg: BackChannelMessage) => {
+          setBackChannelMessages((prev) => [...prev, msg])
+        },
+        // onListenerAnnounce — track listener languages via broadcast (presence fallback)
+        onListenerAnnounce: (data: ListenerAnnounce) => {
+          const key = `${data.deviceName}:${data.targetLanguage}`
+          announcedListenersRef.current.set(key, data)
+        },
+        // Q&A: receive visitor questions in the speaker inbox
+        onQuestion: (msg: QuestionMessage) => {
+          setQuestionInbox((prev) => {
+            // Dedup by questionId
+            if (prev.some(q => q.questionId === msg.questionId)) return prev
+            return [...prev, msg]
+          })
+        },
       },
     )
 
@@ -578,46 +589,56 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Subscribe to broadcast
     broadcastRef.current.subscribe(
       code,
-      // onTranslation
-      (chunk: TranslationChunk) => {
-        lastBroadcastReceivedRef.current = Date.now()
+      {
+        // onTranslation
+        onTranslation: (chunk: TranslationChunk) => {
+          lastBroadcastReceivedRef.current = Date.now()
 
-        // Handle audio_chunk events for _live audio streaming mode
-        if ((chunk as unknown as AudioChunkPayload).type === 'audio_chunk') {
-          if (selectedLanguageRef.current === '_live') {
-            audioReceiverRef.current.receiveChunk(chunk as unknown as AudioChunkPayload)
+          // Handle audio_chunk events for _live audio streaming mode
+          if ((chunk as unknown as AudioChunkPayload).type === 'audio_chunk') {
+            if (selectedLanguageRef.current === '_live') {
+              audioReceiverRef.current.receiveChunk(chunk as unknown as AudioChunkPayload)
+            }
+            return
           }
-          return
-        }
 
-        console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
-        if (chunk.targetLanguage === selectedLanguageRef.current) {
-          setCurrentTranslation(chunk.translatedText)
-          setReceivedChunks(prev => {
-            // Dedup: skip if chunk with same ID already exists (duplicate from reconnect)
-            if (prev.some(c => c.id === chunk.id)) return prev
-            const next = [...prev, chunk]
-            return next.length > 100 ? next.slice(-100) : next
+          console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
+          if (chunk.targetLanguage === selectedLanguageRef.current) {
+            setCurrentTranslation(chunk.translatedText)
+            setReceivedChunks(prev => {
+              // Dedup: skip if chunk with same ID already exists (duplicate from reconnect)
+              if (prev.some(c => c.id === chunk.id)) return prev
+              const next = [...prev, chunk]
+              return next.length > 100 ? next.slice(-100) : next
+            })
+
+            // Auto-TTS — for _live mode use the source language's voice
+            // (only when audio streaming is not active — audio stream takes priority)
+            if (autoTTSRef.current && chunk.translatedText && selectedLanguageRef.current !== '_live') {
+              const lang = getLanguageByCode(selectedLanguageRef.current)
+              ttsRef.current(chunk.translatedText, lang?.speechCode || selectedLanguageRef.current)
+            }
+          }
+        },
+        // onSessionInfo — track heartbeat from speaker to detect dead broadcast channel
+        onSessionInfo: () => {
+          lastBroadcastReceivedRef.current = Date.now()
+        },
+        // onStatus
+        onStatus: (status: StatusMessage) => {
+          lastBroadcastReceivedRef.current = Date.now()
+          if (status.ended) {
+            setSessionEnded(true)
+          }
+        },
+        // Q&A: receive approved questions broadcast by the host
+        onBroadcastQuestion: (msg: BroadcastQuestionMessage) => {
+          lastBroadcastReceivedRef.current = Date.now()
+          setBroadcastedQuestions(prev => {
+            if (prev.some(q => q.questionId === msg.questionId)) return prev
+            return [...prev, msg]
           })
-
-          // Auto-TTS — for _live mode use the source language's voice
-          // (only when audio streaming is not active — audio stream takes priority)
-          if (autoTTSRef.current && chunk.translatedText && selectedLanguageRef.current !== '_live') {
-            const lang = getLanguageByCode(selectedLanguageRef.current)
-            ttsRef.current(chunk.translatedText, lang?.speechCode || selectedLanguageRef.current)
-          }
-        }
-      },
-      // onSessionInfo — track heartbeat from speaker to detect dead broadcast channel
-      () => {
-        lastBroadcastReceivedRef.current = Date.now()
-      },
-      // onStatus
-      (status: StatusMessage) => {
-        lastBroadcastReceivedRef.current = Date.now()
-        if (status.ended) {
-          setSessionEnded(true)
-        }
+        },
       },
     )
 
@@ -741,6 +762,41 @@ export function useLiveSession(userTierId: TierId = 'free') {
     setSessionCode('')
   }, [tts])
 
+  // --- Q&A ---
+
+  /** Listener sends a question to the host */
+  const sendQuestion = useCallback((text: string) => {
+    const msg: QuestionMessage = {
+      questionId: `q_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      text,
+      senderLang: selectedLanguageRef.current,
+      senderName: getDeviceName(),
+      timestamp: Date.now(),
+    }
+    broadcastRef.current.broadcast('question', msg as unknown as Record<string, unknown>)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /** Host dismisses a question (removes from inbox) */
+  const dismissQuestion = useCallback((questionId: string) => {
+    setQuestionInbox(prev => prev.filter(q => q.questionId !== questionId))
+  }, [])
+
+  /** Host broadcasts an approved question to all listeners */
+  const broadcastQuestion = useCallback((question: QuestionMessage) => {
+    const msg: BroadcastQuestionMessage = {
+      questionId: question.questionId,
+      text: question.text,
+      senderLang: question.senderLang,
+      senderName: question.senderName,
+      timestamp: Date.now(),
+    }
+    broadcastRef.current.broadcast('broadcast_question', msg as unknown as Record<string, unknown>)
+    // Remove from inbox after broadcasting
+    setQuestionInbox(prev => prev.filter(q => q.questionId !== question.questionId))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // --- Session URL for QR code ---
   const sessionUrl = sessionCode
     ? getSessionUrlWithTransport(sessionCode, {
@@ -802,6 +858,14 @@ export function useLiveSession(userTierId: TierId = 'free') {
     broadcast: broadcast.broadcast,
     backChannelMessages,
     clearBackChannel: () => setBackChannelMessages([]),
+
+    // Q&A
+    sendQuestion,
+    questionInbox,
+    dismissQuestion,
+    broadcastQuestion,
+    broadcastedQuestions,
+    clearBroadcastedQuestions: () => setBroadcastedQuestions([]),
 
     // Tier limits
     listenerLimitReached,

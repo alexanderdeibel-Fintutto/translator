@@ -296,6 +296,16 @@ const strings: Record<string, string> = {
   'live.btnBle': 'BLE',
   'live.btnRouter': 'Router',
 
+  // Q&A feature
+  'live.qa.askQuestion': 'Soru sor',
+  'live.qa.placeholder': 'Sorunuzu yazın...',
+  'live.qa.send': 'Gönder',
+  'live.qa.sent': 'Gönderildi ✓',
+  'live.qa.inbox': 'Sorular',
+  'live.qa.broadcastToAll': 'Herkese gönder',
+  'live.qa.dismiss': 'Kapat',
+  'live.qa.broadcastedQuestions': 'Moderatörden sorular',
+
   // Errors (hooks & lib)
   'error.speechNotSupported': 'Bu tarayıcı sesli girişi desteklemiyor',
   'error.ttsFallback': 'Google Cloud TTS kullanılamıyor — tarayıcı sesi kullanılıyor',

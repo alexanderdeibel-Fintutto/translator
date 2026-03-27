@@ -353,6 +353,16 @@ const de: TranslationStrings = {
   'live.btnBle': 'BLE',
   'live.btnRouter': 'Router',
 
+  // Q&A feature
+  'live.qa.askQuestion': 'Frage stellen',
+  'live.qa.placeholder': 'Ihre Frage eingeben...',
+  'live.qa.send': 'Senden',
+  'live.qa.sent': 'Gesendet ✓',
+  'live.qa.inbox': 'Fragen',
+  'live.qa.broadcastToAll': 'An alle senden',
+  'live.qa.dismiss': 'Verwerfen',
+  'live.qa.broadcastedQuestions': 'Fragen vom Moderator',
+
   // Error boundary
   'error.errorBoundaryTitle': 'Etwas ist schiefgelaufen',
   'error.errorBoundaryDesc': 'Ein unerwarteter Fehler ist aufgetreten. Bitte lade die Seite neu.',

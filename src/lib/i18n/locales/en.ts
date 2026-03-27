@@ -295,6 +295,16 @@ const strings: Record<string, string> = {
   'live.btnBle': 'BLE',
   'live.btnRouter': 'Router',
 
+  // Q&A feature
+  'live.qa.askQuestion': 'Ask a question',
+  'live.qa.placeholder': 'Type your question...',
+  'live.qa.send': 'Send',
+  'live.qa.sent': 'Sent ✓',
+  'live.qa.inbox': 'Questions',
+  'live.qa.broadcastToAll': 'Send to all',
+  'live.qa.dismiss': 'Dismiss',
+  'live.qa.broadcastedQuestions': 'Questions from moderator',
+
   // Error boundary
   'error.errorBoundaryTitle': 'Something went wrong',
   'error.errorBoundaryDesc': 'An unexpected error occurred. Please reload the page.',

@@ -1,4 +1,4 @@
-import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity } from 'lucide-react'
+import { Mic, MicOff, StopCircle, WifiOff, Loader2, Download, Bluetooth, FileText, Activity, MessageSquarePlus, Radio, X } from 'lucide-react'
 import OfflineReadinessBanner from '@/components/offline/OfflineReadinessBanner'
 import { useRef, useCallback, useState, useEffect, useMemo, type MouseEvent as ReactMouseEvent } from 'react'
 import { Button } from '@/components/ui/button'
@@ -324,8 +324,50 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
           />
         </div>
 
-        {/* Right: Transcript */}
+        {/* Right: Q&A Inbox + Transcript */}
         <div className="lg:col-span-2 flex flex-col">
+
+          {/* Q&A Inbox — incoming questions from visitors */}
+          {session.questionInbox && session.questionInbox.length > 0 && (
+            <div className="mb-4 space-y-2">
+              <p className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                <MessageSquarePlus className="h-4 w-4 text-blue-500" />
+                {t('live.qa.inbox')} ({session.questionInbox.length})
+              </p>
+              {session.questionInbox.map((q) => (
+                <div key={q.questionId} className="flex items-start gap-2 p-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground break-words">{q.text}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {q.senderName} &middot; {new Date(q.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 px-2 gap-1 text-xs border-green-300 text-green-700 hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-950"
+                      onClick={() => session.broadcastQuestion?.(q)}
+                      title={t('live.qa.broadcastToAll')}
+                    >
+                      <Radio className="h-3 w-3" />
+                      {t('live.qa.broadcastToAll')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-2 text-muted-foreground hover:text-destructive"
+                      onClick={() => session.dismissQuestion?.(q.questionId)}
+                      title={t('live.qa.dismiss')}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {session.isRecording && (
             <div className="flex items-center gap-2 mb-3 px-1">
               <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />

@@ -194,6 +194,22 @@ export class SupabaseBroadcastTransport implements BroadcastTransport {
       })
     }
 
+    if (handlers.onQuestion) {
+      const handler = handlers.onQuestion
+      channel.on('broadcast', { event: 'question' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
+        handler(payload as import('@/lib/transport/types').QuestionMessage)
+      })
+    }
+
+    if (handlers.onBroadcastQuestion) {
+      const handler = handlers.onBroadcastQuestion
+      channel.on('broadcast', { event: 'broadcast_question' }, ({ payload }) => {
+        this.lastMessageAt = Date.now()
+        handler(payload as import('@/lib/transport/types').BroadcastQuestionMessage)
+      })
+    }
+
     // Also listen for heartbeat events (no handler needed, just updates lastMessageAt)
     channel.on('broadcast', { event: 'heartbeat' }, () => {
       this.lastMessageAt = Date.now()
