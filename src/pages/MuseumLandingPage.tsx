@@ -188,28 +188,33 @@ export default function MuseumLandingPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen text-white">
+      {/* Hintergrund-Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
+      </div>
+
       {/* Hero */}
-      <section className="py-16 md:py-24 px-4">
+      <section className="relative z-10 py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           {inviteCode && (
-            <Badge variant="outline" className="mb-4 text-sm">
+            <Badge className="mb-4 text-sm bg-sky-500/20 border-sky-400/30 text-sky-200">
               Exklusive Einladung
             </Badge>
           )}
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
             {headline}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/75 mb-8 max-w-2xl mx-auto">
             {subheadline}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" asChild>
+            <Button size="lg" className="gradient-translator text-white shadow-lg" asChild>
               <a href="#registrierung">
                 Kostenlos testen <ArrowRight className="h-4 w-4 ml-2" />
               </a>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
               <a href="#so-funktionierts">So funktioniert&apos;s</a>
             </Button>
           </div>
@@ -217,20 +222,20 @@ export default function MuseumLandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="relative z-10 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 drop-shadow-lg">
             {segmentId.startsWith('city') ? 'Alles fuer Ihre digitale Stadt' : segmentId === 'region' ? 'Alles fuer Ihre digitale Region' : segmentId === 'event' ? 'Alles fuer Ihr digitales Event' : 'Alles, was Ihr Museum braucht'}
           </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => {
               const Icon = ICON_MAP[f.icon] ?? Sparkles
               return (
-                <Card key={i} className="p-6">
-                  <Icon className="h-8 w-8 text-primary mb-3" />
-                  <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground">{f.desc}</p>
-                </Card>
+                <div key={i} className="rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl p-5">
+                  <Icon className="h-7 w-7 text-sky-300 mb-3" />
+                  <h3 className="font-semibold text-base mb-1.5 text-white drop-shadow">{f.title}</h3>
+                  <p className="text-sm text-white/75">{f.desc}</p>
+                </div>
               )
             })}
           </div>
@@ -238,20 +243,20 @@ export default function MuseumLandingPage() {
       </section>
 
       {/* How it works */}
-      <section id="so-funktionierts" className="py-16 px-4">
+      <section id="so-funktionierts" className="relative z-10 py-16 px-4">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 drop-shadow-lg">
             In 5 Schritten {segmentId.startsWith('city') ? 'zur digitalen Stadt' : segmentId === 'region' ? 'zur digitalen Region' : segmentId === 'event' ? 'zum digitalen Event' : 'zum digitalen Museum'}
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {(segmentId.startsWith('city') ? HOW_IT_WORKS_CITY : segmentId === 'region' ? HOW_IT_WORKS_REGION : HOW_IT_WORKS_MUSEUM).map((s, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0">
+              <div key={i} className="flex gap-4 rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl p-4">
+                <div className="w-9 h-9 rounded-full gradient-translator text-white flex items-center justify-center font-bold flex-shrink-0 text-sm shadow">
                   {s.step}
                 </div>
                 <div>
-                  <h3 className="font-semibold">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground">{s.desc}</p>
+                  <h3 className="font-semibold text-white drop-shadow">{s.title}</h3>
+                  <p className="text-sm text-white/75">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -260,85 +265,87 @@ export default function MuseumLandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section className="relative z-10 py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 drop-shadow-lg">
             Das sagen unsere Partner
           </h2>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             {(segmentId.startsWith('city') ? TESTIMONIALS_CITY : segmentId === 'region' ? TESTIMONIALS_REGION : TESTIMONIALS_MUSEUM).map((t, i) => (
-              <Card key={i} className="p-6">
+              <div key={i} className="rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl p-5">
                 <div className="flex gap-0.5 mb-3">
                   {Array.from({ length: 5 }).map((_, j) => (
                     <Star key={j} className="h-4 w-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
+                <p className="text-sm mb-4 italic text-white/85">&ldquo;{t.quote}&rdquo;</p>
                 <div>
-                  <p className="font-semibold text-sm">{t.author}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
+                  <p className="font-semibold text-sm text-white drop-shadow">{t.author}</p>
+                  <p className="text-xs text-white/60">{t.role}, {t.company}</p>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Registration */}
-      <section id="registrierung" className="py-16 px-4">
+      <section id="registrierung" className="relative z-10 py-16 px-4">
         <div className="max-w-md mx-auto">
-          <Card className="p-8">
+          <div className="rounded-2xl bg-black/30 backdrop-blur-md border border-white/20 shadow-2xl p-6 sm:p-8">
             {registered ? (
               <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center mx-auto mb-4">
-                  <Check className="h-6 w-6 text-emerald-600" />
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center mx-auto mb-4">
+                  <Check className="h-6 w-6 text-emerald-300" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Willkommen!</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h3 className="text-xl font-bold mb-2 text-white drop-shadow">Willkommen!</h3>
+                <p className="text-sm text-white/75 mb-4">
                   Wir haben Ihnen eine E-Mail mit Ihren Zugangsdaten gesendet.
                 </p>
-                <Button asChild>
+                <Button className="gradient-translator text-white shadow-lg" asChild>
                   <Link to="/auth">Zum Login <ArrowRight className="h-4 w-4 ml-2" /></Link>
                 </Button>
               </div>
             ) : (
               <>
-                <h3 className="text-xl font-bold text-center mb-2">Kostenlos starten</h3>
-                <p className="text-sm text-muted-foreground text-center mb-6">
-                  Testen Sie Fintutto World 30 Tage kostenlos — keine Kreditkarte noetig.
+                <h3 className="text-xl font-bold text-center mb-2 text-white drop-shadow">Kostenlos starten</h3>
+                <p className="text-sm text-white/70 text-center mb-6">
+                  Testen Sie Fintutto World 30 Tage kostenlos — keine Kreditkarte nötig.
                 </p>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Museum / Organisation</Label>
-                    <Input
+                    <Label className="text-white/90">Museum / Organisation</Label>
+                    <input
                       value={regName}
                       onChange={e => setRegName(e.target.value)}
                       placeholder="Name Ihres Museums"
+                      className="w-full px-3 py-2.5 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>E-Mail-Adresse</Label>
-                    <Input
+                    <Label className="text-white/90">E-Mail-Adresse</Label>
+                    <input
                       type="email"
                       value={regEmail}
                       onChange={e => setRegEmail(e.target.value)}
                       placeholder="ihre@email.de"
+                      className="w-full px-3 py-2.5 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/50"
                     />
                   </div>
-                  <Button className="w-full" onClick={handleRegister} disabled={registering || !regEmail}>
+                  <Button className="w-full gradient-translator text-white shadow-lg font-semibold" onClick={handleRegister} disabled={registering || !regEmail}>
                     {registering ? (
                       <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Registriere...</>
                     ) : (
                       'Kostenlos registrieren'
                     )}
                   </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Mit der Registrierung akzeptieren Sie unsere <Link to="/datenschutz" className="underline">Datenschutzerklaerung</Link>.
+                  <p className="text-xs text-white/50 text-center">
+                    Mit der Registrierung akzeptieren Sie unsere <Link to="/datenschutz" className="text-sky-300 hover:underline">Datenschutzerklärung</Link>.
                   </p>
                 </div>
               </>
             )}
-          </Card>
+          </div>
         </div>
       </section>
     </div>

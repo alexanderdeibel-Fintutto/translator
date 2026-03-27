@@ -6,25 +6,38 @@ import { useI18n } from '@/context/I18nContext'
 export default function NotFoundPage() {
   const { t } = useI18n()
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-4 text-center space-y-6">
-      <div className="text-8xl font-bold text-muted-foreground/20">404</div>
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold">{t('notFound.title')}</h1>
-        <p className="text-muted-foreground max-w-md">
-          {t('notFound.description')}
-        </p>
+    <div className="relative flex flex-col items-center justify-center py-20 px-4 text-center">
+      {/* Hintergrund-Logo */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[800px] h-[800px] sm:w-[1000px] sm:h-[1000px] opacity-[0.22]" />
       </div>
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={() => window.history.back()} className="gap-2">
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          {t('notFound.back')}
-        </Button>
-        <Button asChild className="gap-2">
-          <Link to="/">
-            <Home className="h-4 w-4" aria-hidden="true" />
-            {t('notFound.home')}
-          </Link>
-        </Button>
+
+      <div className="relative z-10 space-y-6">
+        <div className="text-8xl font-bold text-white/20 drop-shadow-2xl">404</div>
+
+        <div className="rounded-2xl bg-black/25 backdrop-blur-md border border-white/20 shadow-xl p-8 space-y-3 max-w-sm mx-auto">
+          <h1 className="text-2xl font-bold text-white drop-shadow">{t('notFound.title')}</h1>
+          <p className="text-white/75 text-sm">
+            {t('notFound.description')}
+          </p>
+        </div>
+
+        <div className="flex gap-3 justify-center">
+          <Button
+            variant="outline"
+            onClick={() => window.history.back()}
+            className="gap-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            {t('notFound.back')}
+          </Button>
+          <Button asChild className="gap-2 gradient-translator text-white shadow-lg">
+            <Link to="/">
+              <Home className="h-4 w-4" aria-hidden="true" />
+              {t('notFound.home')}
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   )
