@@ -1,4 +1,31 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
+
+// Resize image to max 2048px and convert to base64 — reduces payload without losing OCR quality
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      const MAX = 2048
+      let { width, height } = img
+      if (width > MAX || height > MAX) {
+        if (width > height) { height = Math.round(height * MAX / width); width = MAX }
+        else { width = Math.round(width * MAX / height); height = MAX }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0, width, height)
+      URL.revokeObjectURL(url)
+      // Extract pure base64 (no data: prefix)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+      resolve(dataUrl.split(',')[1])
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')) }
+    img.src = url
+  })
+}
 import { Camera, Image, Loader2, ArrowRightLeft, Copy, Check, Volume2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -10,7 +37,6 @@ import { useI18n } from '@/context/I18nContext'
 import { useTierId } from '@/context/UserContext'
 import { hasFeature } from '@/lib/tiers'
 import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
-import { getGoogleApiKey } from '@/lib/api-key'
 
 export default function CameraTranslatePage() {
   const { t } = useI18n()
@@ -40,36 +66,27 @@ export default function CameraTranslatePage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const extractTextFromImage = useCallback(async (file: File): Promise<string> => {
-    const apiKey = getGoogleApiKey()
-    if (!apiKey) {
-      throw new Error('CAMERA_NO_API_KEY')
-    }
+    // Convert file to base64 (resize to max 2048px to reduce payload)
+    const base64 = await fileToBase64(file)
 
-    // Convert file to base64
-    const buffer = await file.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)))
-
-    const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, {
+    // Call secure server-side proxy — API key never leaves our infrastructure
+    const response = await fetch('/api/vision', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requests: [{
-          image: { content: base64 },
-          features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-        }],
-      }),
+      body: JSON.stringify({ pages: [base64] }),
     })
 
     if (!response.ok) {
-      throw new Error('CAMERA_OCR_FAILED')
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err.error || 'CAMERA_OCR_FAILED')
     }
 
     const data = await response.json()
-    const text = data.responses?.[0]?.fullTextAnnotation?.text
+    const text = data.texts?.[0]
     if (!text) {
       throw new Error('CAMERA_NO_TEXT')
     }
-    return text.trim()
+    return text
   }, [])
 
   const handleImageCapture = useCallback(async (file: File) => {

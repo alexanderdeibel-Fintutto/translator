@@ -28,6 +28,8 @@ import { UpgradePrompt } from '@/components/pricing/UpgradePrompt'
 import { CONTEXT_MODES, type TranslationContext } from '@/lib/context-modes'
 import { useOffline } from '@/context/OfflineContext'
 import { isWhisperAvailable } from '@/lib/offline/stt-engine'
+import DocumentScanner from '@/components/translator/DocumentScanner'
+import { ScanLine } from 'lucide-react'
 
 const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -62,6 +64,9 @@ export default function ConversationPage() {
   const [currentTranscript, setCurrentTranscript] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [contextMode, setContextMode] = useState<TranslationContext>('general')
+  const [activeTab, setActiveTab] = useState<'conversation' | 'document'>('conversation')
+  const [docSourceLang, setDocSourceLang] = useState('en')
+  const [docTargetLang, setDocTargetLang] = useState('de')
 
   // Per-side audio toggles — independent for each conversation partner
   const [autoSpeakTop, setAutoSpeakTop] = useState(true)
@@ -302,6 +307,44 @@ export default function ConversationPage() {
 
   return (
     <div className="container py-4 space-y-3 max-w-2xl mx-auto">
+      {/* Tab switcher: Gespräch | Dokument */}
+      <div className="flex gap-1 p-1 bg-muted rounded-lg">
+        <button
+          onClick={() => setActiveTab('conversation')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'conversation'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Mic className="h-4 w-4" />
+          Gespräch
+        </button>
+        <button
+          onClick={() => setActiveTab('document')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'document'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <ScanLine className="h-4 w-4" />
+          Dokument
+        </button>
+      </div>
+
+      {/* Document scanner tab */}
+      {activeTab === 'document' && (
+        <DocumentScanner
+          sourceLang={docSourceLang}
+          onSourceLangChange={setDocSourceLang}
+          targetLang={docTargetLang}
+          onTargetLangChange={setDocTargetLang}
+        />
+      )}
+
+      {/* Conversation tab — only render when active */}
+      {activeTab !== 'conversation' ? null : <>
       {/* Header */}
       <div className="text-center space-y-1">
         <h1 className="text-2xl font-bold">
@@ -580,6 +623,7 @@ export default function ConversationPage() {
           {error}
         </div>
       )}
+      </> /* end conversation tab */}
     </div>
   )
 }
