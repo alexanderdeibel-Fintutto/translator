@@ -1,111 +1,98 @@
-// SolutionsPage — Loesungsuebersicht mit Links zu den externen Sales-Seiten
+// SolutionsPage — Lösungsübersicht
 // Route: /solutions
 
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, MapPin, Building, Calendar, Ship, Briefcase, User,
-  Globe2, Users, Wifi, Bluetooth, Shield, Zap, ChevronRight,
-  Mic, Camera, MessageSquare, Volume2, Check, Smartphone, Star
+  Globe2, Wifi, Bluetooth, Shield, Zap, ChevronRight,
+  Check, Smartphone, MessageCircleQuestion, ScanText
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const SALES_BASE = 'https://sales.guidetranslator.com'
-
 interface Solution {
-  slug: string
   icon: typeof MapPin
   title: string
   tagline: string
   description: string
-  targetAudience: string
   keyFeatures: string[]
   pricing: string
   savings: string
-  cta: string
-  highlight?: string
+  href: string
+  highlight?: boolean
 }
 
 const SOLUTIONS: Solution[] = [
   {
-    slug: 'stadtfuehrer',
     icon: MapPin,
-    title: 'Stadtfuehrer & Guides',
-    tagline: 'Vox-Geraete waren gestern.',
-    description: 'Ihre Gaeste scannen einen QR-Code und hoeren die Tour in ihrer Sprache — auf dem eigenen Smartphone. Keine Hardware, kein Aufwand, keine Desinfektion.',
-    targetAudience: 'Freelance-Guides, Museumsfuehrer, Reiseleitende, Tourismus-Guides',
+    title: 'Stadtführer & Guides',
+    tagline: 'Vox-Geräte waren gestern.',
+    description: 'Gäste scannen einen QR-Code und hören die Tour in ihrer Sprache — auf dem eigenen Smartphone. Keine Hardware, kein Aufwand.',
     keyFeatures: [
-      'QR-Code scannen — keine App noetig',
-      'Bis zu 25 Hoerer pro Tour',
-      '10 Sprachen gleichzeitig',
-      'Hotspot + BLE: Offline-faehig',
-      'HD-Sprachausgabe (Neural2)',
+      'QR-Code scannen — keine App nötig',
+      'Bis zu 25 Hörer pro Tour',
+      'Q&A-Moderation',
+      'Hotspot + BLE: Offline-fähig',
+      'Dokument-Scanner (OCR)',
     ],
-    pricing: 'Ab 19,90 EUR/Monat',
-    savings: '97% guenstiger als Vox-Hardware',
-    cta: 'Loesung fuer Guides',
+    pricing: 'Ab 29 EUR/Monat',
+    savings: '97% günstiger als Vox-Hardware',
+    href: '/loesungen/stadtfuehrer',
   },
   {
-    slug: 'agentur',
     icon: Building,
     title: 'Agenturen & Reiseveranstalter',
     tagline: 'Alle Guides, eine Plattform.',
-    description: 'Verwalten Sie mehrere Guides zentral mit Sub-Accounts und Dashboard. Zentrale Abrechnung, individuelle Nutzung, Analytics pro Guide.',
-    targetAudience: 'Reiseagenturen, Tourismusverbaende, Museumsbetriebe, Busreise-Unternehmen',
+    description: 'Mehrere Guides zentral verwalten — Sub-Accounts, Dashboard, zentrale Abrechnung. Analytics pro Guide inklusive.',
     keyFeatures: [
-      'Sub-Accounts fuer jeden Guide',
-      'Bis zu 50 Hoerer pro Session',
+      'Sub-Accounts für jeden Guide',
+      'Bis zu 50 Hörer pro Session',
       'Bis zu 10 gleichzeitige Sessions',
       'Dashboard-Analytics',
       'White-Label (Premium)',
     ],
     pricing: 'Ab 99 EUR/Monat',
-    savings: '80% guenstiger als KUDO',
-    cta: 'Loesung fuer Agenturen',
+    savings: '80% günstiger als KUDO',
+    href: '/loesungen/agenturen',
   },
   {
-    slug: 'veranstalter',
     icon: Calendar,
     title: 'Events & Konferenzen',
-    tagline: 'Konferenzen multilingual — ab sofort bezahlbar.',
-    description: 'Echtzeit-Uebersetzung fuer Events mit bis zu 500 Teilnehmern. QR-Code auf die Leinwand projizieren — 500 Teilnehmer joinen in 30 Sekunden.',
-    targetAudience: 'Konferenz-Veranstalter, Messen, Hochschulen, Kommunen, Firmen-Events',
+    tagline: 'Multilingual — ab sofort bezahlbar.',
+    description: 'Echtzeit-Übersetzung für bis zu 500 Teilnehmer. QR-Code auf die Leinwand — alle joinen in 30 Sekunden. Mit Q&A-Moderation.',
     keyFeatures: [
-      'Bis zu 500 gleichzeitige Teilnehmer',
+      'Bis zu 500 Teilnehmer',
+      'Q&A-Moderation für Publikum',
       'Alle 130+ Sprachen (Pro)',
-      'Session-Protokoll-Export (TXT/MD)',
-      'Chirp 3 HD Audio (Pro)',
-      'White-Label (Pro)',
+      'Session-Protokoll-Export',
+      'Chirp 3 HD Audio',
     ],
     pricing: 'Ab 199 EUR/Monat',
-    savings: '91% guenstiger als Wordly.ai',
-    cta: 'Loesung fuer Events',
+    savings: '91% günstiger als Wordly.ai',
+    href: '/sales/conference',
+    highlight: true,
   },
   {
-    slug: 'kreuzfahrt',
     icon: Ship,
     title: 'Kreuzfahrt & Reedereien',
-    tagline: 'Landausfluege ohne Sprachbarriere.',
-    description: 'Ersetzen Sie 8 Dolmetscher durch eine App — auf jedem Schiff, bei jeder Exkursion. Von einem Schiff bis zur Grossflotte mit unbegrenzten Hoerern.',
-    targetAudience: 'Reedereien, Kreuzfahrt-Flotten, Flusskreuzfahrten, Expeditionsschiffe',
+    tagline: 'Landausflüge ohne Sprachbarriere.',
+    description: '8 Dolmetscher durch eine App ersetzen — auf jedem Schiff, bei jeder Exkursion. Von einem Schiff bis zur Großflotte.',
     keyFeatures: [
-      'Unbegrenzte Hoerer pro Session',
-      'Multi-Schiff-Flotten (bis 10+ Schiffe)',
-      'Funktioniert ueber Bord-WLAN',
+      'Unbegrenzte Hörer pro Session',
+      'Multi-Schiff-Flotten',
+      'Bord-WLAN-kompatibel',
       'SLA 99,9% (Armada)',
       'API-Zugang + White-Label',
     ],
     pricing: 'Ab 1.990 EUR/Monat',
-    savings: '95% guenstiger als Dolmetscher',
-    cta: 'Loesung fuer Kreuzfahrt',
+    savings: '95% günstiger als Dolmetscher',
+    href: '/loesungen/kreuzfahrt',
   },
   {
-    slug: 'enterprise',
     icon: Briefcase,
     title: 'Enterprise & Unternehmen',
-    tagline: 'Massgeschneiderte Loesung fuer Grossunternehmen.',
-    description: 'Individuelle Konfiguration, dedizierter Support, SLA-Garantien und API-Zugang. Fuer Unternehmen, die mehrsprachige Kommunikation im grossen Massstab brauchen.',
-    targetAudience: 'Konzerne, Behoerden, NGOs, internationale Organisationen, Grossunternehmen',
+    tagline: 'Maßgeschneidert für Großunternehmen.',
+    description: 'Individuelle Konfiguration, dedizierter Support, SLA-Garantien und Full-API-Zugang. Für mehrsprachige Kommunikation im großen Maßstab.',
     keyFeatures: [
       'Individuelle Preisgestaltung',
       'Dedizierter Account Manager',
@@ -115,125 +102,111 @@ const SOLUTIONS: Solution[] = [
     ],
     pricing: 'Auf Anfrage',
     savings: 'Enterprise-Konditionen',
-    cta: 'Enterprise kontaktieren',
-    highlight: 'Enterprise',
+    href: '/loesungen/enterprise',
   },
   {
-    slug: 'fintutto',
     icon: User,
     title: 'Einzelunternehmer & Freelancer',
-    tagline: 'Ihr persoenlicher Dolmetscher — ueberall.',
-    description: 'Fuer selbstaendige Guides, Berater, Coaches und Freelancer, die international arbeiten. Alles, was Sie brauchen, in einem guenstigen Plan.',
-    targetAudience: 'Freelance-Guides, Berater, Coaches, Dolmetscher, Sprach-Mediatoren',
+    tagline: 'Ihr persönlicher Dolmetscher — überall.',
+    description: 'Für selbstständige Guides, Berater und Coaches. 45 Sprachen, Offline-Modus, Kamera-Scanner — kostenlos starten.',
     keyFeatures: [
       '45 Sprachen + Offline-Modus',
-      'Gespraechsmodus (Face-to-Face)',
-      'Kamera-Uebersetzer (OCR)',
-      'Live-Session (bis 3 Hoerer)',
+      'Gesprächsmodus (Face-to-Face)',
+      'Kamera-Scanner (OCR)',
+      'Live-Session (bis 3 Hörer)',
       'Phrasebook (18 Kategorien)',
     ],
     pricing: 'Ab 4,99 EUR/Monat',
-    savings: 'Guenstiger als iTranslate & DeepL',
-    cta: 'Loesung fuer Einzelunternehmer',
+    savings: 'Günstiger als iTranslate & DeepL',
+    href: '/sales/personal',
   },
 ]
 
-const CROSS_CUTTING_FEATURES = [
-  {
-    icon: Wifi,
-    title: '4-Tier-Transport',
-    description: 'Cloud → Hotspot → Bluetooth → Offline. Funktioniert immer, ueberall — auch ohne Internet.',
-  },
-  {
-    icon: Shield,
-    title: 'E2E-Verschluesselung',
-    description: 'AES-256-GCM mit PBKDF2. DSGVO-konform. Keine Daten in der Cloud im Offline-Modus.',
-  },
-  {
-    icon: Globe2,
-    title: '45 Sprachen + 10 Migrationssprachen',
-    description: 'Inkl. Dari, Tigrinya, Paschtu, Kurdisch. Vollstaendige RTL-Unterstuetzung.',
-  },
-  {
-    icon: Smartphone,
-    title: 'PWA — kein Download',
-    description: 'Laeuft direkt im Browser. Kein App-Store, kein Account noetig. QR-Code scannen = fertig.',
-  },
+const CROSS_FEATURES = [
+  { icon: Wifi,                  title: '4-Tier-Transport',        desc: 'Cloud → Hotspot → Bluetooth → Offline. Automatischer Fallback.' },
+  { icon: Shield,                title: 'E2E-Verschlüsselung',     desc: 'AES-256-GCM mit PBKDF2. DSGVO-konform. Auch offline.' },
+  { icon: Globe2,                title: '45+ Sprachen',            desc: 'Inkl. 10 Migrationssprachen: Dari, Tigrinya, Paschtu, Kurdisch.' },
+  { icon: Smartphone,            title: 'PWA — kein Download',     desc: 'Browser genügt. QR-Code scannen = sofort dabei.' },
+  { icon: MessageCircleQuestion, title: 'Q&A-Moderation',          desc: 'Publikum stellt Fragen — Host moderiert und sendet an alle.' },
+  { icon: ScanText,              title: 'Dokument-Scanner',        desc: 'Schilder & Dokumente fotografieren → sofort übersetzt.' },
+  { icon: Bluetooth,             title: 'BLE-Transport',           desc: 'Bluetooth-Gruppen-Übersetzung. Null Infrastruktur.' },
+  { icon: Zap,                   title: 'Offline-KI',              desc: 'Opus-MT & Whisper als WASM — keine Daten verlassen das Gerät.' },
 ]
 
 export default function SolutionsPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-16 py-8 px-4">
-      {/* Hero */}
-      <div className="text-center space-y-4">
-        <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-          Loesungen
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-bold leading-tight">
-          Die richtige Loesung fuer Ihre Branche.
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-          Ob Stadtfuehrung, Konferenz oder Kreuzfahrt — GuideTranslator passt sich Ihrem Bedarf an.
-          Von einem Hoerer bis 500 Teilnehmer, von kostenlos bis Enterprise.
-        </p>
+    <div className="relative max-w-2xl mx-auto space-y-10 py-6 px-4 text-white">
+
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/fintutto-logo.svg" alt="" className="w-[600px] h-[600px] opacity-[0.28]" />
       </div>
 
-      {/* Solutions grid */}
-      <div className="space-y-6">
+      {/* Hero */}
+      <div className="relative text-center space-y-3 py-10 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/fintutto-logo.svg" alt="" className="w-[280px] h-[280px] opacity-90" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/20 text-white">
+            Lösungen
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight drop-shadow-lg">
+            Die richtige Lösung für Ihre Branche.
+          </h1>
+          <p className="text-base text-white/80 max-w-md mx-auto drop-shadow">
+            Ob Stadtführung, Konferenz oder Kreuzfahrt — Fintutto passt sich Ihrem Bedarf an.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-1">
+            <Link to="/pricing">
+              <Button size="lg" className="w-full sm:w-auto gap-2">
+                Alle Pläne <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/features">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Alle Features <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Solutions */}
+      <div className="space-y-3">
         {SOLUTIONS.map((solution, i) => {
           const Icon = solution.icon
           return (
-            <Card key={i} className={`p-6 sm:p-8 ${solution.highlight ? 'border-primary' : ''}`}>
-              <div className="flex flex-col sm:flex-row gap-6">
-                {/* Left: Info */}
-                <div className="sm:w-1/2 space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold">{solution.title}</h2>
-                      <p className="text-sm font-medium text-primary">{solution.tagline}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {solution.description}
-                  </p>
-                  <div className="text-xs text-muted-foreground">
-                    <span className="font-medium">Zielgruppe: </span>{solution.targetAudience}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="px-3 py-1.5 rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                      {solution.pricing}
-                    </div>
-                    <span className="text-xs text-muted-foreground">{solution.savings}</span>
-                  </div>
+            <Card key={i} className={`p-4 backdrop-blur-md border ${solution.highlight ? 'bg-sky-500/20 border-sky-400/40' : 'bg-black/25 border-white/15'}`}>
+              <div className="flex items-start gap-3 mb-2">
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${solution.highlight ? 'bg-sky-500/25' : 'bg-sky-500/15'}`}>
+                  <Icon className="w-4 h-4 text-sky-300" />
                 </div>
-
-                {/* Right: Features + CTA */}
-                <div className="sm:w-1/2 space-y-4">
-                  <h3 className="font-semibold text-sm">Highlights</h3>
-                  <ul className="space-y-2">
-                    {solution.keyFeatures.map((feat, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="pt-2">
-                    <a
-                      href={`${SALES_BASE}/${solution.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button className="w-full gap-2">
-                        {solution.cta}
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </a>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h2 className="font-bold text-sm leading-tight">{solution.title}</h2>
+                    {solution.highlight && <span className="text-[10px] bg-sky-400/20 text-sky-300 px-2 py-0.5 rounded-full font-semibold shrink-0">Neu: Q&A</span>}
                   </div>
+                  <p className={`text-xs font-medium ${solution.highlight ? 'text-sky-300' : 'text-sky-400'}`}>{solution.tagline}</p>
                 </div>
+              </div>
+              <p className="text-xs text-white/70 mb-2 leading-relaxed">{solution.description}</p>
+              <div className="grid grid-cols-2 gap-1 mb-3">
+                {solution.keyFeatures.map((feat, j) => (
+                  <div key={j} className="flex items-start gap-1 text-[11px] text-white/75">
+                    <Check className="w-3 h-3 text-sky-300 mt-0.5 shrink-0" />{feat}
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <span className="text-sm font-bold text-sky-300">{solution.pricing}</span>
+                  <span className="text-[11px] text-white/50 ml-2">{solution.savings}</span>
+                </div>
+                <Link to={solution.href}>
+                  <Button size="sm" className="shrink-0 gap-1">
+                    Details <ChevronRight className="h-3 w-3" />
+                  </Button>
+                </Link>
               </div>
             </Card>
           )
@@ -241,92 +214,46 @@ export default function SolutionsPage() {
       </div>
 
       {/* Cross-cutting features */}
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">In allen Loesungen enthalten</h2>
-          <p className="text-muted-foreground">
-            Egal welchen Plan Sie waehlen — diese Features sind immer dabei.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {CROSS_CUTTING_FEATURES.map((feat, i) => {
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold drop-shadow-lg">In allen Lösungen enthalten</h2>
+        <div className="grid grid-cols-2 gap-2">
+          {CROSS_FEATURES.map((feat, i) => {
             const Icon = feat.icon
             return (
-              <Card key={i} className="p-5 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Icon className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-sm">{feat.title}</h3>
+              <div key={i} className="p-3 rounded-xl bg-black/25 backdrop-blur-md border border-white/15 space-y-1">
+                <div className="flex items-center gap-1.5">
+                  <Icon className="w-3.5 h-3.5 text-sky-300" />
+                  <h3 className="font-semibold text-xs">{feat.title}</h3>
                 </div>
-                <p className="text-xs text-muted-foreground">{feat.description}</p>
-              </Card>
+                <p className="text-[11px] text-white/65">{feat.desc}</p>
+              </div>
             )
           })}
         </div>
       </div>
 
-      {/* Comparison hint */}
-      <Card className="p-6 bg-muted/30 text-center space-y-3">
-        <h2 className="text-lg font-bold">Nicht sicher, welche Loesung passt?</h2>
-        <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-          Vergleichen Sie unsere 11 Plaene im Detail oder berechnen Sie Ihren ROI mit unserem Rechner.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/pricing">
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              Alle 11 Plaene vergleichen
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/compare">
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              Wettbewerbervergleich
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </Card>
-
-      {/* All solutions link */}
-      <div className="text-center space-y-3">
-        <p className="text-sm text-muted-foreground">
-          Ausfuehrliche Informationen zu allen Loesungen finden Sie auf unserer Sales-Seite:
-        </p>
-        <a
-          href={SALES_BASE}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Button size="lg" className="gap-2">
-            sales.guidetranslator.com
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </a>
+      {/* Bottom nav */}
+      <div className="grid grid-cols-3 gap-2">
+        <Link to="/features" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Features</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">Alle 8 Produkte</p>
+          </Card>
+        </Link>
+        <Link to="/compare" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Vergleich</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">vs. Wettbewerber</p>
+          </Card>
+        </Link>
+        <Link to="/investors" className="block">
+          <Card className="p-3 bg-black/25 backdrop-blur-md border-white/15 hover:bg-black/35 transition-colors">
+            <h3 className="font-semibold text-xs">Investoren</h3>
+            <p className="text-[11px] text-white/60 mt-0.5">Markt & Zahlen</p>
+          </Card>
+        </Link>
       </div>
 
-      {/* Further links */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Mehr erfahren</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Link to="/features" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors h-full">
-              <h3 className="font-semibold text-sm">Alle Features</h3>
-              <p className="text-xs text-muted-foreground mt-1">7 Produkte — von Live-Broadcasting bis Kamera-OCR</p>
-            </Card>
-          </Link>
-          <Link to="/technology" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors h-full">
-              <h3 className="font-semibold text-sm">Technische Architektur</h3>
-              <p className="text-xs text-muted-foreground mt-1">4-Tier-Transport, On-Device KI, E2E-Verschluesselung</p>
-            </Card>
-          </Link>
-          <Link to="/investors" className="block">
-            <Card className="p-4 hover:bg-muted/50 transition-colors h-full">
-              <h3 className="font-semibold text-sm">Fuer Investoren</h3>
-              <p className="text-xs text-muted-foreground mt-1">Marktgroesse, Geschaeftsmodell, Finanzen</p>
-            </Card>
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }

@@ -269,8 +269,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
     const allTargetLangs = [...new Set([...presenceLangs, ...announcedLangs])]
       .filter(lang => lang !== '_speaker')
 
-    // Diagnostic: log what we see (console.error survives production builds)
-    console.error(`[LiveSession] processTranslation: text="${text.slice(0, 30)}", presenceLangs=[${presenceLangs}], announcedLangs=[${[...announcedLangs]}], allTargetLangs=[${allTargetLangs}], broadcast.connected=${broadcastRef.current.isConnected}`)
 
     // Separate _live listeners (passthrough, no translation needed) from regular
     const hasLiveListeners = allTargetLangs.includes('_live')
@@ -333,7 +331,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Enforce language limit per tier (0 = unlimited) — _live doesn't count
     const maxLangs = tierRef.current.limits.maxLanguages
     if (maxLangs > 0 && targetLangs.length > maxLangs) {
-      console.warn(`[LiveSession] Language limit reached: ${targetLangs.length}/${maxLangs}, trimming to first ${maxLangs}`)
       targetLangs = targetLangs.slice(0, maxLangs)
       setLanguageLimitReached(true)
     } else {
@@ -426,7 +423,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
     // Warn if some translations failed
     const failed = settled.filter(r => r.status === 'rejected')
     if (failed.length > 0) {
-      console.warn(`[Live] ${failed.length}/${settled.length} translations failed`)
     }
   // IMPORTANT: Do NOT add presence or broadcast as dependencies here.
   // Both return new object references on every render, causing an infinite re-render loop
@@ -449,7 +445,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
     try {
       await processTranslationRef.current(next)
     } catch (err) {
-      console.error('[Live] Translation fan-out failed:', err)
       setError(err instanceof Error ? err.message : String(err))
     } finally {
       isTranslatingRef.current = false
@@ -487,7 +482,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
       }
       return false
     })) {
-      console.log(`[Live] Dedup: skipping duplicate/similar final "${trimmed.slice(0, 40)}..."`)
       return
     }
     recents.push({ text: normalized, time: now })
@@ -602,7 +596,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
             return
           }
 
-          console.error(`[Listener] Received chunk: targetLang=${chunk.targetLanguage}, selected=${selectedLanguageRef.current}, match=${chunk.targetLanguage === selectedLanguageRef.current}, text="${chunk.translatedText?.slice(0, 30)}"`)
           if (chunk.targetLanguage === selectedLanguageRef.current) {
             setCurrentTranslation(chunk.translatedText)
             setReceivedChunks(prev => {
@@ -668,7 +661,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
   // the broadcast channel is actually connected, and re-sends on every reconnect.
   useEffect(() => {
     if (role !== 'listener' || !broadcast.isConnected || !sessionCode) return
-    console.error(`[Listener] Connected! Sending listener_announce for lang=${selectedLanguageRef.current}`)
     broadcastRef.current.broadcast('listener_announce', {
       targetLanguage: selectedLanguageRef.current,
       deviceName: getDeviceName(),
@@ -723,7 +715,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
         setReceivedChunks(prev => {
           if (prev.some(c => c.id === chunk.id)) return prev // Already have it
           presenceFallbackCountRef.current++
-          console.error(`[Listener] Presence fallback: accepted chunk #${presenceFallbackCountRef.current} id=${chunk.id}, text="${chunk.translatedText?.slice(0, 30)}"`)
           const fullChunk: TranslationChunk = { ...chunk, isFinal: true }
           const next = [...prev, fullChunk]
 
@@ -741,7 +732,6 @@ export function useLiveSession(userTierId: TierId = 'free') {
         })
       }
     } catch {
-      console.error('[Listener] Failed to parse presence fallback chunks')
     }
   }, [role, presence.listeners])
 

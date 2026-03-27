@@ -146,6 +146,8 @@ export function PricingPage({ currentTierId = 'free', onSelectTier, showInternal
               {/* Feature list */}
               <div className="space-y-1.5 text-sm flex-1">
                 <FeatureRow label="Live-Broadcasting" enabled={tier.features.broadcasting} />
+                <FeatureRow label="Q&A-Moderation" enabled={tier.features.qaModeration} />
+                <FeatureRow label="BLE-Transport (offline)" enabled={tier.features.bleTransport} />
                 <FeatureRow label="Offline-Modus" enabled={tier.features.offlineMode} />
                 <FeatureRow label="QR-Code Einladung" enabled={tier.features.qrCode} />
                 <FeatureRow label="Custom Glossare" enabled={tier.features.customGlossaries} />
