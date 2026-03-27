@@ -13,8 +13,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const CLERK_URL = 'https://tl-authority-clerk.fintutto.cloud'
-const VISITOR_URL = 'https://tl-authority-visitor.fintutto.cloud'
+const CLERK_URL = 'https://authority-clerk.fintutto.world'
+const VISITOR_URL = 'https://authority-visitor.fintutto.world'
 
 export default function SolutionAuthoritiesPage() {
   return (

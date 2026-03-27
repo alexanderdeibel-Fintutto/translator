@@ -12,8 +12,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const HELPER_URL = 'https://tl-helper.fintutto.cloud'
-const CLIENT_URL = 'https://tl-client.fintutto.cloud'
+const HELPER_URL = 'https://ngo-helper.fintutto.world'
+const CLIENT_URL = 'https://ngo-client.fintutto.world'
 
 export default function SolutionNgoPage() {
   return (

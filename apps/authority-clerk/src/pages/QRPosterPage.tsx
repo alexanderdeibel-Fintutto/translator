@@ -34,7 +34,7 @@ function generateSessionCode(): string {
   return code
 }
 
-const VISITOR_APP_URL = 'https://tl-authority-visitor.fintutto.cloud'
+const VISITOR_APP_URL = 'https://authority-visitor.fintutto.world'
 
 const LANGUAGES = [
   { code: 'ar', label: 'العربية', flag: '🇸🇦' },

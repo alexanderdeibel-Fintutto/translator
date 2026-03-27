@@ -12,8 +12,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const STAFF_URL = 'https://tl-medical-staff.fintutto.cloud'
-const PATIENT_URL = 'https://tl-medical-patient.fintutto.cloud'
+const STAFF_URL = 'https://medical-staff.fintutto.world'
+const PATIENT_URL = 'https://medical-patient.fintutto.world'
 
 export default function SolutionMedicalPage() {
   return (

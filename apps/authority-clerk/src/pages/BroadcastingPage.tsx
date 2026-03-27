@@ -78,7 +78,7 @@ export default function BroadcastingPage() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const broadcastUrl = `https://tl-authority-visitor.fintutto.cloud/${broadcastCode}`
+  const broadcastUrl = `https://authority-visitor.fintutto.world/${broadcastCode}`
 
   // Simulate listeners joining
   useEffect(() => {

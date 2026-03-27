@@ -24,7 +24,7 @@ export default function ClassroomQRPoster({
   classroomName,
   url,
 }: ClassroomQRPosterProps) {
-  const studentUrl = url || `https://tl-school-student.fintutto.cloud/${code}`
+  const studentUrl = url || `https://school-student.fintutto.world/${code}`
 
   const handlePrint = () => {
     window.print()

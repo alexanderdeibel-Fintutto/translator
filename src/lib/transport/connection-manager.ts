@@ -300,7 +300,7 @@ export function getSessionUrlWithTransport(
 ): string {
   const base = typeof window !== 'undefined'
     ? window.location.origin
-    : 'https://translator.fintutto.cloud'
+    : 'https://translate.fintutto.world'
 
   const url = new URL(`${base}/live/${code}`)
 

@@ -12,8 +12,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const STAFF_URL = 'https://tl-counter-staff.fintutto.cloud'
-const GUEST_URL = 'https://tl-counter-guest.fintutto.cloud'
+const STAFF_URL = 'https://hotel-staff.fintutto.world'
+const GUEST_URL = 'https://hotel-guest.fintutto.world'
 
 export default function SolutionHospitalityPage() {
   return (

@@ -59,7 +59,7 @@ export default function Footer() {
           <div className="flex flex-wrap items-center gap-x-3 text-[11px] text-muted-foreground/60">
             <span>&copy; {new Date().getFullYear()} ai tour ug (haftungsbeschraenkt)</span>
             <span>·</span>
-            {t('footer.projectBy')} <a href="https://fintutto.cloud" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.cloud</a>
+            {t('footer.projectBy')} <a href="https://fintutto.world" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">fintutto.world</a>
             <span>·</span>
             <a href="https://www.iguide.ch/en/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">iguide.ch</a>
             <span>·</span>

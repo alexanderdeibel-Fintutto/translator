@@ -15,8 +15,8 @@ const NEWS = [
   },
   {
     date: 'März 2026',
-    title: 'Landingpage translator.fintutto.cloud live',
-    content: 'Die neue Produkt-Landingpage bündelt alle Informationen: App-Übersicht, Features, Preise, Investor Relations und Neuigkeiten. Verfügbar unter translator.fintutto.cloud.',
+    title: 'Landingpage fintutto.world live',
+    content: 'Die neue Produkt-Landingpage bündelt alle Informationen: App-Übersicht, Features, Preise, Investor Relations und Neuigkeiten. Verfügbar unter fintutto.world.',
     tag: 'Website',
   },
   {

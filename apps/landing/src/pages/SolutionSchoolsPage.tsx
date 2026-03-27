@@ -13,8 +13,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const TEACHER_URL = 'https://tl-school-teacher.fintutto.cloud'
-const STUDENT_URL = 'https://tl-school-student.fintutto.cloud'
+const TEACHER_URL = 'https://school-teacher.fintutto.world'
+const STUDENT_URL = 'https://school-student.fintutto.world'
 
 export default function SolutionSchoolsPage() {
   return (
