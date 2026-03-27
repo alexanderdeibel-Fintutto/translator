@@ -95,11 +95,11 @@ const PRODUCTS = [
     name: 'Offline-Engine',
     tagline: '100% ohne Netzwerk',
     icon: Download,
-    description: '54 Offline-Sprachpaare via Opus-MT WASM-Modelle (~35 MB pro Paar). Whisper für Spracherkennung (~40 MB). Keine Daten verlassen das Gerät.',
+    description: '54 Offline-Sprachpaare via Opus-MT WASM-Modelle (~35 MB pro Paar). Whisper für Spracherkennung (~150 MB). Keine Daten verlassen das Gerät.',
     features: [
       '54 herunterladbare Sprachpaare',
       'Opus-MT via Transformers.js (WASM)',
-      'Whisper STT (multilingual, ~40 MB)',
+      'Whisper STT (multilingual, ~150 MB)',
       'Browser-native TTS (alle Sprachen)',
       'English-Pivot für indirekte Paare',
       'Service Worker + IndexedDB Caching',

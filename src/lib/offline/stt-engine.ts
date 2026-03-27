@@ -1,5 +1,5 @@
 // Offline Speech-to-Text engine using Whisper via Transformers.js
-// Works fully offline once the model is downloaded (~40MB)
+// Works fully offline once the model is downloaded (~150MB)
 // Non-streaming: records audio, then transcribes in one pass
 // Uses AudioWorklet (modern) with ScriptProcessorNode fallback (legacy)
 
@@ -12,7 +12,10 @@ function t(key: string): string {
   return getTranslation(lang, key)
 }
 
-const WHISPER_MODEL = 'Xenova/whisper-small'
+// whisper-tiny: ~150 MB Download, ~150 MB RAM — läuft stabil auf allen Tablets und älteren Geräten
+// whisper-small: ~460 MB RAM — kann auf schwachen Geräten zum Tab-Absturz führen
+// Für Behörden-Einsatz ist tiny ausreichend präzise (Kurze Sätze, klare Aussprache)
+const WHISPER_MODEL = 'Xenova/whisper-tiny'
 
 let pipeline: unknown = null
 let isLoading = false

@@ -104,7 +104,7 @@ export default function TechnologyPage() {
               color: 'text-amber-500',
               bg: 'bg-amber-500/10',
               tech: 'Opus-MT + Whisper WASM (On-Device ML)',
-              description: '54 Offline-Sprachpaare via Transformers.js (~35 MB pro Paar). Whisper für Spracherkennung (~40 MB). Alles lokal — keine Daten verlassen das Gerät. 0 externe Abhängigkeiten.',
+              description: '54 Offline-Sprachpaare via Transformers.js (~35 MB pro Paar). Whisper für Spracherkennung (~150 MB). Alles lokal — keine Daten verlassen das Gerät. 0 externe Abhängigkeiten.',
               requires: 'Kein Netzwerk jeglicher Art',
             },
           ].map((tier, i) => {
@@ -215,7 +215,7 @@ export default function TechnologyPage() {
               <li>2. Google Cloud STT (iOS Fallback)</li>
               <li>3. Web Speech API (Chrome/Edge/Android)</li>
               <li>4. Google Cloud STT (allg. Fallback)</li>
-              <li>5. Whisper WASM (~40 MB, offline)</li>
+              <li>5. Whisper WASM (~150 MB, offline)</li>
             </ul>
             <p className="text-xs text-white/70">+ Satz-Boundary-Erkennung für Echtzeit-Übersetzung</p>
           </Card>
@@ -367,7 +367,7 @@ export default function TechnologyPage() {
               {[
                 { name: 'Basis-App (PWA)', size: '~5 MB' },
                 { name: '+ 1 Offline-Sprachpaar', size: '+35 MB' },
-                { name: '+ Whisper STT', size: '+40 MB' },
+                { name: '+ Whisper STT', size: '+150 MB' },
                 { name: '+ TTS Audio Cache', size: '+10-50 MB' },
                 { name: 'Voll-Offline', size: '~200 MB' },
               ].map((item, i) => (

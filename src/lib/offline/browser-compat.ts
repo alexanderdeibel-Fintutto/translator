@@ -54,6 +54,12 @@ export interface OfflineCompatibility {
   hasCacheAPI: boolean
   /** Service Worker verfügbar → App offline ladbar */
   hasServiceWorker: boolean
+  /** SharedArrayBuffer verfügbar → Multi-Thread WASM (schneller) */
+  hasSharedArrayBuffer: boolean
+  /** Geschätzter verfügbarer RAM in GB (0 = unbekannt) */
+  estimatedRAMgb: number
+  /** Genügend RAM für Whisper-tiny (~400 MB benötigt) */
+  hasEnoughRAM: boolean
   /** Empfohlener Browser für dieses Gerät */
   recommendedBrowser: string | null
   /** Empfohlener Browser-Link */
@@ -152,6 +158,18 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
   const hasWebAssembly = typeof WebAssembly !== 'undefined'
   const hasPersistentStorageAPI = !!navigator.storage?.persist
 
+  // SharedArrayBuffer: benötigt COOP/COEP-Header (jetzt gesetzt) + HTTPS
+  const hasSharedArrayBuffer = typeof SharedArrayBuffer !== 'undefined' &&
+    (typeof crossOriginIsolated === 'undefined' || crossOriginIsolated === true)
+
+  // RAM-Schätzung: navigator.deviceMemory ist in Chrome/Edge verfügbar (in GB)
+  // Auf iOS/Firefox nicht verfügbar → 0 = unbekannt
+  // @ts-expect-error navigator.deviceMemory ist experimentell
+  const estimatedRAMgb: number = (navigator.deviceMemory as number | undefined) ?? 0
+  // Whisper-tiny benötigt ~400 MB RAM. Wir warnen bei < 2 GB (sicherer Puffer).
+  // Bei 0 (unbekannt) keine Warnung — wir gehen vom besten Fall aus.
+  const hasEnoughRAM = estimatedRAMgb === 0 || estimatedRAMgb >= 2
+
   // iOS Safari (nicht als PWA installiert): 7-Tage-Eviction-Problem
   const isIOSSafariNotInstalled = info.isIOS && info.browser === 'safari' && !info.isStandalone
   // iOS mit fremdem Browser (Chrome/Firefox auf iOS): nutzt WebKit-Engine, selbe Einschränkungen
@@ -192,6 +210,10 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
       recommendedBrowser = 'Google Chrome'
       recommendedBrowserUrl = 'https://www.google.com/chrome/'
     }
+  } else if (!hasEnoughRAM) {
+    // Warnung: Zu wenig RAM für Whisper-tiny
+    severity = 'warning'
+    message = `Dieses Gerät hat nur ${estimatedRAMgb} GB RAM. Das Whisper-Sprachmodell benötigt mindestens 2 GB. Die Offline-Spracherkennung könnte instabil sein. Die Offline-Übersetzung (Opus-MT) funktioniert trotzdem.`
   } else if (isIOSSafariNotInstalled) {
     // Warnung: iOS Safari ohne Installation → Daten werden nach 7 Tagen gelöscht
     severity = 'warning'
@@ -233,6 +255,9 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
     hasWebAssembly,
     hasCacheAPI,
     hasServiceWorker,
+    hasSharedArrayBuffer,
+    estimatedRAMgb,
+    hasEnoughRAM,
     recommendedBrowser,
     recommendedBrowserUrl,
     severity,

@@ -204,6 +204,17 @@ export default defineConfig({
   server: {
     port: 5180,
     allowedHosts: true,
+    // COOP/COEP erforderlich für SharedArrayBuffer (Transformers.js / Whisper / Opus-MT WASM)
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
+  },
+  preview: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   },
   test: {
     exclude: ['e2e/**', 'node_modules/**'],

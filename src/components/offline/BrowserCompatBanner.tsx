@@ -3,8 +3,9 @@
  *
  * Erscheint im Offline-Setup-Screen und im FirstRunWizard.
  * Gibt klare Handlungsempfehlungen: Browser wechseln oder App installieren.
+ * Prüft: WebAssembly, Cache API, Service Worker, SharedArrayBuffer (COOP/COEP), RAM
  */
-import { AlertTriangle, XCircle, ExternalLink, Smartphone, CheckCircle2 } from 'lucide-react'
+import { AlertTriangle, XCircle, ExternalLink, Smartphone, CheckCircle2, Cpu } from 'lucide-react'
 import { useMemo } from 'react'
 import { checkOfflineCompatibility, detectBrowser } from '@/lib/offline/browser-compat'
 
@@ -70,6 +71,11 @@ export default function BrowserCompatBanner({ compact = false }: BrowserCompatBa
     ? 'text-red-700 dark:text-red-400'
     : 'text-amber-700 dark:text-amber-400'
 
+  // RAM-Anzeige
+  const ramLabel = compat.estimatedRAMgb > 0
+    ? `${compat.estimatedRAMgb} GB RAM`
+    : 'RAM unbekannt'
+
   return (
     <div className={`rounded-lg border ${borderColor} ${bgColor} p-4 space-y-3`}>
       <div className="flex items-start gap-3">
@@ -101,7 +107,7 @@ export default function BrowserCompatBanner({ compact = false }: BrowserCompatBa
       )}
 
       {/* Empfehlung: App installieren (iOS ohne Browser-Wechsel) */}
-      {!compat.recommendedBrowserUrl && compat.severity !== 'ok' && (
+      {!compat.recommendedBrowserUrl && compat.severity !== 'ok' && !compat.recommendedBrowser && (
         <div className={`flex items-center gap-2 text-xs ${textColor}`}>
           <Smartphone className="h-3.5 w-3.5 shrink-0" />
           <span>
@@ -110,25 +116,32 @@ export default function BrowserCompatBanner({ compact = false }: BrowserCompatBa
         </div>
       )}
 
-      {/* Feature-Checkliste bei Error */}
-      {isError && (
-        <div className="grid grid-cols-2 gap-1 pt-1">
-          {[
-            { label: 'WebAssembly', ok: compat.hasWebAssembly },
-            { label: 'Cache API', ok: compat.hasCacheAPI },
-            { label: 'Service Worker', ok: compat.hasServiceWorker },
-            { label: 'PWA-Install', ok: compat.canInstallPWA },
-          ].map(({ label, ok }) => (
-            <div key={label} className={`flex items-center gap-1 text-[10px] ${ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-              {ok
+      {/* Feature-Checkliste (immer sichtbar, nicht nur bei Error) */}
+      <div className="grid grid-cols-2 gap-1 pt-1">
+        {[
+          { label: 'WebAssembly', ok: compat.hasWebAssembly },
+          { label: 'Cache API', ok: compat.hasCacheAPI },
+          { label: 'Service Worker', ok: compat.hasServiceWorker },
+          { label: 'SharedArrayBuffer', ok: compat.hasSharedArrayBuffer },
+          { label: 'PWA-Install', ok: compat.canInstallPWA },
+          { label: ramLabel, ok: compat.hasEnoughRAM, icon: 'cpu' },
+        ].map(({ label, ok, icon }) => (
+          <div
+            key={label}
+            className={`flex items-center gap-1 text-[10px] ${
+              ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
+            }`}
+          >
+            {icon === 'cpu'
+              ? <Cpu className="h-3 w-3 shrink-0" />
+              : ok
                 ? <CheckCircle2 className="h-3 w-3 shrink-0" />
                 : <XCircle className="h-3 w-3 shrink-0" />
-              }
-              {label}
-            </div>
-          ))}
-        </div>
-      )}
+            }
+            {label}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
