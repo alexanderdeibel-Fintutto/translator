@@ -3,10 +3,14 @@
  * Erkennt Browser, Betriebssystem und prüft welche Offline-Features verfügbar sind.
  *
  * Offline-Feature-Matrix (Stand 2025):
- *
- * ┌─────────────────────────┬──────────┬──────────┬──────────┬──────────┬──────────┐
- * │ Feature                 │ Chrome   │ Edge     │ Safari   │ Firefox  │ Samsung  │
- * │                         │ (Blink)  │ (Blink)  │ (WebKit) │ (Gecko)  │ (Blink)  │
+ * * ┌─────────────────────────┬──────────┬──────────┬──────────┬──────────┬──────────┐
+ * │ Feature                 │ Chrome   │ Edge     │ Samsung  │ Safari   │ Firefox  │
+ * │                         │ (Blink)  │ (Blink)  │ (Blink)  │ (WebKit) │ (Gecko)  │
+ * ├─────────────────────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
+ * │ Offline-STT (Whisper)   │ ✅ And.  │ ✅ And.  │ ✅ And.  │ ❌ iOS   │ ✅ Desk. │
+ * │ → iOS: WebKit/JSCore    │          │          │          │ (Issue   │          │
+ * │   unterstützt Whisper   │          │          │          │  #1298)  │          │
+ * │   nicht zuverlässig     │          │          │          │          │          ││
  * ├─────────────────────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
  * │ Cache API               │ ✅       │ ✅       │ ✅ (iOS≥15)│ ✅      │ ✅       │
  * │ IndexedDB               │ ✅       │ ✅       │ ✅       │ ✅       │ ✅       │
@@ -42,6 +46,10 @@ export interface BrowserInfo {
 }
 
 export interface OfflineCompatibility {
+  /** iOS-Gerät: Whisper läuft auf WebKit/JavaScriptCore nicht zuverlässig */
+  isIOSWhisperUnsupported: boolean
+  /** Vollständiger Offline-Betrieb (STT + Übersetzung) möglich */
+  hasFullOfflineSupport: boolean
   /** Alle kritischen Features vorhanden → Offline-Setup möglich */
   canGoOffline: boolean
   /** PWA kann installiert werden */
@@ -175,6 +183,12 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
   // iOS mit fremdem Browser (Chrome/Firefox auf iOS): nutzt WebKit-Engine, selbe Einschränkungen
   const isIOSThirdPartyBrowser = info.isIOS && info.browser !== 'safari'
 
+  // iOS: Whisper (Transformers.js) läuft auf WebKit/JavaScriptCore NICHT zuverlässig.
+  // Bekanntes offenes Issue: https://github.com/huggingface/transformers.js/issues/1298
+  // Fehler: "Unsupported model type: whisper" + Cache Quota Exceeded auf iOS Safari.
+  // Offline-Übersetzung (Opus-MT, reines WASM) funktioniert auf iOS trotzdem.
+  const isIOSWhisperUnsupported = info.isIOS
+
   // Firefox Desktop: Kein PWA-Install, aber alle Offline-APIs OK
   const isFirefoxDesktop = info.browser === 'firefox' && !info.isMobile
 
@@ -190,13 +204,28 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
   // Kann offline gehen: alle kritischen APIs vorhanden
   const canGoOffline = hasCacheAPI && hasServiceWorker && hasWebAssembly
 
+  // Vollständiger Offline-Betrieb: STT (Whisper) + Übersetzung (Opus-MT)
+  // Auf iOS fehlt Whisper → kein vollständiger Offline-Betrieb
+  const hasFullOfflineSupport = canGoOffline && !isIOSWhisperUnsupported
+
   // Empfehlung berechnen
   let recommendedBrowser: string | null = null
   let recommendedBrowserUrl: string | null = null
   let severity: 'ok' | 'warning' | 'error' = 'ok'
   let message: string | null = null
 
-  if (!hasWebAssembly || !hasCacheAPI || !hasServiceWorker) {
+  if (isIOSWhisperUnsupported) {
+    // iOS: Whisper nicht unterstützt — klare Warnung mit Android-Empfehlung
+    severity = 'warning'
+    if (info.isStandalone) {
+      // Als PWA installiert: besser, aber STT bleibt Problem
+      message = 'Offline-Übersetzung funktioniert auf diesem Gerät. Die Offline-Spracherkennung (Whisper) ist auf iPhone/iPad technisch nicht zuverlässig möglich — dies ist eine Einschränkung von iOS/WebKit. Für vollständigen Offline-Betrieb empfehlen wir ein Android-Tablet (z. B. Samsung Galaxy Tab).'
+    } else {
+      message = 'Offline-Übersetzung funktioniert auf diesem Gerät. Die Offline-Spracherkennung (Whisper) ist auf iPhone/iPad technisch nicht zuverlässig möglich. Für vollständigen Offline-Betrieb (Spracherkennung + Übersetzung ohne Internet) empfehlen wir ein Android-Tablet.'
+    }
+    recommendedBrowser = 'Android-Tablet (z. B. Samsung Galaxy Tab A9)'
+    recommendedBrowserUrl = 'https://www.samsung.com/de/tablets/galaxy-tab-a/'
+  } else if (!hasWebAssembly || !hasCacheAPI || !hasServiceWorker) {
     // Kritisch: Grundlegende APIs fehlen
     severity = 'error'
     message = 'Dieser Browser unterstützt keine Offline-Funktionen. Bitte wechseln Sie den Browser.'
@@ -258,6 +287,8 @@ export function checkOfflineCompatibility(): OfflineCompatibility {
     hasSharedArrayBuffer,
     estimatedRAMgb,
     hasEnoughRAM,
+    isIOSWhisperUnsupported,
+    hasFullOfflineSupport,
     recommendedBrowser,
     recommendedBrowserUrl,
     severity,

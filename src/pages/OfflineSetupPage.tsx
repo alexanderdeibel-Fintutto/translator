@@ -10,11 +10,11 @@
  * die App vollständig offline.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Download, Check, Loader2, Smartphone, Mic, Languages,
-  WifiOff, ChevronRight, Info, AlertTriangle, ArrowLeft
+  WifiOff, ChevronRight, Info, AlertTriangle, ArrowLeft, Tablet
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -26,6 +26,7 @@ import { preloadModel } from '@/lib/offline/translation-engine'
 import { requestPersistentStorage } from '@/lib/offline/storage-manager'
 import { getLanguageByCode } from '@/lib/languages'
 import BrowserCompatBanner from '@/components/offline/BrowserCompatBanner'
+import { detectBrowser } from '@/lib/offline/browser-compat'
 
 // Empfohlene Sprachen für den Behörden-Einsatz (Authority Clerk)
 const RECOMMENDED_LANGUAGE_PAIRS = [
@@ -86,6 +87,8 @@ export default function OfflineSetupPage() {
   const navigate = useNavigate()
   const { isOffline, refreshModels } = useOffline()
   const { canInstall, isInstalled, isIOSDevice, install } = usePWAInstall()
+  const browserInfo = useMemo(() => detectBrowser(), [])
+  const isIOS = browserInfo.isIOS
 
   // Step 1: PWA
   const [isPersistent, setIsPersistent] = useState(false)
@@ -311,51 +314,109 @@ export default function OfflineSetupPage() {
       {/* ── SCHRITT 2: Whisper herunterladen ── */}
       <Card className="p-4 space-y-3">
         <div className="flex items-start gap-3">
-          <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${step2Done ? 'bg-emerald-100 dark:bg-emerald-900' : 'bg-muted'}`}>
-            {step2Done
-              ? <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              : <Mic className="h-4 w-4 text-muted-foreground" />
+          <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
+            isIOS ? 'bg-amber-100 dark:bg-amber-900' :
+            step2Done ? 'bg-emerald-100 dark:bg-emerald-900' : 'bg-muted'
+          }`}>
+            {isIOS
+              ? <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              : step2Done
+                ? <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                : <Mic className="h-4 w-4 text-muted-foreground" />
             }
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="font-semibold text-sm">Schritt 2 — Offline-Spracherkennung (Whisper)</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Das Whisper-Modell (~150 MB) ermöglicht Spracherkennung ohne Internet, in jedem Browser,
-              für alle Sprachen gleichzeitig. Einmalig herunterladen, dauerhaft verfügbar.
+              {isIOS
+                ? 'Auf iPhone/iPad nicht verfügbar (iOS/WebKit-Einschränkung). Offline-Übersetzung funktioniert trotzdem.'
+                : 'Das Whisper-Modell (~150 MB) ermöglicht Spracherkennung ohne Internet, in jedem Browser, für alle Sprachen gleichzeitig.'
+              }
             </p>
           </div>
         </div>
 
-        {step2Done ? (
-          <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 pl-11">
-            <Check className="h-3 w-3" /> Whisper ist bereit — Spracherkennung funktioniert offline
-          </p>
-        ) : whisperDownloading ? (
-          <div className="pl-11 space-y-1.5">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Lade Whisper herunter… {whisperProgress}%
+        {/* iOS-spezifische Warnung */}
+        {isIOS && (
+          <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+                  Offline-Spracherkennung auf iPhone/iPad nicht verfügbar
+                </p>
+                <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                  Whisper (Transformers.js) läuft auf iOS/WebKit technisch nicht zuverlässig.
+                  Dies ist eine bekannte Einschränkung von Apples Browser-Engine — unabhängig
+                  davon, ob Safari, Chrome oder Firefox auf dem Gerät verwendet wird.
+                </p>
+              </div>
             </div>
-            <ProgressBar value={whisperProgress} />
+            <div className="grid grid-cols-2 gap-2 text-[10px]">
+              <div className="rounded-md bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 p-2">
+                <p className="font-semibold text-emerald-700 dark:text-emerald-400 mb-1">✅ Funktioniert auf iOS</p>
+                <p className="text-emerald-600 dark:text-emerald-500">Online-Betrieb (vollständig)</p>
+                <p className="text-emerald-600 dark:text-emerald-500">Offline-Übersetzung (Opus-MT)</p>
+              </div>
+              <div className="rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 p-2">
+                <p className="font-semibold text-red-700 dark:text-red-400 mb-1">❌ Nicht möglich auf iOS</p>
+                <p className="text-red-600 dark:text-red-500">Offline-Spracherkennung</p>
+                <p className="text-red-600 dark:text-red-500">Vollständiger Offline-Betrieb</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2 rounded-md bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-2.5">
+              <Tablet className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-[10px] text-amber-700 dark:text-amber-400 leading-relaxed">
+                <span className="font-semibold">Empfehlung für Behörden-Tablets:</span>{' '}
+                Für vollständigen Offline-Betrieb (Spracherkennung + Übersetzung ohne Internet)
+                bitte ein Android-Tablet verwenden, z. B.{' '}
+                <a
+                  href="https://www.samsung.com/de/tablets/galaxy-tab-a/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-medium"
+                >
+                  Samsung Galaxy Tab A9
+                </a>{' '}
+                (ca. 200 €).
+              </p>
+            </div>
           </div>
-        ) : (
-          <div className="pl-11 space-y-1.5">
-            <Button
-              size="sm"
-              onClick={downloadWhisper}
-              disabled={isOffline}
-              className="gap-1.5"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Whisper herunterladen (~150 MB)
-            </Button>
-            {whisperError && (
-              <p className="text-xs text-destructive">{whisperError}</p>
-            )}
-            {isOffline && (
-              <p className="text-xs text-amber-600">Internetverbindung erforderlich</p>
-            )}
-          </div>
+        )}
+
+        {/* Download-Bereich — nur auf Nicht-iOS */}
+        {!isIOS && (
+          step2Done ? (
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 pl-11">
+              <Check className="h-3 w-3" /> Whisper ist bereit — Spracherkennung funktioniert offline
+            </p>
+          ) : whisperDownloading ? (
+            <div className="pl-11 space-y-1.5">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Lade Whisper herunter… {whisperProgress}%
+              </div>
+              <ProgressBar value={whisperProgress} />
+            </div>
+          ) : (
+            <div className="pl-11 space-y-1.5">
+              <Button
+                size="sm"
+                onClick={downloadWhisper}
+                disabled={isOffline}
+                className="gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Whisper herunterladen (~150 MB)
+              </Button>
+              {whisperError && (
+                <p className="text-xs text-destructive">{whisperError}</p>
+              )}
+              {isOffline && (
+                <p className="text-xs text-amber-600">Internetverbindung erforderlich</p>
+              )}
+            </div>
+          )
         )}
       </Card>
 

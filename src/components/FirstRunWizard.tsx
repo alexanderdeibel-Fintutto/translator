@@ -14,16 +14,17 @@
  * Jederzeit überspringbar → Flag wird trotzdem gesetzt, Wizard erscheint nicht erneut
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Smartphone, Mic, Languages, Check, Download, Loader2,
-  ChevronRight, X, WifiOff, Share, ArrowRight, Wifi
+  ChevronRight, X, WifiOff, Share, ArrowRight, Wifi, Tablet, AlertTriangle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useOffline } from '@/context/OfflineContext'
 import BrowserCompatBanner from '@/components/offline/BrowserCompatBanner'
 import { usePWAInstall } from '@/hooks/usePWAInstall'
+import { detectBrowser } from '@/lib/offline/browser-compat'
 import { isWhisperAvailable, preloadWhisper } from '@/lib/offline/stt-engine'
 import { getLanguagePairStatus } from '@/lib/offline/model-manager'
 import { preloadModel } from '@/lib/offline/translation-engine'
@@ -62,6 +63,8 @@ export default function FirstRunWizard({ forcedByUrl = false, onDismiss }: Props
   const navigate = useNavigate()
   const { isOffline } = useOffline()
   const { canInstall, isInstalled, isIOSDevice, install } = usePWAInstall()
+  const browserInfo = useMemo(() => detectBrowser(), [])
+  const isIOS = browserInfo.isIOS
 
   const [step, setStep] = useState<WizardStep>('welcome')
 
@@ -297,41 +300,83 @@ export default function FirstRunWizard({ forcedByUrl = false, onDismiss }: Props
               </p>
             </div>
 
-            {whisperReady ? (
-              <div className="flex items-center gap-2 bg-emerald-500/30 border border-emerald-400/40 rounded-xl px-4 py-3">
-                <Check className="h-5 w-5 text-emerald-300 shrink-0" />
-                <span className="text-sm font-medium">Offline-Mikrofon ist bereit</span>
-              </div>
-            ) : whisperDownloading ? (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Lade Whisper herunter…
-                  </span>
-                  <span className="font-mono">{whisperProgress}%</span>
+{/* iOS-Whisper-Warnung — erscheint immer auf iPhone/iPad */}
+            {isIOS && (
+              <div className="rounded-xl bg-black/20 border border-white/20 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-yellow-300 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-yellow-200">
+                      Offline-Spracherkennung auf iPhone/iPad nicht verfügbar
+                    </p>
+                    <p className="text-xs text-pink-200 leading-relaxed">
+                      Whisper läuft auf iOS/WebKit technisch nicht zuverlässig — dies ist
+                      eine bekannte Einschränkung von Apple’s Browser-Engine, unabhängig
+                      vom verwendeten Browser.
+                    </p>
+                  </div>
                 </div>
-                <ProgressBar value={whisperProgress} />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Button
-                  className="w-full bg-white text-pink-700 hover:bg-pink-50 font-semibold"
-                  onClick={downloadWhisper}
-                  disabled={isOffline}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Whisper herunterladen (~150 MB)
-                </Button>
-                {isOffline && (
-                  <p className="text-xs text-pink-200 flex items-center gap-1">
-                    <WifiOff className="h-3 w-3" /> Internetverbindung erforderlich
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="rounded-lg bg-emerald-500/20 border border-emerald-400/30 p-2 space-y-0.5">
+                    <p className="font-semibold text-emerald-300">✅ Funktioniert auf iOS</p>
+                    <p className="text-emerald-200">Online-Betrieb (vollständig)</p>
+                    <p className="text-emerald-200">Offline-Übersetzung (Opus-MT)</p>
+                  </div>
+                  <div className="rounded-lg bg-red-500/20 border border-red-400/30 p-2 space-y-0.5">
+                    <p className="font-semibold text-red-300">❌ Nicht möglich auf iOS</p>
+                    <p className="text-red-200">Offline-Spracherkennung</p>
+                    <p className="text-red-200">Vollständiger Offline-Betrieb</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 rounded-lg bg-white/10 p-2.5">
+                  <Tablet className="h-3.5 w-3.5 text-white/70 shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-white/80 leading-relaxed">
+                    <span className="font-semibold text-white">Empfehlung für Behörden-Tablets:</span>{' '}
+                    Für vollständigen Offline-Betrieb bitte ein Android-Tablet verwenden
+                    (z. B. Samsung Galaxy Tab A9, ca. 200 €).
                   </p>
-                )}
-                {whisperError && (
-                  <p className="text-xs text-red-300">{whisperError}</p>
-                )}
+                </div>
               </div>
+            )}
+
+            {/* Whisper-Download — nur auf Nicht-iOS anzeigen */}
+            {!isIOS && (
+              whisperReady ? (
+                <div className="flex items-center gap-2 bg-emerald-500/30 border border-emerald-400/40 rounded-xl px-4 py-3">
+                  <Check className="h-5 w-5 text-emerald-300 shrink-0" />
+                  <span className="text-sm font-medium">Offline-Mikrofon ist bereit</span>
+                </div>
+              ) : whisperDownloading ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-1.5">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Lade Whisper herunter…
+                    </span>
+                    <span className="font-mono">{whisperProgress}%</span>
+                  </div>
+                  <ProgressBar value={whisperProgress} />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Button
+                    className="w-full bg-white text-pink-700 hover:bg-pink-50 font-semibold"
+                    onClick={downloadWhisper}
+                    disabled={isOffline}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Whisper herunterladen (~150 MB)
+                  </Button>
+                  {isOffline && (
+                    <p className="text-xs text-pink-200 flex items-center gap-1">
+                      <WifiOff className="h-3 w-3" /> Internetverbindung erforderlich
+                    </p>
+                  )}
+                  {whisperError && (
+                    <p className="text-xs text-red-300">{whisperError}</p>
+                  )}
+                </div>
+              )
             )}
 
             <div className="flex gap-2 pt-1">
