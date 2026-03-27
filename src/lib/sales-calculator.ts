@@ -172,3 +172,137 @@ export function calculateCruiseSavings(params: {
 export function formatSavings(result: SavingsResult): string {
   return `${result.savingsPercent}% günstiger als ${result.competitorName} — Sie sparen ${formatPrice(result.savingsEurMonth)}/Monat`
 }
+
+// ---------------------------------------------------------------------------
+// Market-segment calculators (authority, medical, hospitality, education, conference)
+// ---------------------------------------------------------------------------
+
+/** Authority / Behörde: Compare vs. Dolmetscher-Kosten */
+export function calculateAuthoritySavings(params: {
+  tierId: TierId
+  /** Anzahl Schalter / Arbeitsplätze */
+  countersCount: number
+  /** Gespräche pro Schalter pro Monat */
+  sessionsPerCounter: number
+  /** Durchschnittliche Dolmetscher-Kosten pro Termin in EUR */
+  interpreterCostPerSession?: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const ourCost = (tier?.pricing.monthlyEur || 0) * params.countersCount
+  // Dolmetscher: Mindesthonorar 60 EUR/Termin (Telefon-/Videodolmetschen) oder 120 EUR Präsenz
+  const costPerSession = params.interpreterCostPerSession ?? 60
+  const interpreterCost = params.sessionsPerCounter * params.countersCount * costPerSession
+  const savings = interpreterCost - ourCost
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: interpreterCost,
+    savingsPercent: interpreterCost > 0 ? Math.round((savings / interpreterCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'Telefon-Dolmetscher',
+  }
+}
+
+/** Medical: Compare vs. Dolmetscher-/Sprachmittlerkosten */
+export function calculateMedicalSavings(params: {
+  tierId: TierId
+  /** Anzahl Ärzte / Behandlungsräume */
+  practitionersCount: number
+  /** Patienten mit Sprachbedarf pro Monat */
+  patientsPerMonth: number
+  /** Dolmetscher-Kosten pro Termin in EUR */
+  interpreterCostPerSession?: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const ourCost = (tier?.pricing.monthlyEur || 0) * params.practitionersCount
+  // Sprachmittler: 80–150 EUR/Stunde, Mindestabrechnung 1h
+  const costPerSession = params.interpreterCostPerSession ?? 90
+  const interpreterCost = params.patientsPerMonth * costPerSession
+  const savings = interpreterCost - ourCost
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: interpreterCost,
+    savingsPercent: interpreterCost > 0 ? Math.round((savings / interpreterCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'Sprachmittler',
+  }
+}
+
+/** Hospitality / Hotel-Counter: Compare vs. mehrsprachiges Personal */
+export function calculateHospitalitySavings(params: {
+  tierId: TierId
+  /** Anzahl Counter / Rezeptionen */
+  countersCount: number
+  /** Gäste-Interaktionen mit Sprachbedarf pro Monat */
+  interactionsPerMonth: number
+  /** Kosten für mehrsprachige Aushilfe pro Stunde */
+  staffCostPerHour?: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const ourCost = (tier?.pricing.monthlyEur || 0) * params.countersCount
+  // Mehrsprachige Aushilfe: ~25 EUR/h, ca. 10 Min pro Interaktion
+  const costPerHour = params.staffCostPerHour ?? 25
+  const staffCost = params.interactionsPerMonth * (costPerHour / 6) // 10 Min = 1/6 Stunde
+  const savings = staffCost - ourCost
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: staffCost,
+    savingsPercent: staffCost > 0 ? Math.round((savings / staffCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'Mehrsprachiges Personal',
+  }
+}
+
+/** Education / Schule: Compare vs. Schulbegleiter / Sprachmittler */
+export function calculateEducationSavings(params: {
+  tierId: TierId
+  /** Anzahl Lehrkräfte */
+  teachersCount: number
+  /** Elterngespräche / Beratungen mit Sprachbedarf pro Monat */
+  sessionsPerMonth: number
+  /** Kosten für Schulbegleiter / Dolmetscher pro Termin */
+  interpreterCostPerSession?: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const ourCost = (tier?.pricing.monthlyEur || 0) * params.teachersCount
+  // Schulbegleiter / kommunaler Dolmetscher: ~50 EUR/Termin
+  const costPerSession = params.interpreterCostPerSession ?? 50
+  const interpreterCost = params.sessionsPerMonth * costPerSession
+  const savings = interpreterCost - ourCost
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: interpreterCost,
+    savingsPercent: interpreterCost > 0 ? Math.round((savings / interpreterCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'Schulbegleiter / Dolmetscher',
+  }
+}
+
+/** Conference: Compare vs. Simultandolmetscher */
+export function calculateConferenceSavings(params: {
+  tierId: TierId
+  /** Anzahl Konferenzen / Veranstaltungen pro Monat */
+  eventsPerMonth: number
+  /** Anzahl Sprachen pro Veranstaltung */
+  languagesPerEvent: number
+  /** Kosten pro Dolmetscher pro Tag */
+  interpreterDayCost?: number
+}): SavingsResult {
+  const tier = TIERS[params.tierId]
+  const ourCost = tier?.pricing.monthlyEur || 0
+  // Simultandolmetscher: 1.500–3.000 EUR/Tag/Sprache (2 Dolmetscher im Team)
+  const dayCost = params.interpreterDayCost ?? 2000
+  const interpreterCost = params.eventsPerMonth * params.languagesPerEvent * dayCost
+  const savings = interpreterCost - ourCost
+  return {
+    ourMonthlyCost: ourCost,
+    competitorMonthlyCost: interpreterCost,
+    savingsPercent: interpreterCost > 0 ? Math.round((savings / interpreterCost) * 100) : 0,
+    savingsEurMonth: savings,
+    savingsEurYear: savings * 12,
+    competitorName: 'Simultandolmetscher',
+  }
+}

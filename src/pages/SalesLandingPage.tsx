@@ -17,7 +17,7 @@ import ROICalculator from '@/components/pricing/ROICalculator'
 import LeadRegistrationForm from '@/components/sales/LeadRegistrationForm'
 
 type SalesSegment = 'personal' | 'guide' | 'agency' | 'event' | 'cruise' | 'education' | 'authority' | 'hospitality' | 'medical' | 'conference'
-type CalcSegment = 'guide' | 'agency' | 'event' | 'cruise'
+type CalcSegment = 'guide' | 'agency' | 'event' | 'cruise' | 'authority' | 'medical' | 'hospitality' | 'education' | 'conference'
 
 interface SegmentContent {
   hero: { title: string; subtitle: string; badge?: string }
@@ -490,7 +490,7 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       { value: '0 EUR', label: 'Hardware-Kosten' },
     ],
     cta: 'Schul-Plan starten',
-    hasCalculator: false,
+    hasCalculator: true,
   },
 
   authority: {
@@ -567,7 +567,7 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       { value: '100%', label: 'DSGVO-konform' },
     ],
     cta: 'Behoerden-Plan starten',
-    hasCalculator: false,
+    hasCalculator: true,
   },
 
   hospitality: {
@@ -644,7 +644,7 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       { value: '0 EUR', label: 'Hardware-Kosten' },
     ],
     cta: 'Counter-Plan starten',
-    hasCalculator: false,
+    hasCalculator: true,
   },
 
   medical: {
@@ -721,7 +721,7 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       { value: '54', label: 'Offline-Paare' },
     ],
     cta: 'Praxis-Plan starten',
-    hasCalculator: false,
+    hasCalculator: true,
   },
 
   conference: {
@@ -924,6 +924,21 @@ export default function SalesLandingPage() {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-center">ROI-Rechner: Was sparen Sie?</h2>
           <ROICalculator segment={seg as CalcSegment} />
+          {/* Demo CTA after calculator */}
+          {(['authority', 'medical', 'hospitality', 'education', 'conference'] as SalesSegment[]).includes(seg) && (
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold">Überzeugt? Testen Sie es jetzt kostenlos.</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Keine Installation, kein Account — einfach ausprobieren.</p>
+              </div>
+              <Link to={`/conversation?setup=${seg}`} className="shrink-0">
+                <Button className="gap-2">
+                  Demo starten
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
