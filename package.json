@@ -80,7 +80,8 @@
     "build:event": "npm run build:event-speaker && npm run build:event-attendee",
     "build:ams": "vite build --config apps/ams/vite.config.ts",
     "build:service-staff": "vite build --config apps/service-staff/vite.config.ts",
-    "build:service-guest": "vite build --config apps/service-guest/vite.config.ts"
+    "build:service-guest": "vite build --config apps/service-guest/vite.config.ts",
+    "build:cms": "vite build --config apps/cms/vite.config.ts"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",

@@ -47,12 +47,27 @@ export type AppVariant =
   | 'artguide-whitelabel'
   // City Guide variant
   | 'cityguide-visitor'
+  // Hotel (Hospitality dedicated)
+  | 'hotel-staff'
+  | 'hotel-guest'
+  // Cruise
+  | 'cruise-staff'
+  | 'cruise-guest'
+  // Events (general)
+  | 'event-speaker'
+  | 'event-attendee'
+  // Service (general counter/retail/desk)
+  | 'service-staff'
+  | 'service-guest'
+  // AMS & CMS
+  | 'ams'
+  | 'cms'
 
 /** Which core app this flavor is based on */
-export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide' | 'cityguide'
+export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide' | 'cityguide' | 'platform'
 
 /** Target market for market-specific flavors */
-export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events' | 'artguide' | 'cityguide'
+export type MarketSegment = 'general' | 'schools' | 'authorities' | 'ngo' | 'hospitality' | 'medical' | 'events' | 'artguide' | 'cityguide' | 'cruise' | 'service' | 'platform'
 
 export interface AppConfig {
   /** Internal variant identifier */
@@ -407,8 +422,173 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     subdomain: 'cityguide',
     iconDir: 'cityguide',
   },
-}
 
+  // ─── Hotel Market (dedicated Hospitality) ─────────────────────
+  'hotel-staff': {
+    variant: 'hotel-staff',
+    base: 'enterprise',
+    market: 'hospitality',
+    appName: 'Hotel Translator - Rezeption',
+    shortName: 'HotelTranslator',
+    description: 'Bidirektionale Gespraechsuebersetzung fuer Hotels, Resorts und Ferienwohnungen.',
+    appId: 'world.fintutto.hotel.staff',
+    themeColor: '#b45309',
+    accentColor: '#fbbf24',
+    devPort: 5202,
+    startUrl: '/',
+    iosScheme: 'hoteltranslatorstaff',
+    subdomain: 'hotel-staff',
+    iconDir: 'hotel',
+  },
+  'hotel-guest': {
+    variant: 'hotel-guest',
+    base: 'listener',
+    market: 'hospitality',
+    appName: 'Hotel Translator',
+    shortName: 'HotelTranslator',
+    description: 'Verstehen Sie Ihr Hotel-Team - in Ihrer Sprache.',
+    appId: 'world.fintutto.hotel.guest',
+    themeColor: '#b45309',
+    accentColor: '#fbbf24',
+    devPort: 5203,
+    startUrl: '/',
+    iosScheme: 'hoteltranslatorguest',
+    subdomain: 'hotel-guest',
+    iconDir: 'hotel',
+  },
+  // ─── Cruise Market ────────────────────────────────────────────
+  'cruise-staff': {
+    variant: 'cruise-staff',
+    base: 'enterprise',
+    market: 'cruise',
+    appName: 'Cruise Translator - Crew',
+    shortName: 'CruiseTranslator',
+    description: 'Mehrsprachige Kommunikation an Bord. Fuer Crew, Rezeption und Ausflugsteams.',
+    appId: 'world.fintutto.cruise.staff',
+    themeColor: '#0369a1',
+    accentColor: '#38bdf8',
+    devPort: 5204,
+    startUrl: '/',
+    iosScheme: 'cruisetranslatorstaff',
+    subdomain: 'cruise-staff',
+    iconDir: 'cruise',
+  },
+  'cruise-guest': {
+    variant: 'cruise-guest',
+    base: 'listener',
+    market: 'cruise',
+    appName: 'Cruise Translator',
+    shortName: 'CruiseTranslator',
+    description: 'Verstehen Sie die Crew und Ausflugsfuehrer - in Ihrer Sprache.',
+    appId: 'world.fintutto.cruise.guest',
+    themeColor: '#0369a1',
+    accentColor: '#38bdf8',
+    devPort: 5205,
+    startUrl: '/',
+    iosScheme: 'cruisetranslatorguest',
+    subdomain: 'cruise-guest',
+    iconDir: 'cruise',
+  },
+  // ─── Events Market (general) ──────────────────────────────────
+  'event-speaker': {
+    variant: 'event-speaker',
+    base: 'enterprise',
+    market: 'events',
+    appName: 'Event Translator - Speaker',
+    shortName: 'EventTranslator',
+    description: 'Live-Uebersetzung fuer Stadtfeste, Messen, Fuehrungen und Veranstaltungen aller Art.',
+    appId: 'world.fintutto.event.speaker',
+    themeColor: '#7c3aed',
+    accentColor: '#a78bfa',
+    devPort: 5206,
+    startUrl: '/',
+    iosScheme: 'eventtranslatorspeaker',
+    subdomain: 'event-speaker',
+    iconDir: 'event',
+  },
+  'event-attendee': {
+    variant: 'event-attendee',
+    base: 'listener',
+    market: 'events',
+    appName: 'Event Translator',
+    shortName: 'EventTranslator',
+    description: 'Verstehen Sie Veranstaltungen und Fuehrungen - in Ihrer Sprache.',
+    appId: 'world.fintutto.event.attendee',
+    themeColor: '#7c3aed',
+    accentColor: '#a78bfa',
+    devPort: 5207,
+    startUrl: '/',
+    iosScheme: 'eventtranslatorattendee',
+    subdomain: 'event-attendee',
+    iconDir: 'event',
+  },
+  // ─── Service Market (general counter/retail/desk) ─────────────
+  'service-staff': {
+    variant: 'service-staff',
+    base: 'enterprise',
+    market: 'service',
+    appName: 'Service Translator - Mitarbeiter',
+    shortName: 'ServiceTranslator',
+    description: 'Bidirektionale Gespraechsuebersetzung fuer Servicepunkte, Behoerden, Einzelhandel und Messen.',
+    appId: 'world.fintutto.service.staff',
+    themeColor: '#1d4ed8',
+    accentColor: '#60a5fa',
+    devPort: 5208,
+    startUrl: '/',
+    iosScheme: 'servicetranslatorstaff',
+    subdomain: 'service-staff',
+    iconDir: 'service',
+  },
+  'service-guest': {
+    variant: 'service-guest',
+    base: 'listener',
+    market: 'service',
+    appName: 'Service Translator',
+    shortName: 'ServiceTranslator',
+    description: 'Verstehen Sie den Servicemitarbeiter - in Ihrer Sprache.',
+    appId: 'world.fintutto.service.guest',
+    themeColor: '#1d4ed8',
+    accentColor: '#60a5fa',
+    devPort: 5209,
+    startUrl: '/',
+    iosScheme: 'servicetranslatorguest',
+    subdomain: 'service-guest',
+    iconDir: 'service',
+  },
+  // ─── Platform Apps ────────────────────────────────────────────
+  'ams': {
+    variant: 'ams',
+    base: 'platform',
+    market: 'platform',
+    appName: 'Fintutto AMS',
+    shortName: 'AMS',
+    description: 'Account Management System - globale Verwaltung aller Accounts, Tiers, Preise und Nutzung.',
+    appId: 'world.fintutto.ams',
+    themeColor: '#0f172a',
+    accentColor: '#6366f1',
+    devPort: 5220,
+    startUrl: '/',
+    iosScheme: 'fintuttoams',
+    subdomain: 'ams',
+    iconDir: 'ams',
+  },
+  'cms': {
+    variant: 'cms',
+    base: 'platform',
+    market: 'platform',
+    appName: 'Fintutto CMS',
+    shortName: 'CMS',
+    description: 'Content Management System - zentraler Einstieg fuer alle Anbieter, Redakteure und Institutionen.',
+    appId: 'world.fintutto.cms',
+    themeColor: '#0f172a',
+    accentColor: '#10b981',
+    devPort: 5221,
+    startUrl: '/',
+    iosScheme: 'fintuttocms',
+    subdomain: 'cms',
+    iconDir: 'cms',
+  },
+}
 export function getAppConfig(variant: AppVariant): AppConfig {
   return appConfigs[variant]
 }
