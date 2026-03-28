@@ -18,7 +18,7 @@ const CONTACT_OPTIONS = [
     title: 'Fuer Privatpersonen',
     desc: 'Kostenlos starten — 45 Sprachen, Offline-Modus, kein Account noetig.',
     cta: 'App oeffnen',
-    url: 'https://consumer.guidetranslator.com',
+    url: 'https://consumer.fintutto.world',
     external: true,
   },
   {
@@ -99,8 +99,8 @@ export default function ContactPage() {
           <Card className="p-5 text-center space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
             <Mail className="w-6 h-6 text-sky-300 mx-auto" />
             <h3 className="font-semibold text-sm">E-Mail</h3>
-            <a href="mailto:info@guidetranslator.com" className="text-xs text-sky-300 hover:underline">
-              info@guidetranslator.com
+            <a href="mailto:info@fintutto.world" className="text-xs text-sky-300 hover:underline">
+              info@fintutto.world
             </a>
           </Card>
           <Card className="p-5 text-center space-y-2 bg-black/30 backdrop-blur-sm border-white/10">
@@ -116,8 +116,7 @@ export default function ContactPage() {
             <Globe2 className="w-6 h-6 text-sky-300 mx-auto" />
             <h3 className="font-semibold text-sm">Web</h3>
             <p className="text-xs text-white/70">
-              fintutto.world<br />
-              guidetranslator.com
+              fintutto.world
             </p>
           </Card>
         </div>

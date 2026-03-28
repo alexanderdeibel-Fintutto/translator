@@ -169,7 +169,7 @@ const strings: Record<string, string> = {
   'info.transport4Title': '4. Bluetooth LE',
   'info.transport4Desc': 'GATT Sunucu/İstemci. Ağ olmadan tamamen çalışır.',
   'info.ecosystemTitle': 'ai tour Ekosisteminin Parçası',
-  'info.ecosystemDesc': 'guidetranslator, finans, gayrimenkul ve yönetim için ai tour platformunun bir parçasıdır.',
+  'info.ecosystemDesc': 'fintutto, finans, gayrimenkul ve yönetim için ai tour platformunun bir parçasıdır.',
   'info.feature1Title': '54+ Çevrimdışı Dil Çifti',
   'info.feature1Desc': '40+ dil arasında çeviri yapın — Almanca\'dan Arapça, Çince, Japonca, Korece, Hintçe ve daha fazlasına.',
   'info.feature2Title': 'Canlı Oturumlar (1→N)',
@@ -232,7 +232,7 @@ const strings: Record<string, string> = {
   'layout.skipToContent': 'İçeriğe atla',
 
   // Header
-  'header.homeAriaLabel': 'guidetranslator — Ana sayfa',
+  'header.homeAriaLabel': 'fintutto — Ana sayfa',
   'header.menuClose': 'Menüyü kapat',
   'header.menuOpen': 'Menüyü aç',
 
@@ -279,7 +279,7 @@ const strings: Record<string, string> = {
   'live.network': 'Ağ',
   'live.wifiScanInstruction': 'Dinleyiciler bu QR kodu kamera uygulamasıyla tarıyor',
   'live.wifiAutoConnect': 'iOS 11+ ve Android 10+ otomatik bağlanır',
-  'live.shareTitle': 'guidetranslator Canlı Çeviri',
+  'live.shareTitle': 'fintutto Canlı Çeviri',
   'live.shareText': 'Canlı çevirime katıl',
   'live.sessionCodeLabel': 'Oturum Kodu',
   'live.qrInstruction': 'Dinleyiciler QR kodu tarar veya bağlantıyı tarayıcıda açar',

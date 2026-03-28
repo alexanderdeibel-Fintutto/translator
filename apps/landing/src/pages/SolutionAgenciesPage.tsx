@@ -3,7 +3,7 @@
  *
  * Sales landing page for tour agencies and travel operators.
  * Highlights: Team management, central billing, white-label, API.
- * CTA: Demo anfragen → sales.guidetranslator.com
+ * CTA: Demo anfragen → sales.fintutto.world
  */
 import {
   ArrowRight, ChevronRight, Check, Building2,
@@ -14,8 +14,8 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const ENTERPRISE_URL = 'https://enterprise.guidetranslator.com'
-const SALES_URL = 'https://sales.guidetranslator.com'
+const ENTERPRISE_URL = 'https://enterprise.fintutto.world'
+const SALES_URL = 'https://sales.fintutto.world'
 
 export default function SolutionAgenciesPage() {
   return (
@@ -326,7 +326,7 @@ export default function SolutionAgenciesPage() {
           </a>
         </div>
         <p className="text-xs text-white/40">
-          Fragen? <a href="mailto:enterprise@guidetranslator.com" className="underline hover:text-white/70">enterprise@guidetranslator.com</a>
+          Fragen? <a href="mailto:enterprise@fintutto.world" className="underline hover:text-white/70">enterprise@fintutto.world</a>
         </p>
       </div>
     </div>

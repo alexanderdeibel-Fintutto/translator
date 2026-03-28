@@ -3,7 +3,7 @@
 **Stand:** 16.03.2026 | **Version:** 1.0 | **Vertraulich**
 **Verantwortlicher:** Alexander Deibel, Fintutto UG (i.G.)
 **Datenschutzbeauftragter:** Nicht erforderlich (< 20 Mitarbeitende, Art. 37 DSGVO / § 38 BDSG)
-**Kontakt:** datenschutz@guidetranslator.com
+**Kontakt:** datenschutz@fintutto.world
 **Zweck:** Anlage zu Foerderantraegen (ZIM, EFRE, Gruenderstipendium) + interne Compliance-Dokumentation
 
 > **DIESES DOKUMENT** beschreibt das Datenschutzkonzept fuer die Fintutto
@@ -177,12 +177,12 @@ Tier 4: Offline ML (On-Device) → KEINE Daten verlassen das Geraet
 
 | Recht | Umsetzung |
 |-------|----------|
-| **Auskunft (Art. 15)** | Anfrage an datenschutz@guidetranslator.com; da keine persistenten Nutzerdaten gespeichert werden, ist der Umfang minimal |
+| **Auskunft (Art. 15)** | Anfrage an datenschutz@fintutto.world; da keine persistenten Nutzerdaten gespeichert werden, ist der Umfang minimal |
 | **Berichtigung (Art. 16)** | Kontaktdaten koennen per E-Mail korrigiert werden |
 | **Loeschung (Art. 17)** | Lokale Daten: Browser-Daten loeschen; Kontaktdaten: per E-Mail beantragen; Live-Sessions: automatische Loeschung nach Sitzungsende |
 | **Einschraenkung (Art. 18)** | Per E-Mail beantragbar |
 | **Datenuebertragbarkeit (Art. 20)** | Lokale Daten sind bereits im Besitz des Nutzers (Browser); Export auf Anfrage |
-| **Widerspruch (Art. 21)** | Per E-Mail an datenschutz@guidetranslator.com |
+| **Widerspruch (Art. 21)** | Per E-Mail an datenschutz@fintutto.world |
 | **Widerruf Einwilligung (Art. 7 Abs. 3)** | Mikrofon-Berechtigung kann jederzeit im Browser/Geraet entzogen werden |
 | **Beschwerde (Art. 77)** | Landesbeauftragter fuer Datenschutz MV, Schloss Schwerin, 19053 Schwerin |
 

@@ -9,7 +9,7 @@
 
 ### Die Idee
 
-Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den **Fintutto Translator**. Die Software bleibt im Eigentum der **Fintutto UG** und wird an die UG lizenziert. Die UG vertreibt das Produkt unter der Vertriebsmarke **"GuideTranslator"** (Domains: guidetranslator.com, .de). So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
+Wir nutzen unsere bestehende **AI Tour Guide UG** als gemeinsames Vertriebs- und Marketingvehikel für den **Fintutto Translator**. Die Software bleibt im Eigentum der **Fintutto UG** und wird an die UG lizenziert. Die UG vertreibt das Produkt unter der Vertriebsmarke **"GuideTranslator"** (Domains: fintutto.world, .de). So schützen wir die IP, sichern die Investition -- und du behältst deine vollen 50% an der UG.
 
 ---
 

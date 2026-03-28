@@ -221,7 +221,7 @@ Deno.serve(async (req: Request) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'GuideTranslator <noreply@guidetranslator.com>',
+            from: 'fintutto <noreply@fintutto.world>',
             to: [email],
             subject: 'Willkommen bei GuideTranslator!',
             text: `Hallo ${displayName ?? email},\n\nIhr Account wurde erstellt. Bitte setzen Sie Ihr Passwort ueber folgenden Link:\n\n${resetData.properties.action_link}\n\nBeste Gruesse,\nDas GuideTranslator Team`,

@@ -5,7 +5,7 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const APP_URL = 'https://listener.guidetranslator.com'
+const APP_URL = 'https://listener.fintutto.world'
 
 export default function AppListenerPage() {
   return (

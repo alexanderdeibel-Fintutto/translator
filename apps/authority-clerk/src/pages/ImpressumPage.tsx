@@ -44,14 +44,14 @@ export default function ImpressumPage() {
           <div className="text-sm space-y-2 pt-2 border-t">
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-muted-foreground" />
-              <a href="mailto:info@guidetranslator.de" className="text-teal-700 hover:underline">
-                info@guidetranslator.de
+              <a href="mailto:info@fintutto.world" className="text-teal-700 hover:underline">
+                info@fintutto.world
               </a>
             </div>
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-muted-foreground" />
-              <a href="https://www.guidetranslator.de" target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">
-                www.guidetranslator.de
+              <a href="https://fintutto.world" target="_blank" rel="noopener noreferrer" className="text-teal-700 hover:underline">
+                fintutto.world
               </a>
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function ImpressumPage() {
           </p>
           <p className="text-sm">
             <span className="font-medium">Datenschutzbeauftragter:</span>{' '}
-            datenschutz@guidetranslator.de
+            datenschutz@fintutto.world
           </p>
         </Card>
 

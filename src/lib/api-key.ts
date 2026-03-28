@@ -7,7 +7,7 @@
 // fallback for features that cannot use the proxy (e.g. Camera Translate,
 // direct STT). If no key is set, those features are disabled gracefully.
 
-const STORAGE_KEY = 'guidetranslator_google_api_key'
+const STORAGE_KEY = 'fintutto_google_api_key'
 
 export function getGoogleApiKey(): string {
   const stored = localStorage.getItem(STORAGE_KEY)

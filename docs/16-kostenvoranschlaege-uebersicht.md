@@ -72,7 +72,7 @@
 | Cloudflare Pro (CDN, DNS) | Cloudflare | 20 USD | 240 USD (~224 EUR) |
 | ElevenLabs (Voiceover Videos) | ElevenLabs | 22 USD | 264 USD (~246 EUR) |
 | Figma (UI Design) | Figma | 12 USD | 144 USD (~134 EUR) |
-| Domain-Registrierung (guidetranslator.com etc.) | Cloudflare | — | ~50 EUR |
+| Domain-Registrierung (fintutto.world etc.) | Cloudflare | — | ~50 EUR |
 | **SUMME SOFTWARE/CLOUD (12 Monate)** | | | **~1.989 EUR** |
 
 ---

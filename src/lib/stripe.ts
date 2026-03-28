@@ -38,7 +38,7 @@ export async function redirectToCheckout(options: CheckoutOptions): Promise<void
   if (!priceId) {
     // No Stripe price configured yet — show contact form for enterprise tiers
     if (tier.pricing.monthlyEur >= 199) {
-      window.open('mailto:sales@guidetranslator.com?subject=Enterprise%20Anfrage%20-%20' + encodeURIComponent(tier.displayName), '_blank')
+      window.open('mailto:sales@fintutto.world?subject=Enterprise%20Anfrage%20-%20' + encodeURIComponent(tier.displayName), '_blank')
       return
     }
     throw new Error(`Stripe Price ID not configured for ${tier.displayName}. Please contact support.`)

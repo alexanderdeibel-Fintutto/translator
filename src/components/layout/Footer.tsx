@@ -61,7 +61,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2 text-xs text-white/50">
             <Languages className="h-4 w-4" aria-hidden="true" />
-            <span>guidetranslator</span>
+            <span>fintutto</span>
             <span className="opacity-40">v3.1</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-3 text-[11px] text-white/40">

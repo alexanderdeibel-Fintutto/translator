@@ -663,7 +663,7 @@ export default function InvestorPage() {
         <div className="space-y-1">
           <p className="font-semibold text-white">fintutto ug (haftungsbeschränkt)</p>
           <p className="text-sm text-white/80">Alexander Deibel · Geschäftsführer</p>
-          <p className="text-sm text-white/80">info@guidetranslator.com</p>
+          <p className="text-sm text-white/80">info@fintutto.world</p>
           <p className="text-sm text-white/80">Kolonie 2, 18317 Saal, Deutschland</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">

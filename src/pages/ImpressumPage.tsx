@@ -33,8 +33,8 @@ export default function ImpressumPage() {
 
         <GlassSection title="Kontakt">
           <p>
-            E-Mail: info@guidetranslator.com<br />
-            Web: <a href="https://guidetranslator.com" className="text-sky-300 hover:underline">guidetranslator.com</a>
+            E-Mail: info@fintutto.world<br />
+            Web: <a href="https://fintutto.world" className="text-sky-300 hover:underline">fintutto.world</a>
           </p>
         </GlassSection>
 

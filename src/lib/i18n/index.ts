@@ -240,7 +240,7 @@ const de: TranslationStrings = {
   'info.transport4Title': '4. Bluetooth LE',
   'info.transport4Desc': 'GATT Server/Client. Funktioniert komplett ohne Netzwerk.',
   'info.ecosystemTitle': 'Teil des ai tour Ökosystems',
-  'info.ecosystemDesc': 'guidetranslator ist Teil der ai tour Plattform für Finanzen, Immobilien und Verwaltung.',
+  'info.ecosystemDesc': 'fintutto ist Teil der ai tour Plattform für Finanzen, Immobilien und Verwaltung.',
   'info.feature1Title': '54+ Offline-Sprachpaare',
   'info.feature1Desc': 'Übersetze zwischen 40+ Sprachen — von Deutsch über Arabisch bis Chinesisch, Japanisch, Koreanisch, Hindi und viele mehr.',
   'info.feature2Title': 'Live-Sessions (1→N)',
@@ -270,7 +270,7 @@ const de: TranslationStrings = {
   'layout.skipToContent': 'Zum Inhalt springen',
 
   // Header
-  'header.homeAriaLabel': 'guidetranslator — Startseite',
+  'header.homeAriaLabel': 'fintutto — Startseite',
   'header.menuClose': 'Navigation schließen',
   'header.menuOpen': 'Navigation öffnen',
   'nav.mainNavigation': 'Hauptnavigation',
@@ -336,7 +336,7 @@ const de: TranslationStrings = {
   'live.network': 'Netzwerk',
   'live.wifiScanInstruction': 'Listener scannen diesen QR-Code mit der Kamera-App',
   'live.wifiAutoConnect': 'iOS 11+ und Android 10+ verbinden automatisch',
-  'live.shareTitle': 'guidetranslator Live-Übersetzung',
+  'live.shareTitle': 'fintutto Live-Übersetzung',
   'live.shareText': 'Tritt meiner Live-Übersetzung bei',
   'live.sessionCodeLabel': 'Session-Code',
   'live.qrInstruction': 'Listener scannen den QR-Code oder öffnen den Link im Browser',

@@ -140,7 +140,7 @@ export default function AccessibilityStatementPage() {
         </p>
         <div className="text-sm space-y-1">
           <p><span className="font-medium">Anbieter:</span> Fintutto GmbH / GuideTranslator</p>
-          <p><span className="font-medium">E-Mail:</span> barrierefreiheit@guidetranslator.de</p>
+          <p><span className="font-medium">E-Mail:</span> barrierefreiheit@fintutto.world</p>
           <p><span className="font-medium">Bearbeitungszeit:</span> Innerhalb von 2 Wochen</p>
         </div>
         <div className="mt-4 p-3 rounded-lg bg-muted text-sm">

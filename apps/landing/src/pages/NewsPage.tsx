@@ -10,7 +10,7 @@ const NEWS = [
   {
     date: 'März 2026',
     title: 'v4.0 — Multi-App-Architektur & Vercel Deployment',
-    content: 'GuideTranslator wird zu Fintutto Translator und splittet sich in 3 spezialisierte Apps: Consumer (consumer.guidetranslator.com), Listener (listener.guidetranslator.com) und Enterprise (enterprise.guidetranslator.com). Jede App wird eigenständig auf Vercel deployed.',
+    content: 'GuideTranslator wird zu Fintutto Translator und splittet sich in 3 spezialisierte Apps: Consumer (consumer.fintutto.world), Listener (listener.fintutto.world) und Enterprise (enterprise.fintutto.world). Jede App wird eigenständig auf Vercel deployed.',
     tag: 'Release',
   },
   {

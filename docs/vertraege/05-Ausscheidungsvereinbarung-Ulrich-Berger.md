@@ -66,7 +66,7 @@ Die Parteien sind sich einig, dass Alexander aus der Gesellschaft ausscheidet, d
 
    a) Der Software "Fintutto Translator" / "GuideTranslator" -- einschließlich Code, Architektur, Design, Algorithmen und Know-how
 
-   b) Allen zugehörigen **Domains** (insbesondere guidetranslator.de, guidetranslator.com, guidetranslator.app und alle weiteren)
+   b) Allen zugehörigen **Domains** (insbesondere fintutto.world, fintutto.world, guidetranslator.app und alle weiteren)
 
    c) Allen zugehörigen **Markenrechten** (eingetragen oder nicht eingetragen)
 

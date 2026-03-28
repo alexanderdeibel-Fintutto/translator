@@ -83,7 +83,7 @@ const CONTENT: Record<SalesSegment, SegmentContent> = {
       },
     ],
     howItWorks: [
-      { step: '1', title: 'Öffnen', description: 'guidetranslator.com im Browser aufrufen. Keine Installation, kein Account nötig.' },
+      { step: '1', title: 'Öffnen', description: 'fintutto.world im Browser aufrufen. Keine Installation, kein Account nötig.' },
       { step: '2', title: 'Sprache wählen', description: 'Quell- und Zielsprache aus 45 Sprachen wählen. Kontextmodus setzen (Reise, Medizin, Recht...).' },
       { step: '3', title: 'Sprechen oder tippen', description: 'Text eingeben oder per Mikrofon diktieren. Die Übersetzung erscheint in Echtzeit.' },
     ],

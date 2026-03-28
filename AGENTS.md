@@ -150,11 +150,11 @@ Listener (QR-Scan): URL = https://listener.fintutto.world/ABCD
 
 | App | URL | Vercel-Projekt |
 |---|---|---|
-| Haupt-App (GuideTranslator) | `guidetranslator.com` | `translator` |
-| Enterprise-App | `enterprise.guidetranslator.com` | `translator` (monorepo) |
-| Listener-App | `listener.guidetranslator.com` | `translator` (monorepo) |
+| Haupt-App (GuideTranslator) | `fintutto.world` | `translator` |
+| Enterprise-App | `enterprise.fintutto.world` | `translator` (monorepo) |
+| Listener-App | `listener.fintutto.world` | `translator` (monorepo) |
 | AmtTranslator | `amttranslator.de` | separates Repo |
-| Investors-Seite | `guidetranslator.com/investors` | `translator` |
+| Investors-Seite | `fintutto.world/investors` | `translator` |
 
 **Deployment:** Jeder Push auf `main` triggert automatisch einen Vercel-Deploy. Kein manueller Deploy nötig.
 

@@ -22,13 +22,13 @@ vertreten durch den Geschäftsführer Alexander Deibel
    - der Echtzeit-Übersetzungsanwendung (Web-App / PWA)
    - dem Live-Session-Broadcasting-System (1-Speaker-zu-N-Listener)
    - dem Admin-Dashboard inkl. CRM-Funktionalität
-   - dem Sales-Tool (sales.guidetranslator.com)
+   - dem Sales-Tool (sales.fintutto.world)
    - allen zugehörigen APIs, Backend-Diensten und Datenbanken
    - allen zugehörigen Domains, Marken und Designelementen
 
 (2) Der Lizenzgeber räumt dem Lizenznehmer das Recht ein, die Software gemäß den Bestimmungen dieses Vertrages zu nutzen und zu vertreiben.
 
-(3) Der Lizenzgeber räumt dem Lizenznehmer das Recht ein, die Software im Geschäftsverkehr unter der **Vertriebsmarke "GuideTranslator"** zu vermarkten und zu vertreiben. Die zugehörigen Domains (insbesondere guidetranslator.de, guidetranslator.com) stehen dem Lizenznehmer für den Vertrieb zur Verfügung. Der offizielle Produktname **"Fintutto Translator"** sowie alle zugehörigen Markenrechte verbleiben beim Lizenzgeber. Das Recht zur Nutzung der Vertriebsmarke erlischt mit Beendigung dieses Vertrages.
+(3) Der Lizenzgeber räumt dem Lizenznehmer das Recht ein, die Software im Geschäftsverkehr unter der **Vertriebsmarke "GuideTranslator"** zu vermarkten und zu vertreiben. Die zugehörigen Domains (insbesondere fintutto.world, fintutto.world) stehen dem Lizenznehmer für den Vertrieb zur Verfügung. Der offizielle Produktname **"Fintutto Translator"** sowie alle zugehörigen Markenrechte verbleiben beim Lizenzgeber. Das Recht zur Nutzung der Vertriebsmarke erlischt mit Beendigung dieses Vertrages.
 
 ---
 
@@ -105,7 +105,7 @@ vertreten durch den Geschäftsführer Alexander Deibel
 
 (2) Der Lizenznehmer erwirbt durch diesen Vertrag **kein Eigentum** an der Software, dem Quellcode, den Algorithmen, der Architektur oder dem Know-how des Lizenzgebers.
 
-(3) Marken, Domains und Designelemente, die der Lizenzgeber für die Software erstellt hat (insbesondere **"Fintutto Translator"**, **"GuideTranslator"**, "guidetranslator.de", "guidetranslator.com"), bleiben **ausschließliches Eigentum des Lizenzgebers**. Die Nutzung der Vertriebsmarke "GuideTranslator" durch den Lizenznehmer erfolgt ausschließlich im Rahmen der in § 1 Abs. 3 erteilten Markenlizenz.
+(3) Marken, Domains und Designelemente, die der Lizenzgeber für die Software erstellt hat (insbesondere **"Fintutto Translator"**, **"GuideTranslator"**, "fintutto.world", "fintutto.world"), bleiben **ausschließliches Eigentum des Lizenzgebers**. Die Nutzung der Vertriebsmarke "GuideTranslator" durch den Lizenznehmer erfolgt ausschließlich im Rahmen der in § 1 Abs. 3 erteilten Markenlizenz.
 
 (4) Der Lizenznehmer verpflichtet sich, den Lizenzgeber unverzüglich über jede ihm bekannt werdende Rechtsverletzung Dritter an der Software zu informieren.
 

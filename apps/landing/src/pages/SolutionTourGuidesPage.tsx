@@ -3,7 +3,7 @@
  *
  * Sales landing page for independent tour guides and freelance city guides.
  * Highlights: Instant multilingual tours, QR-join, ROI calculator, pricing.
- * CTA: Kostenlos testen → consumer.guidetranslator.com
+ * CTA: Kostenlos testen → consumer.fintutto.world
  */
 import {
   ArrowRight, ChevronRight, Check, MapPin,
@@ -14,9 +14,9 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const CONSUMER_URL = 'https://consumer.guidetranslator.com'
-const ENTERPRISE_URL = 'https://enterprise.guidetranslator.com'
-const SALES_URL = 'https://sales.guidetranslator.com'
+const CONSUMER_URL = 'https://consumer.fintutto.world'
+const ENTERPRISE_URL = 'https://enterprise.fintutto.world'
+const SALES_URL = 'https://sales.fintutto.world'
 
 export default function SolutionTourGuidesPage() {
   return (
@@ -101,7 +101,7 @@ export default function SolutionTourGuidesPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { step: '1', icon: Smartphone, title: 'Registrieren', desc: 'Account erstellen auf consumer.guidetranslator.com — dauert 60 Sekunden.' },
+            { step: '1', icon: Smartphone, title: 'Registrieren', desc: 'Account erstellen auf consumer.fintutto.world — dauert 60 Sekunden.' },
             { step: '2', icon: QrCode, title: 'QR-Code drucken', desc: 'Dein persoenlicher QR-Code fuer die Tour. Einmal drucken, immer verwenden.' },
             { step: '3', icon: Mic, title: 'Sprechen', desc: 'Tour starten, sprechen wie immer. Die KI uebersetzt in Echtzeit.' },
             { step: '4', icon: Users, title: 'Gaeste lesen mit', desc: 'Gaeste scannen den QR, waehlen ihre Sprache — fertig. Kein Download.' },
@@ -287,7 +287,7 @@ export default function SolutionTourGuidesPage() {
           </a>
         </div>
         <p className="text-xs text-white/40">
-          Fragen? <a href="mailto:hello@guidetranslator.com" className="underline hover:text-white/70">hello@guidetranslator.com</a>
+          Fragen? <a href="mailto:hello@fintutto.world" className="underline hover:text-white/70">hello@fintutto.world</a>
         </p>
       </div>
     </div>

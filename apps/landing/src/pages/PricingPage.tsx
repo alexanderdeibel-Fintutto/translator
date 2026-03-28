@@ -227,7 +227,7 @@ export default function PricingPage() {
         <h2 className="text-2xl font-bold drop-shadow-lg">Fragen zu Preisen?</h2>
         <p className="text-white/70">Kontaktiere uns fuer individuelle Angebote und Testlizenzen.</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="mailto:info@guidetranslator.com">
+          <a href="mailto:info@fintutto.world">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
               Kontakt aufnehmen <ArrowRight className="h-4 w-4" />
             </Button>

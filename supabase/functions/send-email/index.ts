@@ -66,7 +66,7 @@ Deno.serve(async (req: Request) => {
 
     // Send via Resend API
     const emailPayload: Record<string, unknown> = {
-      from: 'GuideTranslator <noreply@guidetranslator.com>',
+      from: 'fintutto <noreply@fintutto.world>',
       to: [to],
       subject,
       text: body,

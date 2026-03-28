@@ -12,7 +12,7 @@ const APPS = [
   {
     name: 'Translator',
     desc: 'Für alle. Kostenlos übersetzen, sprechen, fotografieren — in 45 Sprachen.',
-    url: 'https://consumer.guidetranslator.com',
+    url: 'https://consumer.fintutto.world',
     color: 'bg-sky-600',
     icon: Languages,
     link: '/apps/translator',
@@ -20,7 +20,7 @@ const APPS = [
   {
     name: 'Live',
     desc: 'Für Zuhörer. QR-Code scannen, Sprache wählen, Live-Übersetzung empfangen.',
-    url: 'https://listener.guidetranslator.com',
+    url: 'https://listener.fintutto.world',
     color: 'bg-emerald-600',
     icon: Radio,
     link: '/apps/live',
@@ -28,7 +28,7 @@ const APPS = [
   {
     name: 'Enterprise',
     desc: 'Für Guides, Speaker & Techniker. Sessions erstellen, verwalten und live gehen.',
-    url: 'https://enterprise.guidetranslator.com',
+    url: 'https://enterprise.fintutto.world',
     color: 'bg-violet-600',
     icon: Building,
     link: '/apps/enterprise',
@@ -95,7 +95,7 @@ export default function LandingHomePage() {
             Live-Sessions für bis zu 500 Personen.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://consumer.fintutto.world" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="gap-2 w-full sm:w-auto">
                 Kostenlos übersetzen
                 <ArrowRight className="h-4 w-4" />
@@ -294,7 +294,7 @@ export default function LandingHomePage() {
           Kostenlos. Keine Registrierung. Keine Installation.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="https://consumer.guidetranslator.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://consumer.fintutto.world" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
               Übersetzer öffnen
               <ArrowRight className="h-4 w-4" />

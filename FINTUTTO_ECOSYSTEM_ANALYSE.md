@@ -166,7 +166,7 @@ Wir bauen ein Oekosystem digitaler Werkzeuge - von Immobilienverwaltung ueber Ec
 *Die weltweit erste Uebersetzungsplattform mit Offline-Gruppen-Broadcast*
 
 - **GuideTranslator** - 45 Sprachen. 4-Tier-Architektur: Cloud, WiFi-Hotspot, Bluetooth, On-Device KI. Fuer Tourismus, Events, Behoerden, Schulen, Kreuzfahrtschiffe.
-  app.guidetranslator.com
+  app.fintutto.world
 
   7 Produkte: Text-Uebersetzer, Live-Broadcasting (1 zu 500), Gespraechsmodus, Kamera-OCR, Phrasebook, Offline-Engine, BLE-Transport.
   11 Tarife von kostenlos bis 19.990 EUR/Monat. Android + iOS.

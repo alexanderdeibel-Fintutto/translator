@@ -169,7 +169,7 @@ const strings: Record<string, string> = {
   'info.transport4Title': '4. Bluetooth LE',
   'info.transport4Desc': 'GATT Сервер/Клиент. Работает полностью без сети.',
   'info.ecosystemTitle': 'Часть экосистемы ai tour',
-  'info.ecosystemDesc': 'guidetranslator — часть платформы ai tour для финансов, недвижимости и управления.',
+  'info.ecosystemDesc': 'fintutto — часть платформы ai tour для финансов, недвижимости и управления.',
   'info.feature1Title': '54+ офлайн языковых пар',
   'info.feature1Desc': 'Переводите между 40+ языками — от немецкого до арабского, китайского, японского, корейского, хинди и других.',
   'info.feature2Title': 'Живые сессии (1→N)',
@@ -232,7 +232,7 @@ const strings: Record<string, string> = {
   'layout.skipToContent': 'Перейти к содержимому',
 
   // Header
-  'header.homeAriaLabel': 'guidetranslator — Главная',
+  'header.homeAriaLabel': 'fintutto — Главная',
   'header.menuClose': 'Закрыть меню',
   'header.menuOpen': 'Открыть меню',
 
@@ -279,7 +279,7 @@ const strings: Record<string, string> = {
   'live.network': 'Сеть',
   'live.wifiScanInstruction': 'Слушатели сканируют этот QR-код камерой',
   'live.wifiAutoConnect': 'iOS 11+ и Android 10+ подключаются автоматически',
-  'live.shareTitle': 'guidetranslator Живой перевод',
+  'live.shareTitle': 'fintutto Живой перевод',
   'live.shareText': 'Присоединяйтесь к моему живому переводу',
   'live.sessionCodeLabel': 'Код сессии',
   'live.qrInstruction': 'Слушатели сканируют QR-код или открывают ссылку в браузере',

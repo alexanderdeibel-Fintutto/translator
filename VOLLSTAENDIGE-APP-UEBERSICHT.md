@@ -45,7 +45,7 @@
 | 2 | **Fintutto Translator** (Consumer) | `translate.fintutto.world` | `app.fintutto.cloud` | `consumer` | 5180 | ✅ |
 | 3 | **Fintutto Live** (Listener) | `live.fintutto.world` | `live.fintutto.cloud` | `listener` | 5181 | ✅ |
 | 4 | **Fintutto Enterprise** | `enterprise.fintutto.world` | `enterprise.fintutto.cloud` | `enterprise` | 5182 | ✅ |
-| 5 | **GuideTranslator Landing** | `www.guidetranslator.com` | `www.guidetranslator.com` | `landing` | 5183 | ✅ |
+| 5 | **GuideTranslator Landing** | `fintutto.world` | `fintutto.world` | `landing` | 5183 | ✅ |
 
 **Consumer App Pages (alle ✅ vorhanden):**
 
@@ -464,8 +464,8 @@ api.fintutto.world                     → API Gateway
 ### Externe Domains (Redirects/Aliase)
 
 ```
-guidetranslator.com        → GuideTranslator Landing (bleibt eigenstaendig)
-guidetranslator.de         → Deutsche Version
+fintutto.world        → GuideTranslator Landing (bleibt eigenstaendig)
+fintutto.world         → Deutsche Version
 fintutto.cloud             → Backend/Legacy (besteht)
 itour.de                   → Partner-Redirect
 iguide.ch                  → Partner-Redirect

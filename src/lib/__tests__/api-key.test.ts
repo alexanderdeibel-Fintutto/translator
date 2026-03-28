@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getGoogleApiKey, setGoogleApiKey, hasGoogleApiKey } from '../api-key'
 
 describe('api-key', () => {
-  const STORAGE_KEY = 'guidetranslator_google_api_key'
+  const STORAGE_KEY = 'fintutto_google_api_key'
 
   beforeEach(() => {
     localStorage.clear()

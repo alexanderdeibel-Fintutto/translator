@@ -87,9 +87,9 @@
 Alexander baut in 43 Stunden non-stop:
 - Translator V1-V3b (komplett funktionsfähig mit Offline)
 - Live-Session-Modus (1-Speaker-zu-N-Listener)
-- Sales-Tool (sales.guidetranslator.com)
+- Sales-Tool (sales.fintutto.world)
 - Admin Dashboard mit CRM
-- Landing Page (guidetranslator.de)
+- Landing Page (fintutto.world)
 - Domains registriert, Email-System aufgesetzt
 - 3 Email-Templates
 - Geschäftskonzept & Preismodell (20 Seiten)
@@ -169,7 +169,7 @@ Ulrichs Reaktionen:
 - **23:26**: **BODO SCHÄFER VS. ULRICH** -- Ironie-Analyse als Gamma-Seite veröffentlicht
 - **01:35** (2.3.): Kostenanalyse
 - **02:48**: Preismodell-Analyse
-- **05:19**: **pitchdecks.guidetranslator.com** -- Pitch Decks für Investoren + 5 Zielmärkte live
+- **05:19**: **pitchdecks.fintutto.world** -- Pitch Decks für Investoren + 5 Zielmärkte live
 
 **Ulrichs Antwort (2. März) -- ERSTMALS SUBSTANTIELL:**
 

@@ -3,7 +3,7 @@
 ## Ueberblick
 
 4 neue Loesungs-Seiten basierend auf der alten Website-Copy, aber **aktualisiert und praezisiert** mit:
-- Aktuelle App-URLs (consumer/listener/enterprise.guidetranslator.com)
+- Aktuelle App-URLs (consumer/listener/enterprise.fintutto.world)
 - Verlinkung zu den bestehenden App-Detail-Seiten (/apps/translator, /apps/live, /apps/enterprise)
 - Aktuelle Preise aus dem bestehenden Code (nicht aus der alten Copy)
 - Einheitliches dunkles Glasmorphism-Design (bg-black/30, backdrop-blur-sm, text-white)
@@ -57,7 +57,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 **Sektionen**:
 1. **Hero**: "Ihre Stadtfuehrung. Jede Sprache. Kein Aufwand."
    - Badge: "Fuer selbststaendige Stadtfuehrer & Freelancer"
-   - CTA → consumer.guidetranslator.com (Kostenlos starten)
+   - CTA → consumer.fintutto.world (Kostenlos starten)
 
 2. **Problem**: Internationale Gaeste, aber nur eine Sprache
    - 70% der internationalen Nachfrage geht verloren
@@ -66,7 +66,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 
 3. **So funktioniert's**: 4 Schritte
    - Registrieren → Tourskript hochladen → QR-Code drucken → Gaeste scannen
-   - Verlinkung: "Kostenlos registrieren" → consumer.guidetranslator.com
+   - Verlinkung: "Kostenlos registrieren" → consumer.fintutto.world
    - Verlinkung: "Live-Modus nutzen" → /apps/live (Listener App erklaert)
 
 4. **ROI-Rechnung**: Mehrumsatz-Beispiel
@@ -88,7 +88,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 **Sektionen**:
 1. **Hero**: "Eine Agentur. Hunderte Touren. Jede Sprache."
    - Badge: "Fuer Agenturen & Reiseveranstalter"
-   - CTA → sales.guidetranslator.com (Demo anfragen)
+   - CTA → sales.fintutto.world (Demo anfragen)
 
 2. **Pain Points**: Guide-Recruiting, Qualitaetskontrolle, Ausfaelle, Saisonschwankungen, Margendruck
 
@@ -103,7 +103,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 
 4. **Preis-Teaser**: Verweis auf bestehende Preisstruktur
    - Ab 99 EUR/Mo (aus SEGMENTS auf LandingHomePage)
-   - "Enterprise-Kalkulator" → sales.guidetranslator.com
+   - "Enterprise-Kalkulator" → sales.fintutto.world
 
 5. **CTA**: Demo anfragen / Enterprise-Kalkulator
 
@@ -114,7 +114,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 **Sektionen**:
 1. **Hero**: "Shore Excursions in jeder Sprache. Fuer jedes Schiff."
    - Badge: "Enterprise Solution fuer Kreuzfahrt-Reedereien"
-   - CTA → sales.guidetranslator.com (Ersparnis berechnen)
+   - CTA → sales.fintutto.world (Ersparnis berechnen)
 
 2. **Das Problem**: 480.000 EUR/Schiff/Jahr fuer 6 Sprachen
    - Detaillierte Kostenrechnung (8 Guides x 300 EUR/Tag)
@@ -132,10 +132,10 @@ Alle Seiten folgen dem gleichen Layout-Muster:
    - Ersparnis: 93%
 
 5. **Enterprise-Tiers**: Pilot / Fleet / Armada / Custom
-   - Verweis auf sales.guidetranslator.com fuer Kalkulator
+   - Verweis auf sales.fintutto.world fuer Kalkulator
 
 6. **CTA**: Ersparnis berechnen / Demo vereinbaren
-   - Kontakt: enterprise@guidetranslator.com
+   - Kontakt: enterprise@fintutto.world
 
 ### Seite 4: Grossveranstalter (/loesungen/enterprise)
 
@@ -144,7 +144,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
 **Sektionen**:
 1. **Hero**: "Events ohne Sprachbarrieren."
    - Badge: "Fuer Museen, Konferenzen, Messen & Events"
-   - CTA → sales.guidetranslator.com
+   - CTA → sales.fintutto.world
 
 2. **Anwendungsfaelle** (4 Karten):
    - Museen & Ausstellungen (QR-Code statt Audio-Guide-Geraete)
@@ -158,7 +158,7 @@ Alle Seiten folgen dem gleichen Layout-Muster:
    - Consumer App fuer Vorbereitung → /apps/translator
 
 4. **Preis-Verweis**: Ab 99 EUR/Mo, Enterprise individuell
-   - CTA → sales.guidetranslator.com
+   - CTA → sales.fintutto.world
 
 ---
 

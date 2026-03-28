@@ -106,7 +106,7 @@ const httpServer = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({
       status: 'ok',
-      server: 'guidetranslator-relay',
+      server: 'fintutto-relay',
       version: '1.0.0',
       sessions: sessions.size,
       uptime: Math.floor(process.uptime()),
@@ -139,7 +139,7 @@ const httpServer = http.createServer((req, res) => {
       <p><strong>Active sessions:</strong> ${sessions.size}</p>
       <p><strong>WebSocket:</strong> ws://${req.headers.host}</p>
       <hr>
-      <p><small>guidetranslator.com</small></p>
+      <p><small>fintutto.world</small></p>
     </body>
     </html>
   `)

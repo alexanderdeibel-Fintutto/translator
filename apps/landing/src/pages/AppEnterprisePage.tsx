@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const APP_URL = 'https://enterprise.guidetranslator.com'
+const APP_URL = 'https://enterprise.fintutto.world'
 
 export default function AppEnterprisePage() {
   return (
@@ -127,7 +127,7 @@ export default function AppEnterprisePage() {
 
       {/* Impressum Enterprise */}
       <div className="text-center text-xs text-white/70 border-t pt-6">
-        <p>ai tour guide ug (haftungsbeschränkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@guidetranslator.com</p>
+        <p>ai tour guide ug (haftungsbeschränkt) · GF: Alexander Deibel · Kolonie 2, 18317 Saal · info@fintutto.world</p>
       </div>
     </div>
   )

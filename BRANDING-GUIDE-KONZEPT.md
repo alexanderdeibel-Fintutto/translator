@@ -104,7 +104,7 @@ Der Vollname erscheint im rechtlichen Kontext und auf der fintutto.world Plattfo
 | Aspekt | Nur Subdomains | Hybrid (empfohlen) |
 |--------|---------------|-------------------|
 | SEO | Alles unter einer Domain, geteilte Authority | Eigene Domains bauen eigene Authority auf |
-| Branding | "artguide.fintutto.world" - lang | "guidetranslator.com" - einpraegsam |
+| Branding | "artguide.fintutto.world" - lang | "fintutto.world" - einpraegsam |
 | Flexibilitaet | Begrenzt auf fintutto.world | Produkte koennen eigenstaendig wachsen |
 | Verwaltung | Einfacher (eine Domain) | Mehr Domains, aber ueberschaubar |
 | Kosten | Minimal | Moderat (5-15 EUR/Domain/Jahr) |
@@ -123,8 +123,8 @@ fintutto.cloud                    → Backend / interne Services (besteht bereit
 #### Ebene 2: Translator-Produkte
 
 ```
-guidetranslator.com               → GuideTranslator Hauptseite (besteht bereits)
-guidetranslator.de                → Deutsche Version (besteht bereits)
+fintutto.world               → GuideTranslator Hauptseite (besteht bereits)
+fintutto.world                → Deutsche Version (besteht bereits)
 
 translate.fintutto.world          → Allgemeiner Fintutto Translator (Consumer App)
 ```
@@ -312,7 +312,7 @@ Fintutto World
   |
   +-- Translator
   |     "Echtzeit-Uebersetzung fuer jede Situation"
-  |     → guidetranslator.com
+  |     → fintutto.world
   |
   +-- Art Guide
   |     "Dein mehrsprachiger Museumsfuehrer"

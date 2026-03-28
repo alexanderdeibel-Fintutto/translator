@@ -88,7 +88,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
     if (format === 'md') {
       mimeType = 'text/markdown;charset=utf-8'
       ext = 'md'
-      parts.push(`# guidetranslator — ${t('protocol.title')}\n\n`)
+      parts.push(`# fintutto — ${t('protocol.title')}\n\n`)
       parts.push(`| ${t('protocol.field')} | ${t('protocol.value')} |\n|------|------|\n`)
       parts.push(`| ${t('protocol.session')} | \`${session.sessionCode}\` |\n`)
       parts.push(`| ${t('protocol.date')} | ${dateStr} |\n`)
@@ -106,12 +106,12 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
         parts.push(`> ${targetLangData?.flag || ''} **${chunk.translatedText}**\n\n`)
       }
 
-      parts.push(`---\n\n*${t('protocol.createdWith')} [guidetranslator](https://guidetranslator.com)*\n`)
+      parts.push(`---\n\n*${t('protocol.createdWith')} [fintutto](https://fintutto.world)*\n`)
     } else {
       mimeType = 'text/plain;charset=utf-8'
       ext = 'txt'
       parts.push(`========================================\n`)
-      parts.push(`GUIDETRANSLATOR - ${t('protocol.title').toUpperCase()}\n`)
+      parts.push(`FINTUTTO - ${t('protocol.title').toUpperCase()}\n`)
       parts.push(`========================================\n\n`)
       parts.push(`${t('protocol.session')}: ${session.sessionCode}\n`)
       parts.push(`${t('protocol.date')}: ${dateStr}\n`)
@@ -133,7 +133,7 @@ export default function SpeakerView({ session }: SpeakerViewProps) {
 
       parts.push(`----------------------------------------\n`)
       parts.push(`${t('protocol.endOfProtocol')}\n`)
-      parts.push(`${t('protocol.createdWith')} guidetranslator.com\n`)
+      parts.push(`${t('protocol.createdWith')} fintutto.world\n`)
     }
 
     const protocol = parts.join('')

@@ -30,7 +30,7 @@ export default function DatenschutzPage() {
             AI Tour Guide UG (haftungsbeschränkt)<br />
             Kolonie 2<br />
             18317 Saal<br />
-            E-Mail: datenschutz@guidetranslator.com
+            E-Mail: datenschutz@fintutto.world
           </p>
         </GlassSection>
 
@@ -95,7 +95,7 @@ export default function DatenschutzPage() {
             deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung,
             Sperrung oder Löschung dieser Daten.
           </p>
-          <p>Kontakt: datenschutz@guidetranslator.com</p>
+          <p>Kontakt: datenschutz@fintutto.world</p>
         </GlassSection>
 
         <GlassSection title="9. Cookies">

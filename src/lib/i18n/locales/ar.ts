@@ -169,7 +169,7 @@ const strings: Record<string, string> = {
   'info.transport4Title': '4. بلوتوث LE',
   'info.transport4Desc': 'خادم/عميل GATT. يعمل بالكامل بدون شبكة.',
   'info.ecosystemTitle': 'جزء من منظومة ai tour',
-  'info.ecosystemDesc': 'guidetranslator جزء من منصة ai tour للمالية والعقارات والإدارة.',
+  'info.ecosystemDesc': 'fintutto جزء من منصة ai tour للمالية والعقارات والإدارة.',
   'info.feature1Title': '54+ زوج لغات بدون إنترنت',
   'info.feature1Desc': 'ترجم بين 40+ لغة — من الألمانية إلى العربية والصينية واليابانية والكورية والهندية وغيرها.',
   'info.feature2Title': 'جلسات مباشرة (1→N)',
@@ -232,7 +232,7 @@ const strings: Record<string, string> = {
   'layout.skipToContent': 'انتقل إلى المحتوى',
 
   // Header
-  'header.homeAriaLabel': 'guidetranslator — الصفحة الرئيسية',
+  'header.homeAriaLabel': 'fintutto — الصفحة الرئيسية',
   'header.menuClose': 'إغلاق القائمة',
   'header.menuOpen': 'فتح القائمة',
 
@@ -279,7 +279,7 @@ const strings: Record<string, string> = {
   'live.network': 'الشبكة',
   'live.wifiScanInstruction': 'يمسح المستمعون رمز QR بتطبيق الكاميرا',
   'live.wifiAutoConnect': 'iOS 11+ و Android 10+ يتصلان تلقائياً',
-  'live.shareTitle': 'guidetranslator ترجمة مباشرة',
+  'live.shareTitle': 'fintutto ترجمة مباشرة',
   'live.shareText': 'انضم إلى ترجمتي المباشرة',
   'live.sessionCodeLabel': 'رمز الجلسة',
   'live.qrInstruction': 'يمسح المستمعون رمز QR أو يفتحون الرابط في المتصفح',

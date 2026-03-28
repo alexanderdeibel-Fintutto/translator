@@ -169,7 +169,7 @@ const strings: Record<string, string> = {
   'info.transport4Title': '4. Bluetooth LE',
   'info.transport4Desc': 'GATT Сервер/Клієнт. Працює повністю без мережі.',
   'info.ecosystemTitle': 'Частина екосистеми ai tour',
-  'info.ecosystemDesc': 'guidetranslator є частиною платформи ai tour для фінансів, нерухомості та управління.',
+  'info.ecosystemDesc': 'fintutto є частиною платформи ai tour для фінансів, нерухомості та управління.',
   'info.feature1Title': '54+ офлайн мовних пар',
   'info.feature1Desc': 'Перекладайте між 40+ мовами — від німецької до арабської, китайської, японської, корейської, хінді тощо.',
   'info.feature2Title': 'Живі сесії (1→N)',
@@ -232,7 +232,7 @@ const strings: Record<string, string> = {
   'layout.skipToContent': 'Перейти до вмісту',
 
   // Header
-  'header.homeAriaLabel': 'guidetranslator — Головна',
+  'header.homeAriaLabel': 'fintutto — Головна',
   'header.menuClose': 'Закрити меню',
   'header.menuOpen': 'Відкрити меню',
 
@@ -279,7 +279,7 @@ const strings: Record<string, string> = {
   'live.network': 'Мережа',
   'live.wifiScanInstruction': 'Слухачі сканують цей QR-код камерою',
   'live.wifiAutoConnect': 'iOS 11+ та Android 10+ підключаються автоматично',
-  'live.shareTitle': 'guidetranslator Живий переклад',
+  'live.shareTitle': 'fintutto Живий переклад',
   'live.shareText': 'Приєднуйтесь до мого живого перекладу',
   'live.sessionCodeLabel': 'Код сесії',
   'live.qrInstruction': 'Слухачі сканують QR-код або відкривають посилання в браузері',
