@@ -30,6 +30,7 @@ const SolutionTourGuidesPage = lazy(() => import('./pages/SolutionTourGuidesPage
 const SolutionAgenciesPage = lazy(() => import('./pages/SolutionAgenciesPage'))
 const SolutionCruisePage = lazy(() => import('./pages/SolutionCruisePage'))
 const SolutionConferencePage = lazy(() => import('./pages/SolutionConferencePage'))
+const SolutionServicePage = lazy(() => import('./pages/SolutionServicePage'))
 
 // Product pages (Guide ecosystem)
 const ArtGuidePage = lazy(() => import('./pages/ArtGuidePage'))
@@ -88,6 +89,7 @@ function App() {
           <Route path="solutions/conference" element={<S><SolutionConferencePage /></S>} />
           <Route path="solutions/tourguides" element={<S><SolutionTourGuidesPage /></S>} />
           <Route path="solutions/agencies" element={<S><SolutionAgenciesPage /></S>} />
+          <Route path="solutions/service" element={<S><SolutionServicePage /></S>} />
 
           {/* Product pages (Guide ecosystem) */}
           <Route path="products/artguide" element={<S><ArtGuidePage /></S>} />
