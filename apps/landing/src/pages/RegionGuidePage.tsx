@@ -55,7 +55,7 @@ export default function RegionGuidePage() {
             { icon: Compass, title: 'Ausfluege', desc: 'Kuratierte Tagesausfluege mit Navigation und Audio-Begleitung.' },
             { icon: Sun, title: 'Saisonale Angebote', desc: 'Regionale Partner und saisonale Highlights automatisch.' },
             { icon: Map, title: 'Vollbild-Karte', desc: 'Interaktive Karte mit allen Highlights der Region.' },
-            { icon: Globe2, title: 'White-Label', desc: '[region].regionguide.fintutto.world — eigenes Branding.' },
+            { icon: Globe2, title: 'White-Label', desc: 'regionguide.fintutto.world/[region] — eigenes Branding.' },
           ].map((feat, i) => {
             const Icon = feat.icon
             return (

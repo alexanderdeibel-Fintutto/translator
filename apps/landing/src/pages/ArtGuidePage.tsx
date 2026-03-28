@@ -14,8 +14,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const VISITOR_URL = 'https://artguide.fintutto.world'
-const PORTAL_URL = 'https://portal.artguide.fintutto.world'
+const VISITOR_URL = 'https://world.fintutto.world'
+const PORTAL_URL = 'https://portal.fintutto.world'
 
 export default function ArtGuidePage() {
   return (
@@ -108,7 +108,7 @@ export default function ArtGuidePage() {
             <h3 className="font-bold text-lg">White-Label</h3>
             <ul className="space-y-1.5 text-sm text-white/70">
               <li>Eigene App im eigenen Branding</li>
-              <li>[museum].artguide.fintutto.world</li>
+              <li>world.fintutto.world/visitor/[museum]</li>
               <li>Custom Domain moeglich</li>
               <li>Farben, Logo, Schriftarten anpassen</li>
               <li>Volle API-Integration</li>

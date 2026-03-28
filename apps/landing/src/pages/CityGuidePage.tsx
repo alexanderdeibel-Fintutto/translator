@@ -75,7 +75,7 @@ export default function CityGuidePage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { icon: Users, title: 'Tourismusverbaende & DMOs', desc: 'Destination Management fuer die ganze Stadt — digital, mehrsprachig, messbar.' },
-            { icon: MapPin, title: 'Staedte & Gemeinden', desc: 'Eigene Stadt-App im eigenen Branding: [stadt].cityguide.fintutto.world' },
+            { icon: MapPin, title: 'Staedte & Gemeinden', desc: 'Eigene Stadt-App im eigenen Branding: cityguide.fintutto.world/[stadt]' },
             { icon: ShoppingBag, title: 'Lokale Partner', desc: 'Restaurants, Shops, Museen — als Partner sichtbar werden und Besucher gewinnen.' },
           ].map((seg, i) => {
             const Icon = seg.icon
@@ -98,7 +98,7 @@ export default function CityGuidePage() {
           Farben, Logo, Inhalte — alles anpassbar. Powered by Fintutto.
         </p>
         <div className="flex flex-wrap justify-center gap-3 text-sm">
-          {['muenchen.cityguide.fintutto.world', 'berlin.cityguide.fintutto.world', 'hamburg.cityguide.fintutto.world'].map((url, i) => (
+          {['cityguide.fintutto.world/muenchen', 'cityguide.fintutto.world/berlin', 'cityguide.fintutto.world/hamburg'].map((url, i) => (
             <span key={i} className="px-3 py-1.5 rounded-full bg-black/30 text-amber-300 font-mono text-xs">
               {url}
             </span>

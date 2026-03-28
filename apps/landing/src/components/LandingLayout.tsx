@@ -28,9 +28,12 @@ const NAV_ITEMS = [
       { label: 'Schulen', path: '/solutions/schools' },
       { label: 'Behoerden', path: '/solutions/authorities' },
       { label: 'NGO', path: '/solutions/ngo' },
-      { label: 'Hospitality', path: '/solutions/hospitality' },
+      { label: 'Hotel & Hospitality', path: '/solutions/hospitality' },
+      { label: 'Kreuzfahrt', path: '/solutions/cruise' },
       { label: 'Medizin', path: '/solutions/medical' },
-      { label: 'Events', path: '/solutions/events' },
+      { label: 'Konferenzen', path: '/solutions/conference' },
+      { label: 'Events & Messen', path: '/solutions/events' },
+      { label: 'Service & Schalter', path: '/solutions/service' },
     ],
   },
   { label: 'Preise', path: '/pricing' },
@@ -241,9 +244,12 @@ export default function LandingLayout() {
                 <Link to="/solutions/schools" className="block hover:text-foreground">Schulen</Link>
                 <Link to="/solutions/authorities" className="block hover:text-foreground">Behoerden</Link>
                 <Link to="/solutions/ngo" className="block hover:text-foreground">NGO</Link>
-                <Link to="/solutions/hospitality" className="block hover:text-foreground">Hospitality</Link>
+                <Link to="/solutions/hospitality" className="block hover:text-foreground">Hotel & Hospitality</Link>
+                <Link to="/solutions/cruise" className="block hover:text-foreground">Kreuzfahrt</Link>
                 <Link to="/solutions/medical" className="block hover:text-foreground">Medizin</Link>
-                <Link to="/solutions/events" className="block hover:text-foreground">Events</Link>
+                <Link to="/solutions/conference" className="block hover:text-foreground">Konferenzen</Link>
+                <Link to="/solutions/events" className="block hover:text-foreground">Events & Messen</Link>
+                <Link to="/solutions/service" className="block hover:text-foreground">Service & Schalter</Link>
               </div>
             </div>
             <div className="space-y-2">

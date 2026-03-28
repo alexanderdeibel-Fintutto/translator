@@ -34,7 +34,7 @@ const CONTACT_OPTIONS = [
     title: 'Fuer Museen & Staedte',
     desc: 'Art Guide testen — KI-Audioguides, CMS, White-Label.',
     cta: 'Art Guide Portal',
-    url: 'https://portal.artguide.fintutto.world',
+    url: 'https://portal.fintutto.world',
     external: true,
   },
   {

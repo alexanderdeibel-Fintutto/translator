@@ -62,6 +62,10 @@ export type AppVariant =
   // AMS & CMS
   | 'ams'
   | 'cms'
+  // Sales Landing
+  | 'sales'
+  // Guide Portal (artguide-portal alias)
+  | 'guide-portal'
 
 /** Which core app this flavor is based on */
 export type AppBase = 'consumer' | 'listener' | 'enterprise' | 'landing' | 'artguide' | 'cityguide' | 'platform'
@@ -587,6 +591,41 @@ export const appConfigs: Record<AppVariant, AppConfig> = {
     iosScheme: 'fintuttocms',
     subdomain: 'cms',
     iconDir: 'cms',
+  },
+
+  // ─── Sales Landing ────────────────────────────────────────────
+  'sales': {
+    variant: 'sales',
+    base: 'landing',
+    market: 'general',
+    appName: 'Fintutto Sales',
+    shortName: 'Fintutto Sales',
+    description: 'ROI-Kalkulator und Angebote fuer alle Branchen.',
+    appId: 'world.fintutto.sales',
+    themeColor: '#0f172a',
+    accentColor: '#f59e0b',
+    devPort: 5222,
+    startUrl: '/',
+    iosScheme: 'fintuttosales',
+    subdomain: 'sales',
+    iconDir: 'core',
+  },
+  // ─── Guide Portal ─────────────────────────────────────────────
+  'guide-portal': {
+    variant: 'guide-portal',
+    base: 'artguide',
+    market: 'artguide',
+    appName: 'Fintutto Guide Portal',
+    shortName: 'Guide Portal',
+    description: 'Content Management fuer Museen, Stadtfuehrer und POI-Anbieter.',
+    appId: 'world.fintutto.guide.portal',
+    themeColor: '#0f172a',
+    accentColor: '#8b5cf6',
+    devPort: 5223,
+    startUrl: '/',
+    iosScheme: 'fintuttoguidportal',
+    subdomain: 'guide-portal',
+    iconDir: 'core',
   },
 }
 export function getAppConfig(variant: AppVariant): AppConfig {
