@@ -12,8 +12,8 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const SPEAKER_URL = 'https://event-speaker.fintutto.world'
-const LISTENER_URL = 'https://event-attendee.fintutto.world'
+const SPEAKER_URL = 'https://conference-speaker.fintutto.world'
+const LISTENER_URL = 'https://conference-listener.fintutto.world'
 
 export default function SolutionEventsPage() {
   return (

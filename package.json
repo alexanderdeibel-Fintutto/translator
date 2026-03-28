@@ -67,7 +67,17 @@
     "build:artguide-whitelabel:museum": "tsx scripts/build-whitelabel.ts",
     "build:whitelabel:city": "tsx scripts/build-whitelabel.ts",
     "build:whitelabel:region": "tsx scripts/build-whitelabel.ts",
-    "build:guides": "npm run build:artguide && npm run build:artguide-portal"
+    "build:guides": "npm run build:artguide && npm run build:artguide-portal",
+    "build:hotel-staff": "vite build --config apps/hotel-staff/vite.config.ts",
+    "build:hotel-guest": "vite build --config apps/hotel-guest/vite.config.ts",
+    "build:cruise-staff": "vite build --config apps/cruise-staff/vite.config.ts",
+    "build:cruise-guest": "vite build --config apps/cruise-guest/vite.config.ts",
+    "build:event-speaker": "vite build --config apps/event-speaker/vite.config.ts",
+    "build:event-attendee": "vite build --config apps/event-attendee/vite.config.ts",
+    "build:sales": "vite build --config apps/sales/vite.config.ts",
+    "build:hotel": "npm run build:hotel-staff && npm run build:hotel-guest",
+    "build:cruise": "npm run build:cruise-staff && npm run build:cruise-guest",
+    "build:event": "npm run build:event-speaker && npm run build:event-attendee"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^8.1.0",
