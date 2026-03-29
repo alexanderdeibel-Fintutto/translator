@@ -726,6 +726,117 @@ function isAndroid(): boolean {
   return /Android/i.test(navigator.userAgent)
 }
 
+// --- STT Proxy Engine ---
+// Routes audio through /api/stt (Vercel Edge Function) → Azure EU → Google (fallback)
+// DSGVO: Audio never sent directly from browser to external providers.
+// IMPORTANT: pcmToBase64Linear16 is defined above (line ~344) — reused here.
+
+export function createSTTProxyEngine(): STTEngine {
+  let stream: MediaStream | null = null
+  let audioContext: AudioContext | null = null
+  let processor: ScriptProcessorNode | null = null
+  let audioChunks: Float32Array[] = []
+  let isActive = false
+  let sendInterval: ReturnType<typeof setInterval> | null = null
+  let onResultCallback: ((result: STTResult) => void) | null = null
+  let activeLang = ''
+  let activeContext: string | undefined
+  let actualSampleRate = 16000
+
+  // isSupported: mic access + fetch available (no API key needed in browser)
+  const isSupported =
+    typeof window !== 'undefined' &&
+    typeof fetch !== 'undefined' &&
+    typeof navigator !== 'undefined' &&
+    !!navigator.mediaDevices?.getUserMedia
+
+  async function sendChunks(chunks: Float32Array[], lang: string): Promise<string> {
+    if (chunks.length === 0) return ''
+    const audioBase64 = pcmToBase64Linear16(chunks)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10_000)
+    try {
+      const res = await fetch('/api/stt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          audio: audioBase64,
+          lang,
+          sampleRate: actualSampleRate,
+          context: activeContext,
+        }),
+        signal: controller.signal,
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }))
+        throw new Error(`STT Proxy ${res.status}: ${(err as { error?: string }).error || res.statusText}`)
+      }
+      const data = await res.json() as { transcript?: string }
+      return data.transcript || ''
+    } finally {
+      clearTimeout(timeout)
+    }
+  }
+
+  return {
+    provider: 'proxy' as STTEngine['provider'],
+    isSupported,
+
+    async start(lang, onResult, onError, context?: string) {
+      if (isActive) return
+      isActive = true
+      activeLang = lang
+      activeContext = context
+      onResultCallback = onResult
+      audioChunks = []
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true } })
+        audioContext = new AudioContext({ sampleRate: 16000 })
+        actualSampleRate = audioContext.sampleRate
+        const source = audioContext.createMediaStreamSource(stream)
+        processor = audioContext.createScriptProcessor(4096, 1, 1)
+
+        processor.onaudioprocess = (e) => {
+          if (!isActive) return
+          audioChunks.push(new Float32Array(e.inputBuffer.getChannelData(0)))
+        }
+
+        source.connect(processor)
+        processor.connect(audioContext.destination)
+
+        // Send accumulated audio every 2.5 seconds
+        sendInterval = setInterval(async () => {
+          if (!isActive || audioChunks.length === 0) return
+          const chunks = [...audioChunks]
+          audioChunks = []
+          try {
+            const transcript = await sendChunks(chunks, activeLang)
+            if (transcript.trim()) {
+              onResultCallback?.({ text: transcript, isFinal: true, confidence: 0.9 })
+            }
+          } catch (err) {
+            console.warn('[STT Proxy] Chunk send failed:', err)
+          }
+        }, 2500)
+
+      } catch (err) {
+        isActive = false
+        onError(err instanceof Error ? err.message : 'STT Proxy: microphone access failed')
+      }
+    },
+
+    stop() {
+      isActive = false
+      if (sendInterval) { clearInterval(sendInterval); sendInterval = null }
+      if (processor) { processor.disconnect(); processor = null }
+      if (audioContext) { audioContext.close().catch(() => {}); audioContext = null }
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null }
+      audioChunks = []
+    },
+  }
+}
+
 // --- Engine selection ---
 
 export function getBestSTTEngine(preferOffline = false): STTEngine {
@@ -761,34 +872,46 @@ export function getBestSTTEngine(preferOffline = false): STTEngine {
   const apple = createAppleSpeechAnalyzerEngine()
   if (apple.isSupported) return apple
 
-  // 2. On iOS: use Google Cloud STT (Web Speech API is broken on all iOS browsers)
+  // 2. On iOS: use STT Proxy (/api/stt → Azure EU) — Web Speech API broken on iOS
+  // DSGVO: Audio goes to our proxy, not directly to Google.
   if (isIOS()) {
+    const proxy = createSTTProxyEngine()
+    if (proxy.isSupported) return proxy
+    // Fallback: direct Google Cloud STT if proxy unavailable (e.g. offline)
     const googleSTT = createGoogleCloudSTTEngine()
     if (googleSTT.isSupported) return googleSTT
   }
 
-  // 3. On Android: use Google Cloud STT to avoid Chrome's system beep sound.
-  //    Chrome Android plays a "ding" on every recognition.start(), which repeats
-  //    in continuous mode and interferes with mic capture. Google Cloud STT uses
-  //    getUserMedia directly — no system sounds, no restart issues.
+  // 3. On Android: use STT Proxy to avoid Chrome's system beep AND for DSGVO compliance.
+  //    Chrome Android plays a "ding" on every recognition.start() in continuous mode.
+  //    STT Proxy uses getUserMedia directly — no system sounds, no restart issues.
   if (isAndroid()) {
+    const proxy = createSTTProxyEngine()
+    if (proxy.isSupported) return proxy
     const googleSTT = createGoogleCloudSTTEngine()
     if (googleSTT.isSupported) return googleSTT
   }
 
   // 4. Web Speech API (streaming, real-time — desktop Chrome/Edge)
-  const webSpeech = createWebSpeechEngine()
-  if (webSpeech.isSupported) return webSpeech
+  // NOTE: Web Speech API sends audio to Google servers (browser-native, not controllable).
+  // For MedTranslator/AmtTranslator deployments, consider disabling this and using
+  // STT Proxy instead. Set VITE_DISABLE_WEB_SPEECH=true to skip this engine.
+  if (!import.meta.env.VITE_DISABLE_WEB_SPEECH) {
+    const webSpeech = createWebSpeechEngine()
+    if (webSpeech.isSupported) return webSpeech
+  }
 
-  // 5. Google Cloud STT (fallback for any browser with mic access)
-  // TODO (STT-Proxy): Replace direct Google Cloud calls with /api/stt proxy
-  // so audio never leaves our infrastructure — required for DSGVO Art.9 compliance
-  // in medical/authority contexts. Proxy should accept: { audio: base64, lang: string }
-  // and internally call Whisper (self-hosted) or Google Cloud STT.
+  // 5. STT Proxy (fallback for any browser with mic access — DSGVO-compliant)
+  // Routes audio through /api/stt → Azure Cognitive Services (EU) → Google (fallback)
+  // IMPLEMENTED: api/stt.ts — Azure keys: AZURE_STT_KEY_1, AZURE_STT_KEY_2
+  const proxyFallback = createSTTProxyEngine()
+  if (proxyFallback.isSupported) return proxyFallback
+
+  // 6. Google Cloud STT direct (last resort before Whisper — only if proxy unavailable)
   const googleFallback = createGoogleCloudSTTEngine()
   if (googleFallback.isSupported) return googleFallback
 
-  // 6. Whisper offline (last resort — requires model download)
+  // 7. Whisper offline (last resort — requires model download)
   // NOTE: For offline-first deployments (Behörden without internet), Whisper should be
   // promoted to position 1 by calling preloadWhisper() on app start and checking
   // isWhisperAvailable() before Web Speech. See offline/stt-engine.ts.
