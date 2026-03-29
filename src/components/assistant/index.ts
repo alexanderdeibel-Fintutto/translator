@@ -38,3 +38,12 @@ export type { TeamPhrase } from './TeamPhrasebook'
 
 export { default as HandoverNote } from './HandoverNote'
 export type { ConversationMessage } from './HandoverNote'
+
+// Kontext-Vorlagen
+export { default as ContextTemplates, SelectedTemplateBar } from './ContextTemplates'
+export type { ConversationTemplate } from './ContextTemplates'
+export { CONVERSATION_TEMPLATES } from './ContextTemplates'
+
+// DSGVO-konformes Gesprächs-Protokoll
+export { useConversationLogger, ConsentBanner, ConversationLogList } from './ConversationLogger'
+export type { ConversationLogEntry } from './ConversationLogger'

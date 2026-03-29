@@ -58,6 +58,7 @@ const StaffManager         = lazy(() => import('@/components/admin/StaffManager'
 const MuseumList           = lazy(() => import('@/components/admin/MuseumList'))
 const MuseumOnboarding     = lazy(() => import('@/components/admin/MuseumOnboarding'))
 const CuratorDashboard     = lazy(() => import('@/components/admin/CuratorDashboard'))
+const TeamPhrasesAdminPage = lazy(() => import('./pages/TeamPhrasesAdminPage'))
 
 function PageLoader() {
   return (
@@ -104,6 +105,8 @@ function App() {
               <Route path="/:slug/venues" element={<S><VenueEditor /></S>} />
               <Route path="/:slug/tours" element={<S><TourEditor /></S>} />
               <Route path="/:slug/team" element={<S><StaffManager /></S>} />
+              <Route path="/:slug/team-phrases" element={<S><TeamPhrasesAdminPage /></S>} />
+              <Route path="/team-phrases" element={<S><TeamPhrasesAdminPage /></S>} />
 
               {/* Redirect root → login */}
               <Route path="/" element={<Navigate to="/login" replace />} />
