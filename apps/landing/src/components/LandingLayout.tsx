@@ -37,6 +37,7 @@ const NAV_ITEMS = [
     ],
   },
   { label: 'Preise', path: '/pricing' },
+  { label: 'Developer', path: '/developer' },
   { label: 'Investoren', path: '/investors' },
 ]
 
@@ -260,6 +261,15 @@ export default function LandingLayout() {
                 <Link to="/investors" className="block hover:text-foreground">Investoren</Link>
                 <Link to="/news" className="block hover:text-foreground">News</Link>
                 <Link to="/contact" className="block hover:text-foreground">Kontakt</Link>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold">Developer</h4>
+              <div className="space-y-1 text-muted-foreground">
+                <Link to="/developer" className="block hover:text-foreground">API &amp; SDKs</Link>
+                <a href="https://developer.fintutto.world" target="_blank" rel="noopener noreferrer" className="block hover:text-foreground">Developer Portal ↗</a>
+                <a href="https://developer.fintutto.world/docs" target="_blank" rel="noopener noreferrer" className="block hover:text-foreground">Dokumentation ↗</a>
+                <a href="https://developer.fintutto.world/pricing" target="_blank" rel="noopener noreferrer" className="block hover:text-foreground">API-Preise ↗</a>
               </div>
             </div>
             <div className="space-y-2">

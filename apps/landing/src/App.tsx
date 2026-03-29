@@ -37,6 +37,9 @@ const ArtGuidePage = lazy(() => import('./pages/ArtGuidePage'))
 const CityGuidePage = lazy(() => import('./pages/CityGuidePage'))
 const RegionGuidePage = lazy(() => import('./pages/RegionGuidePage'))
 
+// Developer page
+const DeveloperPage = lazy(() => import('./pages/DeveloperPage'))
+
 // Info pages
 const PricingPage = lazy(() => import('./pages/PricingPage'))
 const CompetitionPage = lazy(() => import('./pages/CompetitionPage'))
@@ -95,6 +98,9 @@ function App() {
           <Route path="products/artguide" element={<S><ArtGuidePage /></S>} />
           <Route path="products/cityguide" element={<S><CityGuidePage /></S>} />
           <Route path="products/regionguide" element={<S><RegionGuidePage /></S>} />
+
+          {/* Developer page */}
+          <Route path="developer" element={<S><DeveloperPage /></S>} />
 
           {/* Info pages */}
           <Route path="pricing" element={<S><PricingPage /></S>} />
