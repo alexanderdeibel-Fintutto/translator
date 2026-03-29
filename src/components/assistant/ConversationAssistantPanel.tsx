@@ -1,12 +1,13 @@
 /**
- * ConversationAssistantPanel — Kombiniertes Assistenz-Panel
+ * ConversationAssistantPanel v2 — Kombiniertes Assistenz-Panel
  *
- * Vereint alle drei Assistenz-Features in einem aufklappbaren Panel
- * das direkt in die ConversationPage integriert wird:
+ * Vereint alle Assistenz-Features in einem aufklappbaren Panel:
  *
- * Tab 1: Schnellantworten (SmartReplyBar)
- * Tab 2: Meine Phrasen (PersonalPhrasebook)
- * Tab 3: Gesprächsnotiz (ConversationSummary)
+ * Tab 1: Schnellantworten (SmartReplyBar) + Tonfall-Wahl
+ * Tab 2: Meine Phrasen (PersonalPhrasebook) + Team-Phrasen
+ * Tab 3: Notiz (ConversationSummary + HandoverNote)
+ *
+ * Floating: Notfall-Button (EmergencyMode) immer sichtbar
  *
  * Einbindung in ConversationPage:
  * <ConversationAssistantPanel
@@ -20,10 +21,15 @@
  */
 
 import { useState } from 'react'
-import { Zap, BookOpen, FileText } from 'lucide-react'
+import { Zap, BookOpen, FileText, Users } from 'lucide-react'
 import SmartReplyBar from './SmartReplyBar'
 import PersonalPhrasebook, { SavePhraseButton } from './PersonalPhrasebook'
 import ConversationSummary from './ConversationSummary'
+import ToneSelector from './ToneSelector'
+import type { ToneMode } from './ToneSelector'
+import EmergencyMode from './EmergencyMode'
+import TeamPhrasebook from './TeamPhrasebook'
+import HandoverNote from './HandoverNote'
 import type { TranslationContext } from '@/lib/context-modes'
 
 interface Message {
@@ -49,6 +55,14 @@ interface ConversationAssistantPanelProps {
   onSpeak: (text: string) => void
   /** Letzte eigene Nachricht des Mitarbeiters (für "Merken"-Button) */
   lastStaffMessage?: string
+  /** Team-ID für Team-Phrasen */
+  teamId?: string
+  /** Mitarbeiter-Name für Übergabe-Notiz */
+  staffName?: string
+  /** Ort/Station für Übergabe-Notiz */
+  location?: string
+  /** Notfall-Kategorien (Standard: alle) */
+  emergencyCategories?: ('medical' | 'safety' | 'fire' | 'general')[]
 }
 
 type ActiveTab = 'replies' | 'phrasebook' | 'summary'
@@ -61,9 +75,22 @@ export default function ConversationAssistantPanel({
   guestLang,
   onSpeak,
   lastStaffMessage,
+  teamId,
+  staffName,
+  location,
+  emergencyCategories,
 }: ConversationAssistantPanelProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('replies')
   const [phraseToSave, setPhraseToSave] = useState<string | undefined>()
+  const [tone, setTone] = useState<ToneMode>('formal')
+
+  // Nachrichten für HandoverNote konvertieren
+  const handoverMessages = messages.map(m => ({
+    role: (m.speaker === 'bottom' ? 'staff' : 'guest') as 'staff' | 'guest',
+    text: m.original,
+    translation: m.translated,
+    timestamp: m.timestamp,
+  }))
 
   const tabs: { id: ActiveTab; label: string; icon: React.ReactNode; badge?: number }[] = [
     {
@@ -86,32 +113,47 @@ export default function ConversationAssistantPanel({
 
   return (
     <div className="space-y-2">
-      {/* Tab-Leiste */}
-      <div className="flex gap-1 p-1 bg-muted rounded-lg">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors relative ${
-              activeTab === tab.id
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-            {tab.badge && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-violet-600 text-white text-[10px] flex items-center justify-center">
-                {tab.badge > 9 ? '9+' : tab.badge}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* Obere Leiste: Tabs + Notfall-Button */}
+      <div className="flex items-center gap-2">
+        {/* Tab-Leiste */}
+        <div className="flex-1 flex gap-1 p-1 bg-muted rounded-lg">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors relative ${
+                activeTab === tab.id
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+              {tab.badge && (
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-violet-600 text-white text-[10px] flex items-center justify-center">
+                  {tab.badge > 9 ? '9+' : tab.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Notfall-Button */}
+        <EmergencyMode
+          onSpeak={onSpeak}
+          categories={emergencyCategories}
+        />
       </div>
 
       {/* Tab-Inhalt */}
       {activeTab === 'replies' && (
-        <div className="space-y-2">
+        <div className="space-y-3">
+          {/* Tonfall-Wahl (kompakt) */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground shrink-0">Tonfall:</span>
+            <ToneSelector value={tone} onChange={setTone} compact />
+          </div>
+
           <SmartReplyBar
             lastGuestMessage={lastGuestMessage}
             context={context}
@@ -119,6 +161,7 @@ export default function ConversationAssistantPanel({
             guestLang={guestLang}
             onReply={onSpeak}
           />
+
           {/* "Merken"-Button für letzte eigene Nachricht */}
           {lastStaffMessage && (
             <div className="flex items-center gap-2 px-1">
@@ -138,20 +181,35 @@ export default function ConversationAssistantPanel({
       )}
 
       {activeTab === 'phrasebook' && (
-        <PersonalPhrasebook
-          onSpeak={onSpeak}
-          phraseToSave={phraseToSave}
-          onPhraseSaved={() => setPhraseToSave(undefined)}
-        />
+        <div className="space-y-3">
+          <PersonalPhrasebook
+            onSpeak={onSpeak}
+            phraseToSave={phraseToSave}
+            onPhraseSaved={() => setPhraseToSave(undefined)}
+          />
+          {/* Team-Phrasen darunter */}
+          <TeamPhrasebook
+            onSpeak={onSpeak}
+            teamId={teamId}
+          />
+        </div>
       )}
 
       {activeTab === 'summary' && (
-        <ConversationSummary
-          messages={messages}
-          context={context}
-          staffLang={staffLang}
-          defaultExpanded={true}
-        />
+        <div className="space-y-3">
+          <ConversationSummary
+            messages={messages}
+            context={context}
+            staffLang={staffLang}
+            defaultExpanded={true}
+          />
+          <HandoverNote
+            messages={handoverMessages}
+            guestLanguage={guestLang}
+            staffName={staffName}
+            location={location}
+          />
+        </div>
       )}
     </div>
   )
