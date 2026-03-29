@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase-client'
+import { useMuseum } from '@/lib/hooks'
 
 type DashboardStats = {
   artworks_total: number
@@ -11,29 +13,145 @@ type DashboardStats = {
   languages_active: number
 }
 
+type TopArtwork = {
+  id: string
+  title: unknown
+  artist_name: string | null
+  scan_count: number
+  audio_plays: number
+}
+
+type RecentActivity = {
+  type: string
+  label: string
+  time: string
+  icon: string
+}
+
+function t(value: unknown, lang = 'de'): string {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'object') {
+    const obj = value as Record<string, string>
+    return obj[lang] || obj['de'] || obj['en'] || Object.values(obj)[0] || ''
+  }
+  return String(value)
+}
+
 export default function DashboardPage() {
+  const { museum } = useMuseum()
+  const supabase = createClient()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [onboardingDismissed, setOnboardingDismissed] = useState(false)
+  const [topArtworks, setTopArtworks] = useState<TopArtwork[]>([])
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
+  const [todayVisitors, setTodayVisitors] = useState<number | null>(null)
 
   useEffect(() => {
-    fetch('/api/artworks')
-      .then(r => r.json())
-      .then(d => {
-        const artworks = d.artworks || []
+    if (!museum?.id) return
+    const museumId = museum.id
+
+    async function loadAll() {
+      setLoading(true)
+      try {
+        // Load artworks stats
+        const { data: artworks } = await supabase
+          .from('ag_artworks')
+          .select('id, status, audio_url, title, artist_name, created_at')
+          .eq('museum_id', museumId)
+
+        // Load tours count
+        const { count: toursCount } = await supabase
+          .from('ag_tours')
+          .select('id', { count: 'exact', head: true })
+          .eq('museum_id', museumId)
+
+        // Load museum languages
+        const langs = museum.languages || ['de', 'en']
+
+        const arr = artworks || []
         setStats({
-          artworks_total: artworks.length,
-          artworks_published: artworks.filter((a: { status: string }) => a.status === 'published').length,
-          artworks_draft: artworks.filter((a: { status: string }) => a.status === 'draft').length,
-          artworks_review: artworks.filter((a: { status: string }) => a.status === 'review').length,
-          tours_total: 0,
-          audio_generated: artworks.filter((a: { audio_url: string | null }) => a.audio_url).length,
-          languages_active: 2,
+          artworks_total: arr.length,
+          artworks_published: arr.filter((a: { status: string }) => a.status === 'published').length,
+          artworks_draft: arr.filter((a: { status: string }) => a.status === 'draft').length,
+          artworks_review: arr.filter((a: { status: string }) => a.status === 'review').length,
+          tours_total: toursCount || 0,
+          audio_generated: arr.filter((a: { audio_url: string | null }) => a.audio_url).length,
+          languages_active: langs.length,
         })
-      })
-      .catch(() => setStats({ artworks_total: 0, artworks_published: 0, artworks_draft: 0, artworks_review: 0, tours_total: 0, audio_generated: 0, languages_active: 0 }))
-      .finally(() => setLoading(false))
-  }, [])
+
+        // Load top artworks from analytics events
+        const { data: topEvents } = await supabase
+          .from('ag_analytics_events')
+          .select('artwork_id, event_type')
+          .eq('museum_id', museumId)
+          .in('event_type', ['qr_scan', 'audio_play'])
+          .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+
+        if (topEvents && topEvents.length > 0) {
+          // Aggregate by artwork
+          const counts: Record<string, { scan_count: number; audio_plays: number }> = {}
+          for (const ev of topEvents) {
+            if (!ev.artwork_id) continue
+            if (!counts[ev.artwork_id]) counts[ev.artwork_id] = { scan_count: 0, audio_plays: 0 }
+            if (ev.event_type === 'qr_scan') counts[ev.artwork_id].scan_count++
+            if (ev.event_type === 'audio_play') counts[ev.artwork_id].audio_plays++
+          }
+          const topIds = Object.entries(counts)
+            .sort((a, b) => (b[1].scan_count + b[1].audio_plays) - (a[1].scan_count + a[1].audio_plays))
+            .slice(0, 5)
+            .map(([id]) => id)
+
+          if (topIds.length > 0) {
+            const { data: topArts } = await supabase
+              .from('ag_artworks')
+              .select('id, title, artist_name')
+              .in('id', topIds)
+            setTopArtworks((topArts || []).map(a => ({
+              ...a,
+              scan_count: counts[a.id]?.scan_count || 0,
+              audio_plays: counts[a.id]?.audio_plays || 0,
+            })))
+          }
+        }
+
+        // Load today's visitor count
+        const today = new Date().toISOString().split('T')[0]
+        const { data: todayData } = await supabase
+          .from('ag_analytics_daily')
+          .select('visitors_total')
+          .eq('museum_id', museumId)
+          .eq('date', today)
+          .single()
+        setTodayVisitors(todayData?.visitors_total ?? null)
+
+        // Recent activity from artwork changes
+        const { data: recent } = await supabase
+          .from('ag_artworks')
+          .select('id, title, status, created_at, updated_at')
+          .eq('museum_id', museumId)
+          .order('updated_at', { ascending: false })
+          .limit(5)
+
+        if (recent) {
+          setRecentActivity(recent.map((a: { id: string; title: unknown; status: string; created_at: string; updated_at: string }) => ({
+            type: a.status,
+            label: t(a.title) || 'Unbekanntes Werk',
+            time: new Date(a.updated_at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+            icon: a.status === 'published' ? '✅' : a.status === 'review' ? '👀' : '📝',
+          })))
+        }
+      } catch (e) {
+        console.error('Dashboard load error:', e)
+        setStats({ artworks_total: 0, artworks_published: 0, artworks_draft: 0, artworks_review: 0, tours_total: 0, audio_generated: 0, languages_active: 0 })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadAll()
+  }, [museum?.id])
 
   const onboardingSteps = [
     { id: 'import', label: 'Exponate importieren', icon: '📥', done: (stats?.artworks_total || 0) > 0, href: '/dashboard/import/museum', action: 'Import starten' },
@@ -161,34 +279,67 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900">🏆 Beliebteste Exponate</h3>
             <a href="/dashboard/analytics" className="text-xs text-indigo-600 hover:underline">Analytics →</a>
           </div>
-          <div className="text-center py-8 text-gray-400">
-            <div className="text-3xl mb-2">📊</div>
-            <p className="text-sm text-gray-500">Besucherdaten werden nach dem ersten Scan verfuegbar</p>
-            <p className="text-xs text-gray-400 mt-1">QR-Codes generieren und aushaengen um Daten zu sammeln</p>
-          </div>
+          {topArtworks.length > 0 ? (
+            <div className="space-y-3">
+              {topArtworks.map((artwork, i) => (
+                <a
+                  key={artwork.id}
+                  href={`/dashboard/artworks/${artwork.id}`}
+                  className="flex items-center gap-3 hover:bg-gray-50 rounded-lg p-2 -mx-2 transition"
+                >
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                    i === 0 ? 'bg-amber-100 text-amber-700' :
+                    i === 1 ? 'bg-gray-100 text-gray-600' :
+                    i === 2 ? 'bg-orange-100 text-orange-700' :
+                    'bg-gray-50 text-gray-400'
+                  }`}>{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{t(artwork.title)}</p>
+                    <p className="text-xs text-gray-400">{artwork.artist_name || 'Unbekannt'}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs font-medium text-gray-700">{artwork.scan_count} Scans</p>
+                    <p className="text-xs text-gray-400">{artwork.audio_plays} Audio</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              <div className="text-3xl mb-2">📊</div>
+              <p className="text-sm text-gray-500">Daten nach dem ersten QR-Scan verfügbar</p>
+              <a href="/dashboard/artworks" className="text-xs text-indigo-600 hover:underline mt-1 block">QR-Codes generieren →</a>
+            </div>
+          )}
+          {todayVisitors !== null && (
+            <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+              <span className="text-xs text-gray-500">Besucher heute</span>
+              <span className="text-sm font-bold text-indigo-600">{todayVisitors}</span>
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <h3 className="font-semibold text-gray-900 mb-4">🕐 Letzte Aktivitaet</h3>
-          {(stats?.artworks_total || 0) > 0 ? (
+          <h3 className="font-semibold text-gray-900 mb-4">🕐 Letzte Änderungen</h3>
+          {recentActivity.length > 0 ? (
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <span className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center text-xs">✅</span>
-                <div><span className="font-medium text-gray-900">{stats?.artworks_total} Exponate</span> <span className="text-gray-500">importiert</span></div>
-                <span className="ml-auto text-xs text-gray-400">Heute</span>
-              </div>
-              {(stats?.audio_generated || 0) > 0 && (
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs">🎙</span>
-                  <div><span className="font-medium text-gray-900">{stats?.audio_generated} Audio-Tracks</span> <span className="text-gray-500">generiert</span></div>
-                  <span className="ml-auto text-xs text-gray-400">Heute</span>
+              {recentActivity.map((activity, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm">
+                  <span className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs flex-shrink-0">
+                    {activity.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 truncate">{activity.label}</p>
+                    <p className="text-xs text-gray-400 capitalize">{activity.type}</p>
+                  </div>
+                  <span className="ml-auto text-xs text-gray-400 flex-shrink-0">{activity.time}</span>
                 </div>
-              )}
+              ))}
             </div>
           ) : (
             <div className="text-center py-8 text-gray-400">
               <div className="text-3xl mb-2">🕐</div>
-              <p className="text-sm">Noch keine Aktivitaet</p>
+              <p className="text-sm">Noch keine Aktivität</p>
               <a href="/dashboard/import/museum" className="text-xs text-indigo-600 hover:underline mt-1 block">Jetzt starten →</a>
             </div>
           )}

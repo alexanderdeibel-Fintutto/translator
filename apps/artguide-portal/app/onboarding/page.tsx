@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase-client'
 
 type Step = 1 | 2 | 3 | 4 | 5
 
@@ -103,6 +104,17 @@ export default function OnboardingPage() {
     import_method: '',
   })
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const supabase = createClient()
+
+  function slugify(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 50)
+  }
 
   const update = (field: keyof MuseumData, value: string | string[]) => {
     setData(prev => ({ ...prev, [field]: value }))
@@ -127,10 +139,52 @@ export default function OnboardingPage() {
 
   const handleFinish = async () => {
     setSaving(true)
-    // In production: save to Supabase
-    await new Promise(r => setTimeout(r, 1500))
-    setSaving(false)
-    router.push('/dashboard?onboarding=complete')
+    setError(null)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Nicht eingeloggt')
+
+      // 1. Museum in ag_museums anlegen
+      const slug = slugify(data.name) + '-' + Math.random().toString(36).slice(2, 6)
+      const { data: museum, error: museumErr } = await supabase
+        .from('ag_museums')
+        .insert({
+          name: data.name,
+          slug,
+          type: data.type,
+          city: data.city,
+          country: data.country,
+          website: data.website || null,
+          description: data.description || null,
+          languages: data.languages,
+          tier_id: data.tier === 'starter' ? 'artguide_starter' : data.tier,
+          is_active: true,
+          settings: { contact_name: data.contact_name, contact_email: data.contact_email },
+        })
+        .select()
+        .single()
+
+      if (museumErr) throw museumErr
+
+      // 2. User als Admin-Mitglied eintragen
+      await supabase.from('ag_cms_members').insert({
+        museum_id: museum.id,
+        user_id: user.id,
+        role: 'admin',
+        is_active: true,
+      })
+
+      // 3. Weiterleitung je nach Import-Methode
+      if (data.has_existing_data === 'yes_csv') {
+        router.push('/dashboard/import/museum?onboarding=1')
+      } else {
+        router.push('/dashboard?onboarding=complete')
+      }
+    } catch (e: any) {
+      setError(e.message || 'Fehler beim Einrichten des Museums')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -426,6 +480,13 @@ export default function OnboardingPage() {
               '🚀 Museum einrichten!'
             )}
           </button>
+        )}
+        {error && (
+          <div className="px-6 pb-2">
+            <div className="bg-red-900/30 border border-red-500/30 rounded-xl p-3 text-red-300 text-xs">
+              ⚠️ {error}
+            </div>
+          </div>
         )}
       </div>
     </div>

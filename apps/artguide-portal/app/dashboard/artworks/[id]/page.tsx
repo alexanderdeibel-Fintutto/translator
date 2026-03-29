@@ -53,6 +53,11 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
   const [isGenerating, setIsGenerating] = useState<string | null>(null)
   const [isGeneratingAll, setIsGeneratingAll] = useState(false)
   const [isTtsGenerating, setIsTtsGenerating] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadDragOver, setUploadDragOver] = useState(false)
+  const [history, setHistory] = useState<Array<{id: string, field: string, lang: string, old_value: string, new_value: string, created_at: string, user_email?: string}>>([]) 
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   // Form state
   const [form, setForm] = useState<Partial<Artwork>>({})
@@ -184,6 +189,60 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
       }
     } catch (err) { console.error(err) }
     finally { setIsTtsGenerating(false) }
+  }
+
+  // Image upload to Supabase Storage
+  async function handleImageUpload(file: File) {
+    if (!file || !artwork) return
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if (!allowed.includes(file.type)) { alert('Nur JPG, PNG, WebP oder GIF erlaubt.'); return }
+    if (file.size > 50 * 1024 * 1024) { alert('Maximale Dateigröße: 50 MB'); return }
+    setIsUploading(true)
+    setUploadProgress(10)
+    try {
+      const ext = file.name.split('.').pop() || 'jpg'
+      const path = `artworks/${id}/main.${ext}`
+      setUploadProgress(30)
+      const { error: uploadErr } = await supabase.storage
+        .from('artguide-media')
+        .upload(path, file, { upsert: true, contentType: file.type })
+      if (uploadErr) throw uploadErr
+      setUploadProgress(70)
+      const { data: urlData } = supabase.storage.from('artguide-media').getPublicUrl(path)
+      const publicUrl = urlData.publicUrl
+      const { error: updateErr } = await supabase
+        .from('ag_artworks')
+        .update({ image_url: publicUrl, updated_at: new Date().toISOString() })
+        .eq('id', id)
+      if (updateErr) throw updateErr
+      setArtwork(prev => prev ? { ...prev, image_url: publicUrl } as any : prev)
+      setUploadProgress(100)
+      setTimeout(() => { setIsUploading(false); setUploadProgress(0) }, 800)
+    } catch (err: any) {
+      alert('Upload fehlgeschlagen: ' + err.message)
+      setIsUploading(false)
+      setUploadProgress(0)
+    }
+  }
+
+  // Load history
+  async function loadHistory() {
+    setHistoryLoading(true)
+    const { data } = await supabase
+      .from('ag_artwork_history')
+      .select('*')
+      .eq('artwork_id', id)
+      .order('created_at', { ascending: false })
+      .limit(50)
+    setHistory(data || [])
+    setHistoryLoading(false)
+  }
+
+  // Restore a history version
+  async function restoreVersion(entry: {field: string, lang: string, old_value: string}) {
+    if (!confirm(`Wert für "${entry.field}" (${entry.lang.toUpperCase()}) auf früheren Stand zurücksetzen?`)) return
+    await saveTranslationField(entry.lang, entry.field, entry.old_value)
+    await loadHistory()
   }
 
   // Status change
@@ -352,16 +411,77 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
 
           {activeTab === 'media' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Medien</h3>
-{(artwork as any).image_url && (
-                <div className="mb-4">
-                  <img src={(artwork as any).image_url} alt={t(artwork.title, activeLanguage)} className="max-h-64 rounded-lg border border-gray-200 object-contain" />
+              <h3 className="font-semibold text-gray-900 mb-4">📸 Medien</h3>
+              {(artwork as any).image_url && (
+                <div className="mb-6 relative group">
+                  <img
+                    src={(artwork as any).image_url}
+                    alt={t(artwork.title, activeLanguage)}
+                    className="max-h-64 w-full rounded-xl border border-gray-200 object-contain bg-gray-50"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition flex items-center justify-center">
+                    <button
+                      onClick={() => {
+                        const input = document.createElement('input')
+                        input.type = 'file'
+                        input.accept = 'image/*'
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0]
+                          if (file) handleImageUpload(file)
+                        }
+                        input.click()
+                      }}
+                      className="opacity-0 group-hover:opacity-100 px-4 py-2 bg-white rounded-lg text-sm font-medium shadow-lg transition"
+                    >
+                      Bild ersetzen
+                    </button>
+                  </div>
                 </div>
               )}
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-indigo-300 transition cursor-pointer">
-                <span className="text-4xl block mb-3">📸</span>
-                <p className="text-gray-500">Bilder hierher ziehen oder klicken zum Hochladen</p>
-                <p className="text-xs text-gray-400 mt-2">JPG, PNG, WebP, MP4 — max. 50MB</p>
+              {isUploading && (
+                <div className="mb-4">
+                  <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                    <span>Wird hochgeladen...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div
+                      className="bg-indigo-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              <div
+                onDragOver={(e) => { e.preventDefault(); setUploadDragOver(true) }}
+                onDragLeave={() => setUploadDragOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setUploadDragOver(false)
+                  const file = e.dataTransfer.files[0]
+                  if (file) handleImageUpload(file)
+                }}
+                onClick={() => {
+                  const input = document.createElement('input')
+                  input.type = 'file'
+                  input.accept = 'image/*'
+                  input.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0]
+                    if (file) handleImageUpload(file)
+                  }
+                  input.click()
+                }}
+                className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition ${
+                  uploadDragOver
+                    ? 'border-indigo-400 bg-indigo-50'
+                    : 'border-gray-300 hover:border-indigo-300 hover:bg-gray-50'
+                }`}
+              >
+                <span className="text-4xl block mb-3">{uploadDragOver ? '📥' : '📸'}</span>
+                <p className="text-gray-600 font-medium">
+                  {uploadDragOver ? 'Loslassen zum Hochladen' : 'Bild hierher ziehen oder klicken'}
+                </p>
+                <p className="text-xs text-gray-400 mt-2">JPG, PNG, WebP — max. 50 MB</p>
               </div>
             </div>
           )}
@@ -410,8 +530,74 @@ export default function ArtworkDetailPage({ params }: { params: Promise<{ id: st
 
           {activeTab === 'history' && (
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Versionshistorie</h3>
-              <div className="text-center py-8 text-gray-400">Noch keine Versionen vorhanden</div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-900">📋 Änderungshistorie</h3>
+                <button
+                  onClick={loadHistory}
+                  disabled={historyLoading}
+                  className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 text-xs font-medium hover:bg-gray-200 transition"
+                >
+                  {historyLoading ? 'Lädt...' : '↻ Aktualisieren'}
+                </button>
+              </div>
+              {history.length === 0 && !historyLoading && (
+                <div className="text-center py-10">
+                  <div className="text-4xl mb-3">📋</div>
+                  <p className="text-gray-500 text-sm">Noch keine Änderungen aufgezeichnet</p>
+                  <p className="text-xs text-gray-400 mt-1">Jede Textbearbeitung wird hier gespeichert</p>
+                  <button onClick={loadHistory} className="mt-3 text-xs text-indigo-600 hover:underline">
+                    Historie laden
+                  </button>
+                </div>
+              )}
+              {historyLoading && (
+                <div className="text-center py-8">
+                  <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                </div>
+              )}
+              {history.length > 0 && (
+                <div className="space-y-3">
+                  {history.map((entry) => (
+                    <div key={entry.id} className="border border-gray-100 rounded-xl p-4 hover:border-gray-200 transition">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full font-medium">
+                              {entry.field}
+                            </span>
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                              {entry.lang?.toUpperCase()}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              {new Date(entry.created_at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <p className="text-xs text-red-500 font-medium mb-1">Vorher</p>
+                              <p className="text-xs text-gray-500 bg-red-50 rounded-lg p-2 line-clamp-3">
+                                {entry.old_value || <em className="text-gray-300">leer</em>}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-green-600 font-medium mb-1">Nachher</p>
+                              <p className="text-xs text-gray-700 bg-green-50 rounded-lg p-2 line-clamp-3">
+                                {entry.new_value || <em className="text-gray-300">leer</em>}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => restoreVersion(entry)}
+                          className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-xs font-medium hover:bg-amber-100 transition"
+                        >
+                          Wiederherstellen
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
