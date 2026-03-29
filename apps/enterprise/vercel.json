@@ -1,6 +1,6 @@
 {
-  "installCommand": "cd ../.. && npm install",
-  "buildCommand": "cd ../.. && npm run build:enterprise",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm run build:enterprise",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [

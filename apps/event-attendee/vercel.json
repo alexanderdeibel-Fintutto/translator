@@ -1,6 +1,6 @@
 {
-  "installCommand": "cd ../.. && npm install",
-  "buildCommand": "cd ../.. && npm run build:event-attendee",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm run build:event-attendee",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [

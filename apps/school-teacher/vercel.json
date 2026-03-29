@@ -1,6 +1,6 @@
 {
-  "installCommand": "cd ../.. && npm install",
-  "buildCommand": "cd ../.. && npm run build:school-teacher",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm run build:school-teacher",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [

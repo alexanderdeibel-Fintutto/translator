@@ -1,6 +1,6 @@
 {
-  "installCommand": "cd ../.. && npm install",
-  "buildCommand": "cd ../.. && npm run build:artguide-whitelabel",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm run build:artguide-whitelabel",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [

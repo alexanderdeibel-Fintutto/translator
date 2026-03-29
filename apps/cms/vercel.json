@@ -1,6 +1,12 @@
 {
-  "buildCommand": "cd ../.. && npm run build:cms",
+  "buildCommand": "cd ../.. && pnpm run build:cms",
   "outputDirectory": "apps/cms/dist",
   "framework": null,
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "installCommand": "cd ../.. && pnpm install"
 }
