@@ -2,6 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import type { MapPOI } from '../../../components/GoogleMapView'
+
+const GoogleMapView = dynamic(() => import('../../../components/GoogleMapView'), { ssr: false })
 
 /**
  * Enhanced POI Management Page
@@ -591,13 +595,33 @@ export default function PoisPage() {
         </div>
       )}
 
-      {/* Map View Placeholder */}
+      {/* Map View — Google Maps */}
       {viewMode === 'map' && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <div className="text-5xl mb-4">🗺</div>
-          <h3 className="text-lg font-bold text-gray-900">Karten-Ansicht</h3>
-          <p className="text-sm text-gray-500 mt-1">Interaktive Karte mit allen {filteredPois.length} POIs</p>
-          <p className="text-xs text-gray-400 mt-4">Map-Integration (Mapbox/Leaflet) wird in der naechsten Phase eingebaut</p>
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              🗺 {filteredPois.length} POIs auf der Karte
+            </span>
+            <span className="text-xs text-gray-400">
+              Klick auf einen Pin für Details
+            </span>
+          </div>
+          <GoogleMapView
+            pois={filteredPois.map((poi): MapPOI => ({
+              id: poi.id,
+              name: poi.name.de || poi.name.en || 'Unbekannt',
+              lat: poi.lat,
+              lng: poi.lng,
+              category: poi.category,
+              status: poi.status,
+              address: poi.address,
+            }))}
+            height="500px"
+            onPoiClick={(mapPoi) => {
+              const found = pois.find(p => p.id === mapPoi.id)
+              if (found) setShowAiPanel(found.id)
+            }}
+          />
         </div>
       )}
 

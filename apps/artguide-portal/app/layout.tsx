@@ -4,6 +4,9 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
+// GA4 Measurement ID aus Umgebungsvariable
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+
 export const metadata: Metadata = {
   title: 'Fintutto Art Guide — Museum CMS',
   description: 'Verwalte dein Museum, erstelle Fuehrungen, und begeistere Besucher mit KI-gestuetzten Audio-Guides.',
@@ -35,6 +38,29 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
+
+        {/* Google Analytics 4 */}
+        {GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}', {
+                    anonymize_ip: true,
+                    page_path: window.location.pathname,
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className={inter.className}>
         {children}
