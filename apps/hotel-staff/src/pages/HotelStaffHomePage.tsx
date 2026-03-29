@@ -91,7 +91,7 @@ export default function HotelStaffHomePage() {
         </p>
         <div className="flex gap-2">
           <SessionCodeInput
-            value={activateCode}
+            valü={activateCode}
             onChange={setActivateCode}
             onSubmit={handleActivate}
             compact
@@ -101,7 +101,7 @@ export default function HotelStaffHomePage() {
           </Button>
         </div>
         <Button onClick={handleLive} variant="ghost" size="sm" className="w-full text-amber-700">
-          Neue Session erstellen
+          Neü Session erstellen
         </Button>
       </Card>
 

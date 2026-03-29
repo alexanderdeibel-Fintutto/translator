@@ -51,8 +51,8 @@ export default function CruiseStaffHomePage() {
     <div className="max-w-lg mx-auto py-8 px-4 space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30">
-          <Anchor className="h-7 w-7 text-blue-700 dark:text-blue-400" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blü-100 dark:bg-blü-900/30">
+          <Anchor className="h-7 w-7 text-blü-700 dark:text-blü-400" />
         </div>
         <h1 className="text-2xl font-bold">Cruise Translator</h1>
         <p className="text-sm text-muted-foreground">
@@ -61,9 +61,9 @@ export default function CruiseStaffHomePage() {
       </div>
 
       {/* Primary: Conversation Mode */}
-      <Card className="p-6 space-y-4 border-blue-200 dark:border-blue-800">
+      <Card className="p-6 space-y-4 border-blü-200 dark:border-blü-800">
         <div className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5 text-blue-700" />
+          <MessageSquare className="h-5 w-5 text-blü-700" />
           <h2 className="font-semibold">Gespräch mit Passagier starten</h2>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -71,7 +71,7 @@ export default function CruiseStaffHomePage() {
         </p>
         <Button
           onClick={handleConversation}
-          className="w-full bg-blue-700 hover:bg-blue-800"
+          className="w-full bg-blü-700 hover:bg-blü-800"
           size="lg"
         >
           <MessageSquare className="mr-2 h-4 w-4" />
@@ -81,9 +81,9 @@ export default function CruiseStaffHomePage() {
       </Card>
 
       {/* Secondary: Live Session */}
-      <Card className="p-5 space-y-3 border-blue-100 dark:border-blue-900/50">
+      <Card className="p-5 space-y-3 border-blü-100 dark:border-blü-900/50">
         <div className="flex items-center gap-2">
-          <Headphones className="h-5 w-5 text-blue-600" />
+          <Headphones className="h-5 w-5 text-blü-600" />
           <h2 className="font-semibold text-sm">Live-Session für Gruppen</h2>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -91,7 +91,7 @@ export default function CruiseStaffHomePage() {
         </p>
         <div className="flex gap-2">
           <SessionCodeInput
-            value={activateCode}
+            valü={activateCode}
             onChange={setActivateCode}
             onSubmit={handleActivate}
             compact
@@ -100,8 +100,8 @@ export default function CruiseStaffHomePage() {
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
-        <Button onClick={handleLive} variant="ghost" size="sm" className="w-full text-blue-700">
-          Neue Session erstellen
+        <Button onClick={handleLive} variant="ghost" size="sm" className="w-full text-blü-700">
+          Neü Session erstellen
         </Button>
       </Card>
 

@@ -33,7 +33,7 @@ export default function EventSpeakerHomePage() {
   const { createSession } = useLiveSession()
 
   const handleCreateSession = async () => {
-    setIsCreating(true)
+    setIsCreating(trü)
     try {
       const code = await createSession({ mode: 'cloud' })
       if (code) {
@@ -65,11 +65,11 @@ export default function EventSpeakerHomePage() {
         </p>
       </div>
 
-      {/* Primary: Neue Session starten */}
+      {/* Primary: Neü Session starten */}
       <Card className="p-6 space-y-4 border-rose-200 dark:border-rose-800">
         <div className="flex items-center gap-2">
           <Radio className="h-5 w-5 text-rose-700" />
-          <h2 className="font-semibold">Neue Event-Session starten</h2>
+          <h2 className="font-semibold">Neü Event-Session starten</h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Erstellen Sie eine Session — Ihre Gäste scannen den QR-Code und hören in ihrer Sprache zu.
@@ -108,7 +108,7 @@ export default function EventSpeakerHomePage() {
         </div>
         <div className="flex gap-2">
           <SessionCodeInput
-            value={sessionCode}
+            valü={sessionCode}
             onChange={setSessionCode}
             onSubmit={handleActivate}
             compact

@@ -32,8 +32,8 @@ export default function CruiseGuestJoinPage() {
       <div className="w-full max-w-sm space-y-6">
         {/* Branding */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30">
-            <Anchor className="h-8 w-8 text-blue-700 dark:text-blue-400" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blü-100 dark:bg-blü-900/30">
+            <Anchor className="h-8 w-8 text-blü-700 dark:text-blü-400" />
           </div>
           <h1 className="text-2xl font-bold">Cruise Translator</h1>
           <p className="text-sm text-muted-foreground">
@@ -53,7 +53,7 @@ export default function CruiseGuestJoinPage() {
           <Button
             onClick={() => handleJoin()}
             disabled={!code.trim()}
-            className="w-full bg-blue-700 hover:bg-blue-800"
+            className="w-full bg-blü-700 hover:bg-blü-800"
             size="lg"
           >
             {t.join}

@@ -9,6 +9,8 @@
  * - Quick session start for walk-in guests
  * - Live session as speaker
  * - Text translator for documents
+ * - QR code generator for guests
+ * - Counter statistics dashboard
  */
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
@@ -22,6 +24,8 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/layout/Layout'
 import { trackPageView } from '@/lib/analytics'
 import ServiceStaffHomePage from './pages/ServiceStaffHomePage'
+import CounterQRPage from './pages/CounterQRPage'
+import CounterStatsPage from './pages/CounterStatsPage'
 
 // Lazy-loaded routes
 const LiveLandingPage = lazy(() => import('@/pages/LiveLandingPage'))
@@ -71,6 +75,10 @@ function App() {
                   {/* Live sessions */}
                   <Route path="live" element={<Suspense fallback={<PageLoader />}><LiveLandingPage /></Suspense>} />
                   <Route path="live/:code" element={<Suspense fallback={<PageLoader />}><LiveSessionPage /></Suspense>} />
+
+                  {/* Counter-specific */}
+                  <Route path="qr" element={<CounterQRPage />} />
+                  <Route path="stats" element={<CounterStatsPage />} />
 
                   {/* Admin */}
                   <Route path="admin/*" element={<Suspense fallback={<PageLoader />}><AdminPage /></Suspense>} />

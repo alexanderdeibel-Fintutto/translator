@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MessageSquare, Zap, ArrowRight, Languages, Settings, HandshakeIcon, Headphones } from 'lucide-react'
+import { MessageSquare, Zap, ArrowRight, Languages, Settings, HandshakeIcon, Headphones, QrCode, BarChart2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import SessionCodeInput from '@/components/live/SessionCodeInput'
@@ -18,14 +18,14 @@ import { useUser } from '@/context/UserContext'
 const COUNTER_PHRASES = [
   { id: 'c1', emoji: '👋', text: 'Herzlich willkommen! Wie kann ich Ihnen helfen?', category: 'greeting' as const },
   { id: 'c2', emoji: '🪪', text: 'Darf ich Ihren Ausweis oder Pass sehen?', category: 'greeting' as const },
-  { id: 'c3', emoji: '📝', text: 'Bitte fuellen Sie dieses Formular aus.', category: 'info' as const },
+  { id: 'c3', emoji: '📝', text: 'Bitte füllen Sie dieses Formular aus.', category: 'info' as const },
   { id: 'c4', emoji: '⏳', text: 'Bitte warten Sie einen Moment.', category: 'info' as const },
-  { id: 'c5', emoji: '💳', text: 'Moechten Sie bar oder mit Karte zahlen?', category: 'info' as const },
-  { id: 'c6', emoji: '🔑', text: 'Hier ist Ihr Schluessel. Zimmer Nummer...', category: 'info' as const },
+  { id: 'c5', emoji: '💳', text: 'Möchten Sie bar oder mit Karte zahlen?', category: 'info' as const },
+  { id: 'c6', emoji: '🔑', text: 'Hier ist Ihr Schlüssel. Zimmer Nummer...', category: 'info' as const },
   { id: 'c7', emoji: '🕐', text: 'Check-out ist bis 11 Uhr.', category: 'info' as const },
   { id: 'c8', emoji: '📞', text: 'Ich rufe jemanden, der Ihnen helfen kann.', category: 'emergency' as const },
   { id: 'c9', emoji: '🗺️', text: 'Brauchen Sie eine Wegbeschreibung?', category: 'info' as const },
-  { id: 'c10', emoji: '👍', text: 'Vielen Dank! Einen schoenen Tag noch.', category: 'greeting' as const },
+  { id: 'c10', emoji: '👍', text: 'Vielen Dank! Einen schönen Tag noch.', category: 'greeting' as const },
 ]
 
 export default function CounterStaffHomePage() {
@@ -55,7 +55,7 @@ export default function CounterStaffHomePage() {
         </div>
         <h1 className="text-2xl font-bold">Service Translator</h1>
         <p className="text-sm text-muted-foreground">
-          {user?.email || 'Gaeste verstehen — in jeder Sprache'}
+          {user?.email || 'Gäste verstehen — in jeder Sprache'}
         </p>
       </div>
 
@@ -63,10 +63,10 @@ export default function CounterStaffHomePage() {
       <Card className="p-6 space-y-4 border-violet-200 dark:border-violet-800">
         <div className="flex items-center gap-2">
           <MessageSquare className="h-5 w-5 text-violet-700" />
-          <h2 className="font-semibold">Gespraech starten</h2>
+          <h2 className="font-semibold">Gespräch starten</h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          Bidirektionale Uebersetzung — Sie und Ihr Gast sprechen abwechselnd, beide sehen die Uebersetzung.
+          Bidirektionale Übersetzung — Sie und Ihr Gast sprechen abwechselnd, beide sehen die Übersetzung.
         </p>
         <Button
           onClick={handleConversation}
@@ -74,7 +74,7 @@ export default function CounterStaffHomePage() {
           size="lg"
         >
           <MessageSquare className="mr-2 h-4 w-4" />
-          Gespraech oeffnen
+          Gespräch öffnen
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </Card>
@@ -86,7 +86,7 @@ export default function CounterStaffHomePage() {
           <h3 className="text-sm font-medium">Live-Session (1:many)</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          Fuer Praesentationen, Fuehrungen oder Ankuendigungen an mehrere Gaeste.
+          Für Präsentationen, Führungen oder Ankündigungen an mehrere Gäste.
         </p>
         <SessionCodeInput onSubmit={(code) => handleActivate(code)} />
         <div className="flex gap-2">
@@ -110,8 +110,24 @@ export default function CounterStaffHomePage() {
         <Card className="p-4 cursor-pointer hover:bg-accent transition-colors" onClick={handleTranslator}>
           <div className="space-y-2">
             <Languages className="h-5 w-5 text-muted-foreground" />
-            <p className="text-sm font-medium">Text uebersetzen</p>
-            <p className="text-xs text-muted-foreground">Schilder, Menues, Formulare</p>
+            <p className="text-sm font-medium">Text übersetzen</p>
+            <p className="text-xs text-muted-foreground">Schilder, Menüs, Formulare</p>
+          </div>
+        </Card>
+
+        <Card className="p-4 cursor-pointer hover:bg-accent transition-colors" onClick={() => navigate('/qr')}>
+          <div className="space-y-2">
+            <QrCode className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm font-medium">QR-Code</p>
+            <p className="text-xs text-muted-foreground">Für Gäste anzeigen</p>
+          </div>
+        </Card>
+
+        <Card className="p-4 cursor-pointer hover:bg-accent transition-colors" onClick={() => navigate('/stats')}>
+          <div className="space-y-2">
+            <BarChart2 className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm font-medium">Statistik</p>
+            <p className="text-xs text-muted-foreground">Heute am Counter</p>
           </div>
         </Card>
 
@@ -128,11 +144,11 @@ export default function CounterStaffHomePage() {
       <QuickPhrases
         phrases={COUNTER_PHRASES}
         onSpeak={(text) => navigate('/translator', { state: { prefill: text } })}
-        title="Haeufige Saetze am Counter"
+        title="Häufige Sätze am Counter"
       />
 
       <p className="text-xs text-muted-foreground text-center max-w-xs mx-auto">
-        Ihr Gast oeffnet die Service Translator App auf seinem Smartphone — oder Sie nutzen den Gespraechsmodus auf einem geteilten Geraet.
+        Ihr Gast öffnet die Service Translator App auf seinem Smartphone — oder Sie nutzen den Gesprächsmodus auf einem geteilten Gerät.
       </p>
     </div>
   )
