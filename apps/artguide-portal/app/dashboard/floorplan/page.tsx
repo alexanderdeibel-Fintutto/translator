@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { createClient } from '@/lib/supabase-client'
+import { useMuseum } from '@/lib/hooks'
 
 interface POIPin {
   id: string
@@ -21,30 +23,7 @@ interface Floor {
   pois: POIPin[]
 }
 
-const DEMO_FLOORS: Floor[] = [
-  {
-    id: 'floor-eg',
-    name: 'Erdgeschoss',
-    level: 0,
-    pois: [
-      { id: 'p1', x: 25, y: 35, label: 'Eingang & Empfang', status: 'published', color: '#6366f1' },
-      { id: 'p2', x: 45, y: 30, label: 'Saal 1 — Impressionismus', status: 'published', color: '#10b981' },
-      { id: 'p3', x: 65, y: 45, label: 'Saal 2 — Moderne', status: 'published', color: '#10b981' },
-      { id: 'p4', x: 30, y: 65, label: 'Skulpturengarten', status: 'draft', color: '#f59e0b' },
-      { id: 'p5', x: 70, y: 70, label: 'Museumscafé', status: 'published', color: '#6366f1' },
-    ],
-  },
-  {
-    id: 'floor-og1',
-    name: '1. Obergeschoss',
-    level: 1,
-    pois: [
-      { id: 'p6', x: 35, y: 40, label: 'Saal 3 — Barock', status: 'published', color: '#10b981' },
-      { id: 'p7', x: 60, y: 35, label: 'Saal 4 — Renaissance', status: 'review', color: '#f59e0b' },
-      { id: 'p8', x: 50, y: 65, label: 'Bibliothek', status: 'draft', color: '#6366f1' },
-    ],
-  },
-]
+// Floors loaded from Supabase (ag_rooms table)
 
 const STATUS_COLORS = {
   published: '#10b981',
@@ -53,7 +32,40 @@ const STATUS_COLORS = {
 }
 
 export default function FloorplanPage() {
-  const [floors, setFloors] = useState<Floor[]>(DEMO_FLOORS)
+  const { museum } = useMuseum()
+  const supabase = createClient()
+  const [floors, setFloors] = useState<Floor[]>([])
+  const [dbLoading, setDbLoading] = useState(true)
+
+  useEffect(() => { if (museum?.id) loadFloors() }, [museum?.id])
+
+  async function loadFloors() {
+    setDbLoading(true)
+    const { data: rooms } = await supabase
+      .from('ag_rooms')
+      .select('id, name, level, floorplan_image_url')
+      .eq('museum_id', museum!.id)
+      .order('level')
+    if (rooms && rooms.length > 0) {
+      const { data: artworks } = await supabase
+        .from('ag_artworks')
+        .select('id, title, position_on_floorplan, room_id, status')
+        .eq('museum_id', museum!.id)
+        .not('position_on_floorplan', 'is', null)
+      const byRoom: Record<string, POIPin[]> = {}
+      for (const aw of (artworks || [])) {
+        const pos = aw.position_on_floorplan as { x: number; y: number } | null
+        if (!pos || !aw.room_id) continue
+        if (!byRoom[aw.room_id]) byRoom[aw.room_id] = []
+        const title = typeof aw.title === 'object' ? (aw.title as any)['de'] || Object.values(aw.title as any)[0] : aw.title
+        byRoom[aw.room_id].push({ id: aw.id, x: pos.x, y: pos.y, label: title || 'Exponat', artwork_id: aw.id, status: aw.status || 'draft', color: '#6366f1' })
+      }
+      setFloors(rooms.map((r: any) => ({ id: r.id, name: r.name, level: r.level || 0, image_url: r.floorplan_image_url || undefined, pois: byRoom[r.id] || [] })))
+    } else {
+      setFloors([{ id: 'floor-new', name: 'Erdgeschoss', level: 0, pois: [] }])
+    }
+    setDbLoading(false)
+  }
   const [activeFloor, setActiveFloor] = useState(0)
   const [selectedPOI, setSelectedPOI] = useState<POIPin | null>(null)
   const [isPlacing, setIsPlacing] = useState(false)

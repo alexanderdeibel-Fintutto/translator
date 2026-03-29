@@ -1,6 +1,9 @@
 'use client'
 import { useState, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Papa from 'papaparse'
+import { createClient } from '@/lib/supabase-client'
+import { useMuseum } from '@/lib/hooks'
 
 type MappedData = Record<string, string>
 type ImportItem = {
@@ -28,6 +31,9 @@ INV-004,Abstrakte Komposition,Wassily Kandinsky,1912,Aquarell auf Papier,50 x 65
 INV-005,Bronzefigur Athena,Unbekannt,200 v. Chr.,Bronze,H: 45 cm,Kleine Votivfigur der Goettin Athena,Saal 5`
 
 export default function ImportMuseumPage() {
+  const { museum } = useMuseum()
+  const supabase = createClient()
+  const router = useRouter()
   const [step, setStep] = useState<'upload' | 'mapping' | 'enriching' | 'review'>('upload')
   const [job, setJob] = useState<ImportJob | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +57,7 @@ export default function ImportMuseumPage() {
       const response = await fetch('/api/import/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rows: parsed.data, filename, museumId: 'demo-museum' }),
+        body: JSON.stringify({ rows: parsed.data, filename, museumId: museum?.id || 'demo-museum' }),
       })
       const result = await response.json()
       if (!result.success) { alert('Fehler: ' + result.error); return }
@@ -84,6 +90,43 @@ export default function ImportMuseumPage() {
       setJob(prev => prev ? { ...prev, items: [...updatedItems] } : prev)
     }
     setStep('review')
+  }
+
+  const finalizeImport = async () => {
+    if (!job || !museum) return
+    setIsLoading(true)
+    try {
+      const enrichedItems = job.items.filter(i => i.status === 'enriched')
+      const artworksToInsert = enrichedItems.map(item => ({
+        museum_id: museum.id,
+        inventory_number: item.mapped_data.inventory_number || null,
+        title: { de: String(item.enriched?.title_de || item.mapped_data.title || 'Unbekannt') },
+        artist_name: item.mapped_data.artist_name || null,
+        year_created: item.mapped_data.year_created || null,
+        medium: item.mapped_data.medium || null,
+        dimensions: item.mapped_data.dimensions || null,
+        room: item.mapped_data.location_room || null,
+        description_brief: { de: String(item.enriched?.description_brief || '') },
+        description_standard: { de: String(item.enriched?.description_standard || '') },
+        description_detailed: { de: String(item.enriched?.description_detailed || '') },
+        description_children: { de: String(item.enriched?.description_children || '') },
+        description_youth: { de: String(item.enriched?.description_youth || '') },
+        fun_facts: { de: Array.isArray(item.enriched?.fun_facts) ? (item.enriched!.fun_facts as string[]).join('\n') : String(item.enriched?.fun_facts || '') },
+        historical_context: { de: String(item.enriched?.historical_context || '') },
+        technique_details: { de: String(item.enriched?.technique_details || '') },
+        tags: Array.isArray(item.enriched?.suggested_tags) ? item.enriched!.suggested_tags as string[] : [],
+        status: 'draft',
+        source: 'import',
+      }))
+      const { error } = await supabase.from('ag_artworks').insert(artworksToInsert)
+      if (error) throw error
+      alert(`✅ ${artworksToInsert.length} Exponate erfolgreich importiert!`)
+      router.push('/dashboard/artworks')
+    } catch (err: any) {
+      alert('Fehler beim Importieren: ' + err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const statusIcon = (status: ImportItem['status']) => {
@@ -261,8 +304,8 @@ export default function ImportMuseumPage() {
             </div>
             <div className="flex gap-2">
               <button className="px-4 py-2 rounded-lg bg-green-100 text-green-700 text-sm font-medium hover:bg-green-200 transition">✓ Alle genehmigen</button>
-              <button className="px-6 py-3 rounded-xl bg-indigo-900 text-white font-bold hover:bg-indigo-800 transition">
-                📥 {job.items.filter(i => i.status === 'enriched').length} Exponate importieren
+              <button onClick={finalizeImport} disabled={isLoading} className="px-6 py-3 rounded-xl bg-indigo-900 text-white font-bold hover:bg-indigo-800 transition disabled:opacity-50">
+                {isLoading ? '⚙️ Importiere...' : `📥 ${job.items.filter(i => i.status === 'enriched').length} Exponate importieren`}
               </button>
             </div>
           </div>
