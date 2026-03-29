@@ -30,6 +30,7 @@ import { useOffline } from '@/context/OfflineContext'
 import { isWhisperAvailable } from '@/lib/offline/stt-engine'
 import DocumentScanner from '@/components/translator/DocumentScanner'
 import { ScanLine } from 'lucide-react'
+import { ConversationAssistantPanel } from '@/components/assistant'
 
 const shortTimeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -623,6 +624,19 @@ export default function ConversationPage() {
           {error}
         </div>
       )}
+
+      {/* Assistenz-Panel: Smart Replies, Phrasenbuch, Gesprächsnotiz */}
+      <ConversationAssistantPanel
+        lastGuestMessage={messages.length > 0 ? messages[messages.length - 1].original : ''}
+        messages={messages}
+        context={contextMode}
+        staffLang={bottomLang}
+        guestLang={topLang}
+        onSpeak={(text) => handleResult(text, 'bottom')}
+        lastStaffMessage={
+          messages.filter(m => m.speaker === 'bottom').slice(-1)[0]?.original
+        }
+      />
       </> /* end conversation tab */}
     </div>
   )
