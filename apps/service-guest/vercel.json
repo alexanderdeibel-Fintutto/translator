@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && npm run build:service-guest",
+  "buildCommand": "cd ../.. && pnpm run build:service-guest",
   "outputDirectory": "apps/service-guest/dist",
   "framework": null,
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
